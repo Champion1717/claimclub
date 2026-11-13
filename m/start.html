@@ -362,7 +362,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
             </div>
           </sc-for>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$19.99</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$29.99</span></div>
         <div style="font-size: 11.5px; line-height: 1.5; color: #5B6862">{{ L.feeTerms }}</div>
       </div>
       <button onClick="{{ unlock }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
@@ -391,7 +391,6 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
           </span>
         </button>
       </sc-for>
-      <div style="display: flex; flex-direction: column; gap: 2px; padding: 4px 0"><span style="font-size: 19px; font-weight: 800; color: #0A0F0D">{{ L.stopLaw }}</span><span style="font-size: 13.5px; color: #5B6862">{{ L.keep100 }}</span></div>
     </div>
     <div style="flex: none; padding: 8px 22px 16px; border-top: 1px solid #E8EEEA; display: flex; flex-direction: column; gap: 6px; text-align: center">
       <span style="font-size: 12px; color: #5B6862">{{ L.noCommit }}</span>
@@ -611,14 +610,14 @@ class Component extends DCLogic {
       member: ['Claimclub membership', 'Membresía Claimclub'], month: ['/ month', '/ mes'],
       unlockA: ['Unlock all ', 'Desbloquea los '], unlockB: [' by name', ' por nombre'],
       track: ['Track every claim until it pays', 'Seguimiento de cada reclamo hasta el pago'], alerts: ['Alerts when new settlements match you', 'Alertas cuando un nuevo acuerdo coincida contigo'],
-      startMem: ['Start membership · $19.99/mo', 'Iniciar membresía · $19.99/mes'],
+      startMem: ['Start membership · from $7.99/mo', 'Iniciar membresía · desde $7.99/mes'],
       billed: ['Billed monthly. Cancel anytime. You can also file any claim yourself, free, on its official settlement site.', 'Cobro mensual. Cancela cuando quieras. También puedes presentar cualquier reclamo tú mismo, gratis, en su sitio oficial.'],
       yourClaims: ['Your claims', 'Tus reclamos'], restart: ['Restart demo', 'Reiniciar demo'], filedOf: ['filed of up to ', 'presentado de hasta '],
       payee: ['You', 'Usted'],
       feeH: ['File your claims', 'Presenta tus reclamos'], feeSub: ['One filing fee covers every claim below. We submit them as soon as you pay.', 'Una sola tarifa cubre todos los reclamos de abajo. Los enviamos en cuanto pagues.'],
       feeHead: ['FILING SUMMARY', 'RESUMEN DE PRESENTACIÓN'], included: ['Included', 'Incluido'],
       feeLine: ['Filing fee', 'Tarifa de presentación'], estBack: ['Estimated back to you', 'Estimado que podrías recibir'], dueToday: ['Due today', 'A pagar hoy'],
-      payBtn: ['Pay filing fee · $19.99', 'Pagar tarifa · $19.99'], applePay: ['Pay with Apple Pay', 'Pagar con Apple Pay'],
+      payBtn: ['Pay filing fee · $29.99', 'Pagar tarifa · $29.99'], applePay: ['Pay with Apple Pay', 'Pagar con Apple Pay'],
       feeTerms: ['One-time filing fee for the claims above. No subscription. Settlement payouts go straight to you; we never take a cut.', 'Tarifa única por los reclamos de arriba. Sin suscripción. Los pagos de los acuerdos van directo a ti; nunca nos quedamos con una parte.'],
       orW: ['or', 'o'], memPromoH: ['Or join and file free', 'O únete y presenta gratis'],
       memPromoP: ['We file every claim you match, now and as new settlements open. Plans from $7.99/month.', 'Presentamos cada reclamo que coincida contigo, ahora y cuando se abran nuevos acuerdos. Planes desde $7.99 al mes.'],
@@ -986,8 +985,8 @@ class Component extends DCLogic {
       subscribe: () => this.setState({ buying: 'member', payState: '', step: this.steps().indexOf('checkout') }),
       coItem: s.buying === 'member' ? (es ? 'Membresía Claimclub · ' : 'Claimclub membership · ') + ({ '1m': es ? '1 mes' : '1 month', '3m': es ? '3 meses' : '3 months', '6m': es ? '6 meses' : '6 months' }[s.plan]) : (es ? 'Tarifa de presentación · ' : 'Filing fee · ') + plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
       coSub: s.buying === 'member' ? (es ? 'Tu primera presentación es gratis. ' : 'Your first filing is free. ') + (({ '1m': ['$9.99', es ? 'cada mes' : 'every month'], '3m': ['$26.97', es ? 'cada 3 meses' : 'every 3 months'], '6m': ['$47.94', es ? 'cada 6 meses' : 'every 6 months'] })[s.plan]).join(' ').replace(/^/, es ? 'Se renueva a ' : 'Renews at ') + (es ? ' hasta que canceles.' : ' until you cancel.') : (es ? 'Pago único. Sin suscripción.' : 'One-time payment. No subscription.'),
-      coPrice: s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$19.99',
-      coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$19.99'),
+      coPrice: s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$29.99',
+      coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$29.99'),
       coIdle: !s.payState, coBusy: s.payState === 'busy', coDone: s.payState === 'done',
       card: s.card, exp: s.exp, cvc: s.cvc, czip: s.czip,
       setCard: (e) => this.setState({ card: e.target.value }), setExp: (e) => this.setState({ exp: e.target.value }), setCvc: (e) => this.setState({ cvc: e.target.value }), setCzip: (e) => this.setState({ czip: e.target.value }),

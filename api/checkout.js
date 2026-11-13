@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
   if (kind === 'fee') {
     line = process.env.STRIPE_PRICE_FEE
       ? { price: process.env.STRIPE_PRICE_FEE, quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: 1999, product_data: { name: 'Claimclub filing fee', description: 'One-time fee to file your selected claims' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: 2999, product_data: { name: 'Claimclub filing fee', description: 'One-time fee to file your selected claims' } } };
   } else {
     const p = PLANS[plan];
     line = process.env[p.env]
