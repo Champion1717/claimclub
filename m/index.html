@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Claimclub · You could be owed money</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%230F3B2E' stroke-width='14'/%3E%3C/svg%3E">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
@@ -7,8 +7,15 @@
 body{margin:0;background:#FFFFFF}
 a{color:#12805C}a:hover{color:#0F3B2E}
 button{font-family:inherit;cursor:pointer;border:0}
-.shelf{scrollbar-width:thin}
-.shelf::-webkit-scrollbar{height:8px}.shelf::-webkit-scrollbar-thumb{background:#CFDAD3;border-radius:9px}
+.shelf,.chips{scrollbar-width:none;-ms-overflow-style:none}
+.shelf::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}
+.sbar{display:flex;align-items:center;gap:16px;margin-top:6px}
+.strack{position:relative;flex:1;height:6px;border-radius:99px;background:#DDE5E0;cursor:pointer}
+.sthumb{position:absolute;top:0;left:0;height:100%;width:30%;border-radius:99px;background:#0F3B2E;cursor:grab;transition:background .15s}
+.sthumb:hover,.sthumb.drag{background:#12805C}.sthumb.drag{cursor:grabbing}
+.sbtn{width:44px;height:44px;flex:none;border-radius:50%;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1px #DDE5E0,0 4px 14px rgba(10,15,13,.06);display:flex;align-items:center;justify-content:center;transition:background .15s,box-shadow .15s,opacity .15s}
+.sbtn:hover{background:#EAF2EE;box-shadow:inset 0 0 0 1px #B9CCC2}
+.sbtn:disabled{opacity:.35;cursor:default;background:#FFFFFF}
 .lift{transition:transform .18s ease}
 .lift:hover{transform:translateY(-4px)}
 @keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
@@ -34,7 +41,7 @@ button{font-family:inherit;cursor:pointer;border:0}
 @media (prefers-reduced-motion: reduce){.spin,.spin img,.s1,.s2,.s3,.pulse,.marq,.orb1,.orb2,.u1,.u2,.u3,.pl,.pr,.c1,.c2,.rv{animation:none !important}}
 details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
 input:focus{outline:2px solid #3DDC97;outline-offset:1px}
-@media (max-width: 900px){.heroWrap{padding:14px 14px 14px !important}.phonecol{display:none !important}.herogrid{padding:32px 22px !important;justify-content:center}.herotext{align-items:center;text-align:center}.herotext > div{justify-content:center}.deskrow{display:none !important}.mobilelist{display:flex !important}}
+@media (max-width: 900px){.heroWrap{padding:14px 14px 0 !important}.phonecol{display:none !important}.herogrid{padding:32px 22px !important;justify-content:center}.herotext{align-items:center;text-align:center}.herotext > div{justify-content:center}.deskrow{display:none !important}.mobilelist{display:flex !important}}
 .phones > div{flex:none}
 .ink{stroke-dasharray:400;stroke-dashoffset:400;animation:inkdraw 1.2s ease forwards;animation-timeline:view();animation-range:entry 40% cover 55%}
 @supports not (animation-timeline: view()){.ink{animation:inkdraw 1.2s ease .3s forwards}}
@@ -69,10 +76,10 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
   </header>
 
   <!-- HERO -->
-  <section id="top" class="heroWrap" style="padding: 28px 48px 28px"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; border-radius: 32px; min-height: calc(100vh - 124px); display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
-    <div class="herogrid" style="position: relative; flex-grow: 1; width: 100%; box-sizing: border-box; max-width: 1240px; margin: 0 auto; padding: 56px 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 32px 72px">
+  <section id="top" class="heroWrap" style="max-width: 1280px; margin: 0 auto; padding: 24px 4vw 0"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; border-radius: 32px; display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
+    <div class="herogrid" style="position: relative; flex-grow: 1; width: 100%; box-sizing: border-box; margin: 0 auto; padding: 48px 56px 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 32px 56px">
       <div class="herotext" style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 24px">
-        <h1 class="u1" style="margin: 0; font-size: clamp(38px, 4.6vw, 68px); line-height: 1.02; font-weight: 800; letter-spacing: -0.045em">Big companies settle lawsuits all the time. <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #3DDC97">You could be owed a share.</span></h1>
+        <h1 class="u1" style="margin: 0; font-size: clamp(36px, 4.2vw, 60px); line-height: 1.02; font-weight: 800; letter-spacing: -0.045em">Big companies settle lawsuits all the time. <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #3DDC97">You could be owed a share.</span></h1>
         <p class="u2" style="margin: 0; font-size: 18px; line-height: 1.55; color: #C9D6CF; max-width: 520px">If you used a product or service that settled a class action, you can claim cash. Tap the claims that apply to you, see your total in under a minute, and we file them for you.</p>
         <div class="u3" style="display: flex; flex-wrap: wrap; gap: 12px">
           <a href="start.html" style="background: #FFFFFF; color: #0F3B2E; text-decoration: none; font-size: 17px; font-weight: 800; padding: 17px 28px; border-radius: 999px">See what I could be owed</a>
@@ -197,7 +204,7 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
   </div></section>
 
   <!-- SETTLEMENTS: one row -->
-  <section id="settlements" style="padding: 90px 0 80px">
+  <section id="settlements" style="padding: 72px 0 80px">
     <div style="max-width: 1280px; margin: 0 auto; padding: 0 4vw; display: flex; flex-direction: column; gap: 20px">
       <div class="rv" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
         <div style="display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 50px); font-weight: 800; letter-spacing: -0.04em; color: #0F3B2E">Open settlements you can claim</h2><div style="font-size: 16px; color: #43504A">{{ resultCount }} · scroll the row or pick a category</div></div>
@@ -207,9 +214,10 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6862" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 18px; top: 16px"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
         </div>
       </div>
-      <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="8"><button onClick="{{ f.pick }}" style="{{ f.style }}; flex: none; white-space: nowrap">{{ f.label }}</button></sc-for></div>
+      <div class="chips" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="8"><button onClick="{{ f.pick }}" style="{{ f.style }}; flex: none; white-space: nowrap">{{ f.label }}</button></sc-for></div>
     </div>
-    <div class="shelf deskrow" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px max(4vw, calc((100% - 1280px) / 2 + 4vw)) 18px">
+    <div class="deskrow" style="max-width: 1280px; margin: 0 auto; padding: 0 4vw; display: flex; flex-direction: column">
+    <div class="shelf" data-shelf style="-webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 48px), transparent); display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding: 10px 2px 22px; margin: 0 -2px">
       <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
         <a href="start.html" class="lift" style="flex: 0 0 232px; scroll-snap-align: start; background: #FFFFFF; border-radius: 24px; padding: 18px; box-sizing: border-box; text-decoration: none; color: #0A0F0D; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 0 #DDE5E0, 0 10px 30px rgba(10,15,13,.07); border: 1px solid #DDE5E0">
           <div style="display: flex; justify-content: space-between; align-items: flex-start">
@@ -227,6 +235,8 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
         </a>
       </sc-for>
       <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="flex: 0 0 320px; padding: 30px; color: #5B6862; font-weight: 600">No open settlements match that search.</div></sc-if>
+    </div>
+    <div class="sbar"><div class="strack" data-strack><div class="sthumb" data-sthumb></div></div><button class="sbtn" data-sprev aria-label="Scroll settlements left"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><button class="sbtn" data-snext aria-label="Scroll settlements right"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>
     </div>
     <div class="mobilelist" style="display: none; flex-direction: column; gap: 8px; padding: 6px 16px 0">
       <sc-for list="{{ mobileCards }}" as="c" hint-placeholder-count="6">
@@ -338,6 +348,45 @@ class Component extends DCLogic {
   constructor(props) {
     super(props);
     this.state = { filter: 'all', q: '', showAll: false, faq: -1 };
+  }
+  componentDidMount() { this.wireShelf(); }
+  componentDidUpdate() { this.wireShelf(); }
+  wireShelf() {
+    try {
+      const roots = [document];
+      document.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) roots.push(el.shadowRoot); });
+      roots.forEach((root) => {
+        const sh = root.querySelector('[data-shelf]'), tr = root.querySelector('[data-strack]'), th = root.querySelector('[data-sthumb]');
+        const pv = root.querySelector('[data-sprev]'), nx = root.querySelector('[data-snext]');
+        if (!sh || !tr || !th) return;
+        const sync = () => {
+          const max = sh.scrollWidth - sh.clientWidth, ratio = sh.scrollWidth ? sh.clientWidth / sh.scrollWidth : 1;
+          const w = Math.max(0.12, Math.min(1, ratio)), pos = max > 0 ? sh.scrollLeft / max : 0;
+          th.style.width = (w * 100) + '%'; th.style.left = (pos * (1 - w) * 100) + '%';
+          tr.parentNode.style.visibility = max > 4 ? 'visible' : 'hidden';
+          if (pv) pv.disabled = sh.scrollLeft <= 2; if (nx) nx.disabled = sh.scrollLeft >= max - 2;
+        };
+        if (sh._ccWired) { sync(); return; }
+        sh._ccWired = true;
+        sh.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+        const step = () => Math.max(240, sh.clientWidth * 0.8);
+        if (pv) pv.addEventListener('click', () => sh.scrollBy({ left: -step(), behavior: 'smooth' }));
+        if (nx) nx.addEventListener('click', () => sh.scrollBy({ left: step(), behavior: 'smooth' }));
+        const toPos = (x) => {
+          const r = tr.getBoundingClientRect(), tw = th.getBoundingClientRect().width;
+          const f = Math.max(0, Math.min(1, (x - r.left - tw / 2) / Math.max(1, r.width - tw)));
+          sh.scrollLeft = f * (sh.scrollWidth - sh.clientWidth);
+        };
+        let drag = null;
+        th.addEventListener('pointerdown', (e) => { e.preventDefault(); e.stopPropagation(); drag = { x: e.clientX, s: sh.scrollLeft }; th.classList.add('drag'); sh.style.scrollBehavior = 'auto'; sh.style.scrollSnapType = 'none'; th.setPointerCapture(e.pointerId); });
+        th.addEventListener('pointermove', (e) => { if (!drag) return; const r = tr.getBoundingClientRect(), tw = th.getBoundingClientRect().width; sh.scrollLeft = drag.s + (e.clientX - drag.x) * (sh.scrollWidth - sh.clientWidth) / Math.max(1, r.width - tw); });
+        const end = () => { if (!drag) return; drag = null; th.classList.remove('drag'); sh.style.scrollBehavior = ''; sh.style.scrollSnapType = ''; };
+        th.addEventListener('pointerup', end); th.addEventListener('pointercancel', end);
+        tr.addEventListener('pointerdown', (e) => { if (e.target === th) return; sh.style.scrollBehavior = 'smooth'; toPos(e.clientX); });
+        sync(); setTimeout(sync, 300);
+      });
+    } catch (e) {}
   }
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin();
