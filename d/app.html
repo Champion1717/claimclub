@@ -26,7 +26,8 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset}
 .addr3{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
 .set2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
 .appmain input,.appmain select,.appmain textarea{min-width:0;max-width:100%;box-sizing:border-box}
-.appmain>*{max-width:1240px}
+.appmain>*{max-width:none}
+@media (min-width:1600px){.dash2{grid-template-columns:minmax(0,1fr) 420px}}
 @media (max-width:1280px){.dash2{grid-template-columns:minmax(0,1fr) 320px}}
 @media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dash2{grid-template-columns:minmax(0,1fr)}.kpi4{grid-template-columns:repeat(2,minmax(0,1fr))}.set2{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:900px){.approot{flex-direction:column}.side{flex:none !important;flex-direction:row !important;align-items:center;gap:4px !important;overflow-x:auto;border-right:0 !important;border-bottom:1px solid #DDE5E0;padding:10px 12px !important}.side>button,.side>div>button{width:auto !important;white-space:nowrap}.side .memcard{display:none !important}.side .brand{padding:0 10px 0 4px !important}.appmain{padding:20px 18px !important}.prof2{grid-template-columns:minmax(0,1fr)}}
@@ -172,7 +173,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset}
       </div>
     </sc-if>
     <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
-      <div style="display: flex; flex-direction: column; gap: 18px; max-width: 1240px">
+      <div style="display: flex; flex-direction: column; gap: 18px">
         <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Settings</h1><div style="font-size: 15px; color: #5B6862">Notifications, your saved information, your bank and your membership.</div></div>
         <div class="set2" style="display: grid; gap: 18px; align-items: start">
           <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 6px 22px 8px; display: flex; flex-direction: column">
@@ -206,7 +207,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset}
       </div>
     </sc-if>
     <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
-      <div style="display: flex; flex-direction: column; gap: 20px; max-width: 1240px">
+      <div style="display: flex; flex-direction: column; gap: 20px">
         <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px"><div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Your info</h1><div style="font-size: 15px; color: #5B6862">We use this to pre-fill every claim form. It saves as you type and is only sent to settlement administrators.</div></div><div style="flex: 0 0 220px; display: flex; flex-direction: column; gap: 6px"><div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800"><span>Profile complete</span><span style="color: #12805C">{{ pct }}</span></div><div style="height: 8px; border-radius: 99px; background: #E8EEEA; overflow: hidden"><div style="{{ pctBar }}"></div></div></div></div>
         <div class="prof2" style="display: grid; gap: 16px">
           <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
