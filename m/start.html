@@ -165,11 +165,11 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
           <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0 10px"><span style="font-size: 14px; font-weight: 700; color: #43504A">{{ L.estSoFar }}</span><span style="font-size: 22px; font-weight: 800; color: #0F3B2E">{{ pickedTotal }}</span></div>
         </div>
       </sc-if>
-      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 16px; background: #FFF8E1; box-shadow: inset 0 0 0 1px #FFE29A; text-align: left"><span style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: #3DDC97; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></span><span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.moreH }}</span><span style="font-size: 12.5px; line-height: 1.45; color: #43504A">{{ moreLine }}</span></span><button onClick="{{ browseAll }}" style="flex: none; margin-left: auto; min-height: 36px; padding: 0 14px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 12.5px; font-weight: 800; white-space: nowrap">{{ L.moreCheck }}</button></div></sc-if>
+      <sc-if value="{{ pickedMore }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 16px; background: #FFF8E1; box-shadow: inset 0 0 0 1px #FFE29A; text-align: left"><span style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: #3DDC97; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></span><span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.moreH }}</span><span style="font-size: 12.5px; line-height: 1.45; color: #43504A">{{ moreLine }}</span></span><button onClick="{{ browseAll }}" style="flex: none; margin-left: auto; min-height: 36px; padding: 0 14px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 12.5px; font-weight: 800; white-space: nowrap">{{ L.moreCheck }}</button></div></sc-if>
     </div>
     <div style="flex: none; padding: 8px 22px 22px">
       <sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ true }}"><button onClick="{{ quickCont }}" style="{{ quickContStyle }}">{{ quickContLabel }}</button></sc-if>
-      <button onClick="{{ browseAll }}" style="{{ browseStyle }}">{{ browseLabel }}</button>
+      <sc-if value="{{ showMoreQuiz }}" hint-placeholder-val="{{ false }}"><button onClick="{{ moreQuiz }}" style="{{ moreQuizStyle }}">{{ moreQuizLabel }}</button></sc-if><button onClick="{{ browseAll }}" style="{{ browseStyle }}">{{ browseLabel }}</button>
     </div>
   </sc-if>
 
@@ -544,6 +544,10 @@ class Component extends DCLogic {
     super(props);
     this.state = { step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
       p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } };
+    let fid = props && props.offer;
+    try { if (!fid && typeof location !== 'undefined' && location.search) fid = new URLSearchParams(location.search).get('offer'); } catch (e) {}
+    const fd = fid && this.data().find(d => d.id === fid && this.daysLeft(d.dl) > 0);
+    this.state.focus = fd ? fd.id : null; this.state.focusMore = false;
   }
   dict() {
     return {
@@ -661,7 +665,15 @@ class Component extends DCLogic {
       { key: 'netflix', brand: 'Netflix', cat: 'arb', title: ['Do you have a Netflix account?', '¿Tienes cuenta de Netflix?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('netflix') },
       { key: 'openai', brand: 'ChatGPT', cat: 'arb', title: ['Do you use ChatGPT?', '¿Usas ChatGPT?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('openai') }
     ];
-    if (this.quickMode()) return TOP.map(q => Object.assign({}, q, { title: q.title[es ? 1 : 0], sub: q.sub[es ? 1 : 0], opts: q.opts.map(o => [o[0], es ? o[2] : o[1]]) }));
+    const loc = (q) => Object.assign({}, q, { title: q.title[es ? 1 : 0], sub: q.sub[es ? 1 : 0], opts: q.opts.map(o => [o[0], es ? o[2] : o[1]]) });
+    const fid = this.state.focus;
+    if (this.quickMode() && fid) {
+      const d = this.data().find(x => x.id === fid);
+      const fq = TOP.find(q => q.key === fid) || { key: fid, brand: d.co, cat: d.cat, title: ['Does the ' + d.co + ' settlement apply to you?', '¿Te aplica el acuerdo de ' + d.co + '?'], sub: ['Eligible: ' + d.who + '.', 'Pueden reclamar: ' + d.who + '.'], opts: yn(fid) };
+      this._moreN = TOP.filter(q => q.key !== fid).length;
+      return [fq].concat(this.state.focusMore ? TOP.filter(q => q.key !== fid) : []).map(loc);
+    }
+    if (this.quickMode()) return TOP.map(loc);
     const Q = [
       { key: 'apple', brand: 'Apple', cat: 'apps', title: ['Did you buy an iPhone 15 Pro, 15 Pro Max or any iPhone 16?', '¿Compraste un iPhone 15 Pro, 15 Pro Max o cualquier iPhone 16?'], sub: ['Bought in the U.S. in 2024 or 2025.', 'Comprado en EE. UU. en 2024 o 2025.'], opts: [['apple', 'Yes', 'Sí'], ['no', 'No', 'No']] },
       { key: 'amazon', brand: 'Amazon', cat: 'products', title: ['Has Amazon ever refunded a return late, short, or not at all?', '¿Amazon te reembolsó una devolución tarde, incompleta o nunca?'], sub: ['Any return since September 2017.', 'Cualquier devolución desde septiembre de 2017.'], opts: [['amazon', 'Yes', 'Sí'], ['amazon', 'Not sure', 'No estoy seguro'], ['no', 'No', 'No']] },
@@ -720,7 +732,7 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return ['intro1'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks', 'bank', 'dash']);
+    if (this.quickMode()) return (this.state.focus ? [] : ['intro1']).concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks', 'bank', 'dash']);
     return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks', 'dash']);
   }
   stepName() { return this.steps()[this.state.step]; }
@@ -886,7 +898,7 @@ class Component extends DCLogic {
       isIntro1: name === 'intro1', isIntro2: name === 'intro2', isState: name === 'state', isQ: qIndex >= 0,
       isCalc: name === 'calc', isReveal: name === 'reveal', isEmail: name === 'email', isDetails: name === 'details', isAuth: name === 'auth', isAll: name === 'all', isPicked: name === 'picked', notAuth: name !== 'auth',
       mainStyle: name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
-      inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0,
+      inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0 && qTotal > 1,
       quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
       setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
       asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name)),
@@ -919,14 +931,17 @@ class Component extends DCLogic {
       stOpts: [['', es ? 'Elige' : 'Select']].concat(['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'].map(x => [x, x])).map(([v, l]) => ({ v, l, sel: v === stCode0 })),
       pickSt: (e) => this.setState({ st: e.target.value || null }),
       auth, signedCount, hasSigned: signedCount > 0,
-      pickedH: pickedN ? (es ? 'Coincides con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'You matched ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Ninguno de los 10 principales aplicó' : 'None of the top 10 applied'),
-      pickedSub: pickedN ? (es ? 'Continúa para ver tu estimado, o revisa las demás ofertas abiertas para sumar más.' : 'Continue to see your estimate, or check the other open offers to add more.') : (es ? 'Hay ' + (allPool.length) + ' ofertas abiertas más. Revisa la lista para encontrar las tuyas.' : 'There are ' + allPool.length + ' more open offers. Browse the list to find yours.'),
+      pickedH: s.focus && !s.focusMore ? (pickedN ? (es ? '¡Coincides con ' + (ml[0] ? ml[0].co : '') + '!' : 'You qualify for ' + (ml[0] ? ml[0].co : 'this settlement') + '!') : (es ? 'Este no parece aplicarte' : 'This one does not look like a match')) : pickedN ? (es ? 'Coincides con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'You matched ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Ninguno de los 10 principales aplicó' : 'None of the top 10 applied'),
+      pickedSub: s.focus && !s.focusMore ? (es ? '¿Quieres ver si te deben dinero de otros acuerdos? Responde ' + (this._moreN || 9) + ' preguntas rápidas o revisa las ' + (allPool.length + topIds.length) + ' ofertas abiertas.' : 'Want to see if other settlements owe you money too? Answer ' + (this._moreN || 9) + ' quick questions, or browse all ' + (allPool.length + topIds.length) + ' open offers.') : pickedN ? (es ? 'Continúa para ver tu estimado, o revisa las demás ofertas abiertas para sumar más.' : 'Continue to see your estimate, or check the other open offers to add more.') : (es ? 'Hay ' + (allPool.length) + ' ofertas abiertas más. Revisa la lista para encontrar las tuyas.' : 'There are ' + allPool.length + ' more open offers. Browse the list to find yours.'),
       hasPicked: pickedN > 0, noPicked: pickedN === 0, pickedTotal: this.money(total),
       browseStyle: pickedN ? 'display:block;width:100%;min-height:52px;margin-top:8px;border-radius:999px;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E;font-size:16px;font-weight:800' : S.btn(true),
       allGroups, allPoolN: allPool.length + topIds.length, allQ: s.allQ, setAllQ: (e) => this.setState({ allQ: e.target.value }),
       allH: es ? 'Todas las ofertas abiertas' : 'All open offers', allSub: es ? 'Toca las que apliquen a ti. Tus 10 principales ya están guardadas.' : 'Tap any that apply to you. Your picks from the top 10 are already saved.',
       searchPh: es ? 'Buscar empresa o producto' : 'Search a company or product',
       browseAll: () => this.setState({ sawAll: true, step: this.steps().indexOf('all') }),
+      showMoreQuiz: !!(s.focus && !s.focusMore), moreQuiz: () => this.setState({ focusMore: true, step: 1 }),
+      moreQuizLabel: es ? 'Revisar ' + (this._moreN || 9) + ' acuerdos más comunes' : 'Check ' + (this._moreN || 9) + ' more common settlements',
+      moreQuizStyle: 'display:block;width:100%;min-height:52px;margin-top:8px;border-radius:999px;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E;font-size:16px;font-weight:800',
       browseLabel: es ? 'Ver las ' + (allPool.length + topIds.length) + ' ofertas abiertas' : 'Browse all ' + (allPool.length + topIds.length) + ' open offers',
       quickCont: toCalc, quickContDisabled: pickedN === 0, quickContStyle: S.btn(pickedN > 0),
       quickContLabel: pickedN ? (es ? 'Continuar con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'Continue with ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Elige al menos uno' : 'Pick at least one'),
@@ -967,7 +982,7 @@ class Component extends DCLogic {
       payoutLine: (() => { const m = settle.find(x => x.amt > 0) || ml[0]; return m ? (es ? 'Recibiste ' + this.money(m.amt || 50) + ' de tu reclamo de ' + m.co + '.' : 'You received ' + this.money(m.amt || 50) + ' from your ' + m.co + ' claim.') : ''; })(),
       memberCount: '148,000+',
       allValue, allOpenN: allOpen.length, potentialSub: es ? 'En las ' + allOpen.length + ' ofertas abiertas. Tus coincidencias: ' + this.money(total) + '.' : 'Across all ' + allOpen.length + ' open offers. Your matches so far: ' + this.money(total) + '.',
-      moreTotal: moreLabel, moreSmall: es ? '+ hasta ' + moreLabel + ' en otras ofertas abiertas' : '+ up to ' + moreLabel + ' in other open offers', moreCount: moreN, hasMore: moreN > 0,
+      moreTotal: moreLabel, moreSmall: es ? '+ hasta ' + moreLabel + ' en otras ofertas abiertas' : '+ up to ' + moreLabel + ' in other open offers', moreCount: moreN, hasMore: moreN > 0, pickedMore: moreN > 0 && !(s.focus && !s.focusMore),
       moreLine: es ? 'Hay hasta ' + moreLabel + ' más en ' + moreN + ' ofertas abiertas que aún no has revisado. Las revisamos todas por ti cuando te unes.' : 'There is up to ' + moreLabel + ' more in ' + moreN + ' other open offers you have not checked yet. We check them all for you when you join.',
       saOpen: s.saOpen, saList: AL.map(m => { const lg = this.logos()[m.id]; return { co: m.co, title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[m.cat]), amt: amtOf(m) }; }),
       saCount: AL.length, hasSa: AL.length > 1, saBtnLabel: (es ? 'Firmar los ' : 'Sign all ') + AL.length + (es ? ' formularios a la vez' : ' forms at once'),
