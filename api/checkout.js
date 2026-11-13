@@ -1,11 +1,22 @@
 // POST /api/checkout  -> { url }  Creates a Stripe Checkout Session.
 const Stripe = require('stripe');
 
+// Full renewal price per billing period, and the first-period charge (75% off, rounded to the cent).
+const FEE = 9900;
 const PLANS = {
-  '1m': { amount: 999, months: 1, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_1M' },
-  '3m': { amount: 2697, months: 3, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_3M' },
-  '6m': { amount: 4794, months: 6, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_6M' },
+  '1m': { amount: 2999, first: 750, months: 1, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_1M' },
+  '3m': { amount: 7497, first: 1874, months: 3, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_3M' },
+  '6m': { amount: 11994, first: 2999, months: 6, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_6M' },
 };
+
+// One-time coupon that takes the first invoice down to the intro price. Created on first use.
+async function introCoupon(stripe, plan) {
+  const p = PLANS[plan], id = 'cc_intro75_' + plan;
+  try { return (await stripe.coupons.retrieve(id)).id; } catch (e) {
+    const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: '75% off your first billing period' });
+    return c.id;
+  }
+}
 
 function readJson(req) {
   if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
@@ -32,21 +43,22 @@ module.exports = async (req, res) => {
   if (kind === 'fee') {
     line = process.env.STRIPE_PRICE_FEE
       ? { price: process.env.STRIPE_PRICE_FEE, quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: 2999, product_data: { name: 'Claimclub filing fee', description: 'One-time fee to file your selected claims' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: FEE, product_data: { name: 'Claimclub filing fee', description: 'One-time fee to file your selected claims' } } };
   } else {
     const p = PLANS[plan];
     line = process.env[p.env]
       ? { price: process.env[p.env], quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: 'First filing free. Renews until you cancel.' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: '75% off your first billing period, then renews at the full price until you cancel.' } } };
   }
 
   try {
+    const extra = kind === 'member' ? { discounts: [{ coupon: await introCoupon(stripe, plan) }] } : { allow_promotion_codes: true };
     const session = await stripe.checkout.sessions.create({
       mode: kind === 'fee' ? 'payment' : 'subscription',
       line_items: [line],
       customer_email: email,
       locale: b.lang === 'es' ? 'es' : 'auto',
-      allow_promotion_codes: true,
+      ...extra,
       metadata: { kind, plan: kind === 'member' ? plan : '', ids },
       success_url: origin + back + '?paid=' + kind + '&sid={CHECKOUT_SESSION_ID}',
       cancel_url: origin + back + '?canceled=1',

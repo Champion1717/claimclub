@@ -4,6 +4,31 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;600&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
 <style>
+/* membership unlock transition */
+.unl{position:absolute;inset:0;z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center;color:#FFFFFF;background:radial-gradient(circle at 50% 40%,#12805C 0%,#0F3B2E 48%,#0A0F0D 100%);overflow:hidden;animation:unlIn .8s cubic-bezier(.7,0,.2,1) both}
+@keyframes unlIn{from{clip-path:circle(0% at 50% 70%)}to{clip-path:circle(150% at 50% 70%)}}
+.unl.out{animation:unlOut .55s ease both}@keyframes unlOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(1.06)}}
+.unl .glow{position:absolute;left:50%;top:40%;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;background:radial-gradient(circle,rgba(61,220,151,.38),rgba(61,220,151,0) 62%);animation:uglow 2.4s ease-in-out .35s both}
+@keyframes uglow{0%{opacity:0;transform:scale(.4)}45%{opacity:1;transform:scale(1.05)}100%{opacity:.75;transform:scale(1)}}
+.unl .ring{position:absolute;left:50%;top:40%;width:150px;height:150px;margin:-75px 0 0 -75px;border-radius:50%;border:2px solid rgba(255,255,255,.55);opacity:0;animation:uring 1.7s ease-out .9s infinite}
+.unl .ring.r2{animation-delay:1.45s}
+@keyframes uring{0%{opacity:.85;transform:scale(.7)}100%{opacity:0;transform:scale(3.4)}}
+.ulogo{position:relative;width:96px;height:96px;margin-top:-40px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.35));animation:ulogo 1s cubic-bezier(.2,.9,.25,1.25) .3s both}
+@keyframes ulogo{from{opacity:0;transform:rotate(-160deg) scale(.25)}to{opacity:1;transform:none}}
+.ulogo path{transform-box:view-box;transform-origin:50px 50px;animation:useg .5s cubic-bezier(.2,.9,.3,1.4) both}
+.ulogo path:nth-child(1){animation-delay:.42s}.ulogo path:nth-child(2){animation-delay:.5s}.ulogo path:nth-child(3){animation-delay:.58s}.ulogo path:nth-child(4){animation-delay:.66s}.ulogo path:nth-child(5){animation-delay:.74s}
+.ulogo path:nth-child(6){animation:usegA .7s cubic-bezier(.2,.9,.3,1.6) 1s both}
+@keyframes useg{from{opacity:0;transform:scale(.55) rotate(-25deg)}to{opacity:1;transform:none}}
+@keyframes usegA{0%{opacity:0;transform:scale(.3)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:none}}
+.unl .conf{position:absolute;left:50%;top:40%;opacity:0;animation:uconf 1.7s cubic-bezier(.12,.7,.3,1) both}
+@keyframes uconf{0%{opacity:0;transform:translate(0,0) rotate(0)}8%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) rotate(var(--r))}}
+.unl .k{position:relative;font-size:12px;font-weight:800;letter-spacing:3px;color:#3DDC97;animation:uup .5s ease 1.05s both}
+.unl h2{position:relative;margin:0;font-family:'Instrument Serif',serif;font-weight:400;font-size:40px;line-height:1.05;letter-spacing:-.01em;animation:uup .6s ease 1.18s both}
+.unl h2 em{color:#3DDC97}
+.unl p{position:relative;margin:0;font-size:15px;color:#D7E3DC;animation:uup .6s ease 1.32s both}
+@keyframes uup{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.unl,.unl *{animation-duration:.01s !important;animation-delay:0s !important;animation-iteration-count:1 !important}.unl .conf,.unl .ring{display:none}}
+
 body{margin:0}
 a{color:#12805C}a:hover{color:#0F3B2E}
 button{font-family:inherit;cursor:pointer;border:0}
@@ -52,6 +77,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
 </style>
 <style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
 <div style="position: relative; width: 100%; max-width: 520px; margin: 0 auto; height: 100dvh; box-sizing: border-box; background: #FFFFFF; color: #0A0F0D; font-family: 'Manrope', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <sc-if value="{{ unlockOn }}" hint-placeholder-val="{{ false }}"><div class="{{ unlockCls }}" role="status" aria-live="polite"><div class="glow"></div><div class="ring"></div><div class="ring r2"></div><sc-for list="{{ confetti }}" as="c" hint-placeholder-count="0"><span class="conf" style="{{ c.st }}"></span></sc-for><svg class="ulogo" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><div class="k">{{ L.unlockK }}</div><h2>{{ L.unlockH }}</h2><p>{{ L.unlockP }}</p></div></sc-if>
 
   <!-- TOP BAR -->
   <div style="padding: 14px 18px 10px; display: flex; flex-direction: column; gap: 12px">
@@ -226,7 +252,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
             <div style="display: flex; align-items: flex-end; gap: 8px">
               <span style="font-size: 8px; font-weight: 800; line-height: 1.15; color: #5B6862; flex: none">PAY TO THE<br>ORDER OF</span>
               <div style="flex-grow: 1; border-bottom: 1px solid #5B6862; padding: 0 4px"><span class="write w1" style="font-family: Caveat, cursive; font-size: 24px; line-height: 1">{{ L.payee }}</span></div>
-              <div style="flex: none; display: flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #5B6862; padding: 2px 8px"><span style="font-size: 14px; font-weight: 700">$</span><span class="write w2" style="font-family: Caveat, cursive; font-size: 22px; line-height: 1; color: #0F3B2E">{{ totalNum }}</span></div>
+              <div style="flex: none; display: flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #5B6862; padding: 2px 8px"><sc-if value="{{ hasFigure }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 700">$</span></sc-if><span class="write w2" style="font-family: Caveat, cursive; font-size: 22px; line-height: 1; color: #0F3B2E">{{ totalNum }}</span></div>
             </div>
             <div style="display: flex; align-items: flex-end; gap: 6px"><div style="flex-grow: 1; min-width: 0; border-bottom: 1px solid #5B6862; padding: 0 4px; white-space: nowrap; overflow: hidden"><span class="write w3" style="font-family: Caveat, cursive; font-size: 17px; line-height: 1.1">{{ amountWords }}</span></div><span style="font-size: 9px; font-weight: 800; color: #5B6862; flex: none">DOLLARS</span></div>
             <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: 26px">
@@ -286,7 +312,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
         <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fState }}<select autocomplete="address-level1" onChange="{{ pickSt }}" style="{{ fs.st }}; appearance: auto"><sc-for list="{{ stOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}" selected="{{ o.sel }}">{{ o.l }}</option></sc-for></select><sc-if value="{{ fe.st }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.st }}</span></sc-if></label>
         <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fZip }}<input autocomplete="postal-code" inputmode="numeric" value="{{ p.zip }}" onChange="{{ setZip }}" style="{{ fs.zip }}"><sc-if value="{{ fe.zip }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.zip }}</span></sc-if></label>
         <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fPhone }}<input type="tel" autocomplete="tel" inputmode="tel" value="{{ p.phone }}" onChange="{{ setPhone }}" style="{{ fs.phone }}"><sc-if value="{{ fe.phone }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.phone }}</span></sc-if></label>
-        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fDob }}<input autocomplete="bday" placeholder="MM/DD/YYYY" value="{{ p.dob }}" onChange="{{ setDob }}" style="{{ fs.dob }}"><sc-if value="{{ fe.dob }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.dob }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fDob }}<input inputmode="numeric" autocomplete="bday" placeholder="MM/DD/YYYY" value="{{ p.dob }}" onChange="{{ setDob }}" style="{{ fs.dob }}"><sc-if value="{{ fe.dob }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.dob }}</span></sc-if></label>
       </div>
       <div style="display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 600; color: #5B6862"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ L.detSafe }}</div>
     </div>
@@ -308,7 +334,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
         <div style="display: flex; flex-direction: column; gap: 1px; font-size: 12px; line-height: 1.4"><span style="font-size: 8.5px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secAnswers }}</span><sc-for list="{{ auth.answers }}" as="r" hint-placeholder-count="2"><span style="color: #43504A">{{ r.k }}<strong style="color: #0A0F0D; margin-left: 4px">{{ r.v }}</strong></span></sc-for></div>
         <sc-if value="{{ auth.hasCert }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 8.5px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secCert }}</span><p style="margin: 0; font-family: 'Instrument Serif', serif; font-size: 14px; line-height: 1.3; color: #0A0F0D; border-left: 2px solid #9AA8A0; padding-left: 8px">{{ auth.cert }}</p></div></sc-if>
         <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 8.5px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secFile }}</span><p style="margin: 0; font-size: 11.5px; line-height: 1.45; color: #43504A">{{ auth.attest }}</p></div>
-        <button onClick="{{ auth.toggleConsent }}" role="checkbox" aria-checked="{{ auth.consentOn }}" style="display: flex; align-items: center; gap: 8px; text-align: left; background: transparent; padding: 0; min-height: 30px; font-size: 12px; line-height: 1.35; font-weight: 600; color: #0A0F0D"><span style="{{ auth.consentBox }}"><sc-if value="{{ auth.consentOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.consentTxt }}<span style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</span>.</span></button>
+        <button onClick="{{ auth.toggleConsent }}" role="checkbox" aria-checked="{{ auth.consentOn }}" style="display: flex; align-items: center; gap: 8px; text-align: left; background: transparent; padding: 0; min-height: 30px; font-size: 12px; line-height: 1.35; font-weight: 600; color: #0A0F0D"><span style="{{ auth.consentBox }}"><sc-if value="{{ auth.consentOn }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.consentTxt }}<a href="https://claimclub.io/legal/authorization.html" target="_blank" rel="noopener" style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</a>.</span></button>
         <div style="margin-top: auto; display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 10px; align-items: end">
           <div style="display: flex; flex-direction: column; gap: 3px">
             <sc-if value="{{ auth.unsigned }}" hint-placeholder-val="{{ true }}"><button onClick="{{ auth.sign }}" style="height: 44px; border-radius: 9px; background: #FFF8E1; color: #0F3B2E; border: 1.5px dashed #3DDC97; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 7px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>{{ L.tapSign }}</button></sc-if>
@@ -336,7 +362,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
               </div>
             </sc-for>
           </div>
-          <button onClick="{{ toggleSaConsent }}" role="checkbox" aria-checked="{{ saConsentOn }}" style="display: flex; align-items: flex-start; gap: 10px; text-align: left; background: transparent; padding: 0; font-size: 12.5px; line-height: 1.45; font-weight: 600; color: #0A0F0D"><span style="{{ saBox }}"><sc-if value="{{ saConsentOn }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.saConsent }}<span style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</span>.</span></button>
+          <button onClick="{{ toggleSaConsent }}" role="checkbox" aria-checked="{{ saConsentOn }}" style="display: flex; align-items: flex-start; gap: 10px; text-align: left; background: transparent; padding: 0; font-size: 12.5px; line-height: 1.45; font-weight: 600; color: #0A0F0D"><span style="{{ saBox }}"><sc-if value="{{ saConsentOn }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.saConsent }}<a href="https://claimclub.io/legal/authorization.html" target="_blank" rel="noopener" style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</a>.</span></button>
           <sc-if value="{{ saUnsigned }}" hint-placeholder-val="{{ true }}"><button onClick="{{ saSign }}" style="height: 52px; border-radius: 10px; background: #FFF8E1; color: #0F3B2E; border: 1.5px dashed #3DDC97; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>{{ L.tapSign }}</button></sc-if>
           <sc-if value="{{ saSigned }}" hint-placeholder-val="{{ false }}"><div style="height: 52px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid #0A0F0D; overflow: hidden"><span class="sigw" style="animation-delay: 0s; font-family: 'Mrs Saint Delafield', cursive; font-size: 36px; line-height: 1; color: #0F3B2E; white-space: nowrap">{{ auth.sigName }}</span></div></sc-if>
           <button onClick="{{ saGo }}" disabled="{{ saDisabled }}" style="{{ saStyle }}">{{ saGoLabel }}</button>
@@ -362,7 +388,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
             </div>
           </sc-for>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$29.99</span></div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$99</span></div>
         <div style="font-size: 11.5px; line-height: 1.5; color: #5B6862">{{ L.feeTerms }}</div>
       </div>
       <button onClick="{{ unlock }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
@@ -370,7 +396,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
       <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.orW }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
       <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 8px 10px 8px 22px; border-radius: 999px; background: #0F3B2E; color: #FFFFFF; text-align: left">
         <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 800">{{ L.memPromoH }}</span><span style="font-size: 12px; opacity: .8">{{ L.memPromoP2 }}</span></span>
-        <span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 92px; height: 48px; padding: 0 12px; border-radius: 999px; background: #3DDC97; color: #0F3B2E; line-height: 1"><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px">$7.99</span><span style="font-size: 10.5px; font-weight: 800">{{ L.perMo }}</span></span>
+        <span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 92px; height: 48px; padding: 0 12px; border-radius: 999px; background: #3DDC97; color: #0F3B2E; line-height: 1"><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px">$19.99</span><span style="font-size: 10.5px; font-weight: 800">{{ L.perMo }}</span></span>
       </button>
     </div>
   </sc-if>
@@ -396,7 +422,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
       <span style="font-size: 12px; color: #5B6862">{{ L.noCommit }}</span>
       <button onClick="{{ subscribe }}" style="{{ primary }}">{{ L.startPaid }}</button>
       <span style="font-size: 11.5px; color: #5B6862">{{ planRenew }}</span>
-      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><span>{{ L.termsW }}</span><span>{{ L.privacyW }}</span></div>
+      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><a href="https://claimclub.io/legal/terms.html" target="_blank" rel="noopener" style="color: inherit">{{ L.termsW }}</a><a href="https://claimclub.io/legal/privacy.html" target="_blank" rel="noopener" style="color: inherit">{{ L.privacyW }}</a></div>
     </div>
   </sc-if>
 
@@ -610,19 +636,19 @@ class Component extends DCLogic {
       member: ['Claimclub membership', 'Membresía Claimclub'], month: ['/ month', '/ mes'],
       unlockA: ['Unlock all ', 'Desbloquea los '], unlockB: [' by name', ' por nombre'],
       track: ['Track every claim until it pays', 'Seguimiento de cada reclamo hasta el pago'], alerts: ['Alerts when new settlements match you', 'Alertas cuando un nuevo acuerdo coincida contigo'],
-      startMem: ['Start membership · from $7.99/mo', 'Iniciar membresía · desde $7.99/mes'],
+      startMem: ['Start membership · 75% off', 'Iniciar membresía · 75% de descuento'],
       billed: ['Billed monthly. Cancel anytime. You can also file any claim yourself, free, on its official settlement site.', 'Cobro mensual. Cancela cuando quieras. También puedes presentar cualquier reclamo tú mismo, gratis, en su sitio oficial.'],
       yourClaims: ['Your claims', 'Tus reclamos'], restart: ['Restart demo', 'Reiniciar demo'], filedOf: ['filed of up to ', 'presentado de hasta '],
       payee: ['You', 'Usted'],
       feeH: ['File your claims', 'Presenta tus reclamos'], feeSub: ['One filing fee covers every claim below. We submit them as soon as you pay.', 'Una sola tarifa cubre todos los reclamos de abajo. Los enviamos en cuanto pagues.'],
       feeHead: ['FILING SUMMARY', 'RESUMEN DE PRESENTACIÓN'], included: ['Included', 'Incluido'],
       feeLine: ['Filing fee', 'Tarifa de presentación'], estBack: ['Estimated back to you', 'Estimado que podrías recibir'], dueToday: ['Due today', 'A pagar hoy'],
-      payBtn: ['Pay filing fee · $29.99', 'Pagar tarifa · $29.99'], applePay: ['Pay with Apple Pay', 'Pagar con Apple Pay'],
+      payBtn: ['Pay filing fee · $99', 'Pagar tarifa · $99'], applePay: ['Pay with Apple Pay', 'Pagar con Apple Pay'],
       feeTerms: ['One-time filing fee for the claims above. No subscription. Settlement payouts go straight to you; we never take a cut.', 'Tarifa única por los reclamos de arriba. Sin suscripción. Los pagos de los acuerdos van directo a ti; nunca nos quedamos con una parte.'],
       orW: ['or', 'o'], memPromoH: ['Or join and file free', 'O únete y presenta gratis'],
-      memPromoP: ['We file every claim you match, now and as new settlements open. Plans from $7.99/month.', 'Presentamos cada reclamo que coincida contigo, ahora y cuando se abran nuevos acuerdos. Planes desde $7.99 al mes.'],
-      seePlans: ['See membership plans', 'Ver planes de membresía'], memPromoP2: ['First filing free · from', 'Primera presentación gratis · desde'], perMo: ['/ month', '/ mes'],
-      plansH: ['Choose your plan', 'Elige tu plan'], plansSub: ['Every plan includes unlimited filing, all {N} open settlements and local scans near you. Your first filing is free.', 'Todos los planes incluyen presentaciones ilimitadas, los {N} acuerdos abiertos y búsquedas locales cerca de ti. Tu primera presentación es gratis.'],
+      memPromoP: ['We file every claim you match, now and as new settlements open. Your first billing period is 75% off.', 'Presentamos cada reclamo que coincida contigo, ahora y cuando se abran nuevos acuerdos. Tu primer periodo cuesta 75% menos.'],
+      seePlans: ['See membership plans', 'Ver planes de membresía'], memPromoP2: ['75% off your first period · from', '75% menos el primer periodo · desde'], perMo: ['/ month', '/ mes'],
+      plansH: ['Choose your plan', 'Elige tu plan'], plansSub: ['Every plan includes unlimited filing, all {N} open settlements and local scans near you. Your first billing period is 75% off.', 'Todos los planes incluyen presentaciones ilimitadas, los {N} acuerdos abiertos y búsquedas locales cerca de ti. Tu primer periodo cuesta 75% menos.'],
       potential: ['Your potential claim value', 'Valor potencial de tus reclamos'], members: ['members', 'miembros'],
       bestValue: ['BEST VALUE', 'MEJOR VALOR'], stopLaw: ['Stop paying lawyers.', 'Deja de pagarle a abogados.'], keep100: ['Keep 100% of your payouts.', 'Quédate con el 100% de tus pagos.'],
       noCommit: ['No commitment. Cancel anytime.', 'Sin compromiso. Cancela cuando quieras.'], startPaid: ['Start getting paid', 'Empieza a cobrar'],
@@ -643,6 +669,7 @@ class Component extends DCLogic {
       memberActive: ['Membership active', 'Membresía activa'],
       coH: ['Checkout', 'Pago'], coOr: ['or pay with card', 'o paga con tarjeta'], coCard: ['Card number', 'Número de tarjeta'], coExp: ['MM / YY', 'MM / AA'], coCvc: ['CVC', 'CVC'], coZip: ['ZIP', 'C.P.'],
       coSecure: ['Payments are encrypted and processed by our payment partner. We never store your full card number.', 'Los pagos están cifrados y los procesa nuestro socio de pagos. Nunca guardamos el número completo de tu tarjeta.'],
+      unlockK: ['MEMBERSHIP UNLOCKED', 'MEMBRESÍA DESBLOQUEADA'], unlockH: ['Welcome to the club', 'Bienvenido al club'], unlockP: ['Every claim you match, filed for you.', 'Cada reclamo que coincida contigo, presentado por ti.'],
       coBusyT: ['Processing payment', 'Procesando el pago'], coDoneT: ['Payment received', 'Pago recibido'], coDoneP: ['Thanks! One more quick step.', '¡Gracias! Un paso más.'], dueToday2: ['Due today', 'A pagar hoy'],
       saBtn: ['Sign all forms at once', 'Firmar todos a la vez'], saH: ['Sign all your claim forms', 'Firma todos tus formularios'],
       saP: ['Your details are already on every form. One signature applies to each form listed below, and each one is filed under your name.', 'Tus datos ya están en cada formulario. Una firma se aplica a cada formulario de la lista, y cada uno se presenta a tu nombre.'],
@@ -651,7 +678,7 @@ class Component extends DCLogic {
       moreH: ['That is just your top 10', 'Eso es solo de tus 10 principales'],
       moreCheck: ['Check the other offers', 'Revisar las demás ofertas'],
       paidH: ['Payment received', 'Pago recibido'], perksH: ['Your membership also includes', 'Tu membresía también incluye'],
-      perksSub: ['Your membership is active and your first filing is free. Here is what it does for you every month.', 'Tu membresía está activa y tu primera presentación es gratis. Esto es lo que hace por ti cada mes.'],
+      perksSub: ['Your membership is active. Here is what it does for you every month.', 'Tu membresía está activa. Esto es lo que hace por ti cada mes.'],
       toDash: ['Go to my claims', 'Ir a mis reclamos'],
       p1: ['New settlement alerts', 'Alertas de nuevos acuerdos'], p1d: ['We check new settlements weekly and tell you when one matches.', 'Revisamos acuerdos nuevos cada semana y te avisamos en cuanto uno coincide contigo.'],
       p2: ['One-tap filing for new matches', 'Presentación con un toque'], p2d: ['Future claims come pre-filled and ready to sign.', 'Tus datos quedan guardados, así que los próximos reclamos ya vienen listos para firmar.'],
@@ -764,6 +791,9 @@ class Component extends DCLogic {
     if (this.stepName() === 'auth' && this.state.ai > 0) { this.setState({ ai: this.state.ai - 1 }); return; }
     this.go(-1);
   }
+  planInfo(id, es) {
+    return ({ '1m': { first: '$7.50', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.74', full: '$74.97', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.94', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.50', full: '$29.99', every: es ? 'cada mes' : 'every month' };
+  }
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin(), Q = this.quiz(), name = this.stepName();
     const es = s.lang === 'es', D = this.dict(), L = {};
@@ -772,15 +802,16 @@ class Component extends DCLogic {
     L.plansSub = L.plansSub.replace('{N}', openAllN); L.pk3p = L.pk3p.replace('{N}', openAllN);
     const ml = this.matched();
     const settle = ml.filter(m => m.cat !== 'arb'), arbs = ml.filter(m => m.cat === 'arb');
-    const total = settle.reduce((t, m) => t + m.amt, 0);
-    const varies = settle.filter(m => !m.amt).length;
+    const val = (m) => m.amt > 0 ? m.amt : (m.max > 0 ? m.max : 0);
+    const total = settle.reduce((t, m) => t + val(m), 0);
+    const varies = settle.filter(m => !val(m)).length, noFigure = total === 0 && settle.length > 0;
     const qIndex = name && name[0] === 'q' ? Number(name.slice(1)) : -1;
     const quick = this.quickMode();
     const qTotal = quick ? Q.length : Q.length + 1;
     const qNum = name === 'state' ? 1 : qIndex >= 0 ? qIndex + (quick ? 1 : 2) : 0;
     const plural = (n, en1, enN, es1, esN) => n + ' ' + (es ? (n === 1 ? es1 : esN) : (n === 1 ? en1 : enN));
     const countLabel = plural(ml.length, 'settlement', 'settlements', 'acuerdo', 'acuerdos');
-    const amtOf = (m) => m.cat === 'arb' ? (m.max ? (es ? 'Hasta ' : 'Up to ') + this.money(m.max) : (es ? 'Arbitraje' : 'Arbitration')) : m.amt > 0 ? (es ? 'Hasta ' : 'Up to ') + this.money(m.amt) : (es ? 'Varía' : 'Varies');
+    const amtOf = (m) => m.cat === 'arb' ? (m.max ? (es ? 'Hasta ' : 'Up to ') + this.money(m.max) : (es ? 'Arbitraje' : 'Arbitration')) : val(m) > 0 ? (es ? 'Hasta ' : 'Up to ') + this.money(val(m)) : (es ? 'Varía' : 'Varies');
     let q = { opts: [], multi: false, single: false };
     let nextDisabled = true;
     if (qIndex >= 0) {
@@ -811,7 +842,7 @@ class Component extends DCLogic {
     const disposable = /@(mailinator|guerrillamail|10minutemail|tempmail|temp-mail|yopmail|trashmail|getnada|sharklasers|dispostable|fakeinbox|throwawaymail)\./;
     const emailErr = !em ? '' : !/^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(em) ? (es ? 'Escribe un correo válido' : 'Enter a valid email address') : disposable.test(em) ? (es ? 'Usa un correo permanente, no uno temporal' : 'Use a permanent email, not a temporary one') : /^(test|asdf|fake|abc|none|noemail|no)@/.test(em) ? (es ? 'Usa tu correo real' : 'Use your real email address') : '';
     const emailOk = !!em && !emailErr;
-    const filedAmt = settle.filter(m => s.filed[m.id]).reduce((t, m) => t + m.amt, 0);
+    const filedAmt = settle.filter(m => s.filed[m.id]).reduce((t, m) => t + val(m), 0);
     const matches = ml.map(m => {
       const c = K[m.cat], done = !!s.filed[m.id] || m.mode === 'auto', lg = this.logos()[m.id];
       const arb = m.cat === 'arb';
@@ -921,15 +952,15 @@ class Component extends DCLogic {
       qLabel: qNum + ' ' + L.of + ' ' + qTotal, qFull: L.qWord + ' ' + qNum + ' ' + L.of + ' ' + qTotal, segs, q, states,
       segGrid: 'flex-grow:1;display:grid;grid-template-columns:repeat(' + qTotal + ',minmax(0,1fr));gap:4px',
       i2h: L.i2a + qTotal + L.i2b,
-      totalLabel: this.money(total), totalNum: total.toFixed(2), countLabel, countMatched: countLabel + ' ' + L.matched,
-      calc1: L.calcA + countLabel + L.calcB, fromCount: L.fromW + countLabel, unlockAll: L.unlockA + countLabel + L.unlockB, filedOfLabel: L.filedOf + this.money(total),
+      totalLabel: noFigure ? (es ? 'Varía' : 'Varies') : this.money(total), totalNum: noFigure ? (es ? 'Varía' : 'Varies') : total.toFixed(2), hasFigure: !noFigure, countLabel, countMatched: countLabel + ' ' + L.matched,
+      calc1: L.calcA + countLabel + L.calcB, fromCount: L.fromW + countLabel, unlockAll: L.unlockA + countLabel + L.unlockB, filedOfLabel: noFigure ? '' : L.filedOf + this.money(total),
       variesLabel: [varies ? (es ? '+ ' + varies + ' con pagos variables' : '+ ' + varies + ' with variable payouts') : '', arbs.length ? (es ? '+ ' + arbs.length + ' reclamos de arbitraje' : '+ ' + plural(arbs.length, 'arbitration claim', 'arbitration claims', '', '')) : ''].filter(Boolean).join(' · '),
       hasVaries: varies > 0 || arbs.length > 0,
       hasMatches: ml.length > 0, noMatches: ml.length === 0,
       bumpClass: s.bump % 2 ? 'bumpA' : 'bumpB', matches,
       checkLogos: matches.slice(0, 6).map((m, i) => Object.assign({}, m, { popStyle: 'animation-delay:' + (2.1 + i * 0.12).toFixed(2) + 's' })),
       checkMore: ml.length > 6 ? '+' + (ml.length - 6) + (es ? ' más' : ' more') : '', hasCheckMore: ml.length > 6,
-      amountWords: this.words(total), checkDate: this.fmtDate(new Date().toISOString().slice(0, 10)),
+      amountWords: noFigure ? (es ? 'Monto fijado por el administrador' : 'Amount set by the settlement administrator') : this.words(total), checkDate: this.fmtDate(new Date().toISOString().slice(0, 10)),
       teaser: ['apple', 'amazon', 'goodrx'].map(id => this.data().find(d => d.id === id)).map(d => ({
         logo: this.logos()[d.id] || '', hasLogo: !!this.logos()[d.id], noLogo: !this.logos()[d.id], co: d.co, tileStyle: S.tile(K[d.cat]), initial: d.co.slice(0, 1),
         line: es ? ('acordó pagar ' + d.fund + '. ' + ((d.max || d.amt) ? 'Quienes califiquen reciben hasta ' + this.money(d.max || d.amt) + '.' : 'Quienes califiquen reciben una parte.'))
@@ -939,7 +970,7 @@ class Component extends DCLogic {
       nextDisabled, nextStyle: S.btn(!nextDisabled), primary: S.btn(true),
       email: s.email, onEmail: (e) => this.setState({ email: e.target.value }),
       emailErr: s.emailTried ? emailErr : '', hasEmailErr: !!(s.emailTried && emailErr), emailDisabled: !em, emailStyle: S.btn(!!em), emailNext: () => { if (emailOk) this.go(1); else this.setState({ emailTried: true }); }, quickSignIn: () => { if (!emailOk) this.setState({ email: 'alex.rivera@gmail.com' }); this.go(1); },
-      p, inp, stCode: stCode || '', setFirst: setP('first'), setMiddle: setP('middle'), setLast: setP('last'), setStreet: setP('street'), setApt: setP('apt'), setCity: setP('city'), setZip: setP('zip'), setPhone: setP('phone'), setDob: setP('dob'),
+      p, inp, stCode: stCode || '', setFirst: setP('first'), setMiddle: setP('middle'), setLast: setP('last'), setStreet: setP('street'), setApt: setP('apt'), setCity: setP('city'), setZip: setP('zip'), setPhone: setP('phone'), setDob: (e) => this.setState({ p: Object.assign({}, this.state.p, { dob: this.slashFmt(e.target.value, this.state.p.dob, [2, 2, 4]) }) }),
       detDisabled: false, detStyle: S.btn(true), detNext: () => { if (detOk) this.go(1); else this.setState({ detTried: true }); },
       fe: showDE, detErrN: Object.keys(showDE).length, hasDetErr: Object.keys(showDE).length > 0,
       detErrMsg: es ? 'Revisa los campos marcados para que tus reclamos no sean rechazados.' : 'Fix the highlighted fields so your claims are not rejected.',
@@ -949,7 +980,7 @@ class Component extends DCLogic {
       auth, signedCount, hasSigned: signedCount > 0,
       pickedH: s.focus && !s.focusMore ? (pickedN ? (es ? '¡Coincides con ' + (ml[0] ? ml[0].co : '') + '!' : 'You qualify for ' + (ml[0] ? ml[0].co : 'this settlement') + '!') : (es ? 'Este no parece aplicarte' : 'This one does not look like a match')) : pickedN ? (es ? 'Coincides con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'You matched ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Ninguno de los 10 principales aplicó' : 'None of the top 10 applied'),
       pickedSub: s.focus && !s.focusMore ? (es ? '¿Quieres ver si te deben dinero de otros acuerdos? Responde ' + (this._moreN || 9) + ' preguntas rápidas o revisa las ' + (allPool.length + topIds.length) + ' ofertas abiertas.' : 'Want to see if other settlements owe you money too? Answer ' + (this._moreN || 9) + ' quick questions, or browse all ' + (allPool.length + topIds.length) + ' open offers.') : pickedN ? (es ? 'Continúa para ver tu estimado, o revisa las demás ofertas abiertas para sumar más.' : 'Continue to see your estimate, or check the other open offers to add more.') : (es ? 'Hay ' + (allPool.length) + ' ofertas abiertas más. Revisa la lista para encontrar las tuyas.' : 'There are ' + allPool.length + ' more open offers. Browse the list to find yours.'),
-      hasPicked: pickedN > 0, noPicked: pickedN === 0, pickedTotal: this.money(total),
+      hasPicked: pickedN > 0, noPicked: pickedN === 0, pickedTotal: noFigure ? (es ? 'Varía' : 'Varies') : this.money(total),
       browseStyle: pickedN ? 'display:block;width:100%;min-height:52px;margin-top:8px;border-radius:999px;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E;font-size:16px;font-weight:800' : S.btn(true),
       allGroups, allPoolN: allPool.length + topIds.length, allQ: s.allQ, setAllQ: (e) => this.setState({ allQ: e.target.value }),
       allH: es ? 'Todas las ofertas abiertas' : 'All open offers', allSub: es ? 'Toca las que apliquen a ti. Lo que ya elegiste está guardado.' : 'Tap any that apply to you. Your picks so far are already saved.',
@@ -964,7 +995,7 @@ class Component extends DCLogic {
       qTileGrid: 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px',
       billItems: (signedCount ? AL.filter(m => s.signed[m.id]) : AL).map(m => { const lg = this.logos()[m.id]; return { logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[m.cat]), co: m.co, title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, amt: amtOf(m) }; }),
       billCount: plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
-      estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + m.amt, 0)),
+      estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
       isPerk1: s.pi === 0, isPerk2: s.pi === 1, isPerk3: s.pi === 2,
       perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.setState({ step: this.steps().indexOf('bank') }); },
       perkSkip: () => this.setState({ step: this.steps().indexOf('bank') }),
@@ -977,19 +1008,20 @@ class Component extends DCLogic {
       signedLabel: es ? signedCount + ' autorizaciones firmadas, listas para enviar al activar tu membresía' : signedCount + (signedCount === 1 ? ' authorization signed' : ' authorizations signed') + ', ready to submit when your membership starts',
       unlock: () => this.setState({ buying: 'fee', payState: '', step: this.steps().indexOf('checkout') }),
       toPlans: () => this.setState({ step: this.steps().indexOf('plans') }),
-      plans: [['1m', es ? '1 MES' : '1 MONTH', '$9.99', es ? 'Cobro mensual' : 'Billed monthly', '$9.99/mo', ''], ['3m', es ? '3 MESES' : '3 MONTHS', '$8.99', es ? 'Cobro cada 3 meses' : 'Billed every 3 months', '$26.97/3mo', es ? 'Ahorra 10%' : 'Save 10%'], ['6m', es ? '6 MESES' : '6 MONTHS', '$7.99', es ? 'Cobro cada 6 meses' : 'Billed every 6 months', '$47.94/6mo', es ? 'Ahorra 20%' : 'Save 20%']].map(([id, name, per, billed, total, save]) => ({
-        id, name, per, unit: es ? '/mes' : '/mo', billed, total, save, hasSave: !!save, best: id === '6m', notBest: id !== '6m', sel: s.plan === id,
+      plans: [['1m', es ? '1 MES' : '1 MONTH', '$7.50', es ? 'primer mes' : 'first month', es ? 'Luego $29.99 cada mes' : 'Then $29.99 every month', 'Reg. $29.99', ''], ['3m', es ? '3 MESES' : '3 MONTHS', '$18.74', es ? 'primeros 3 meses' : 'first 3 months', es ? 'Luego $74.97 cada 3 meses ($24.99/mes)' : 'Then $74.97 every 3 months ($24.99/mo)', 'Reg. $74.97', es ? 'Ahorra 17%' : 'Save 17%'], ['6m', es ? '6 MESES' : '6 MONTHS', '$29.99', es ? 'primeros 6 meses' : 'first 6 months', es ? 'Luego $119.94 cada 6 meses ($19.99/mes)' : 'Then $119.94 every 6 months ($19.99/mo)', 'Reg. $119.94', es ? 'Ahorra 33%' : 'Save 33%']].map(([id, name, per, unit, billed, total, save]) => ({
+        id, name, per, unit: ' ' + unit, billed, total, save, hasSave: !!save, best: id === '6m', notBest: id !== '6m', sel: s.plan === id,
         style: 'position:relative;display:flex;flex-direction:column;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:#FFFFFF;' + (s.plan === id ? 'box-shadow:inset 0 0 0 2px #0F3B2E,0 10px 24px rgba(10,15,13,.08)' : 'box-shadow:inset 0 0 0 1px #DDE5E0'),
         pick: () => this.setState({ plan: id }) })),
-      planRenew: (() => { const p = { '1m': ['$9.99', es ? 'cada mes' : 'every month'], '3m': ['$26.97', es ? 'cada 3 meses' : 'every 3 months'], '6m': ['$47.94', es ? 'cada 6 meses' : 'every 6 months'] }[s.plan]; return es ? 'Se renueva automáticamente a ' + p[0] + ' ' + p[1] + ' hasta que canceles.' : 'Auto-renews at ' + p[0] + ' ' + p[1] + ' until you cancel.'; })(),
+      planRenew: (() => { const p = this.planInfo(s.plan, es); return es ? 'Pagas ' + p.first + ' hoy (75% de descuento). Luego se renueva a ' + p.full + ' ' + p.every + ' hasta que canceles.' : 'You pay ' + p.first + ' today (75% off). Then it auto-renews at ' + p.full + ' ' + p.every + ' until you cancel.'; })(),
       subscribe: () => this.setState({ buying: 'member', payState: '', step: this.steps().indexOf('checkout') }),
       coItem: s.buying === 'member' ? (es ? 'Membresía Claimclub · ' : 'Claimclub membership · ') + ({ '1m': es ? '1 mes' : '1 month', '3m': es ? '3 meses' : '3 months', '6m': es ? '6 meses' : '6 months' }[s.plan]) : (es ? 'Tarifa de presentación · ' : 'Filing fee · ') + plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
-      coSub: s.buying === 'member' ? (es ? 'Tu primera presentación es gratis. ' : 'Your first filing is free. ') + (({ '1m': ['$9.99', es ? 'cada mes' : 'every month'], '3m': ['$26.97', es ? 'cada 3 meses' : 'every 3 months'], '6m': ['$47.94', es ? 'cada 6 meses' : 'every 6 months'] })[s.plan]).join(' ').replace(/^/, es ? 'Se renueva a ' : 'Renews at ') + (es ? ' hasta que canceles.' : ' until you cancel.') : (es ? 'Pago único. Sin suscripción.' : 'One-time payment. No subscription.'),
-      coPrice: s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$29.99',
-      coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$29.99'),
+      coSub: s.buying === 'member' ? (() => { const p = this.planInfo(s.plan, es); return es ? '75% de descuento en tu primer periodo. Se renueva a ' + p.full + ' ' + p.every + ' hasta que canceles.' : '75% off your first billing period. Renews at ' + p.full + ' ' + p.every + ' until you cancel.'; })() : (es ? 'Pago único. Sin suscripción.' : 'One-time payment. No subscription.'),
+      coPrice: s.buying === 'member' ? this.planInfo(s.plan, es).first : '$99',
+      coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? this.planInfo(s.plan, es).first : '$99'),
       coIdle: !s.payState, coBusy: s.payState === 'busy', coDone: s.payState === 'done',
+      unlockOn: !!s.unlock, unlockCls: 'unl' + (s.unlock === 'out' ? ' out' : ''), confetti: s.unlock ? this.confetti() : [],
       card: s.card, exp: s.exp, cvc: s.cvc, czip: s.czip,
-      setCard: (e) => this.setState({ card: e.target.value }), setExp: (e) => this.setState({ exp: e.target.value }), setCvc: (e) => this.setState({ cvc: e.target.value }), setCzip: (e) => this.setState({ czip: e.target.value }),
+      setCard: (e) => this.setState({ card: e.target.value }), setExp: (e) => this.setState({ exp: this.slashFmt(e.target.value, this.state.exp, [2, 2]) }), setCvc: (e) => this.setState({ cvc: e.target.value }), setCzip: (e) => this.setState({ czip: e.target.value }),
       payCardStyle: S.btn(!!(s.card || '').trim()), payCardDisabled: !(s.card || '').trim(),
       ce: s.cardTried ? this.cardCheck(s.card, s.exp, s.cvc, s.czip, es) : {}, hasCardErr: s.cardTried && Object.keys(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).length > 0,
       cardErrText: s.cardTried ? Object.values(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).join(' · ') : '',
@@ -1020,7 +1052,26 @@ class Component extends DCLogic {
     if (this.state.payState) return;
     this.setState({ payState: 'busy' });
     clearTimeout(this._pay);
-    this._pay = setTimeout(() => { this.setState({ payState: 'done', paid: this.state.buying }); this.saveForApp(); this._pay = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf(this.state.buying === 'member' ? 'perks' : 'bank') }), 1300); }, 1400);
+    this._pay = setTimeout(() => { this.setState({ payState: 'done', paid: this.state.buying }); this.saveForApp(); this.finishPay(this.state.buying); }, 1400);
+  }
+  finishPay(kind) {
+    clearTimeout(this._fin); clearTimeout(this._fin2); clearTimeout(this._fin3);
+    if (kind !== 'member') { this._fin = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('bank') }), 1300); return; }
+    const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this._fin = setTimeout(() => this.setState({ unlock: 'in' }), 450);
+    this._fin2 = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('perks'), unlock: 'out' }), reduce ? 1600 : 3000);
+    this._fin3 = setTimeout(() => this.setState({ unlock: '' }), reduce ? 1900 : 3550);
+  }
+  confetti() {
+    if (this._conf) return this._conf;
+    const cols = ['#3DDC97', '#FFFFFF', '#B9CCC2', '#9FE8C4', '#FFD978'];
+    const out = [];
+    for (let i = 0; i < 34; i++) {
+      const a = (i / 34) * Math.PI * 2 + (i % 3) * 0.21, d = 170 + ((i * 37) % 9) * 26;
+      const x = Math.round(Math.cos(a) * d), y = Math.round(Math.sin(a) * d * 0.8 + 40 + (i % 4) * 22);
+      out.push({ st: '--x:' + x + 'px;--y:' + y + 'px;--r:' + ((i * 83) % 720 - 360) + 'deg;background:' + cols[i % cols.length] + ';width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:' + (i % 5 === 0 ? '50%' : '2px') + ';animation-delay:' + (0.62 + (i % 6) * 0.03).toFixed(2) + 's' });
+    }
+    return (this._conf = out);
   }
   afterBank() { this.saveForApp(); this.setState({ step: this.steps().indexOf('dash') }); }
   saveForApp() {
@@ -1064,6 +1115,13 @@ class Component extends DCLogic {
     const z = parseInt(zip.slice(0, 3), 10);
     const R = { AL: [[350, 369]], AK: [[995, 999]], AZ: [[850, 865]], AR: [[716, 729]], CA: [[900, 961]], CO: [[800, 816]], CT: [[60, 69]], DE: [[197, 199]], DC: [[200, 205], [569, 569]], FL: [[320, 349]], GA: [[300, 319], [398, 399]], HI: [[967, 968]], ID: [[832, 838]], IL: [[600, 629]], IN: [[460, 479]], IA: [[500, 528]], KS: [[660, 679]], KY: [[400, 427]], LA: [[700, 714]], ME: [[39, 49]], MD: [[206, 219]], MA: [[10, 27], [55, 55]], MI: [[480, 499]], MN: [[550, 567]], MS: [[386, 397]], MO: [[630, 658]], MT: [[590, 599]], NE: [[680, 693]], NV: [[889, 898]], NH: [[30, 38]], NJ: [[70, 89]], NM: [[870, 884]], NY: [[100, 149], [5, 5], [63, 63]], NC: [[270, 289]], ND: [[580, 588]], OH: [[430, 459]], OK: [[730, 749]], OR: [[970, 979]], PA: [[150, 196]], RI: [[28, 29]], SC: [[290, 299]], SD: [[570, 577]], TN: [[370, 385]], TX: [[750, 799], [733, 733], [885, 885]], UT: [[840, 847]], VT: [[50, 59]], VA: [[201, 201], [220, 246]], WA: [[980, 994]], WV: [[247, 268]], WI: [[530, 549]], WY: [[820, 831]] };
     return !R[st] || R[st].some(([a, b]) => z >= a && z <= b);
+  }
+  // Inserts the slashes for date fields as the person types (MM/DD/YYYY, MM/YY). Backspacing over a slash still works.
+  slashFmt(v, prev, parts) {
+    const max = parts.reduce((a, b) => a + b, 0), d = String(v || '').replace(/\D/g, '').slice(0, max), grow = String(v || '').length > String(prev || '').length;
+    let out = '', i = 0;
+    parts.forEach((n, k) => { const seg = d.slice(i, i + n); i += n; out += seg; if (k < parts.length - 1 && (d.length > i || (grow && d.length === i && seg.length === n))) out += '/'; });
+    return out;
   }
   cardCheck(card, exp, cvc, zip, es) {
     const E = {}, n = (card || '').replace(/\D/g, '');

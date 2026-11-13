@@ -35,6 +35,6 @@ window.bootDC=function(C,props,patch){
   const draw=()=>{pending=false;H={};hid=0;let vals=c.renderVals();if(patch)vals=patch(c,vals)||vals;
     const frag=document.createElement('div');render(tpl.content,vals,frag);
     if(first){root.innerHTML='';while(frag.firstChild)root.appendChild(frag.firstChild);first=false;c.componentDidMount&&c.componentDidMount()}
-    else{morphdom(root,frag,{childrenOnly:true,onBeforeElUpdated:(f,t)=>{if(f===document.activeElement&&(f.tagName==='INPUT'||f.tagName==='TEXTAREA')){for(const a of Array.from(t.attributes))if(a.name!=='value')f.setAttribute(a.name,a.value);return false}return true}});c.componentDidUpdate&&c.componentDidUpdate()}};
+    else{morphdom(root,frag,{childrenOnly:true,onBeforeElUpdated:(f,t)=>{if(f===document.activeElement&&(f.tagName==='INPUT'||f.tagName==='TEXTAREA')){for(const a of Array.from(t.attributes))if(a.name!=='value')f.setAttribute(a.name,a.value);const nv=t.getAttribute('value');if(nv!=null&&nv!==f.value){f.value=nv;try{f.setSelectionRange(nv.length,nv.length)}catch(e){}}return false}return true}});c.componentDidUpdate&&c.componentDidUpdate()}};
   window.__sched=()=>{if(!pending){pending=true;Promise.resolve().then(draw)}};draw();window.__dc=c};
 })();

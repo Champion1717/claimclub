@@ -23,7 +23,7 @@
       if(!j.paid)throw new Error('not paid');
       c.setState({payState:'done',paid:kind});c.saveForApp();
       try{sessionStorage.removeItem(KEY)}catch(e){}
-      setTimeout(function(){c.setState({pi:0,step:idx(c,kind==='member'?'perks':'bank')})},1300);
+      if(c.finishPay)c.finishPay(kind);else setTimeout(function(){c.setState({pi:0,step:idx(c,kind==='member'?'perks':'bank')})},1300);
     }).catch(function(){c.setState({payState:'',step:idx(c,'pay')})});
   }
   window.ccLive=function(c,v){
@@ -34,7 +34,30 @@
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }
-    if(c.stepName()==='dash'){setTimeout(function(){location.href='app.html'},50)}
+    // Never paint the flow's placeholder dashboard step: cover the page and open the real dashboard.
+    if(!c.__ccExit){c.__ccExit=true;c.afterBank=function(){c.saveForApp();enterApp()}}
+    if(c.stepName()==='dash'){enterApp()}
+    if(c.stepName()==='perks'||c.stepName()==='bank'){prefetchApp()}
     return v;
   };
+  var leaving=false,prefetched=false;
+  function prefetchApp(){if(prefetched)return;prefetched=true;var l=document.createElement('link');l.rel='prefetch';l.href='app.html';document.head.appendChild(l)}
+  function cover(fadeIn){
+    var d=document.createElement('div');d.id='ccCover';
+    d.setAttribute('aria-hidden','true');
+    d.style.cssText='position:fixed;inset:0;z-index:99999;background:#F3F6F4;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;font-family:Manrope,sans-serif;transition:opacity .38s ease;opacity:'+(fadeIn?'0':'1');
+    d.innerHTML='<div style="width:44px;height:44px;border-radius:50%;border:3px solid #DDE5E0;border-top-color:#12805C;animation:ccSpin .8s linear infinite"></div><div style="font-size:14px;font-weight:700;color:#5B6862">Opening your dashboard</div><style>@keyframes ccSpin{to{transform:rotate(360deg)}}@media (prefers-reduced-motion:reduce){#ccCover div{animation:none!important}}</style>';
+    document.body.appendChild(d);return d;
+  }
+  function enterApp(){
+    if(leaving)return;leaving=true;
+    try{sessionStorage.setItem('cc_enter','1')}catch(e){}
+    var d=cover(true);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.opacity='1'})});
+    setTimeout(function(){location.href='app.html'},420);
+  }
+  // Arriving on the dashboard from the flow: start covered, then fade the cover away once the page has painted.
+  if(/\/app\.html$/.test(location.pathname)){
+    var came=false;try{came=sessionStorage.getItem('cc_enter')==='1';sessionStorage.removeItem('cc_enter')}catch(e){}
+    if(came){var go2=function(){var d=cover(false);setTimeout(function(){d.style.opacity='0';setTimeout(function(){d.remove()},420)},260)};if(document.body)go2();else document.addEventListener('DOMContentLoaded',go2)}
+  }
 })();
