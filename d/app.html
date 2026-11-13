@@ -1,0 +1,739 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Claimclub · Your claims</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%230F3B2E' stroke-width='14'/%3E%3C/svg%3E">
+<script>if(innerWidth<820)location.replace('../m/app.html')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#12805C}a:hover{color:#0F3B2E}
+button{font-family:inherit;cursor:pointer;border:0}
+input:focus{outline:2px solid #12805C;outline-offset:1px}
+.scroll::-webkit-scrollbar{width:8px}.scroll::-webkit-scrollbar-thumb{background:#DDE5E0;border-radius:9px}
+@keyframes tin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.toast{animation:tin .25s ease both}
+
+:root{color-scheme:light}
+input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
+input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset}
+
+.crow{grid-template-columns:minmax(0,1.6fr) minmax(150px,1fr) auto}
+@media (max-width:700px){.crow{grid-template-columns:minmax(0,1fr) auto}.crow>div:nth-child(2){grid-column:1 / -1;order:3}}
+/* responsive layout */
+.kpis{grid-template-columns:1.4fr 1fr 1fr 1fr}
+.dash2{grid-template-columns:minmax(0,1fr) 360px}
+.kpi4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.prof2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.addr3{grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1fr)}
+.set2{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr)}
+.appmain input,.appmain select,.appmain textarea{min-width:0;max-width:100%;box-sizing:border-box}
+.appmain>*{max-width:1240px}
+@media (max-width:1280px){.dash2{grid-template-columns:minmax(0,1fr) 320px}}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dash2{grid-template-columns:minmax(0,1fr)}.kpi4{grid-template-columns:repeat(2,minmax(0,1fr))}.set2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:900px){.approot{flex-direction:column}.side{flex:none !important;flex-direction:row !important;align-items:center;gap:4px !important;overflow-x:auto;border-right:0 !important;border-bottom:1px solid #DDE5E0;padding:10px 12px !important}.side>button,.side>div>button{width:auto !important;white-space:nowrap}.side .memcard{display:none !important}.side .brand{padding:0 10px 0 4px !important}.appmain{padding:20px 18px !important}.prof2{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:560px){.kpis,.kpi4{grid-template-columns:minmax(0,1fr)}.addr3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}}
+/* clean scrollbars */
+::-webkit-scrollbar,.scroll::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-track,.scroll::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb,.scroll::-webkit-scrollbar-thumb{background:rgba(10,15,13,.16);border-radius:99px;border:0}
+::-webkit-scrollbar-thumb:hover,.scroll::-webkit-scrollbar-thumb:hover{background:rgba(10,15,13,.3)}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar:horizontal,.scroll::-webkit-scrollbar:horizontal{height:0;display:none}
+@supports (-moz-appearance:none){*{scrollbar-width:thin;scrollbar-color:rgba(10,15,13,.18) transparent}}
+</style>
+<style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
+<div data-tour-root class="approot" style="position: relative; width: 100%; height: 100vh; min-height: 600px; box-sizing: border-box; background: #F3F6F4; color: #0A0F0D; font-family: Manrope, sans-serif; display: flex; overflow: hidden">
+
+  <!-- SIDEBAR -->
+  <aside class="side" style="flex: 0 0 248px; box-sizing: border-box; background: #FFFFFF; border-right: 1px solid #DDE5E0; padding: 22px 16px; display: flex; flex-direction: column; gap: 6px">
+    <div class="brand" style="display: flex; align-items: center; gap: 9px; padding: 4px 8px 22px"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #0F3B2E">claim<span style="font-weight: 500">club</span><span style="font-size: 0.72em; font-weight: 600; color: #000000; margin-left: -0.06em">.io</span></span></div>
+    <button onClick="{{ goDash }}" style="{{ navDash }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>Dashboard</button>
+    <button onClick="{{ goList }}" style="{{ navList }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h.01"></path><path d="M3 18h.01"></path><path d="M3 6h.01"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M8 6h13"></path></svg>All settlements</button>
+    <div data-tour="nav" style="{{ hlNav }}">
+      <button onClick="{{ goProfile }}" style="{{ navProfile }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><span style="flex-grow: 1">Your info</span><span style="font-size: 12px; font-weight: 800; color: #12805C">{{ pct }}</span></button>
+      
+    </div>
+    <button onClick="{{ goSettings }}" style="{{ navSettings }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>Settings</button>
+    <div class="memcard" style="margin-top: auto; display: flex; flex-direction: column; gap: 12px; padding: 14px; background: #F3F6F4; border-radius: 16px">
+      <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 13px; font-weight: 800">Membership</span><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px">Active</span></div>
+      <div style="font-size: 13px; color: #43504A">{{ planLabel }}</div>
+      <button onClick="{{ replay }}" style="min-height: 40px; border-radius: 10px; background: #FFFFFF; color: #0F3B2E; font-size: 13px; font-weight: 800; box-shadow: inset 0 0 0 1px #DDE5E0">Replay the tour</button>
+    </div>
+  </aside>
+
+  <main class="scroll appmain" style="flex-grow: 1; min-width: 0; min-height: 0; overflow-y: auto; padding: 28px 34px; box-sizing: border-box">
+    <sc-if value="{{ isDash }}" hint-placeholder-val="{{ true }}">
+      <sc-if value="{{ showBankBanner }}" hint-placeholder-val="{{ true }}"><div role="status" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 14px 16px; margin-bottom: 18px; border-radius: 18px; background: #FFFFFF; border: 1px solid #DDE5E0; box-shadow: 0 8px 24px rgba(10,15,13,.05)"><span style="width: 40px; height: 40px; flex: none; border-radius: 12px; background: #FFF4D6; color: #6B4600; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0"></path></svg></span><span style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 800">Connect your bank to get payout alerts</span><span style="font-size: 13px; color: #5B6862">We will tell you the moment a settlement pays you. Read-only, we can never move money.</span></span><button onClick="{{ connectBank }}" style="min-height: 42px; padding: 0 18px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 14px; font-weight: 800">Connect bank</button><button onClick="{{ dismissBank }}" aria-label="Dismiss" style="width: 36px; height: 36px; border-radius: 50%; background: transparent; color: #5B6862; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button></div></sc-if>
+      <div style="display: flex; flex-direction: column; gap: 22px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end"><div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Welcome, {{ p.name }}</h1><div style="font-size: 15px; color: #5B6862">You matched {{ matchCount }} open settlements. Here's where each one stands.</div></div><button onClick="{{ signAll }}" style="min-height: 46px; padding: 0 20px; border-radius: 12px; background: #0F3B2E; color: #FFFFFF; font-size: 15px; font-weight: 800">Sign {{ readyCount }} ready claims</button></div>
+        <div class="kpis" style="display: grid; gap: 14px">
+          <div data-tour="est" style="{{ hlEst }}">
+            <div class="mesh" style="border-radius: 20px; padding: 20px; color: #FFFFFF; background: linear-gradient(150deg, #134A39, #0F3B2E 55%, #0A2C22); display: flex; flex-direction: column; gap: 4px; min-height: 118px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 700; letter-spacing: 1.2px; color: #C9D6CF">ESTIMATED TOTAL</span><span style="font-size: 38px; font-weight: 800; letter-spacing: -1.4px">{{ estLabel }}</span><span style="font-size: 12px; font-weight: 600; color: #C9D6CF">{{ maxLabel }}</span></div>
+            
+          </div>
+          <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; border: 1px solid #DDE5E0"><span style="font-size: 13px; font-weight: 700; color: #5B6862">Ready to sign</span><span style="font-size: 34px; font-weight: 800; color: #0E6649">{{ readyCount }}</span></div>
+          <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; border: 1px solid #DDE5E0"><span style="font-size: 13px; font-weight: 700; color: #5B6862">Needs info from you</span><span style="font-size: 34px; font-weight: 800; color: #6B4600">{{ needsCount }}</span></div>
+          <div style="background: #FFFFFF; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 6px; border: 1px solid #DDE5E0"><span style="font-size: 13px; font-weight: 700; color: #5B6862">Filed and tracking</span><span style="font-size: 34px; font-weight: 800; color: #2C4BB8">{{ filedCount }}</span></div>
+        </div>
+        <div class="dash2" style="display: grid; gap: 18px; align-items: start">
+          <div data-tour="list" style="{{ hlList }}">
+            <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; overflow: hidden">
+              <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 20px; border-bottom: 1px solid #E8EEEA">
+                <span style="font-size: 17px; font-weight: 800">Your claims</span>
+                <div role="tablist" style="display: flex; gap: 6px; flex-wrap: wrap"><button role="tab" onClick="{{ setTabAll }}" style="{{ tabAll }}">All · {{ matchCount }}</button><button role="tab" onClick="{{ setTabYou }}" style="{{ tabYou }}">Needs you · {{ youN }}</button><button role="tab" onClick="{{ setTabThem }}" style="{{ tabThem }}">In progress · {{ themN }}</button></div>
+              </div>
+              <sc-for list="{{ mine }}" as="r" hint-placeholder-count="6">
+                <div class="crow" style="display: grid; align-items: center; gap: 8px 16px; padding: 14px 20px; border-bottom: 1px solid #EEF2EF">
+                  <div style="display: flex; align-items: center; gap: 12px; min-width: 0">
+                    <sc-if value="{{ r.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ r.logo }}" alt="" style="width: 42px; height: 42px; flex: none; border-radius: 12px; object-fit: contain; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box; background: #FFFFFF"></sc-if>
+                    <sc-if value="{{ r.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ r.tileStyle }}; width: 42px; height: 42px; flex: none; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800">{{ r.initial }}</div></sc-if>
+                    <div style="min-width: 0; display: flex; flex-direction: column; gap: 3px">
+                      <span style="display: flex; align-items: baseline; gap: 8px; min-width: 0"><span style="font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.co }}</span><span style="font-size: 14px; font-weight: 800; color: #0F3B2E; white-space: nowrap">{{ r.amt }}</span></span>
+                      <sc-if value="{{ r.needsYou }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12.5px; font-weight: 700; color: #8A5A00">{{ r.waiting }}</span></sc-if>
+                      <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12.5px; font-weight: 600; color: #43504A">{{ r.waiting }}</span></sc-if>
+                    </div>
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 5px; min-width: 0">
+                    <div style="display: flex; justify-content: space-between; font-size: 11.5px; font-weight: 800; color: #43504A"><span>{{ r.stageLabel }}</span><sc-if value="{{ r.urgent }}" hint-placeholder-val="{{ false }}"><span style="color: #B8333A">{{ r.days }}</span></sc-if><sc-if value="{{ r.calm }}" hint-placeholder-val="{{ true }}"><span style="color: #8A968F">{{ r.days }}</span></sc-if></div>
+                    <div style="display: flex; gap: 4px" title="Filed, in review, approved, paid"><sc-for list="{{ r.segs }}" as="g" hint-placeholder-count="4"><span style="{{ g.style }}"></span></sc-for></div>
+                    <span style="font-size: 11px; color: #8A968F">{{ r.payWhen }}</span>
+                  </div>
+                  <div style="display: flex; justify-content: flex-end">
+                    <sc-if value="{{ r.canSign }}" hint-placeholder-val="{{ true }}"><button onClick="{{ r.sign }}" style="min-height: 40px; padding: 0 16px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 13px; font-weight: 800; white-space: nowrap">Review &amp; sign</button></sc-if>
+                    <sc-if value="{{ r.canAdd }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.add }}" style="min-height: 40px; padding: 0 16px; border-radius: 99px; background: #FFFFFF; color: #0F3B2E; font-size: 13px; font-weight: 800; box-shadow: inset 0 0 0 1.5px #0F3B2E; white-space: nowrap">Add info</button></sc-if>
+                    <sc-if value="{{ r.canSite }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.site }}" style="min-height: 40px; padding: 0 16px; border-radius: 99px; background: #FFF4D6; color: #6B4600; font-size: 13px; font-weight: 800; white-space: nowrap">Open site</button></sc-if>
+                    <sc-if value="{{ r.done }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 800; color: #17603F"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>{{ r.doneLabel }}</span></sc-if>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 16px">
+            <div data-tour="act" style="{{ hlAct }}">
+              <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+                <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 17px; font-weight: 800">Action needed</span><span style="font-size: 12px; font-weight: 800; background: #FDECEC; color: #B8333A; padding: 3px 9px; border-radius: 99px">Only you can do these</span></div>
+                <sc-for list="{{ actions }}" as="a" hint-placeholder-count="3">
+                  <div style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #F3F6F4; border-radius: 12px"><span style="flex-grow: 1; font-size: 13px; font-weight: 700; line-height: 1.4">{{ a.text }}</span><button onClick="{{ a.go }}" style="{{ a.tone }}; flex: none; min-height: 34px; padding: 0 12px; border-radius: 9px; font-size: 12px; font-weight: 800">{{ a.cta }}</button></div>
+                </sc-for>
+                <sc-if value="{{ noActions }}" hint-placeholder-val="{{ false }}"><div style="font-size: 14px; color: #5B6862; padding: 6px 2px">You're all caught up. We'll alert you when something needs you.</div></sc-if>
+              </div>
+              
+            </div>
+            <div data-tour="legend" style="{{ hlLegend }}">
+              <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+                <span style="font-size: 17px; font-weight: 800">How your claims get filed</span>
+                <div style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 99px; background: #12805C; color: #FFFFFF">We file it</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">We pre-fill the claim. You e-sign, we submit.</span></div>
+                <div style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 99px; background: #3DDC97; color: #0A0F0D">+1 detail</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">Same, once you add a notice ID or serial number.</span></div>
+                <div style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 99px; background: #FFF4D6; color: #6B4600">Official site</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">The settlement needs you to file there. We copy your details over.</span></div>
+                <div style="display: flex; gap: 10px; align-items: flex-start"><span style="flex: none; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 99px; background: #E9F6EF; color: #17603F">Automatic</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">You'll be paid without filing anything.</span></div>
+              </div>
+              
+            </div>
+            <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 10px">
+              <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 15px; font-weight: 800">Your info</span><span style="font-size: 15px; font-weight: 800; color: #12805C">{{ pct }}</span></div>
+              <div style="height: 8px; border-radius: 99px; background: #E8EEEA; overflow: hidden"><div style="{{ pctBar }}"></div></div>
+              <div style="font-size: 13px; color: #5B6862">{{ pctNote }}</div>
+              <button onClick="{{ goProfile }}" style="min-height: 40px; border-radius: 10px; background: #F3F6F4; color: #0F3B2E; font-size: 13px; font-weight: 800">Complete your info</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 20px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">All open settlements</h1><div style="font-size: 15px; color: #5B6862">Every settlement we track, and how each claim gets filed. Matched ones are pinned to the top.</div></div>
+        <div class="kpi4" style="display: grid; gap: 12px">
+          <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="align-self: flex-start; font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 99px; background: #12805C; color: #FFFFFF">Fully auto-filled</span><span style="font-size: 30px; font-weight: 800">{{ c1 }}</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">We fill everything from your info. You just e-sign.</span></div>
+          <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="align-self: flex-start; font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 99px; background: #3DDC97; color: #0A0F0D">Auto-filled + 1 detail</span><span style="font-size: 30px; font-weight: 800">{{ c2 }}</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">Needs one thing only you have, like a notice ID.</span></div>
+          <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="align-self: flex-start; font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 99px; background: #FFF4D6; color: #6B4600">Official site</span><span style="font-size: 30px; font-weight: 800">{{ c3 }}</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">Needs uploads or a portal. We guide you there.</span></div>
+          <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 16px; display: flex; flex-direction: column; gap: 6px"><span style="align-self: flex-start; font-size: 11px; font-weight: 800; padding: 4px 9px; border-radius: 99px; background: #ECF0FC; color: #2C4BB8">Paid automatically</span><span style="font-size: 30px; font-weight: 800">{{ c4 }}</span><span style="font-size: 13px; color: #43504A; line-height: 1.45">No claim form at all.</span></div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="5"><button onClick="{{ f.pick }}" style="{{ f.style }}">{{ f.label }}</button></sc-for><span style="margin-left: auto; font-size: 14px; font-weight: 600; color: #5B6862">{{ listCount }}</span></div>
+        <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; overflow: hidden">
+          <div style="display: flex; gap: 14px; padding: 12px 20px; font-size: 11px; font-weight: 800; letter-spacing: 1px; color: #5B6862; background: #F8FAF9; border-bottom: 1px solid #E8EEEA"><div style="flex: 1 1 300px">SETTLEMENT</div><div style="flex: 0 0 150px">MAX PAYOUT</div><div style="flex: 0 0 120px">DEADLINE</div><div style="flex: 0 0 340px">HOW IT'S FILED</div></div>
+          <sc-for list="{{ list }}" as="r" hint-placeholder-count="8">
+            <div style="display: flex; gap: 14px; align-items: center; padding: 12px 20px; border-bottom: 1px solid #EEF2EF">
+              <div style="flex: 1 1 300px; min-width: 0; display: flex; align-items: center; gap: 12px">
+                <sc-if value="{{ r.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ r.logo }}" alt="" style="width: 38px; height: 38px; flex: none; border-radius: 10px; object-fit: contain; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box; background: #FFFFFF"></sc-if>
+                <sc-if value="{{ r.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ r.tileStyle }}; width: 38px; height: 38px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800">{{ r.initial }}</div></sc-if>
+                <div style="min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; align-items: center; gap: 8px"><span style="font-size: 14px; font-weight: 800">{{ r.co }}</span><sc-if value="{{ r.matched }}" hint-placeholder-val="{{ false }}"><span style="font-size: 10px; font-weight: 800; background: #0F3B2E; color: #FFFFFF; padding: 2px 7px; border-radius: 99px">Matched</span></sc-if></div><span style="font-size: 12px; color: #5B6862; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.title }}</span></div>
+              </div>
+              <div style="flex: 0 0 150px; font-size: 14px; font-weight: 800">{{ r.max }}</div>
+              <div style="flex: 0 0 120px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 13px; font-weight: 600">{{ r.deadline }}</span><span style="font-size: 12px; color: #5B6862">{{ r.days }}</span></div>
+              <div style="flex: 0 0 340px; display: flex; flex-direction: column; gap: 4px; align-items: flex-start"><span style="{{ r.tierStyle }}">{{ r.tierLabel }}</span><span style="font-size: 12px; color: #43504A; line-height: 1.4">{{ r.why }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size: 12px; line-height: 1.6; color: #5B6862">Filing methods are based on each settlement's claim requirements. Before launch, confirm each administrator accepts claims prepared on a member's behalf. Where one doesn't, the claim moves to "Official site".</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 18px; max-width: 1240px">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Settings</h1><div style="font-size: 15px; color: #5B6862">Notifications, your saved information, your bank and your membership.</div></div>
+        <div class="set2" style="display: grid; gap: 18px; align-items: start">
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 6px 22px 8px; display: flex; flex-direction: column">
+          <sc-for list="{{ settingRows }}" as="r" hint-placeholder-count="7">
+            <button onClick="{{ r.act }}" style="display: flex; align-items: center; gap: 14px; min-height: 58px; padding: 0 2px; background: transparent; text-align: left; color: #0A0F0D; font-size: 16px; font-weight: 700; border-bottom: 1px solid #EEF2EF">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="{{ r.icon }}"></path></svg>
+              <span style="flex-grow: 1">{{ r.label }}</span>
+              <sc-if value="{{ r.isToggle }}" hint-placeholder-val="{{ true }}"><span style="{{ r.track }}"><span style="{{ r.knob }}"></span></span></sc-if>
+              <sc-if value="{{ r.isNav }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"></path></svg></sc-if>
+              <sc-if value="{{ r.isExt }}" hint-placeholder-val="{{ false }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6 M10 14 21 3 M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg></sc-if>
+            </button>
+          </sc-for>
+            <button onClick="{{ logout }}" style="display: flex; align-items: center; gap: 14px; min-height: 58px; padding: 0 2px; background: transparent; text-align: left; color: #0A0F0D; font-size: 16px; font-weight: 700"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4 M16 17l5-5-5-5 M21 12H9"></path></svg>Log out</button>
+          </section>
+          <div style="display: flex; flex-direction: column; gap: 18px">
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; align-items: center; gap: 12px"><span style="width: 40px; height: 40px; flex: none; border-radius: 12px; background: #EAF2EE; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z M2 10h20"></path></svg></span><h2 style="margin: 0; flex-grow: 1; font-size: 17px; font-weight: 800">Membership</h2><span style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px 4px 6px; border-radius: 99px; background: #E9F6EF; color: #17603F; font-size: 13px; font-weight: 800; box-shadow: inset 0 0 0 1px #9FD3B7"><svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#17603F"></circle><path d="M7 12.5l3.2 3L17 9" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Active</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 15px"><span style="color: #43504A">Plan</span><span style="font-weight: 800">{{ planLabel }}</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 15px"><span style="color: #43504A">Next charge</span><span style="font-weight: 800">$9.99 on Dec 12, 2026</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 15px"><span style="color: #43504A">Member since</span><span style="font-weight: 800">Nov 12, 2026</span></div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; padding-top: 4px"><button onClick="{{ manageSub }}" style="flex: 1 1 180px; min-height: 48px; border-radius: 14px; background: #FFFFFF; color: #0A0F0D; font-size: 15px; font-weight: 800; box-shadow: inset 0 0 0 1px #DDE5E0">Manage membership</button><button onClick="{{ cancelSub }}" style="flex: 0 1 auto; min-height: 48px; padding: 0 16px; border-radius: 14px; background: transparent; color: #B8333A; font-size: 14px; font-weight: 700">Cancel membership</button></div>
+          </section>
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+            <div style="display: flex; align-items: center; gap: 12px"><span style="width: 40px; height: 40px; flex: none; border-radius: 12px; background: #EAF2EE; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18 M3 10h18 M5 6l7-3 7 3 M4 10v11 M20 10v11 M8 14v3 M12 14v3 M16 14v3"></path></svg></span><div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">Bank account</h2><span style="font-size: 13px; color: #5B6862">For payout alerts only. Read-only, we can never move money.</span></div></div>
+            <sc-if value="{{ bankNot }}" hint-placeholder-val="{{ true }}"><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #FFF8E1; box-shadow: inset 0 0 0 1px #FFE29A"><span style="font-size: 14px; font-weight: 700; color: #6B4600">Not connected</span><button onClick="{{ connectBank }}" style="min-height: 40px; padding: 0 16px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 14px; font-weight: 800">Connect bank</button></div></sc-if>
+            <sc-if value="{{ bankLinked }}" hint-placeholder-val="{{ false }}"><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 14px; background: #E9F6EF"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800; color: #0F3B2E">Chase checking ••4417</span><span style="font-size: 12px; font-weight: 700; color: #17603F">Connected · payout alerts on</span></span><button onClick="{{ disconnectBank }}" style="min-height: 36px; padding: 0 12px; border-radius: 99px; background: #FFFFFF; color: #B8333A; font-size: 13px; font-weight: 800; box-shadow: inset 0 0 0 1px #F2C9CC">Disconnect</button></div></sc-if>
+          </section>
+            <div style="text-align: center; padding: 4px 0; font-size: 14px; color: #43504A">Questions? <a href="mailto:support@claimclub.io" style="color: #12805C; font-weight: 700">support@claimclub.io</a></div>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 20px; max-width: 1240px">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px"><div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 30px; font-weight: 800; letter-spacing: -0.8px">Your info</h1><div style="font-size: 15px; color: #5B6862">We use this to pre-fill every claim form. It saves as you type and is only sent to settlement administrators.</div></div><div style="flex: 0 0 220px; display: flex; flex-direction: column; gap: 6px"><div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800"><span>Profile complete</span><span style="color: #12805C">{{ pct }}</span></div><div style="height: 8px; border-radius: 99px; background: #E8EEEA; overflow: hidden"><div style="{{ pctBar }}"></div></div></div></div>
+        <div class="prof2" style="display: grid; gap: 16px">
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">About you</h2><span style="font-size: 13px; color: #5B6862">Must match the name the company has on file.</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fName" style="font-size: 13px; font-weight: 700; color: #43504A">Full legal name</label><input id="fName" type="text" autocomplete="name" value="{{ p.name }}" onChange="{{ setName }}" placeholder="First and last name" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+            <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px"><div style="display: flex; flex-direction: column; gap: 6px; "><label for="fEmail" style="font-size: 13px; font-weight: 700; color: #43504A">Email</label><input id="fEmail" type="email" autocomplete="email" value="{{ p.email }}" onChange="{{ setEmail }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div><div style="display: flex; flex-direction: column; gap: 6px; "><label for="fPhone" style="font-size: 13px; font-weight: 700; color: #43504A">Phone</label><input id="fPhone" type="tel" autocomplete="tel" value="{{ p.phone }}" onChange="{{ setPhone }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fDob" style="font-size: 13px; font-weight: 700; color: #43504A">Date of birth</label><input id="fDob" type="text" autocomplete="bday" value="{{ p.dob }}" onChange="{{ setDob }}" placeholder="MM / DD / YYYY" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+            <div style="font-size: 12px; color: #5B6862">Some settlements use your phone number to match calls and texts, and your date of birth to verify identity.</div>
+          </section>
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">Mailing address</h2><span style="font-size: 13px; color: #5B6862">Settlements often check where you lived when it happened.</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fStreet" style="font-size: 13px; font-weight: 700; color: #43504A">Street address</label><input id="fStreet" type="text" autocomplete="street-address" value="{{ p.street }}" onChange="{{ setStreet }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+            <div class="addr3" style="display: grid; gap: 12px"><div style="display: flex; flex-direction: column; gap: 6px; "><label for="fCity" style="font-size: 13px; font-weight: 700; color: #43504A">City</label><input id="fCity" type="text" autocomplete="address-level2" value="{{ p.city }}" onChange="{{ setCity }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div><div style="display: flex; flex-direction: column; gap: 6px; "><label for="fSt" style="font-size: 13px; font-weight: 700; color: #43504A">State</label><input id="fSt" type="text" autocomplete="address-level1" value="{{ p.st }}" onChange="{{ setSt }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div><div style="display: flex; flex-direction: column; gap: 6px; "><label for="fZip" style="font-size: 13px; font-weight: 700; color: #43504A">ZIP</label><input id="fZip" type="text" autocomplete="postal-code" value="{{ p.zip }}" onChange="{{ setZip }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fPrev" style="font-size: 13px; font-weight: 700; color: #43504A">Previous addresses since 2015 (optional)</label><input id="fPrev" type="text"  value="{{ p.prev }}" onChange="{{ setPrev }}" placeholder="Street, city, state, years lived there" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+          </section>
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">How you want to be paid</h2><span style="font-size: 13px; color: #5B6862">Settlements pay you directly. We never hold your money.</span></div>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px" role="group" aria-label="Payout method"><sc-for list="{{ payouts }}" as="m" hint-placeholder-count="4"><button onClick="{{ m.pick }}" style="{{ m.style }}">{{ m.label }}</button></sc-for></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fPay" style="font-size: 13px; font-weight: 700; color: #43504A">PayPal or Venmo email, or bank details</label><input id="fPay" type="text"  value="{{ p.payHandle }}" onChange="{{ setPayHandle }}" placeholder="" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+          </section>
+          <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+            <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">Your e-signature</h2><span style="font-size: 13px; color: #5B6862">You sign each claim yourself. Type your full name to create your signature.</span></div>
+            <div style="display: flex; flex-direction: column; gap: 6px; "><label for="fSig" style="font-size: 13px; font-weight: 700; color: #43504A">Type your full name</label><input id="fSig" type="text"  value="{{ p.sig }}" onChange="{{ setSig }}" placeholder="Alex Rivera" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+            <div style="height: 72px; border-radius: 12px; background: #F8FAF9; border: 1.5px dashed #C3CEC8; display: flex; align-items: center; justify-content: center"><sc-if value="{{ sigOk }}" hint-placeholder-val="{{ false }}"><span style="font-family: 'Mrs Saint Delafield', cursive; font-size: 44px; color: #0F3B2E; line-height: 1">{{ p.sig }}</span></sc-if><sc-if value="{{ sigMissing }}" hint-placeholder-val="{{ true }}"><span style="font-size: 13px; font-weight: 600; color: #5B6862">Your signature preview appears here</span></sc-if></div>
+          </section>
+        </div>
+        <section style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 20px; padding: 20px; display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 17px; font-weight: 800">Claim details only you have</h2><span style="font-size: 13px; color: #5B6862">Some claims need a code from a notice or a serial number. Add it once and the claim becomes ready to sign.</span></div>
+          <sc-for list="{{ vault }}" as="v" hint-placeholder-count="3">
+            <div style="display: flex; align-items: flex-end; gap: 14px; padding: 12px; background: #F8FAF9; border-radius: 14px">
+              <img src="{{ v.logo }}" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 6px; box-sizing: border-box">
+              <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 6px"><label for="{{ v.id }}" style="font-size: 13px; font-weight: 700; color: #43504A">{{ v.co }} · {{ v.hint }}</label><input id="{{ v.id }}" type="text" value="{{ v.value }}" onChange="{{ v.onIn }}" style="height: 44px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 15px; font-family: inherit; font-weight: 600; color: #0A0F0D; background: #FFFFFF"></div>
+              <sc-if value="{{ v.ok }}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 99px; background: #E6F4EC; color: #0E6649; margin-bottom: 8px">Claim ready to sign</span></sc-if>
+              <sc-if value="{{ v.missing }}" hint-placeholder-val="{{ true }}"><span style="flex: none; font-size: 12px; font-weight: 800; padding: 6px 10px; border-radius: 99px; background: #FFF4D6; color: #6B4600; margin-bottom: 8px">Needed to file</span></sc-if>
+            </div>
+          </sc-for>
+        </section>
+        <div style="display: flex; justify-content: flex-end; gap: 10px"><button onClick="{{ goDash }}" style="min-height: 46px; padding: 0 22px; border-radius: 12px; background: #0F3B2E; color: #FFFFFF; font-size: 15px; font-weight: 800">Back to dashboard</button></div>
+      </div>
+    </sc-if>
+  </main>
+
+  <!-- TOUR OVERLAY -->
+  <sc-if value="{{ spotOn }}" hint-placeholder-val="{{ false }}"><div style="{{ spotStyle }}"></div><div role="dialog" aria-label="{{ tourTitle }}" style="{{ bubbleStyle }}">
+              <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 800; color: #12805C">{{ tourStep }}</span><button onClick="{{ skipTour }}" style="background: transparent; color: #5B6862; font-size: 13px; font-weight: 700; min-height: 32px">Skip tour</button></div>
+              <div style="font-size: 18px; font-weight: 800; letter-spacing: -0.3px">{{ tourTitle }}</div>
+              <div style="font-size: 14px; line-height: 1.55; color: #43504A">{{ tourBody }}</div>
+              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 4px">
+                <div style="display: flex; gap: 4px"><sc-for list="{{ dots }}" as="d" hint-placeholder-count="5"><span style="{{ d.style }}"></span></sc-for></div>
+                <div style="display: flex; gap: 8px"><button onClick="{{ backTour }}" style="min-height: 38px; padding: 0 14px; border-radius: 10px; background: #F3F6F4; color: #0F3B2E; font-size: 13px; font-weight: 800">Back</button><sc-if value="{{ tourMid }}" hint-placeholder-val="{{ true }}"><button onClick="{{ nextTour }}" style="min-height: 38px; padding: 0 16px; border-radius: 10px; background: #0F3B2E; color: #FFFFFF; font-size: 13px; font-weight: 800">Next</button></sc-if><sc-if value="{{ tourLast }}" hint-placeholder-val="{{ false }}"><button onClick="{{ nextTour }}" style="min-height: 38px; padding: 0 16px; border-radius: 10px; background: #12805C; color: #FFFFFF; font-size: 13px; font-weight: 800">Got it</button></sc-if></div>
+              </div>
+            </div></sc-if>
+  <sc-if value="{{ tourIntro }}" hint-placeholder-val="{{ true }}">
+    <div style="position: absolute; inset: 0; z-index: 80; background: rgba(10,15,13,.58); display: flex; align-items: center; justify-content: center">
+      <div style="width: 460px; background: #FFFFFF; border-radius: 26px; overflow: hidden; box-shadow: 0 40px 90px rgba(0,0,0,.4)">
+        <div style="background: linear-gradient(150deg, #134A39, #0F3B2E 55%, #0A2C22); padding: 28px; color: #FFFFFF; display: flex; flex-direction: column; gap: 10px"><svg width="44" height="44" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><div style="font-size: 26px; font-weight: 800; letter-spacing: -0.6px">You're in. Welcome to Claimclub.</div><div style="font-size: 15px; line-height: 1.55; color: #C9D6CF">Your membership is active. Take a 30-second tour of your dashboard so you know exactly what to do next.</div></div>
+        <div style="padding: 22px 28px; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; gap: 10px; font-size: 14px; font-weight: 600; color: #43504A"><span style="color: #12805C">1.</span>See your estimated total</div>
+          <div style="display: flex; gap: 10px; font-size: 14px; font-weight: 600; color: #43504A"><span style="color: #12805C">2.</span>Learn what each claim status means</div>
+          <div style="display: flex; gap: 10px; font-size: 14px; font-weight: 600; color: #43504A"><span style="color: #12805C">3.</span>Finish your info so we can file for you</div>
+          <div style="display: flex; gap: 10px; padding-top: 8px"><button onClick="{{ skipTour }}" style="flex: 1; min-height: 50px; border-radius: 12px; background: #F3F6F4; color: #0F3B2E; font-size: 15px; font-weight: 800">Skip for now</button><button onClick="{{ startTour }}" style="flex: 1.4; min-height: 50px; border-radius: 12px; background: #0F3B2E; color: #FFFFFF; font-size: 15px; font-weight: 800">Start the tour</button></div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+  <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}"><div class="toast" role="status" style="position: absolute; left: 50%; bottom: 28px; margin-left: -180px; width: 360px; z-index: 90; background: #0A0F0D; color: #FFFFFF; border-radius: 14px; padding: 14px 18px; font-size: 14px; font-weight: 700; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,.3)">{{ toast }}</div></sc-if>
+</div>
+</template><div id="root"></div>
+<script src="../runtime.js"></script><script src="../live.js"></script><script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      view: 'dash', tour: 0, filter: 'all', toast: '', push: true, emails: true, subOpen: true, bank: false, bankBanner: true, spot: null,
+      status: { goodrx: 'submitted', cvs: 'review', squatch: 'submitted' },
+      p: { name: 'Alex Rivera', email: 'alex.rivera@email.com', phone: '(555) 201-4477', street: '1452 Maple Ave, Apt 3', city: 'Sacramento', st: 'CA', zip: '95814', prev: '', dob: '', payout: 'PayPal', payHandle: 'alex.rivera@email.com', sig: '' },
+      ids: { kroger: '', venetian: '', apple: '' }, dashTab: 'all', plan: '1m'
+    };
+    try {
+      const raw = typeof localStorage !== 'undefined' && localStorage.getItem('claimclub_session');
+      const ss = raw ? JSON.parse(raw) : null;
+      if (ss && ss.ids && ss.ids.length) {
+        this._sess = ss;
+        const st = {}; (ss.signed || []).forEach(id => { st[id] = 'submitted'; });
+        this.state.status = st;
+        this.state.bank = !!ss.bank; this.state.plan = ss.plan || '';
+        const p = Object.assign({}, this.state.p); Object.keys(ss.p || {}).forEach(k => { if (ss.p[k]) p[k] = ss.p[k]; });
+        if (ss.p && ss.p.name) { p.sig = ss.p.name; }
+        this.state.p = p;
+        this.state.tour = 0;
+      }
+    } catch (e) {}
+  }
+  tiers() {
+    return {
+      t1: { label: 'Fully auto-filled', short: 'Filed by Claimclub', style: 'background:#12805C;color:#FFFFFF' },
+      t2: { label: 'Auto-filled + 1 detail', short: 'Needs one detail from you', style: 'background:#3DDC97;color:#0A0F0D' },
+      t3: { label: 'You file on the official site', short: 'Official site required', style: 'background:#FFF4D6;color:#6B4600' },
+      t4: { label: 'Paid automatically', short: 'No claim needed', style: 'background:#ECF0FC;color:#2C4BB8' },
+      t5: { label: 'Arbitration via partner firm', short: 'Partner law firm files', style: 'background:#EEF2EF;color:#43504A;box-shadow:inset 0 0 0 1px #C3CEC8' }
+    };
+  }
+  fill() {
+    return {
+      apple: ['t2', 'Needs your iPhone serial number or Apple Account email.'], amazon: ['t4', 'Eligible customers are refunded automatically.'],
+      goodrx: ['t1', 'Sworn statement only. No proof.'], cvs: ['t1', 'Sworn statement only for the $5 option.'], bofa: ['t1', 'Statement that your dispute was denied.'],
+      squatch: ['t1', 'Up to 5 products without receipts.'], thinkware: ['t2', 'Needs your dash cam model and serial number.'], knotts: ['t1', 'Statement that you bought tickets online.'],
+      kia: ['t3', 'Repair receipts and VIN are uploaded on the official site.'], vanilla: ['t2', 'Needs the drained card number.'], venetian: ['t2', 'Needs the notice ID from your email or letter.'],
+      neutrogena: ['t1', 'Statement that you used Skin360 in Illinois.'], kroger: ['t2', 'Needs the notice ID and confirmation code.'], navy: ['t2', 'Needs the notice ID and PIN from your letter.'],
+      bright: ['t2', 'Needs the notice ID from your letter.'], columbia: ['t1', 'Alternative cash option. Larger loss claims need receipts on the official site.'],
+      pp: ['t1', 'No-proof cash option.'], sirva: ['t1', 'No-proof $50 option.'], bauer: ['t1', 'No-proof $45 option.'], woodloch: ['t1', 'No-proof $60 option.'],
+      benkeith: ['t1', 'No-proof $35 option.'], safefleet: ['t2', 'Needs the login ID and PIN from your notice.'], tennis: ['t1', 'No-proof cash option.'],
+      jbs: ['t3', 'Claims are for documented losses, uploaded on the official site.'], renal: ['t2', 'Needs your class member ID.'], prime: ['t1', 'Statement that you used the patient portal.'],
+      nissan: ['t1', 'Needs only the phone number that got the texts.'], connectamerica: ['t1', 'Needs only the phone number that got the calls.'], indegene: ['t1', 'Needs only the phone number that got the texts.'],
+      suffolk: ['t3', 'Violation numbers are entered on the county portal.'], ni: ['t3', 'Brokerage statements are uploaded on the official site.'], skin: ['t3', 'Brokerage statements are uploaded on the official site.'],
+      marqeta: ['t3', 'Brokerage statements are uploaded on the official site.'], starbucks: ['t1', 'Statement that you got a COBRA notice.'], stv: ['t1', 'Statement that you applied in Washington.'],
+      visa: ['t1', 'Statement that you paid out-of-network ATM fees.'], googleplay: ['t1', 'Needs only the email on your Google account.'], equifax: ['t2', 'Needs your Equifax dispute confirmation number.'],
+      capone: ['t1', 'Statement that you were in the 401(k) plan.'], twitter: ['t3', 'Brokerage statements are uploaded on the official site.'], hyundaikia: ['t3', 'VIN and repair records go on the official site.'],
+      toyota: ['t3', 'VIN and repair records go on the official site.'], tyson: ['t1', 'Statement of where and when you bought beef.'], westernunion: ['t3', 'Transfer records are filed with the remission administrator.'],
+      seatgeek: ['t1', 'Needs only the email on your SeatGeek account.'], realpage: ['t2', 'Needs your building address and lease dates.'], deere: ['t2', 'Needs the dealer name and repair dates.'],
+      upsfair: ['t3', 'Brokerage statements are uploaded on the official site.'], davita: ['t2', 'Needs the notice ID from your letter.'], harvard: ['t3', 'Family claims are handled on the official site.'],
+      netflix: ['t5', 'You authorize a partner law firm to file for you.'], google: ['t5', 'You authorize a partner law firm to file for you.'], youtube: ['t5', 'You authorize a partner law firm to file for you.'],
+      openai: ['t5', 'You authorize a partner law firm to file for you.'], ups: ['t5', 'You authorize a partner law firm to file for you.'], walgreens: ['t5', 'You authorize a partner law firm to file for you.'],
+      disney: ['t5', 'You authorize a partner law firm to file for you.'], transunion: ['t5', 'You authorize a partner law firm to file for you.'], bestbuy: ['t5', 'You authorize a partner law firm to file for you.'],
+      yahoo: ['t5', 'You authorize a partner law firm to file for you.'], dexcom: ['t5', 'You authorize a partner law firm to file for you.'], ubereats: ['t5', 'You authorize a partner law firm to file for you.'],
+      smarttv: ['t5', 'You authorize a partner law firm to file for you.'], myfitnesspal: ['t5', 'You authorize a partner law firm to file for you.'], flo: ['t5', 'You authorize a partner law firm to file for you.'],
+      bn: ['t5', 'You authorize a partner law firm to file for you.'], ubisoft: ['t5', 'You authorize a partner law firm to file for you.'], sandoz: ['t5', 'You authorize a partner law firm to file for you.'],
+      equinox: ['t5', 'You authorize a partner law firm to file for you.'], onemain: ['t5', 'You authorize a partner law firm to file for you.'], pork: ['t5', 'You authorize a partner law firm to file for you.'],
+      fanatics: ['t5', 'You authorize a partner law firm to file for you.'], lemonade: ['t5', 'You authorize a partner law firm to file for you.'], cone: ['t5', 'You authorize a partner law firm to file for you.'],
+      duke: ['t5', 'You authorize a partner law firm to file for you.'], ey: ['t5', 'You authorize a partner law firm to file for you.'], hirevue: ['t5', 'You authorize a partner law firm to file for you.'],
+      alo: ['t5', 'You authorize a partner law firm to file for you.'], apollomd: ['t5', 'You authorize a partner law firm to file for you.'], xactus: ['t5', 'You authorize a partner law firm to file for you.'],
+      vesync: ['t5', 'You authorize a partner law firm to file for you.']
+    };
+  }
+  mine() { if (this._sess) return this._sess.ids.filter(id => this.fill()[id]); return ['apple', 'goodrx', 'cvs', 'bofa', 'squatch', 'knotts', 'kroger', 'sirva', 'columbia', 'amazon', 'kia', 'venetian', 'ni', 'connectamerica', 'starbucks', 'visa', 'netflix', 'openai']; }
+  renderVals() {
+    const s = this.state, K = this.cats(), T = this.tiers(), F = this.fill(), L = this.logos();
+    const all = this.data().filter(d => this.daysLeft(d.dl) > 0);
+    const mineIds = this.mine();
+    const sigOk = s.p.sig.trim().length > 1;
+    const claimStatus = (d) => {
+      const tier = F[d.id][0];
+      if (tier === 't4') return 'auto';
+      if (s.status[d.id]) return s.status[d.id];
+      if (tier === 't3') return 'site';
+      if (tier === 't2' && !(s.ids[d.id] || '').trim()) return 'needs';
+      return 'ready';
+    };
+    const ST = {
+      ready: ['Ready to sign', 'background:#E6F4EC;color:#0E6649'], needs: ['Needs info', 'background:#FFF4D6;color:#6B4600'],
+      submitted: ['Submitted', 'background:#ECF0FC;color:#2C4BB8'], review: ['In review', 'background:#F3F0FB;color:#3B1F9E'],
+      site: ['File on official site', 'background:#F3F6F4;color:#43504A;box-shadow:inset 0 0 0 1px #DDE5E0'], opened: ['Opened on site', 'background:#F3F6F4;color:#43504A'],
+      auto: ['Paid automatically', 'background:#E9F6EF;color:#17603F']
+    };
+    const row = (d) => {
+      const st = claimStatus(d), tier = F[d.id][0], c = K[d.cat], days = this.daysLeft(d.dl);
+      return {
+        id: d.id, co: d.co, title: d.title, logo: L[d.id] || '', hasLogo: !!L[d.id], noLogo: !L[d.id], initial: d.co.slice(0, 1), tileStyle: 'background:' + c.bg + ';color:' + c.fg,
+        amt: d.cat === 'arb' ? 'Not guaranteed' : d.amt > 0 ? this.money(d.amt) : 'Varies', max: (d.max || d.amt) > 0 ? 'Up to ' + this.money(d.max || d.amt) : d.pay,
+        deadline: this.fmtDate(d.dl), days: d.dl ? days + 'd left' : 'Ongoing', urgent: days <= 14, calm: days > 14, proof: d.proof,
+        stLabel: ST[st][0], stStyle: 'font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap;' + ST[st][1],
+        tierLabel: T[tier].label, tierStyle: 'font-size:12px;font-weight:800;padding:5px 10px;border-radius:99px;white-space:nowrap;' + T[tier].style, why: F[d.id][1],
+        matched: mineIds.includes(d.id),
+        needsYou: ['ready', 'needs', 'site', 'opened'].includes(st),
+        stage: { ready: 0, needs: 0, site: 0, opened: 0, submitted: 1, review: 2, auto: 2 }[st],
+        waiting: ({ ready: 'Waiting on you: review and sign the form', needs: 'Waiting on you: ' + F[d.id][1].replace(/^Needs /, 'add ').replace(/\.$/, ''), site: 'Waiting on you: finish on the official site. Your details are ready to copy.', opened: 'Waiting on you: finish on the official site', submitted: 'Waiting on the administrator to review your claim', review: 'Under review by the settlement administrator', auto: 'Nothing to do. You will be paid automatically.' })[st],
+        waitWho: ['ready', 'needs', 'site', 'opened'].includes(st) ? 'you' : 'them',
+        payWhen: d.cat === 'arb' ? 'Partner law firm reviewing' : 'Payouts start after final court approval',
+        segs: ['Filed', 'In review', 'Approved', 'Paid'].map((lab, i) => ({ lab, style: 'flex:1;height:5px;border-radius:99px;background:' + (i < ({ ready: 0, needs: 0, site: 0, opened: 0, submitted: 1, review: 2, auto: 2 }[st]) ? '#12805C' : '#DDE5E0') })),
+        stageLabel: ['Not filed yet', 'Filed', 'In review', 'Approved', 'Paid'][{ ready: 0, needs: 0, site: 0, opened: 0, submitted: 1, review: 2, auto: 3 }[st]],
+        canSign: st === 'ready', canAdd: st === 'needs', canSite: st === 'site', done: ['submitted', 'review', 'auto', 'opened'].includes(st),
+        doneLabel: st === 'auto' ? 'Nothing to do' : st === 'opened' ? 'Track it here' : 'We are tracking it',
+        sign: () => sigOk ? this.setState({ status: Object.assign({}, s.status, { [d.id]: 'submitted' }), toast: d.co + ' claim submitted' }) : this.setState({ view: 'profile', toast: 'Add your signature first' }),
+        add: () => this.setState({ view: 'profile', toast: 'Add the ' + d.co + ' detail below' }),
+        site: () => this.setState({ status: Object.assign({}, s.status, { [d.id]: 'opened' }), toast: 'Your details were copied for the ' + d.co + ' site' })
+      };
+    };
+    const mine = all.filter(d => mineIds.includes(d.id)).sort((a, b) => this.daysLeft(a.dl) - this.daysLeft(b.dl)).map(row);
+    const est = all.filter(d => mineIds.includes(d.id)).reduce((t, d) => t + d.amt, 0);
+    const counts = { ready: 0, needs: 0, filed: 0, site: 0 };
+    all.filter(d => mineIds.includes(d.id)).forEach(d => { const st = claimStatus(d); if (st === 'ready') counts.ready++; else if (st === 'needs') counts.needs++; else if (st === 'site') counts.site++; else if (st === 'submitted' || st === 'review') counts.filed++; });
+    const actions = [];
+    if (counts.ready) actions.push({ text: 'Sign ' + counts.ready + ' claims that are ready to file', go: () => this.signAll(), cta: sigOk ? 'Sign all' : 'Add signature', tone: 'background:#0F3B2E;color:#FFFFFF' });
+    mine.filter(r => r.canAdd).forEach(r => actions.push({ text: 'Add your ' + r.co + ' detail: ' + r.why.replace('Needs ', '').replace(/\.$/, ''), go: r.add, cta: 'Add info', tone: 'background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E' }));
+    mine.filter(r => r.urgent && !r.done).slice(0, 2).forEach(r => actions.push({ text: r.co + ' deadline in ' + r.days.replace('d left', ' days'), go: r.canSign ? r.sign : r.canAdd ? r.add : r.site, cta: 'Handle it', tone: 'background:#FDECEC;color:#B8333A' }));
+    const fields = ['name', 'email', 'phone', 'street', 'city', 'st', 'zip', 'dob', 'payHandle', 'sig'];
+    const filled = fields.filter(f => (s.p[f] || '').trim()).length;
+    const pct = Math.round(filled / fields.length * 100);
+    const filters = [['all', 'All'], ['t1', 'Fully auto-filled'], ['t2', 'Auto-filled + 1 detail'], ['t3', 'Official site'], ['t4', 'Automatic'], ['t5', 'Arbitration']];
+    const list = all.filter(d => s.filter === 'all' || F[d.id][0] === s.filter).sort((a, b) => (mineIds.includes(b.id) ? 1 : 0) - (mineIds.includes(a.id) ? 1 : 0) || this.daysLeft(a.dl) - this.daysLeft(b.dl)).map(row);
+    const tierCount = (t) => all.filter(d => F[d.id][0] === t).length;
+    const STEPS = this.tourSteps();
+    const STEPS_UNUSED = [
+      { k: 'est', title: 'Your estimated total', body: 'This adds up the no-proof payouts from every settlement you matched. Courts set the final amounts, so treat it as a solid estimate.' },
+      { k: 'act', title: 'Things only you can do', body: 'Sign a claim, add a notice ID, or beat a deadline. Clear this list and we handle everything else.' },
+      { k: 'list', title: 'Every claim, one list', body: 'Each settlement you matched lives here. The colored pill on the right shows where that claim stands right now.' },
+      { k: 'legend', title: 'How each claim gets filed', body: 'Most claims we pre-fill and submit after you e-sign. A few settlements only accept claims on their own site, and we walk you through those.' },
+      { k: 'nav', title: 'Your info fills every claim', body: 'Name, address, payout method and signature. The more complete it is, the more claims we can file in one tap.' }
+    ];
+    const ti = s.tour;
+    const on = (k) => ti >= 1 && ti <= STEPS.length && STEPS[ti - 1].k === k;
+    const hl = (k) => 'position:relative';
+    const cur = ti >= 1 && ti <= STEPS.length ? STEPS[ti - 1] : { title: '', body: '' };
+    const set = (k, v) => this.setState({ p: Object.assign({}, s.p, { [k]: v }) });
+    return {
+      isDash: s.view === 'dash', isList: s.view === 'list', isProfile: s.view === 'profile',
+      navDash: this.navStyle(s.view === 'dash'), navList: this.navStyle(s.view === 'list'), navProfile: this.navStyle(s.view === 'profile'),
+      goDash: () => this.setState({ view: 'dash' }), goList: () => this.setState({ view: 'list' }), goProfile: () => this.setState({ view: 'profile' }),
+      estLabel: this.money(est), maxLabel: 'Up to ' + this.money(all.filter(d => mineIds.includes(d.id)).reduce((t, d) => t + (d.max || d.amt), 0)) + ' with documentation',
+      matchCount: mine.length, readyCount: counts.ready, needsCount: counts.needs, filedCount: counts.filed, siteCount: counts.site,
+      mine: mine.filter(r => s.dashTab === 'all' || (s.dashTab === 'you' ? r.needsYou : !r.needsYou)),
+      mineAll: mine, youN: mine.filter(r => r.needsYou).length, themN: mine.filter(r => !r.needsYou).length,
+      tabAll: this.seg(s.dashTab === 'all'), tabYou: this.seg(s.dashTab === 'you'), tabThem: this.seg(s.dashTab === 'them'),
+      setTabAll: () => this.setState({ dashTab: 'all' }), setTabYou: () => this.setState({ dashTab: 'you' }), setTabThem: () => this.setState({ dashTab: 'them' }),
+      planLabel: ({ '1m': 'Monthly · $9.99/month', '3m': '3 months · $26.97', '6m': '6 months · $47.94' })[s.plan] || 'Filing fee · one-time', isMember: !!s.plan, notMember: !s.plan,
+      actions, hasActions: actions.length > 0, noActions: actions.length === 0,
+      signAll: () => this.signAll(),
+      pct: pct + '%', pctBar: 'height:100%;border-radius:99px;background:#12805C;width:' + pct + '%', pctNote: pct === 100 ? 'Complete. Every claim can be pre-filled.' : (fields.length - filled) + ' fields left to pre-fill every claim',
+      list, listCount: list.length + ' settlements', filters: filters.map(([id, label]) => ({ label, style: this.chip(s.filter === id), pick: () => this.setState({ filter: id }) })),
+      c1: tierCount('t1'), c2: tierCount('t2'), c3: tierCount('t3'), c4: tierCount('t4'),
+      tourOn: ti >= 1 && ti <= STEPS.length, tourOff: !(ti >= 1 && ti <= STEPS.length), tourIntro: ti === 0,
+      tourTitle: cur.title, tourBody: cur.body, tourStep: 'Step ' + ti + ' of ' + STEPS.length, tourLast: ti === STEPS.length, tourMid: ti < STEPS.length,
+      onEst: false, onAct: false, onList: false, onLegend: false, onNav: false,
+      spotOn: !!(s.spot && ti >= 1 && ti <= STEPS.length), spotStyle: this.spotStyle(), bubbleStyle: this.bubbleStyle(),
+      hlEst: hl('est'), hlAct: hl('act'), hlList: hl('list'), hlLegend: hl('legend'), hlNav: 'position:relative',
+      dots: STEPS.map((x, i) => ({ style: 'width:' + (i + 1 === ti ? 18 : 7) + 'px;height:7px;border-radius:99px;background:' + (i + 1 === ti ? '#0F3B2E' : '#DDE5E0') })),
+      startTour: () => this.setState({ tour: 1, view: 'dash' }), skipTour: () => this.setState({ tour: 99 }),
+      nextTour: () => this.setState({ tour: ti + 1 > STEPS.length ? 99 : ti + 1 }), backTour: () => this.setState({ tour: Math.max(1, ti - 1) }),
+      replay: () => this.setState({ tour: 1, view: 'dash' }),
+      p: s.p, ids: s.ids, sigOk, sigMissing: !sigOk,
+      setName: (e) => set('name', e.target.value), setEmail: (e) => set('email', e.target.value), setPhone: (e) => set('phone', e.target.value),
+      setStreet: (e) => set('street', e.target.value), setCity: (e) => set('city', e.target.value), setSt: (e) => set('st', e.target.value), setZip: (e) => set('zip', e.target.value),
+      setPrev: (e) => set('prev', e.target.value), setDob: (e) => set('dob', e.target.value), setPayHandle: (e) => set('payHandle', e.target.value), setSig: (e) => set('sig', e.target.value),
+      payouts: ['PayPal', 'Venmo', 'Direct deposit', 'Paper check'].map(m => ({ label: m, style: this.chip(s.p.payout === m), pick: () => set('payout', m) })),
+      vault: [['apple', 'Apple', 'iPhone serial number or Apple Account email'], ['kroger', 'Kroger', 'Notice ID and confirmation code'], ['venetian', 'The Venetian', 'Notice ID from your email']].map(([id, co, hint]) => ({
+        id: 'v_' + id, co, hint, logo: L[id], value: s.ids[id], ok: !!(s.ids[id] || '').trim(), missing: !(s.ids[id] || '').trim(),
+        onIn: (e) => this.setState({ ids: Object.assign({}, s.ids, { [id]: e.target.value }) })
+      })),
+      bankLinked: s.bank, bankNot: !s.bank, showBankBanner: !s.bank && s.bankBanner,
+      connectBank: () => this.setState({ bank: true, toast: 'Bank connected. We will alert you when payouts land.' }),
+      disconnectBank: () => this.setState({ bank: false, toast: 'Bank disconnected' }),
+      dismissBank: () => this.setState({ bankBanner: false }),
+      isSettings: s.view === 'settings', navSettings: this.navStyle(s.view === 'settings'), goSettings: () => this.setState({ view: 'settings' }),
+      tabClaims: this.tabStyle(s.view === 'dash'), tabList: this.tabStyle(s.view === 'list'), tabSettings: this.tabStyle(s.view === 'settings' || s.view === 'profile'),
+      subOpen: s.subOpen, subClosed: !s.subOpen, toggleSub: () => this.setState({ subOpen: !this.state.subOpen }),
+      settingRows: this.settingRows(),
+      logout: () => this.setState({ toast: 'Logged out (demo)' }),
+      manageSub: () => this.setState({ toast: 'Opens billing portal: update card, view receipts, cancel' }),
+      cancelSub: () => this.setState({ toast: 'Opens the cancel flow. No calls or emails needed.' }),
+      toast: s.toast, hasToast: !!s.toast, clearToast: () => this.setState({ toast: '' })
+    };
+  }
+  signAll() {
+    const s = this.state, F = this.fill();
+    if (s.p.sig.trim().length < 2) { this.setState({ view: 'profile', toast: 'Add your signature to sign claims' }); return; }
+    const st = Object.assign({}, s.status); let n = 0;
+    this.mine().forEach(id => { const tier = F[id][0]; if (st[id]) return; if (tier === 't1' || tier === 't5' || (tier === 't2' && (s.ids[id] || '').trim())) { st[id] = 'submitted'; n++; } });
+    this.setState({ status: st, toast: n ? n + ' claims signed and submitted' : 'Nothing ready to sign' });
+  }
+  navStyle(on) { return 'display:flex;align-items:center;gap:12px;width:100%;min-height:46px;padding:0 14px;border-radius:12px;font-size:15px;font-weight:700;text-align:left;' + (on ? 'background:#EAF2EE;color:#0F3B2E' : 'background:transparent;color:#43504A'); }
+  tourSteps() {
+    return [
+      { k: 'est', title: 'Your estimated total', body: 'This adds up the no-proof payouts from every settlement you matched. Courts set the final amounts, so treat it as a solid estimate.' },
+      { k: 'act', title: 'Things only you can do', body: 'Sign a claim, add a notice ID, or beat a deadline. Clear this list and we handle everything else.' },
+      { k: 'list', title: 'Every claim, one list', body: 'Each settlement you matched lives here. The colored pill on the right shows where that claim stands right now.' },
+      { k: 'legend', title: 'How each claim gets filed', body: 'Most claims we pre-fill and submit after you e-sign. A few settlements only accept claims on their own site, and we walk you through those.' },
+      { k: 'nav', title: 'Your info fills every claim', body: 'Name, address, payout method and signature. The more complete it is, the more claims we can file in one tap.' }
+    ];
+  }
+  componentDidMount() { this._tm = setInterval(() => this.measureTour(), 120); }
+  measureTour() {
+    const ti = this.state.tour, S = this.tourSteps();
+    if (!(ti >= 1 && ti <= S.length)) { if (this.state.spot) this.setState({ spot: null }); this._lastK = null; return; }
+    if (typeof document === 'undefined') return;
+    const k = S[ti - 1].k, root = document.querySelector('[data-tour-root]'), el = document.querySelector('[data-tour="' + k + '"]');
+    if (!root || !el) return;
+    if (this._lastK !== k) { this._lastK = k; try { el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) {} }
+    const r = root.getBoundingClientRect(), e = el.getBoundingClientRect();
+    const sp = { x: Math.round(e.left - r.left), y: Math.round(e.top - r.top), w: Math.round(e.width), h: Math.round(e.height), W: Math.round(r.width), H: Math.round(r.height) };
+    const o = this.state.spot;
+    if (!o || ['x', 'y', 'w', 'h', 'W', 'H'].some(q => o[q] !== sp[q])) this.setState({ spot: sp });
+  }
+  spotStyle() {
+    const p = this.state.spot, pad = 8, ease = 'cubic-bezier(.22,1,.36,1)';
+    if (!p) return 'display:none';
+    return 'position:absolute;z-index:60;pointer-events:none;border-radius:20px;left:' + (p.x - pad) + 'px;top:' + (p.y - pad) + 'px;width:' + (p.w + pad * 2) + 'px;height:' + (p.h + pad * 2) + 'px;box-shadow:0 0 0 4px #3DDC97,0 0 0 9999px rgba(10,15,13,.58);transition:left .55s ' + ease + ',top .55s ' + ease + ',width .55s ' + ease + ',height .55s ' + ease;
+  }
+  bubbleStyle() {
+    const p = this.state.spot, pad = 8, BW = 320, BH = 250, ease = 'cubic-bezier(.22,1,.36,1)';
+    if (!p) return 'display:none';
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+    let left, top;
+    if (p.x + p.w + pad + 18 + BW <= p.W - 16) { left = p.x + p.w + pad + 18; top = clamp(p.y, 16, p.H - BH - 16); }
+    else if (p.x - pad - 18 - BW >= 16) { left = p.x - pad - 18 - BW; top = clamp(p.y, 16, p.H - BH - 16); }
+    else { left = clamp(p.x, 16, p.W - BW - 16); top = p.y + p.h + pad + 16 + BH <= p.H ? p.y + p.h + pad + 16 : clamp(p.y - pad - 16 - BH, 16, p.H - BH - 16); }
+    return 'position:absolute;z-index:70;width:' + BW + 'px;max-width:calc(100% - 32px);left:' + left + 'px;top:' + top + 'px;background:#FFFFFF;color:#0A0F0D;border-radius:18px;padding:18px;box-sizing:border-box;box-shadow:0 24px 60px rgba(0,0,0,.35);display:flex;flex-direction:column;gap:10px;text-align:left;transition:left .55s ' + ease + ',top .55s ' + ease;
+  }
+  settingRows() {
+    const s = this.state;
+    const I = {
+      bell: 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0',
+      mail: 'M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7 M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',
+      clip: 'M9 2h6a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2 M12 11h4 M12 16h4 M8 11h.01 M8 16h.01',
+      pen: 'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z',
+      shield: 'M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z M12 8v4 M12 16h.01',
+      file: 'M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z M14 2v4a2 2 0 0 0 2 2h4 M10 9H8 M16 13H8 M16 17H8',
+      building: 'M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2 M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2 M10 6h4 M10 10h4 M10 14h4 M10 18h4'
+    };
+    const tog = (k, label, icon) => ({ label, icon: I[icon], isToggle: true, isNav: false, isExt: false, on: !!s[k], act: () => this.setState({ [k]: !this.state[k] }),
+      track: 'width:50px;height:30px;flex:none;border-radius:99px;padding:2px;box-sizing:border-box;display:flex;transition:background .2s;' + (s[k] ? 'background:#12805C;justify-content:flex-end' : 'background:#C3CEC8;justify-content:flex-start'),
+      knob: 'width:26px;height:26px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(0,0,0,.25)' });
+    const nav = (label, icon, act) => ({ label, icon: I[icon], isToggle: false, isNav: true, isExt: false, act });
+    const ext = (label, icon) => ({ label, icon: I[icon], isToggle: false, isNav: false, isExt: true, act: () => this.setState({ toast: label + ' opens in a new tab' }) });
+    return [tog('push', 'Push notifications', 'bell'), tog('emails', 'Deadline emails', 'mail'), nav('Saved information', 'clip', () => this.setState({ view: 'profile' })),
+      ext('Claim Filing Authorization Agreement', 'pen'), ext('Privacy Policy', 'shield'), ext('Terms & Conditions', 'file'), ext('About Claimclub', 'building')];
+  }
+  tabStyle(on) { return 'flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:transparent;padding:8px 0 6px;font-size:11.5px;font-weight:700;' + (on ? 'color:#0F3B2E' : 'color:#8A968F'); }
+  seg(on) { return 'min-height:34px;padding:0 12px;border-radius:99px;font-size:13px;font-weight:800;white-space:nowrap;' + (on ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#F3F6F4;color:#43504A'); }
+  chip(on) { return 'min-height:38px;padding:0 14px;border-radius:999px;font-size:13px;font-weight:700;white-space:nowrap;' + (on ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1px #DDE5E0'); }
+  componentDidUpdate() {
+    if (this.state.toast && !this._tt) { this._tt = setTimeout(() => { this._tt = null; this.setState({ toast: '' }); }, 2600); }
+  }
+  componentWillUnmount() { clearTimeout(this._tt); clearInterval(this._tm); }
+
+  // Real open settlements, compiled Nov 12 2026 from OpenClassActions.com and ClaimDepot listings. Verify against each official settlement site before launch.
+  data() {
+    return [
+      { id: 'apple', co: 'Apple', title: 'Apple Intelligence Siri Settlement', cat: 'apps', fund: '$250M', pay: '$25 per iPhone, up to $95', amt: 95, max: 95, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'U.S. buyers of iPhone 15 Pro, 15 Pro Max or any iPhone 16, 2024 to 2025', pop: true },
+      { id: 'amazon', co: 'Amazon', title: 'Amazon Returns Refund Settlement', cat: 'products', fund: '$309.5M', pay: 'Refund owed, often automatic', amt: 0, proof: 'Automatic', mode: 'auto', dl: '2026-12-01', who: 'Customers with missing, late or incorrect return refunds since Sept 2017', pop: true },
+      { id: 'goodrx', co: 'GoodRx', title: 'GoodRx User Privacy Settlement', cat: 'privacy', fund: '$32M', pay: 'Pro rata cash share', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'GoodRx users whose data was shared with advertisers', pop: true },
+      { id: 'cvs', co: 'CVS', title: 'CVS Digital Privacy Settlement', cat: 'privacy', fund: '', pay: 'Up to $5, or $10 with proof', amt: 5, max: 10, proof: 'No proof', mode: 'here', dl: '2026-11-16', who: 'U.S. users of CVS websites or app before July 27, 2026' },
+      { id: 'bofa', co: 'Bank of America', title: 'Debit Card & ATM Dispute Settlement', cat: 'bank', fund: '$2M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Customers whose unauthorized-transaction claim was denied, May 2023 to July 2026', pop: true },
+      { id: 'squatch', co: 'Dr. Squatch', title: '"Natural" Labeling Settlement', cat: 'products', fund: '$9M', pay: '$2.50 per product, up to $12.50', amt: 12.5, max: 12.5, proof: 'No proof', mode: 'here', dl: '2026-11-27', who: 'Buyers of "natural"-labeled Dr. Squatch products, Nov 2018 to Aug 2026' },
+      { id: 'thinkware', co: 'Thinkware', title: 'Dash Cam False Advertising Settlement', cat: 'products', fund: '$850K', pay: 'About $6.70 per camera', amt: 6.7, max: 6.7, proof: 'No proof', mode: 'here', dl: '2026-12-14', who: 'Buyers of listed Thinkware dash cams, 2019 to 2024' },
+      { id: 'knotts', co: 'Six Flags', title: "Knott's & Great America Ticket Fee Settlement", cat: 'apps', fund: '', pay: '$8 per claim', amt: 8, max: 8, proof: 'No proof', mode: 'here', dl: '2026-12-22', who: "Online ticket buyers at Knott's Berry Farm and California's Great America" },
+      { id: 'kia', co: 'Kia', title: 'Window Regulator Settlement', cat: 'auto', fund: '', pay: '$40 service card, up to $400 per repair', amt: 40, max: 400, proof: 'Proof for repairs', mode: 'site', dl: '2026-11-23', who: 'Owners or lessees of 2016 to 2017 Kia Optima and 2017 Sportage' },
+      { id: 'vanilla', co: 'Vanilla Gift', title: 'Drained Gift Card Restitution (CA)', cat: 'bank', fund: '$1.525M', pay: 'Up to $15 per card', amt: 15, max: 15, proof: 'No proof', mode: 'here', dl: '2027-02-19', who: 'California holders of drained Vanilla gift cards', st: 'CA' },
+      { id: 'venetian', co: 'The Venetian', title: 'Website Privacy Settlement (CA)', cat: 'privacy', fund: '$1.6M', pay: 'About $3.60, or $71.39 if you booked', amt: 71.39, max: 71.39, proof: 'Notice ID', mode: 'here', dl: '2026-11-24', who: 'California residents who browsed or booked on the Venetian site, 2024 to 2026', st: 'CA' },
+      { id: 'neutrogena', co: 'Neutrogena', title: 'Skin360 Biometric Privacy (IL)', cat: 'health', fund: '$4.7M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-11-25', who: 'Illinois users of Skin360 skin assessments, 2019 to 2023', st: 'IL' },
+      { id: 'kroger', co: 'Kroger', title: 'Prescription Pricing Settlement', cat: 'health', fund: '$17M', pay: 'Pro rata share', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People who paid toward insured Kroger pharmacy prescriptions, 2018 to 2026' },
+      { id: 'navy', co: 'Navy Federal', title: 'Unauthorized Loans Settlement', cat: 'bank', fund: '', pay: '$250 cash', amt: 250, max: 250, proof: 'Notice ID', mode: 'here', dl: '2026-11-29', who: 'Members with denied fraud claims on loans, 2023 to 2025' },
+      { id: 'bright', co: 'Bright Lending', title: 'Loan Settlement', cat: 'bank', fund: '', pay: 'Cash or debt cancellation', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'Borrowers with a Bright Lending loan since Oct 2020' },
+      { id: 'columbia', co: 'Columbia University', title: 'Data Breach Settlement', cat: 'privacy', fund: '$16.1M', pay: 'Cash, or up to $8,500 documented', amt: 0, max: 8500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-21', who: 'People notified of the May 2025 cyberattack' },
+      { id: 'pp', co: 'Planned Parenthood (LSC)', title: 'Lab Data Breach Settlement', cat: 'privacy', fund: '$6.1M', pay: 'Up to $1,000, or $5,000 documented', amt: 1000, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-24', who: 'Patients and payers tied to LSC lab testing' },
+      { id: 'sirva', co: 'Sirva', title: 'Relocation Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50 cash, or up to $4,500 documented', amt: 50, max: 4500, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'People notified of the Sirva breach' },
+      { id: 'bauer', co: 'Bauer Built', title: 'Tire & Service Data Breach', cat: 'privacy', fund: '', pay: '$45, or up to $5,000 in losses', amt: 45, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People notified of the Bauer Built breach' },
+      { id: 'woodloch', co: 'Woodloch Pines', title: 'Resort Data Breach Settlement', cat: 'privacy', fund: '', pay: '$60, or up to $3,500 documented', amt: 60, max: 3500, proof: 'No proof', mode: 'here', dl: '2027-01-13', who: 'People notified of the Woodloch Pines breach' },
+      { id: 'benkeith', co: 'Ben E. Keith', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$35, or up to $5,000 in losses', amt: 35, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-26', who: 'People notified of the Ben E. Keith breach' },
+      { id: 'safefleet', co: 'Safe Fleet', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50, or up to $2,500 documented', amt: 50, max: 2500, proof: 'Notice ID', mode: 'here', dl: '2026-12-02', who: 'U.S. people in the April 2024 incident' },
+      { id: 'tennis', co: 'Merchant of Tennis', title: 'US Merchants Data Breach', cat: 'privacy', fund: '$685K', pay: 'About $45 in CA, $15 elsewhere', amt: 45, max: 2000, proof: 'No proof', mode: 'here', dl: '2027-01-27', who: 'People notified of the US Merchants breach' },
+      { id: 'jbs', co: 'JBS', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: 'Up to $5,000 plus credit monitoring', amt: 0, max: 5000, proof: 'Proof for losses', mode: 'here', dl: '2026-12-23', who: 'People who received a 2025 JBS breach notice' },
+      { id: 'renal', co: 'Innovative Renal Care', title: 'Data Breach Settlement', cat: 'health', fund: '$900K', pay: 'About $100, or $5,000 documented', amt: 100, max: 5000, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People notified of the Feb 2024 American Renal Management incident' },
+      { id: 'prime', co: 'Prime Healthcare', title: 'Patient Portal Privacy Settlement', cat: 'health', fund: '', pay: '$20 plus privacy monitoring', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'Patient portal users, 2019 to 2023' },
+      { id: 'nissan', co: 'Al Piemonte Nissan', title: 'Marketing Texts & Calls Settlement', cat: 'apps', fund: '$3.7M', pay: '$20 cash or $100 voucher', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-15', who: 'Do Not Call numbers that got repeat marketing' },
+      { id: 'connectamerica', co: 'ConnectAmerica', title: 'Telemarketing (TCPA) Settlement', cat: 'apps', fund: '$4M', pay: 'Up to $275 (estimated)', amt: 275, max: 275, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'People who got ConnectAmerica.com marketing calls or texts' },
+      { id: 'indegene', co: 'Indegene', title: 'Text Message (TCPA) Settlement', cat: 'apps', fund: '$4.7M', pay: 'Up to $250', amt: 250, max: 250, proof: 'No proof', mode: 'here', dl: '2026-12-09', who: 'People who received Indegene marketing texts' },
+      { id: 'suffolk', co: 'Suffolk County, NY', title: 'Red-Light Camera Fee Settlement', cat: 'auto', fund: '$45M', pay: 'Up to $36 per violation', amt: 36, max: 36, proof: 'Notice ID', mode: 'site', dl: '2026-12-08', who: 'People charged red-light camera fees in Suffolk County' },
+      { id: 'ni', co: 'National Instruments', title: 'Securities Settlement (NATI)', cat: 'invest', fund: '$28M', pay: 'About $3.01 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-14', who: 'Investors who sold in two Aug to Sept 2022 windows' },
+      { id: 'skin', co: 'BeautyHealth', title: 'Securities Settlement (SKIN)', cat: 'invest', fund: '$18M', pay: 'About $0.35 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-19', who: 'Buyers from May 2022 to Nov 2023' },
+      { id: 'marqeta', co: 'Marqeta', title: 'Securities Settlement (MQ)', cat: 'invest', fund: '', pay: 'About $0.11 per security', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2026-12-31', who: 'Buyers of Marqeta stock or options, Feb to Nov 2024' },
+      { id: 'starbucks', co: 'Starbucks', title: 'COBRA Notice Settlement', cat: 'invest', fund: '', pay: '$30 to $74 (estimated)', amt: 74, max: 74, proof: 'No proof', mode: 'here', dl: '2026-12-02', who: 'People who got a Starbucks COBRA notice, July 2016 to Jan 2023' },
+      { id: 'stv', co: 'STV Inc.', title: 'WA Job Posting Pay Settlement', cat: 'invest', fund: '', pay: 'About $1,592.71 (estimated)', amt: 1592.71, max: 1592.71, proof: 'No proof', mode: 'here', dl: '2026-12-08', who: 'Washington applicants to STV postings that omitted pay ranges' },
+      { id: 'visa', co: 'Visa & Mastercard', title: 'ATM Access Fee Settlement', cat: 'bank', fund: '', pay: 'Share of fund, up to $1,000', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: '2027-02-09', who: 'People who paid an out-of-network ATM surcharge in the U.S.' },
+      { id: 'googleplay', co: 'Google Play', title: 'Play Store Antitrust Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'People who bought apps or in-app items on Google Play' },
+      { id: 'equifax', co: 'Equifax', title: 'Credit Dispute Settlement', cat: 'privacy', fund: '', pay: 'Up to $400 (estimated)', amt: 400, max: 400, proof: 'No proof', mode: 'here', dl: '2026-11-28', who: 'People who disputed an error on their Equifax credit report' },
+      { id: 'capone', co: 'Capital One', title: '401(k) ERISA Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Participants in the Capital One 401(k) plan' },
+      { id: 'twitter', co: 'Twitter', title: 'Acquisition Shareholder Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Brokerage records', mode: 'site', dl: '2026-11-23', who: 'People who sold Twitter stock in 2022 before the acquisition' },
+      { id: 'hyundaikia', co: 'Hyundai & Kia', title: 'Airbag Control Unit Settlement', cat: 'auto', fund: '', pay: 'Up to $350 (estimated)', amt: 0, max: 350, proof: 'VIN', mode: 'site', dl: '2027-04-06', who: 'Owners or lessees of listed Hyundai and Kia vehicles' },
+      { id: 'toyota', co: 'Toyota', title: 'Airbag Safety Settlement', cat: 'auto', fund: '', pay: '$250 or more (estimated)', amt: 0, max: 250, proof: 'VIN', mode: 'site', dl: '2028-12-11', who: 'Owners or lessees of listed Toyota vehicles' },
+      { id: 'tyson', co: 'Tyson & beef packers', title: 'Beef Purchaser Settlement', cat: 'products', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-11-30', who: 'People who bought beef from stores in eligible states. See notice for dates.' },
+      { id: 'westernunion', co: 'Western Union', title: 'Scam Victim Remission', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Transfer details', mode: 'site', dl: '2026-12-31', who: 'People who sent money to a scammer through Western Union' },
+      { id: 'seatgeek', co: 'SeatGeek', title: 'Nevada Ticket Fee Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-05', who: 'SeatGeek buyers of tickets to Nevada events' },
+      { id: 'realpage', co: 'RealPage', title: 'Rent Price-Fixing Settlement', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-29', who: 'Renters in large apartment buildings whose landlord used RealPage pricing' },
+      { id: 'deere', co: 'John Deere', title: 'Right to Repair Settlement', cat: 'auto', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People who paid an authorized Deere dealer for repairs' },
+      { id: 'upsfair', co: 'UPS', title: 'UPS Fair Fund (Investors)', cat: 'invest', fund: '', pay: 'Pro rata share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-10', who: 'People who bought UPS stock in the covered period' },
+      { id: 'davita', co: 'DaVita', title: 'Ransomware Data Breach', cat: 'health', fund: '', pay: 'Up to $2,500 documented', amt: 0, max: 2500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-19', who: 'Patients notified of the DaVita ransomware attack' },
+      { id: 'harvard', co: 'Harvard Medical School', title: 'Morgue Remains Settlement', cat: 'health', fund: '', pay: 'Payment amount varies', amt: 0, proof: 'Family records', mode: 'site', dl: '2026-12-09', who: 'Families of people who donated their bodies to Harvard Medical School', dir: true },
+      { id: 'netflix', co: 'Netflix', title: 'Viewing Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Netflix subscribers whose viewing data may have been shared' },
+      { id: 'google', co: 'Google', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $12 if the claim wins', amt: 0, max: 12, proof: 'No proof', mode: 'here', dl: null, who: 'Google account holders' },
+      { id: 'youtube', co: 'YouTube', title: 'Video Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $92 if the claim wins', amt: 0, max: 92, proof: 'No proof', mode: 'here', dl: null, who: 'YouTube users who watched while signed in' },
+      { id: 'openai', co: 'ChatGPT', title: 'ChatGPT Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'ChatGPT users' },
+      { id: 'ups', co: 'UPS', title: 'UPS Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People who used UPS.com or UPS My Choice' },
+      { id: 'walgreens', co: 'Walgreens', title: 'Pharmacy Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Walgreens website and app users' },
+      { id: 'disney', co: 'Disney+', title: 'Streaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $15 if the claim wins', amt: 0, max: 15, proof: 'No proof', mode: 'here', dl: null, who: 'Disney+ subscribers' },
+      { id: 'transunion', co: 'TransUnion', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'People with a TransUnion credit file' },
+      { id: 'bestbuy', co: 'Best Buy', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'BestBuy.com shoppers' },
+      { id: 'yahoo', co: 'Yahoo', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Yahoo Mail and account users' },
+      { id: 'dexcom', co: 'Dexcom', title: 'Glucose Monitor Arbitration', cat: 'arb', fund: '', pay: 'Amount varies if the claim wins', amt: 0, proof: 'No proof', mode: 'here', dl: null, who: 'Dexcom glucose monitor users' },
+      { id: 'ubereats', co: 'Uber Eats', title: 'Delivery Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Uber Eats customers' },
+      { id: 'smarttv', co: 'Smart TV makers', title: 'TV Viewing Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Owners of smart TVs that track what you watch' },
+      { id: 'myfitnesspal', co: 'MyFitnessPal', title: 'App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'MyFitnessPal app users' },
+      { id: 'flo', co: 'Flo', title: 'Health App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $60 if the claim wins', amt: 0, max: 60, proof: 'No proof', mode: 'here', dl: null, who: 'Flo period tracker users' },
+      { id: 'bn', co: 'Barnes & Noble', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Barnes & Noble shoppers in CA, PA, FL, WA or MA', sts: ['CA', 'PA', 'FL', 'WA', 'MA'] },
+      { id: 'ubisoft', co: 'Ubisoft', title: 'Gaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Ubisoft account holders' },
+      { id: 'sandoz', co: 'Sandoz', title: 'Generic Drug Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who paid for certain generic drugs' },
+      { id: 'equinox', co: 'Equinox', title: 'Membership Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Equinox gym members' },
+      { id: 'onemain', co: 'OneMain Financial', title: 'Loan Add-On Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,000 if the claim wins', amt: 0, max: 2000, proof: 'No proof', mode: 'here', dl: null, who: 'OneMain loan borrowers' },
+      { id: 'pork', co: 'Pork producers', title: 'Pork Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who bought pork at stores' },
+      { id: 'fanatics', co: 'Fanatics', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Fanatics shoppers' },
+      { id: 'lemonade', co: 'Lemonade', title: 'Insurance Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Lemonade insurance customers' },
+      { id: 'cone', co: 'Cone Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Cone Health website and portal users' },
+      { id: 'duke', co: 'Duke Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $50 if the claim wins', amt: 0, max: 50, proof: 'No proof', mode: 'here', dl: null, who: 'Duke Health website and portal users' },
+      { id: 'ey', co: 'EY', title: 'Data Exposure Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People whose data EY handled' },
+      { id: 'hirevue', co: 'HireVue', title: 'Video Interview Arbitration', cat: 'arb', fund: '', pay: 'Up to $150 if the claim wins', amt: 0, max: 150, proof: 'No proof', mode: 'here', dl: null, who: 'Job applicants who did a HireVue video interview' },
+      { id: 'alo', co: 'Alo Yoga', title: 'Website Privacy Arbitration (CA)', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'California shoppers on the Alo Yoga site', st: 'CA' },
+      { id: 'apollomd', co: 'ApolloMD', title: 'Patient Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'ApolloMD patients' },
+      { id: 'xactus', co: 'Xactus', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $500 if the claim wins', amt: 0, max: 500, proof: 'No proof', mode: 'here', dl: null, who: 'People with a credit report pulled by Xactus' },
+      { id: 'vesync', co: 'VeSync', title: 'Smart Device Arbitration', cat: 'arb', fund: '', pay: 'Up to $10 if the claim wins', amt: 0, max: 10, proof: 'No proof', mode: 'here', dl: null, who: 'VeSync and Levoit app users' }
+    ];
+  }
+  logos() {
+    return {
+      amazon: '../assets/9e823dce7e60dc8d8b58da2243d7151d.svg',
+      apple: '../assets/7fd6ec4499df609a19ab46e16342f49d.svg',
+      bofa: '../assets/121d9429923e05b984526c8965383d6a.svg',
+      kia: '../assets/cc08603ea59eb7c07048d2d8f1c09ae5.svg',
+      nissan: '../assets/2c6c0147dc39394c5de2a3b314164628.svg',
+      starbucks: '../assets/28379ee7c2bc6b1d08ee6e6ec8cde00a.svg',
+      bauer: '../assets/b955a240145916623f39c76683f30cf2.png',
+      benkeith: '../assets/29ff61ec24681d5c4d098a4b00c41796.png',
+      bright: '../assets/eb27eb5f5e3cd2368ac64f52865e9f17.png',
+      columbia: '../assets/0c6525be1fec809009a40a8f755ba9e8.png',
+      connectamerica: '../assets/6e5968261f1fcb1f34972c0c90a652b5.png',
+      cvs: '../assets/1ceb7905467ce333f9268b10d05d201d.png',
+      goodrx: '../assets/20058f58cf0cc867f90794121d8fa7cd.png',
+      indegene: '../assets/9a01c32e4766fa5616d39bba22155995.png',
+      jbs: '../assets/1823e932ddfe1864917090c26daf3e3c.png',
+      knotts: '../assets/41faa40085ee9bfc601f3cf6dc22de18.png',
+      kroger: '../assets/1bde1fe61d713099dffdf1ede7857c39.png',
+      marqeta: '../assets/daa5e78a6d8e2808bcb1d7ce25e31a51.png',
+      neutrogena: '../assets/40fb463bce222cf3f1b518dc1bc1fd04.png',
+      ni: '../assets/ca912521b43185af8910ffffb41625c3.png',
+      pp: '../assets/b7a78d62f965fd493ae93fb5e42d82b5.png',
+      prime: '../assets/b4969a7e7813b7e435d526fa12e08cae.png',
+      renal: '../assets/9f4c930d3fc38b7e8c24c12e5e9fd5df.png',
+      safefleet: '../assets/9ea6cecf1eb2d258422736e6d3e36e0d.png',
+      skin: '../assets/a750434c034a22317973e9602a3a9030.png',
+      squatch: '../assets/2d81ba8fe0a13c9f47d35e8ecbd1db1d.png',
+      stv: '../assets/686fffc3ac5ff6ba36692a9563832def.png',
+      tennis: '../assets/8db229a64846a396aafb5c1848f5ab55.png',
+      thinkware: '../assets/5e5f7c4064859d61093e9429473e317a.png',
+      vanilla: '../assets/1e92776c9b64da9e2c92b826004d86b3.png',
+      venetian: '../assets/9251b6773160e67632e4ca43dec7af06.png',
+      alo: '../assets/fdb7b0510aa06894590bffab215ec078.png',
+      apollomd: '../assets/c0a61a7c297e7da93b9470848d12abf3.png',
+      bestbuy: '../assets/62c4915f11e1ddce207e74e3c34db041.png',
+      bn: '../assets/2d595697e05cf84959e2b421a7277d71.png',
+      capone: '../assets/2823583cce09dc3307f1a694be36c9ad.png',
+      cone: '../assets/d6998a6452e0ca82ce8bbd1c49d9456f.png',
+      davita: '../assets/0a472a5b02cefc3d772c7a3aea676665.png',
+      deere: '../assets/3e2bb5b852c7973fc304d07752c747ae.svg',
+      dexcom: '../assets/ff1b608f7dbff7a788a98b45b41127a9.png',
+      disney: '../assets/fa6927e6a22590e6ee1b1a90524e26a5.png',
+      duke: '../assets/be420537faabfec00ce2c17c048a4f5f.png',
+      equifax: '../assets/f0fd40dfbbdad8b7c7e13aefc1e6c491.png',
+      equinox: '../assets/389c1ed8a8da560084a3fade0f82c301.png',
+      ey: '../assets/73f8286dc9b0107f01d6a0f5fdb73852.png',
+      fanatics: '../assets/e78df59559e5fe98823cedc450ae7afc.png',
+      flo: '../assets/3adb34cdc36c981654d584f93c2a51a4.png',
+      google: '../assets/bc7d6ff01faeaa1ee93f78dd2a19b8d3.png',
+      googleplay: '../assets/7f4390cee228878d694a9ab5d8bd863a.svg',
+      harvard: '../assets/6e253a632aaaa8d316db9b90126f8c91.png',
+      hirevue: '../assets/b6f1dfa70da5137f1540ce8704508075.png',
+      hyundaikia: '../assets/f2cd6e8b58449c54475ce67893f4e185.png',
+      lemonade: '../assets/053d86c045fa9f29ad441b554507af17.png',
+      myfitnesspal: '../assets/76f4d9cde188275eb456858e5862ab36.png',
+      netflix: '../assets/6450426b362962920828f44df101d658.svg',
+      onemain: '../assets/bfa996313c50641a9b2cd4764f597714.png',
+      openai: '../assets/ca263b6032fa6a766d31857e07e4f899.png',
+      pork: '../assets/fc0acc83971ef9580779700617f1af68.png',
+      realpage: '../assets/db93ff119ed82ac214d13401f1e7f659.png',
+      sandoz: '../assets/ef65795f842e1e2a0dbb8f004cee8f33.png',
+      seatgeek: '../assets/eca7cec41e19cdcab5dd3aa5733d499a.png',
+      toyota: '../assets/c09a0cd345b7dc960272d35462f45b6d.svg',
+      transunion: '../assets/36fcc4a081856eae8c148ff495771fa3.png',
+      twitter: '../assets/91eb8d5ec405fe13b8bd4f3fcfff3000.png',
+      tyson: '../assets/c655327b9222899295d427826bd844fe.png',
+      ubereats: '../assets/aef72c362064ee3718727080ccd975be.png',
+      ubisoft: '../assets/8403f48b9b86ef76c3fff8b81d28d414.svg',
+      ups: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg',
+      vesync: '../assets/9c873bf364d0554ad84bff4d28c73137.png',
+      visa: '../assets/17d130cb2fd653ada0d1561043e8aa56.svg',
+      walgreens: '../assets/a833516094f812b15934c7f0cd87f63a.png',
+      westernunion: '../assets/b4c1d18b0a5c8a620f9cb206b07e6a82.png',
+      xactus: '../assets/168806c3e04f9d52bb4dde170628cb0e.png',
+      yahoo: '../assets/7ff3707668ea6d5dfae8df54965f0582.png',
+      youtube: '../assets/1ca9c6db3a8f268ba14f266fe2eb4d00.png',
+      upsfair: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg'
+    };
+  }
+  cats() {
+    return {
+      privacy: { bg: '#3E63DD', fg: '#FFFFFF', tint: '#ECF0FC', ink: '#2C4BB8', label: 'Data & privacy' },
+      products: { bg: '#E5590A', fg: '#FFFFFF', tint: '#FDEEE5', ink: '#B54608', label: 'Products' },
+      auto: { bg: '#218358', fg: '#FFFFFF', tint: '#E9F6EF', ink: '#17603F', label: 'Auto' },
+      bank: { bg: '#FFB224', fg: '#2A1570', tint: '#FFF6E0', ink: '#7A5200', label: 'Banking & fees' },
+      apps: { bg: '#D6409F', fg: '#FFFFFF', tint: '#FBEAF4', ink: '#A82F7C', label: 'Apps & services' },
+      health: { bg: '#E5484D', fg: '#FFFFFF', tint: '#FDECEC', ink: '#B8333A', label: 'Health' },
+      invest: { bg: '#2A1570', fg: '#FFFFFF', tint: '#F3F0FB', ink: '#3B1F9E', label: 'Investor & employee' },
+      arb: { bg: '#6B6188', fg: '#FFFFFF', tint: '#F3F0FB', ink: '#4A4266', label: 'Arbitration' }
+    };
+  }
+  daysLeft(dl) {
+    if (!dl) return 999;
+    const d = new Date(dl + 'T23:59:00');
+    return Math.max(0, Math.ceil((d - new Date()) / 86400000));
+  }
+  fmtDate(dl) {
+    if (!dl) return 'No deadline';
+    const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const [y, mo, da] = dl.split('-').map(Number);
+    return m[mo - 1] + ' ' + da + ', ' + y;
+  }
+  money(n) {
+    return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: n % 1 ? 2 : 0 });
+  }
+
+  cats() {
+    return {
+      privacy: { bg: '#0F3B2E', fg: '#FFFFFF', tint: '#E3ECE8', ink: '#0F3B2E', label: 'Data & privacy' },
+      products: { bg: '#12805C', fg: '#FFFFFF', tint: '#E6F4EC', ink: '#0E6649', label: 'Products' },
+      auto: { bg: '#2F5D4E', fg: '#FFFFFF', tint: '#E5EDEA', ink: '#2F5D4E', label: 'Auto' },
+      bank: { bg: '#3DDC97', fg: '#0A0F0D', tint: '#E3FAEF', ink: '#0E6649', label: 'Banking & fees' },
+      apps: { bg: '#0A0F0D', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#0A0F0D', label: 'Apps & services' },
+      health: { bg: '#B7EFD3', fg: '#0A0F0D', tint: '#EAF9F1', ink: '#0E6649', label: 'Health' },
+      invest: { bg: '#DDE5E0', fg: '#0A0F0D', tint: '#F3F6F4', ink: '#43504A', label: 'Investor & employee' },
+      arb: { bg: '#43504A', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#43504A', label: 'Arbitration' }
+    };
+  }
+}
+
+bootDC(Component,{},null);
+</script></body></html>

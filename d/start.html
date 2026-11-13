@@ -1,0 +1,1336 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Claimclub · Check what you are owed</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%230F3B2E' stroke-width='14'/%3E%3C/svg%3E">
+<script>if(innerWidth<820)location.replace('../m/start.html')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;600&family=Mrs+Saint+Delafield&display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#12805C}a:hover{color:#0F3B2E}
+button{font-family:inherit;cursor:pointer;border:0}
+button:active{transform:translateY(1px)}
+@keyframes bumpA{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:none}}
+@keyframes bumpB{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:none}}
+@keyframes enter{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+@keyframes notif{from{opacity:0;translate:0 -18px}to{opacity:1;translate:0 0}}
+.notif{animation:notif .6s .3s ease both}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes tick{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.bumpA{animation:bumpA .4s ease}.bumpB{animation:bumpB .4s ease}
+.enter{animation:enter .3s ease both}
+.spin{animation:spin 1s linear infinite}
+.t1{animation:tick .4s ease .2s both}.t2{animation:tick .4s ease .9s both}.t3{animation:tick .4s ease 1.6s both}
+.scroll::-webkit-scrollbar{display:none}
+input:focus,select:focus,textarea:focus{outline:none !important;border-color:#12805C !important;box-shadow:0 0 0 3px rgba(18,128,92,.18) !important}
+.fgroup{transition:border-color .15s,box-shadow .15s}
+.fgroup:focus-within{border-color:#12805C !important;box-shadow:0 0 0 3px rgba(18,128,92,.18)}
+.fgroup input:focus{box-shadow:none !important;background:#F3F6F4}
+button:focus-visible{outline:2px solid #12805C;outline-offset:2px}
+.mesh{background:radial-gradient(140% 100% at 100% 0%, #1F7A57 0%, rgba(31,122,87,0) 55%),radial-gradient(120% 120% at 0% 100%, #05211A 0%, rgba(5,33,26,0) 60%),linear-gradient(165deg, #134A39 0%, #0F3B2E 45%, #0A2C22 100%)}
+@keyframes chkIn{0%{opacity:0;transform:translateY(60px) rotate(-8deg) scale(.92)}70%{opacity:1;transform:translateY(-4px) rotate(-1.5deg)}100%{opacity:1;transform:rotate(-2deg)}}
+.chk{animation:chkIn .9s cubic-bezier(.2,.8,.2,1) .1s both}
+@keyframes write{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+.write{display:inline-block;clip-path:inset(0 100% 0 0);animation:write .7s steps(14,end) forwards}
+.w1{animation-delay:.9s}.w2{animation-delay:1.3s;animation-duration:.6s}.w3{animation-delay:1.8s;animation-duration:1.1s}
+@keyframes lpop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.lp{opacity:0;animation:lpop .35s cubic-bezier(.3,1.5,.5,1) forwards}
+.sigw{display:inline-block;clip-path:inset(0 100% 0 0);animation:write 1.4s cubic-bezier(.4,0,.2,1) 3s forwards}
+.w0{animation-delay:.7s;animation-duration:.5s}
+.sig{stroke-dasharray:260;stroke-dashoffset:260;animation:sig 1.1s ease 3s forwards}
+@keyframes sig{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.chk,.write,.lp,.sig{animation:none !important;clip-path:none !important;opacity:1 !important;stroke-dashoffset:0 !important}}
+.deskmain .scroll{flex:0 1 auto !important;min-height:0}
+.deskmain > *{flex-shrink:1}
+
+:root{color-scheme:light}
+input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
+input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-fill-color:#0A0F0D}
+/* clean scrollbars */
+::-webkit-scrollbar,.scroll::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-track,.scroll::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb,.scroll::-webkit-scrollbar-thumb{background:rgba(10,15,13,.16);border-radius:99px;border:0}
+::-webkit-scrollbar-thumb:hover,.scroll::-webkit-scrollbar-thumb:hover{background:rgba(10,15,13,.3)}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar:horizontal,.scroll::-webkit-scrollbar:horizontal{height:0;display:none}
+@supports (-moz-appearance:none){*{scrollbar-width:thin;scrollbar-color:rgba(10,15,13,.18) transparent}}
+</style>
+<style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
+<div style="position: relative; width: 100%; height: 100vh; min-height: 760px; box-sizing: border-box; background: #FFFFFF; color: #0A0F0D; font-family: 'Manrope', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 36px; border-bottom: 1px solid #E8EEEA">
+    <div style="display: flex; align-items: center; gap: 16px; min-width: 260px">
+      <sc-if value="{{ showBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ back }}" aria-label="Back" style="width: 44px; height: 44px; border-radius: 12px; background: #F3F6F4; color: #0A0F0D; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button></sc-if>
+      <div style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #0F3B2E">claim<span style="font-weight: 500">club</span><span style="font-size: 0.72em; font-weight: 600; color: #000000; margin-left: -0.06em">.io</span></span></div>
+    </div>
+    <sc-if value="{{ showSegs }}" hint-placeholder-val="{{ false }}"><div style="flex: 0 1 420px; display: flex; align-items: center; gap: 12px"><div style="{{ segGrid }}"><sc-for list="{{ segs }}" as="sg" hint-placeholder-count="9"><div style="{{ sg.style }}"></div></sc-for></div><div style="font-size: 13px; font-weight: 700; color: #5B6862; white-space: nowrap">{{ qFull }}</div></div></sc-if>
+    <div style="min-width: 260px; display: flex; justify-content: flex-end; align-items: center; gap: 14px; font-size: 13px; font-weight: 600; color: #5B6862"><span>{{ L.notLaw }}</span><div role="group" aria-label="Language" style="display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 99px; background: #F3F6F4; box-shadow: inset 0 0 0 1px #E8EEEA"><button onClick="{{ setEn }}" aria-pressed="{{ isEn }}" style="{{ enStyle }}">EN</button><button onClick="{{ setEs }}" aria-pressed="{{ isEs }}" style="{{ esStyle }}">ES</button></div></div>
+  </header>
+  <div style="flex-grow: 1; min-height: 0; display: flex">
+    <sc-if value="{{ notAuth }}" hint-placeholder-val="{{ true }}"><aside class="mesh" style="flex: 0 0 400px; box-sizing: border-box; padding: 36px; color: #FFFFFF; display: flex; flex-direction: column; gap: 18px; min-height: 0">
+      <div style="display: flex; flex-direction: column; gap: 4px"><div style="font-size: 12px; font-weight: 700; letter-spacing: 1.4px; color: #C9D6CF">{{ L.estSoFar }}</div><div class="{{ bumpClass }}" style="font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1.05">{{ totalLabel }}</div><div style="font-size: 15px; font-weight: 600; color: #D7E3DC">{{ countMatched }}</div></div>
+      <sc-if value="{{ asideMatches }}" hint-placeholder-val="{{ true }}">
+        <div style="flex-grow: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
+          <sc-for list="{{ matches }}" as="m" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.1); border-radius: 14px; padding: 10px">
+              <sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 38px; height: 38px; flex: none; border-radius: 10px; object-fit: contain; background: #FFFFFF; padding: 4px; box-sizing: border-box"></sc-if>
+              <sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ m.tileStyle }}; width: 38px; height: 38px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800">{{ m.initial }}</div></sc-if>
+              <div style="flex-grow: 1; min-width: 0; font-size: 14px; font-weight: 700">{{ m.co }}</div>
+              <div style="font-size: 13px; font-weight: 800; color: #3DDC97; white-space: nowrap">{{ m.amtLabel }}</div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}"><div style="font-size: 15px; line-height: 1.6; color: #D7E3DC; background: rgba(255,255,255,.07); border-radius: 16px; padding: 18px">{{ L.asideEmpty }}</div></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ asideInfo }}" hint-placeholder-val="{{ false }}">
+        <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 14px; font-size: 15px; font-weight: 600; color: #D7E3DC">
+          <div style="display: flex; gap: 10px"><span style="color: #3DDC97">●</span>{{ L.b1 }}</div>
+          <div style="display: flex; gap: 10px"><span style="color: #3DDC97">●</span>{{ L.b2 }}</div>
+          <div style="display: flex; gap: 10px"><span style="color: #3DDC97">●</span>{{ L.b3 }}</div>
+          <div style="display: flex; gap: 10px"><span style="color: #3DDC97">●</span>{{ L.b4 }}</div>
+        </div>
+      </sc-if>
+      <div style="font-size: 12px; line-height: 1.6; color: #C9D6CF">{{ L.asideNote }}</div>
+    </aside></sc-if>
+    <main style="flex-grow: 1; min-width: 0; display: flex; justify-content: center; background: #F8FAF9">
+      <div class="deskmain" style="{{ mainStyle }}">
+  <!-- INTRO 1 -->
+  <sc-if value="{{ isIntro1 }}" hint-placeholder-val="{{ true }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 16px 22px; display: flex; flex-direction: column; gap: 22px">
+      <h1 style="margin: 0; font-size: 34px; line-height: 1.08; font-weight: 800; letter-spacing: -1.2px; color: #0F3B2E">{{ L.i1a }}<span style="color: #12805C">{{ L.i1b }}</span></h1>
+      <div style="font-size: 16px; line-height: 1.6; color: #43504A">{{ L.i1p }}</div>
+      <figure aria-label="{{ L.exHead }}" style="margin: 0; cursor: default; user-select: none; background: #F3F6F4; border-radius: 20px; padding: 18px 20px 16px; display: flex; flex-direction: column; gap: 14px">
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.4px; color: #5B6862">{{ L.exHead }}</span><span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 15px; color: #5B6862">{{ L.exNote }}</span></div>
+        <sc-for list="{{ teaser }}" as="t" hint-placeholder-count="3">
+          <div style="display: flex; align-items: flex-start; gap: 12px">
+            <sc-if value="{{ t.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ t.logo }}" alt="" style="width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: contain; background: #FFFFFF; padding: 4px; box-sizing: border-box; margin-top: 1px"></sc-if><sc-if value="{{ t.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ t.tileStyle }}; width: 30px; height: 30px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">{{ t.initial }}</div></sc-if>
+            <p style="margin: 0; font-size: 15px; line-height: 1.5; color: #43504A"><strong style="color: #0A0F0D">{{ t.co }}</strong> {{ t.line }}</p>
+          </div>
+        </sc-for>
+        <figcaption style="font-size: 12px; line-height: 1.5; color: #5B6862; border-top: 1px dashed #CFDAD3; padding-top: 12px">{{ L.exFoot }}</figcaption>
+      </figure>
+    </div>
+    <div style="padding: 12px 22px 26px"><button onClick="{{ next }}" style="{{ primary }}">{{ L.next }}</button></div>
+  </sc-if>
+
+  <!-- INTRO 2 -->
+  <sc-if value="{{ isIntro2 }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 16px 22px; display: flex; flex-direction: column; gap: 22px">
+      <h1 style="margin: 0; font-size: 34px; line-height: 1.08; font-weight: 800; letter-spacing: -1.2px; color: #0F3B2E">{{ i2h }}</h1>
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; gap: 14px; align-items: flex-start"><div style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: #3E63DD; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800">1</div><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-weight: 800; font-size: 16px">{{ L.match }}</div><div style="font-size: 14px; line-height: 1.5; color: #43504A">{{ L.matchP }}</div></div></div>
+        <div style="display: flex; gap: 14px; align-items: flex-start"><div style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: #12805C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800">2</div><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-weight: 800; font-size: 16px">{{ L.file }}</div><div style="font-size: 14px; line-height: 1.5; color: #43504A">{{ L.fileP }}</div></div></div>
+        <div style="display: flex; gap: 14px; align-items: flex-start"><div style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: #218358; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 800">3</div><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-weight: 800; font-size: 16px">{{ L.paid }}</div><div style="font-size: 14px; line-height: 1.5; color: #43504A">{{ L.paidP }}</div></div></div>
+      </div>
+      <div style="font-size: 12px; line-height: 1.6; color: #5B6862; background: #F3F6F4; padding: 12px 14px; border-radius: 12px">{{ L.disclaim }}</div>
+    </div>
+    <div style="padding: 12px 22px 26px"><button onClick="{{ next }}" style="{{ primary }}">{{ L.start }}</button></div>
+  </sc-if>
+
+  <!-- STATE -->
+  <sc-if value="{{ isState }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 16px 22px 26px; display: flex; flex-direction: column; gap: 18px">
+      <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.stateH }}</h1>
+      <div style="font-size: 15px; color: #5B6862; margin-top: -8px">{{ L.stateP }}</div>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px"><sc-for list="{{ states }}" as="x" hint-placeholder-count="12"><button onClick="{{ x.pick }}" style="{{ x.style }}">{{ x.label }}</button></sc-for></div>
+    </div>
+  </sc-if>
+
+  <!-- QUESTION -->
+  <sc-if value="{{ isQ }}" hint-placeholder-val="{{ false }}">
+    <div class="scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 16px; display: flex; flex-direction: column; gap: 18px">
+      <div class="enter" style="display: flex; flex-direction: column; gap: 14px">
+        <sc-if value="{{ q.hasBrandLogo }}" hint-placeholder-val="{{ true }}"><div style="align-self: center; width: 112px; height: 112px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 14px 34px rgba(10,15,13,.14), inset 0 0 0 1px #DDE5E0; display: flex; align-items: center; justify-content: center"><img src="{{ q.brandLogo }}" alt="{{ q.brand }} logo" style="width: 64px; height: 64px; object-fit: contain"></div></sc-if>
+        <h1 style="margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -0.6px">{{ q.title }}</h1>
+        <div style="font-size: 14px; color: #5B6862">{{ q.sub }}</div>
+      </div>
+      <sc-if value="{{ q.notQuick }}" hint-placeholder-val="{{ true }}">
+      <div style="{{ q.gridStyle }}">
+        <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="3">
+          <button onClick="{{ o.pick }}" style="{{ o.style }}">
+            <sc-if value="{{ o.hasLogo }}" hint-placeholder-val="{{ false }}"><img src="{{ o.logo }}" alt="" style="width: 34px; height: 34px; flex: none; border-radius: 10px; object-fit: contain; background: #FFFFFF; padding: 3px; box-sizing: border-box"></sc-if><span style="{{ o.markStyle }}"><sc-if value="{{ o.sel }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span>
+            <span style="display: flex; flex-direction: column; gap: 2px"><span>{{ o.label }}</span><sc-if value="{{ o.hasSub }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 600; opacity: .8">{{ o.sub }}</span></sc-if></span>
+          </button>
+        </sc-for>
+      </div>
+      </sc-if>
+      <sc-if value="{{ q.isQuick }}" hint-placeholder-val="{{ false }}">
+      <div style="{{ qTileGrid }}">
+        <sc-for list="{{ q.opts }}" as="o" hint-placeholder-count="10">
+          <button onClick="{{ o.pick }}" role="checkbox" aria-checked="{{ o.sel }}" style="{{ o.tile }}; flex-direction: row; align-items: center; gap: 10px; min-height: 64px">
+            <sc-if value="{{ o.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ o.logo }}" alt="" style="width: 34px; height: 34px; flex: none; border-radius: 9px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #E8EEEA; padding: 4px; box-sizing: border-box"></sc-if>
+            <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; padding-right: 22px"><span style="font-size: 14px; line-height: 1.25; font-weight: 700; color: #0A0F0D">{{ o.label }}</span><span style="font-size: 12px; font-weight: 700; color: #5B6862">{{ o.sub }}</span></span>
+            <span style="{{ o.check }}; top: 50%; margin-top: -10px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+          </button>
+        </sc-for>
+      </div>
+      </sc-if>
+    </div>
+    <div style="padding: 10px 22px 26px">
+      <sc-if value="{{ q.isQuick }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickCont }}" disabled="{{ quickContDisabled }}" style="{{ quickContStyle }}">{{ quickContLabel }}</button><button onClick="{{ browseAll }}" style="display: block; width: 100%; min-height: 40px; margin-top: 6px; background: transparent; color: #12805C; font-size: 14px; font-weight: 800; text-decoration: underline">{{ browseLabel }}</button></sc-if>
+      <sc-if value="{{ q.notQuick }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ q.multi }}" hint-placeholder-val="{{ false }}"><button onClick="{{ next }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">{{ L.cont }}</button></sc-if></sc-if>
+      <sc-if value="{{ q.single }}" hint-placeholder-val="{{ true }}"><div style="text-align: center; font-size: 13px; font-weight: 600; color: #5B6862; padding: 16px 0">{{ L.tapAns }}</div></sc-if>
+    </div>
+  </sc-if>
+
+  <!-- PICKED SUMMARY -->
+  <sc-if value="{{ isPicked }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ pickedH }}</h1><div style="font-size: 15px; line-height: 1.5; color: #5B6862">{{ pickedSub }}</div></div>
+      <sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ true }}">
+        <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 4px 14px">
+          <sc-for list="{{ matches }}" as="m" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 1px solid #E8EEEA">
+              <sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 32px; height: 32px; flex: none; border-radius: 8px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #E8EEEA; padding: 4px; box-sizing: border-box"></sc-if>
+              <sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ m.tileStyle }}; width: 32px; height: 32px; flex: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">{{ m.initial }}</div></sc-if>
+              <span style="flex-grow: 1; min-width: 0; font-size: 15px; font-weight: 700">{{ m.co }}</span>
+              <span style="font-size: 13px; font-weight: 800; color: #5B6862">{{ m.amtLabel }}</span>
+            </div>
+          </sc-for>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0 10px"><span style="font-size: 14px; font-weight: 700; color: #43504A">{{ L.estSoFar }}</span><span style="font-size: 22px; font-weight: 800; color: #0F3B2E">{{ pickedTotal }}</span></div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 16px; background: #FFF8E1; box-shadow: inset 0 0 0 1px #FFE29A; text-align: left"><span style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: #3DDC97; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></span><span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.moreH }}</span><span style="font-size: 12.5px; line-height: 1.45; color: #43504A">{{ moreLine }}</span></span><button onClick="{{ browseAll }}" style="flex: none; margin-left: auto; min-height: 36px; padding: 0 14px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 12.5px; font-weight: 800; white-space: nowrap">{{ L.moreCheck }}</button></div></sc-if>
+    </div>
+    <div style="flex: none; padding: 8px 22px 22px">
+      <sc-if value="{{ hasPicked }}" hint-placeholder-val="{{ true }}"><button onClick="{{ quickCont }}" style="{{ quickContStyle }}">{{ quickContLabel }}</button></sc-if>
+      <button onClick="{{ browseAll }}" style="{{ browseStyle }}">{{ browseLabel }}</button>
+    </div>
+  </sc-if>
+
+  <!-- ALL OFFERS -->
+  <sc-if value="{{ isAll }}" hint-placeholder-val="{{ false }}">
+    <div style="flex: none; padding: 10px 22px 8px; display: flex; flex-direction: column; gap: 8px">
+      <h1 style="margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -0.6px">{{ allH }}</h1>
+      <div style="font-size: 14px; line-height: 1.45; color: #5B6862">{{ allSub }}</div>
+      <input type="search" value="{{ allQ }}" onChange="{{ setAllQ }}" placeholder="{{ searchPh }}" aria-label="{{ searchPh }}" style="height: 46px; border-radius: 12px; border: 1.5px solid #DDE5E0; padding: 0 14px; font-size: 16px; font-family: inherit; color: #0A0F0D; background: #FFFFFF; width: 100%; box-sizing: border-box">
+    </div>
+    <div class="scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 4px 22px 12px; display: flex; flex-direction: column; gap: 14px">
+      <sc-for list="{{ allGroups }}" as="g" hint-placeholder-count="3">
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #5B6862; text-transform: uppercase">{{ g.label }}</div>
+          <sc-for list="{{ g.items }}" as="o" hint-placeholder-count="3">
+            <button onClick="{{ o.pick }}" role="checkbox" aria-checked="{{ o.sel }}" style="{{ o.rowStyle }}">
+              <sc-if value="{{ o.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ o.logo }}" alt="" style="width: 32px; height: 32px; flex: none; border-radius: 8px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #E8EEEA; padding: 3px; box-sizing: border-box"></sc-if>
+              <sc-if value="{{ o.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ o.tileStyle }}; width: 32px; height: 32px; flex: none; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">{{ o.initial }}</div></sc-if>
+              <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ o.co }}</span><span style="font-size: 12px; line-height: 1.35; color: #43504A">{{ o.who }}</span></span>
+              <span style="flex: none; font-size: 12px; font-weight: 800; color: #5B6862; text-align: right; max-width: 92px">{{ o.amt }}</span>
+              <span style="{{ o.check }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            </button>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex: none; padding: 10px 22px 22px; border-top: 1px solid #E8EEEA"><button onClick="{{ quickCont }}" disabled="{{ quickContDisabled }}" style="{{ quickContStyle }}">{{ quickContLabel }}</button></div>
+  </sc-if>
+
+  <!-- CALCULATING -->
+  <sc-if value="{{ isCalc }}" hint-placeholder-val="{{ false }}">
+    <div style="flex-grow: 1; padding: 40px 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; text-align: center">
+      <div class="spin" style="width: 64px; height: 64px; border-radius: 50%; border: 6px solid #EAF2EE; border-top-color: #0F3B2E; box-sizing: border-box"></div>
+      <div style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px">{{ L.calcH }}</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start; font-size: 15px; font-weight: 600; color: #43504A">
+        <div class="t1">{{ calc1 }}</div>
+        <div class="t2">{{ L.calc2 }}</div>
+        <div class="t3">{{ L.calc3 }}</div>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- REVEAL: animated check -->
+  <sc-if value="{{ isReveal }}" hint-placeholder-val="{{ false }}">
+    <div class="scroll" style="flex-grow: 1; overflow-y: auto; padding: 22px 18px; display: flex; flex-direction: column; gap: 16px">
+      <sc-if value="{{ hasMatches }}" hint-placeholder-val="{{ true }}">
+        <div class="enter" style="font-size: 15px; font-weight: 700; color: #5B6862; text-align: center">{{ L.owed }}</div>
+        <div class="chk" style="position: relative; display: flex; border-radius: 6px; overflow: hidden; box-shadow: 0 2px 0 #C9D9CF, 0 26px 50px rgba(10,15,13,.18); color: #0A0F0D; background-color: #EEF6F1; background-image: repeating-radial-gradient(circle at 0 0, rgba(18,128,92,.06) 0 1px, transparent 1px 7px), repeating-linear-gradient(60deg, rgba(18,128,92,.05) 0 1px, transparent 1px 10px), repeating-linear-gradient(-60deg, rgba(18,128,92,.05) 0 1px, transparent 1px 10px)">
+          <div style="flex-grow: 1; min-width: 0; padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 10px; border: 1px solid #B9D3C5; border-radius: 6px; margin: 5px">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px">
+              <div style="display: flex; align-items: flex-start; gap: 7px"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><div style="display: flex; flex-direction: column; line-height: 1.25"><span style="font-size: 11px; font-weight: 800; color: #0F3B2E">CLAIMCLUB</span><span style="font-size: 8px; font-weight: 600; color: #5B6862">Settlement Estimate Services</span></div></div>
+              <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px"><span style="font-family: 'Courier New', monospace; font-size: 12px; font-weight: 700">0001</span><div style="display: flex; align-items: flex-end; gap: 4px"><span style="font-size: 8px; font-weight: 700; color: #5B6862">DATE</span><span class="write w0" style="font-family: Caveat, cursive; font-size: 16px; line-height: 1; border-bottom: 1px solid #5B6862; padding: 0 4px">{{ checkDate }}</span></div></div>
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 8px">
+              <span style="font-size: 8px; font-weight: 800; line-height: 1.15; color: #5B6862; flex: none">PAY TO THE<br>ORDER OF</span>
+              <div style="flex-grow: 1; border-bottom: 1px solid #5B6862; padding: 0 4px"><span class="write w1" style="font-family: Caveat, cursive; font-size: 24px; line-height: 1">{{ L.payee }}</span></div>
+              <div style="flex: none; display: flex; align-items: center; gap: 2px; background: #FFFFFF; border: 1px solid #5B6862; padding: 2px 8px"><span style="font-size: 14px; font-weight: 700">$</span><span class="write w2" style="font-family: Caveat, cursive; font-size: 22px; line-height: 1; color: #0F3B2E">{{ totalNum }}</span></div>
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 6px"><div style="flex-grow: 1; min-width: 0; border-bottom: 1px solid #5B6862; padding: 0 4px; white-space: nowrap; overflow: hidden"><span class="write w3" style="font-family: Caveat, cursive; font-size: 17px; line-height: 1.1">{{ amountWords }}</span></div><span style="font-size: 9px; font-weight: 800; color: #5B6862; flex: none">DOLLARS</span></div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px; min-height: 26px">
+              <span style="font-size: 8px; font-weight: 800; color: #5B6862; margin-right: 2px">FROM</span>
+              <sc-for list="{{ checkLogos }}" as="m" hint-placeholder-count="4">
+                <div class="lp" style="{{ m.popStyle }}; display: flex; align-items: center; gap: 5px; background: #FFFFFF; border: 1px solid #C9D9CF; border-radius: 99px; padding: 2px 8px 2px 2px">
+                  <sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: contain; background: #FFFFFF"></sc-if>
+                  <sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><span style="{{ m.tileStyle }}; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800">{{ m.initial }}</span></sc-if>
+                  <span style="font-size: 10px; font-weight: 700; white-space: nowrap">{{ m.co }}</span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ hasCheckMore }}" hint-placeholder-val="{{ false }}"><span class="lp" style="animation-delay: 2.9s; font-size: 10px; font-weight: 800; color: #12805C">{{ checkMore }}</span></sc-if>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 12px">
+              <div style="flex: 1 1 40%; display: flex; align-items: flex-end; gap: 4px"><span style="font-size: 8px; font-weight: 800; color: #5B6862">MEMO</span><span style="flex-grow: 1; border-bottom: 1px solid #5B6862; font-family: Caveat, cursive; font-size: 14px; line-height: 1.1; padding: 0 3px; white-space: nowrap">{{ countLabel }}</span></div>
+              <div style="flex: 1 1 55%; display: flex; flex-direction: column; align-items: stretch"><span class="sigw" style="font-family: 'Mrs Saint Delafield', cursive; font-size: 30px; line-height: .9; color: #0F3B2E; text-align: center; white-space: nowrap">Claim Club</span><span style="border-top: 1px solid #5B6862"></span></div>
+            </div>
+            <div aria-hidden="true" style="font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; color: #33433B; padding-top: 2px">&#9286;000000001&#9286; 0001 &#9288;000000</div>
+          </div>
+        </div>
+        <sc-if value="{{ hasVaries }}" hint-placeholder-val="{{ false }}"><div class="enter" style="font-size: 14px; font-weight: 700; color: #12805C; text-align: center">{{ variesLabel }}</div></sc-if>
+      </sc-if>
+      <sc-if value="{{ noMatches }}" hint-placeholder-val="{{ false }}">
+        <div style="font-size: 26px; line-height: 1.15; font-weight: 800; color: #0F3B2E">{{ L.noMatchH }}</div>
+        <div style="font-size: 15px; color: #43504A">{{ L.noMatchP }}</div>
+      </sc-if>
+      <div style="font-size: 11px; line-height: 1.6; color: #5B6862; text-align: center">{{ L.checkNote }}</div>
+      <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; padding: 12px 14px; border-radius: 16px; background: #FFF8E1; box-shadow: inset 0 0 0 1px #FFE29A; text-align: left"><span style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: #3DDC97; color: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14 M5 12h14"></path></svg></span><span style="flex: 1 1 200px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.moreH }}</span><span style="font-size: 12.5px; line-height: 1.45; color: #43504A">{{ moreLine }}</span></span><button onClick="{{ browseAll }}" style="flex: none; margin-left: auto; min-height: 36px; padding: 0 14px; border-radius: 99px; background: #0F3B2E; color: #FFFFFF; font-size: 12.5px; font-weight: 800; white-space: nowrap">{{ L.moreCheck }}</button></div></sc-if>
+    </div>
+    <div style="padding: 12px 22px 26px"><button onClick="{{ next }}" style="{{ primary }}">{{ L.claimMoney }}</button></div>
+  </sc-if>
+
+  <!-- EMAIL -->
+  <sc-if value="{{ isEmail }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 20px 22px 26px; display: flex; flex-direction: column; gap: 14px">
+      <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.saveH }}</h1>
+      <div style="font-size: 15px; color: #5B6862; margin-bottom: 6px">{{ L.saveP }}</div>
+      <button onClick="{{ quickSignIn }}" style="height: 54px; border-radius: 14px; background: #FFFFFF; color: #0A0F0D; border: 1.5px solid #DDE5E0; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"></path><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path></svg>{{ L.google }}</button>
+      <button onClick="{{ quickSignIn }}" style="height: 54px; border-radius: 14px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.appleBtn }}</button>
+      <label for="emailCD" style="font-size: 13px; font-weight: 700; color: #43504A; margin-top: 8px">{{ L.orEmail }}</label>
+      <input id="emailCD" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="{{ email }}" onChange="{{ onEmail }}" style="height: 54px; border-radius: 14px; border: 1.5px solid #DDE5E0; padding: 0 16px; font-size: 16px; font-family: inherit; color: #0A0F0D"><sc-if value="{{ hasEmailErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 12.5px; font-weight: 700; color: #C8323B">{{ emailErr }}</span></sc-if>
+      <button onClick="{{ emailNext }}" disabled="{{ emailDisabled }}" style="{{ emailStyle }}">{{ L.cont }}</button>
+    </div>
+  </sc-if>
+
+  <!-- DETAILS -->
+  <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.detH }}</h1><div style="font-size: 15px; line-height: 1.5; color: #5B6862">{{ L.detP }}</div></div>
+      <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px 10px">
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fFirst }}<input autocomplete="given-name" value="{{ p.first }}" onChange="{{ setFirst }}" style="{{ fs.first }}"><sc-if value="{{ fe.first }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.first }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fLast }}<input autocomplete="family-name" value="{{ p.last }}" onChange="{{ setLast }}" style="{{ fs.last }}"><sc-if value="{{ fe.last }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.last }}</span></sc-if></label>
+        <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fMiddle }}<input autocomplete="additional-name" value="{{ p.middle }}" onChange="{{ setMiddle }}" style="{{ fs.middle }}"><sc-if value="{{ fe.middle }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.middle }}</span></sc-if></label>
+        <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fStreet }}<input autocomplete="address-line1" value="{{ p.street }}" onChange="{{ setStreet }}" style="{{ fs.street }}"><sc-if value="{{ fe.street }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.street }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fApt }}<input autocomplete="address-line2" value="{{ p.apt }}" onChange="{{ setApt }}" style="{{ fs.apt }}"></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fCity }}<input autocomplete="address-level2" value="{{ p.city }}" onChange="{{ setCity }}" style="{{ fs.city }}"><sc-if value="{{ fe.city }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.city }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fState }}<select autocomplete="address-level1" onChange="{{ pickSt }}" style="{{ fs.st }}; appearance: auto"><sc-for list="{{ stOpts }}" as="o" hint-placeholder-count="5"><option value="{{ o.v }}" selected="{{ o.sel }}">{{ o.l }}</option></sc-for></select><sc-if value="{{ fe.st }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.st }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fZip }}<input autocomplete="postal-code" inputmode="numeric" value="{{ p.zip }}" onChange="{{ setZip }}" style="{{ fs.zip }}"><sc-if value="{{ fe.zip }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.zip }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fPhone }}<input type="tel" autocomplete="tel" inputmode="tel" value="{{ p.phone }}" onChange="{{ setPhone }}" style="{{ fs.phone }}"><sc-if value="{{ fe.phone }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.phone }}</span></sc-if></label>
+        <label style="display: flex; flex-direction: column; gap: 5px; font-size: 12px; font-weight: 700; color: #43504A">{{ L.fDob }}<input autocomplete="bday" placeholder="MM/DD/YYYY" value="{{ p.dob }}" onChange="{{ setDob }}" style="{{ fs.dob }}"><sc-if value="{{ fe.dob }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: #C8323B">{{ fe.dob }}</span></sc-if></label>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 600; color: #5B6862"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ L.detSafe }}</div>
+    </div>
+    <div style="padding: 10px 22px 24px"><sc-if value="{{ hasDetErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-bottom: 8px; padding: 10px 12px; border-radius: 12px; background: #FFF0F0; color: #A1262E; font-size: 13px; font-weight: 700">{{ detErrMsg }}</div></sc-if><button onClick="{{ detNext }}" disabled="{{ detDisabled }}" style="{{ detStyle }}">{{ L.cont }}</button></div>
+  </sc-if>
+
+  <!-- CLAIM AUTHORIZATION -->
+  <sc-if value="{{ isAuth }}" hint-placeholder-val="{{ false }}">
+    <div style="flex-grow: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 44px; padding: 0 36px 14px">
+      <div class="enter" style="flex: none; width: 528px; height: 683px; box-sizing: border-box; background: #FFFFFF; border: 1px solid #CFDAD3; box-shadow: 0 1px 2px rgba(10,15,13,.06), 0 24px 50px rgba(10,15,13,.12); padding: 26px 30px 16px; display: flex; flex-direction: column; gap: 10px; font-size: 10px; line-height: 1.45; color: #0A0F0D">
+        <div style="display: flex; align-items: flex-start; gap: 10px; padding-bottom: 8px; border-bottom: 2px solid #0A0F0D">
+          <sc-if value="{{ auth.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ auth.logo }}" alt="" style="width: 32px; height: 32px; flex: none; border-radius: 7px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 4px; box-sizing: border-box"></sc-if>
+          <sc-if value="{{ auth.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ auth.tileStyle }}; width: 32px; height: 32px; flex: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px">{{ auth.initial }}</div></sc-if>
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1.2px; color: #5B6862">{{ auth.kind }}</span><span style="font-family: 'Instrument Serif', serif; font-size: 19px; line-height: 1.1">{{ auth.co }} {{ auth.title }}</span></div>
+          <div style="flex: none; display: flex; flex-direction: column; align-items: flex-end; gap: 2px"><svg width="18" height="18" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-family: 'Courier New', monospace; font-size: 8px; color: #5B6862">FORM CC-1</span></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; gap: 10px; font-size: 9.5px; font-weight: 700; color: #43504A"><span>{{ auth.metaLine }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 1px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.rClass }}</span><span>{{ auth.who }}</span></div>
+        <div style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secClaimant }}</span>
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-top: 1px solid #9AA8A0; border-left: 1px solid #9AA8A0"><sc-for list="{{ auth.rows }}" as="r" hint-placeholder-count="4"><div style="border-right: 1px solid #9AA8A0; border-bottom: 1px solid #9AA8A0; padding: 3px 6px; display: flex; flex-direction: column"><span style="font-size: 7.5px; font-weight: 700; color: #5B6862">{{ r.k }}</span><span style="font-weight: 700; font-size: 10.5px">{{ r.v }}</span></div></sc-for></div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secAnswers }}</span>
+          <sc-for list="{{ auth.answers }}" as="r" hint-placeholder-count="2"><div style="display: flex; gap: 10px; justify-content: space-between; align-items: baseline; padding: 2px 0; border-bottom: 1px dotted #9AA8A0"><span style="color: #43504A">{{ r.k }}</span><span style="font-weight: 800; text-align: right">{{ r.v }}</span></div></sc-for>
+        </div>
+        <sc-if value="{{ auth.hasCert }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secCert }} <span style="font-weight: 600; letter-spacing: 0; font-style: italic; margin-left: 4px">({{ L.certNote }})</span></span><p style="margin: 0; font-family: 'Instrument Serif', serif; font-size: 12px; line-height: 1.35; border: 1px solid #9AA8A0; padding: 6px 9px">{{ auth.cert }}</p></div></sc-if>
+        <div style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 8px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.secFile }}</span><p style="margin: 0; color: #43504A">{{ auth.attest }}</p></div>
+        <button onClick="{{ auth.toggleConsent }}" role="checkbox" aria-checked="{{ auth.consentOn }}" style="display: flex; align-items: center; gap: 8px; text-align: left; background: transparent; padding: 0; font-size: 10px; line-height: 1.4; font-weight: 700; color: #0A0F0D"><span style="{{ auth.consentBox }}; width: 18px; height: 18px; border-radius: 4px"><sc-if value="{{ auth.consentOn }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.consentTxt }}<span style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</span>.</span></button>
+        <div style="margin-top: auto; display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 16px; align-items: end">
+          <div style="display: flex; flex-direction: column; gap: 3px">
+            <sc-if value="{{ auth.unsigned }}" hint-placeholder-val="{{ true }}"><button onClick="{{ auth.sign }}" style="height: 44px; border-radius: 6px; background: #FFF8E1; color: #0F3B2E; border: 1.5px dashed #3DDC97; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 7px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>{{ L.tapSign }}</button></sc-if>
+            <sc-if value="{{ auth.signed }}" hint-placeholder-val="{{ false }}"><div style="height: 44px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid #0A0F0D; overflow: hidden"><span class="sigw" style="animation-delay: 0s; font-family: 'Mrs Saint Delafield', cursive; font-size: 32px; line-height: 1; color: #0F3B2E; white-space: nowrap">{{ auth.sigName }}</span></div></sc-if>
+            <span style="font-size: 7.5px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.sigLine }} · {{ auth.printName }}</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 3px"><div style="height: 44px; display: flex; align-items: flex-end; border-bottom: 1px solid #0A0F0D; padding: 0 3px"><span style="font-family: Caveat, cursive; font-size: 18px; line-height: 1.2">{{ auth.sigDate }}</span></div><span style="font-size: 7.5px; font-weight: 800; letter-spacing: 1px; color: #5B6862">{{ L.dateW }}</span></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; border-top: 1px solid #E8EEEA; padding-top: 6px; font-size: 7.5px; color: #5B6862"><span>claimclub.io · Claim Filing Authorization Agreement v1.0</span><span>{{ auth.step }}</span></div>
+      </div>
+      <div style="flex: 0 1 380px; display: flex; flex-direction: column; gap: 14px">
+        <span style="font-size: 13px; font-weight: 800; color: #5B6862">{{ auth.step }}</span>
+        <div style="height: 6px; border-radius: 99px; background: #E8EEEA; overflow: hidden"><div style="{{ auth.bar }}"></div></div>
+        <h1 style="margin: 4px 0 0; font-size: 30px; line-height: 1.1; font-weight: 800; letter-spacing: -1px">{{ L.authH }}</h1>
+        <p style="margin: 0; font-size: 15px; line-height: 1.55; color: #43504A">{{ L.authHelp }}</p>
+        <div style="height: 8px"></div>
+        <button onClick="{{ auth.submit }}" disabled="{{ auth.cantSubmit }}" style="{{ auth.submitStyle }}">{{ L.submitAuth }}</button>
+        <div style="display: flex; justify-content: space-between; align-items: center"><button onClick="{{ auth.edit }}" style="min-height: 44px; background: transparent; color: #12805C; font-size: 14px; font-weight: 800">{{ L.editForm }}</button><button onClick="{{ auth.skip }}" style="min-height: 44px; background: transparent; color: #5B6862; font-size: 14px; font-weight: 700">{{ L.skip }}</button></div>
+        <span style="font-size: 12px; font-weight: 600; color: #5B6862">{{ L.eachNote }}</span>
+        <sc-if value="{{ hasSa }}" hint-placeholder-val="{{ true }}"><button onClick="{{ openSa }}" style="min-height: 48px; border-radius: 999px; background: #FFFFFF; color: #0F3B2E; box-shadow: inset 0 0 0 1.5px #0F3B2E; font-size: 15px; font-weight: 800">{{ saBtnLabel }}</button></sc-if>
+      </div>
+    </div>
+    <sc-if value="{{ saOpen }}" hint-placeholder-val="{{ false }}">
+      <div style="position: absolute; inset: 0; z-index: 40; background: rgba(10,15,13,.45); display: flex; align-items: center; justify-content: center">
+        <div class="enter" role="dialog" aria-modal="true" aria-label="{{ L.saH }}" style="width: 100%; max-width: 520px; max-height: 92%; background: #FFFFFF; border-radius: 24px; padding: 18px 20px 20px; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px">
+          <div style="display: flex; justify-content: space-between; align-items: center"><h2 style="margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.5px">{{ L.saH }}</h2><button onClick="{{ closeSa }}" style="min-height: 36px; background: transparent; color: #5B6862; font-size: 14px; font-weight: 700">{{ L.cancelW }}</button></div>
+          <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #43504A">{{ L.saP }}</p>
+          <div class="scroll" style="flex: 1 1 auto; min-height: 60px; max-height: 210px; overflow-y: auto; border: 1px solid #DDE5E0; border-radius: 14px; padding: 2px 12px">
+            <sc-for list="{{ saList }}" as="f" hint-placeholder-count="3">
+              <div style="display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid #E8EEEA">
+                <sc-if value="{{ f.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ f.logo }}" alt="" style="width: 28px; height: 28px; flex: none; border-radius: 7px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 3px; box-sizing: border-box"></sc-if>
+                <sc-if value="{{ f.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ f.tileStyle }}; width: 28px; height: 28px; flex: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px">{{ f.initial }}</div></sc-if>
+                <span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column"><span style="font-size: 13.5px; font-weight: 800">{{ f.title }}</span><span style="font-family: 'Courier New', monospace; font-size: 10px; color: #5B6862">FORM CC-1 · {{ f.amt }}</span></span>
+              </div>
+            </sc-for>
+          </div>
+          <button onClick="{{ toggleSaConsent }}" role="checkbox" aria-checked="{{ saConsentOn }}" style="display: flex; align-items: flex-start; gap: 10px; text-align: left; background: transparent; padding: 0; font-size: 12.5px; line-height: 1.45; font-weight: 600; color: #0A0F0D"><span style="{{ saBox }}"><sc-if value="{{ saConsentOn }}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span>{{ L.saConsent }}<span style="color: #12805C; text-decoration: underline">{{ L.agreeLink }}</span>.</span></button>
+          <sc-if value="{{ saUnsigned }}" hint-placeholder-val="{{ true }}"><button onClick="{{ saSign }}" style="height: 52px; border-radius: 10px; background: #FFF8E1; color: #0F3B2E; border: 1.5px dashed #3DDC97; font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>{{ L.tapSign }}</button></sc-if>
+          <sc-if value="{{ saSigned }}" hint-placeholder-val="{{ false }}"><div style="height: 52px; display: flex; align-items: flex-end; justify-content: center; border-bottom: 1px solid #0A0F0D; overflow: hidden"><span class="sigw" style="animation-delay: 0s; font-family: 'Mrs Saint Delafield', cursive; font-size: 36px; line-height: 1; color: #0F3B2E; white-space: nowrap">{{ auth.sigName }}</span></div></sc-if>
+          <button onClick="{{ saGo }}" disabled="{{ saDisabled }}" style="{{ saStyle }}">{{ saGoLabel }}</button>
+        </div>
+      </div>
+    </sc-if>
+
+  </sc-if>
+
+  <!-- FILING FEE -->
+  <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.feeH }}</h1><div style="font-size: 15px; line-height: 1.5; color: #5B6862">{{ L.feeSub }}</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 14px 30px rgba(10,15,13,.06)">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #5B6862">{{ L.feeHead }}</span><span style="font-size: 12px; font-weight: 800; color: #5B6862">{{ billCount }}</span></div>
+        <div class="scroll" style="max-height: 132px; overflow-y: auto; display: flex; flex-direction: column">
+          <sc-for list="{{ billItems }}" as="b" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #DDE5E0">
+              <sc-if value="{{ b.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ b.logo }}" alt="" style="width: 28px; height: 28px; flex: none; border-radius: 7px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 3px; box-sizing: border-box"></sc-if>
+              <sc-if value="{{ b.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ b.tileStyle }}; width: 28px; height: 28px; flex: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px">{{ b.initial }}</div></sc-if>
+              <span style="flex-grow: 1; min-width: 0; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ b.title }}</span>
+              <span style="font-size: 12px; font-weight: 700; color: #5B6862">{{ b.amt }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$19.99</span></div>
+        <div style="font-size: 11.5px; line-height: 1.5; color: #5B6862">{{ L.feeTerms }}</div>
+      </div>
+      <button onClick="{{ unlock }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
+      <button onClick="{{ unlock }}" style="{{ primary }}; flex: none">{{ L.payBtn }}</button>
+      <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.orW }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
+      <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 8px 10px 8px 22px; border-radius: 999px; background: #0F3B2E; color: #FFFFFF; text-align: left">
+        <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 800">{{ L.memPromoH }}</span><span style="font-size: 12px; opacity: .8">{{ L.memPromoP2 }}</span></span>
+        <span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 92px; height: 48px; padding: 0 12px; border-radius: 999px; background: #3DDC97; color: #0F3B2E; line-height: 1"><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px">$7.99</span><span style="font-size: 10.5px; font-weight: 800">{{ L.perMo }}</span></span>
+      </button>
+    </div>
+  </sc-if>
+
+  <!-- MEMBERSHIP PLANS -->
+  <sc-if value="{{ isPlans }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 6px 22px 8px; display: flex; flex-direction: column; gap: 10px; align-items: stretch; text-align: center">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 10px; color: #9AA8A0"><svg width="22" height="34" viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M17 32C8 28 4 20 6 8"></path><path d="M6 12c-3-1-4-4-3-6 3 1 4 3 3 6z M7 19c-3 0-5-2-5-5 3 0 5 2 5 5z M10 25c-3 1-6-1-6-3 3-1 5 0 6 3z"></path></svg><span style="display: flex; flex-direction: column; align-items: center; line-height: 1.15"><span style="font-size: 20px; font-weight: 800; color: #43504A">{{ memberCount }}</span><span style="font-size: 11.5px; font-weight: 700; color: #5B6862">{{ L.members }}</span><span style="color: #3DDC97; font-size: 13px; letter-spacing: 1px">★★★★★</span></span><svg width="22" height="34" viewBox="0 0 22 34" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="transform: scaleX(-1)"><path d="M17 32C8 28 4 20 6 8"></path><path d="M6 12c-3-1-4-4-3-6 3 1 4 3 3 6z M7 19c-3 0-5-2-5-5 3 0 5 2 5 5z M10 25c-3 1-6-1-6-3 3-1 5 0 6 3z"></path></svg></div>
+      <div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; color: #5B6862">{{ L.potential }}</span><span style="font-size: 40px; line-height: 1.05; font-weight: 800; letter-spacing: -1.4px; color: #12805C">{{ allValue }}</span><span style="font-size: 12.5px; font-weight: 700; color: #5B6862">{{ potentialSub }}</span></div>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding-top: 4px"><h1 style="margin: 0; font-size: 26px; line-height: 1.1; font-weight: 800; letter-spacing: -0.8px">{{ L.plansH }}</h1><span style="font-size: 13.5px; color: #5B6862">{{ L.plansSub }}</span></div>
+      <sc-for list="{{ plans }}" as="p" hint-placeholder-count="3">
+        <button onClick="{{ p.pick }}" role="radio" aria-checked="{{ p.sel }}" style="{{ p.style }}">
+          <sc-if value="{{ p.best }}" hint-placeholder-val="{{ false }}"><span style="display: block; width: 100%; padding: 5px 0; background: #0F3B2E; color: #FFFFFF; font-size: 11px; font-weight: 800; letter-spacing: 1.4px; text-align: center">{{ L.bestValue }}</span></sc-if>
+          <span style="display: flex; flex-direction: column; gap: 6px; padding: 14px 16px; width: 100%; box-sizing: border-box">
+            <span style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-size: 13px; font-weight: 800; letter-spacing: .4px; color: #0A0F0D">{{ p.name }}</span><sc-if value="{{ p.hasSave }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11.5px; font-weight: 800; color: #12805C; background: #E9F6EF; padding: 2px 8px; border-radius: 99px">{{ p.save }}</span></sc-if></span>
+            <span style="display: flex; justify-content: space-between; align-items: baseline; gap: 8px"><span style="font-size: 22px; font-weight: 800; color: #0A0F0D">{{ p.per }}<span style="font-size: 14px; font-weight: 600; color: #5B6862">{{ p.unit }}</span></span><span style="font-size: 14px; font-weight: 700; color: #43504A">{{ p.total }}</span></span>
+            <span style="font-size: 13px; color: #5B6862">{{ p.billed }}</span>
+          </span>
+        </button>
+      </sc-for>
+      <div style="display: flex; flex-direction: column; gap: 2px; padding: 4px 0"><span style="font-size: 19px; font-weight: 800; color: #0A0F0D">{{ L.stopLaw }}</span><span style="font-size: 13.5px; color: #5B6862">{{ L.keep100 }}</span></div>
+    </div>
+    <div style="flex: none; padding: 8px 22px 16px; border-top: 1px solid #E8EEEA; display: flex; flex-direction: column; gap: 6px; text-align: center">
+      <span style="font-size: 12px; color: #5B6862">{{ L.noCommit }}</span>
+      <button onClick="{{ subscribe }}" style="{{ primary }}">{{ L.startPaid }}</button>
+      <span style="font-size: 11.5px; color: #5B6862">{{ planRenew }}</span>
+      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><span>{{ L.termsW }}</span><span>{{ L.privacyW }}</span></div>
+    </div>
+  </sc-if>
+
+  <!-- CHECKOUT -->
+  <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
+    <sc-if value="{{ coIdle }}" hint-placeholder-val="{{ true }}">
+      <div class="enter scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 14px">
+        <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.coH }}</h1>
+        <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><span style="font-size: 15px; font-weight: 800">{{ coItem }}</span><span style="font-size: 15px; font-weight: 800">{{ coPrice }}</span></div>
+          <div style="font-size: 12.5px; line-height: 1.45; color: #5B6862">{{ coSub }}</div>
+          <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #E8EEEA; padding-top: 8px; margin-top: 2px"><span style="font-size: 14px; font-weight: 700; color: #43504A">{{ L.dueToday2 }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">{{ coPrice }}</span></div>
+        </div>
+        <button onClick="{{ payNow }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
+        <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 700"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.coOr }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
+        <div class="fgroup" style="border: 1.5px solid #DDE5E0; border-radius: 14px; overflow: hidden; background: #FFFFFF">
+          <input inputmode="numeric" autocomplete="cc-number" placeholder="{{ L.coCard }}" aria-label="{{ L.coCard }}" value="{{ card }}" onChange="{{ setCard }}" style="display: block; width: 100%; box-sizing: border-box; height: 50px; border: 0; border-bottom: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
+          <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)">
+            <input inputmode="numeric" autocomplete="cc-exp" placeholder="{{ L.coExp }}" aria-label="{{ L.coExp }}" value="{{ exp }}" onChange="{{ setExp }}" style="min-width: 0; height: 50px; border: 0; border-right: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
+            <input inputmode="numeric" autocomplete="cc-csc" placeholder="{{ L.coCvc }}" aria-label="{{ L.coCvc }}" value="{{ cvc }}" onChange="{{ setCvc }}" style="min-width: 0; height: 50px; border: 0; border-right: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
+            <input inputmode="numeric" autocomplete="postal-code" placeholder="{{ L.coZip }}" aria-label="{{ L.coZip }}" value="{{ czip }}" onChange="{{ setCzip }}" style="min-width: 0; height: 50px; border: 0; padding: 0 14px; font-size: 16px; font-family: inherit">
+          </div>
+        </div>
+        <sc-if value="{{ hasCardErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top: -6px; font-size: 12.5px; font-weight: 700; color: #C8323B">{{ cardErrText }}</div></sc-if>
+        <div style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.45; color: #5B6862"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ L.coSecure }}</div>
+      </div>
+      <div style="flex: none; padding: 8px 22px 22px"><button onClick="{{ payCard }}" disabled="{{ payCardDisabled }}" style="{{ payCardStyle }}">{{ coPayLabel }}</button></div>
+    </sc-if>
+    <sc-if value="{{ coBusy }}" hint-placeholder-val="{{ false }}">
+      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 30px">
+        <div style="width: 56px; height: 56px; border-radius: 50%; border: 5px solid #E8EEEA; border-top-color: #12805C; animation: spin .9s linear infinite"></div>
+        <div style="font-size: 18px; font-weight: 800">{{ L.coBusyT }}</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{ coDone }}" hint-placeholder-val="{{ false }}">
+      <div class="enter" style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; text-align: center; padding: 30px">
+        <div style="width: 72px; height: 72px; border-radius: 50%; background: #12805C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; animation: lpop .45s cubic-bezier(.2,1.4,.4,1) both"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></div>
+        <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px">{{ L.coDoneT }} · {{ coPrice }}</div>
+        <div style="font-size: 15px; color: #5B6862">{{ L.coDoneP }}</div>
+      </div>
+    </sc-if>
+  </sc-if>
+
+  <!-- BANK CONNECT -->
+  <sc-if value="{{ isBank }}" hint-placeholder-val="{{ false }}">
+    <div class="enter" style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF">
+      <div style="position: relative; flex: 1 1 52%; min-height: 0; overflow: hidden; background: radial-gradient(120% 80% at 100% 0%, rgba(255,255,255,.14), transparent 50%), radial-gradient(90% 70% at 0% 100%, rgba(255,255,255,.08), transparent 60%), linear-gradient(160deg, #0F3B2E, #1B6B4D 60%, #2A8A63)">
+        <button onClick="{{ skipBank }}" aria-label="{{ L.notNow }}" style="position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,.22); color: #FFFFFF; display: flex; align-items: center; justify-content: center; z-index: 3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button>
+        <div style="position: absolute; left: 50%; bottom: -40px; width: 200px; height: 300px; margin-left: -100px; border-radius: 38px; background: #10131A; padding: 8px; box-sizing: border-box; box-shadow: 0 30px 60px rgba(0,0,0,.35)"><div style="width: 100%; height: 100%; border-radius: 30px; background: linear-gradient(180deg, #CFEFE0, #9ED8BC 70%, #7CC7A4)"></div><div style="position: absolute; top: 18px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 99px; background: #10131A"></div></div>
+        <div class="notif" style="position: absolute; left: 50%; bottom: 70px; width: 300px; max-width: 88%; transform: translateX(-50%); z-index: 2">
+          <div style="position: absolute; left: 6%; right: 6%; top: 14px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.55)"></div>
+          <div style="position: absolute; left: 12%; right: 12%; top: 26px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.35)"></div>
+          <div style="position: relative; display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,255,255,.96); box-shadow: 0 16px 34px rgba(0,0,0,.2)">
+            <div style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg></div>
+            <div style="display: flex; flex-direction: column; gap: 1px; text-align: left; min-width: 0"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.payoutTitle }} 🎉</span><span style="font-size: 12.5px; line-height: 1.35; color: #43504A">{{ payoutLine }}</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="position: relative; flex: none; margin-top: -26px; border-radius: 28px 28px 0 0; background: #FFFFFF; padding: 18px 22px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; z-index: 2">
+        <sc-if value="{{ showDots }}" hint-placeholder-val="{{ true }}"><div style="display: flex; gap: 5px"><span style="{{ dot1 }}"></span><span style="{{ dot2 }}"></span><span style="{{ dot3 }}"></span></div></sc-if>
+        <h1 style="margin: 4px 0 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 32px; line-height: 1.1; color: #0A0F0D">{{ L.bankH1 }}<br><em style="color: #12805C">{{ L.bankH2 }}</em></h1>
+        <p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5B6862; max-width: 360px">{{ L.bankP }}</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 14px; font-size: 12px; font-weight: 700; color: #12805C"><span style="display: inline-flex; gap: 5px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path></svg>{{ L.bankSec }}</span><span style="display: inline-flex; gap: 5px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ L.bankEnc }}</span><span style="display: inline-flex; gap: 5px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>{{ L.bankRO }}</span></div>
+        <sc-if value="{{ bankTodo }}" hint-placeholder-val="{{ true }}"><button onClick="{{ connectBankAct }}" style="{{ primary }}">{{ L.connectBank }}</button></sc-if>
+        <sc-if value="{{ bankDone }}" hint-placeholder-val="{{ false }}"><div style="width: 100%; height: 54px; border-radius: 999px; background: #E9F6EF; color: #17603F; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 16px; font-weight: 800"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>{{ L.connected }}</div></sc-if>
+        <button onClick="{{ skipBank }}" style="min-height: 32px; background: transparent; color: #5B6862; font-size: 14px; font-weight: 700">{{ L.notNow }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- MEMBERSHIP PERKS (onboarding pages) -->
+  <sc-if value="{{ isPerks }}" hint-placeholder-val="{{ false }}">
+    <div class="enter" style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF">
+      <div style="position: relative; flex: 1 1 52%; min-height: 0; overflow: hidden; background: radial-gradient(120% 80% at 100% 0%, rgba(255,255,255,.14), transparent 50%), radial-gradient(90% 70% at 0% 100%, rgba(255,255,255,.08), transparent 60%), linear-gradient(160deg, #0F3B2E, #1B6B4D 60%, #2A8A63)">
+        <div style="position: absolute; top: 14px; left: 16px; display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 8px; border-radius: 99px; background: rgba(255,255,255,.16); color: #FFFFFF; font-size: 12.5px; font-weight: 800; z-index: 3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>{{ L.memberActive }}</div>
+        <button onClick="{{ perkSkip }}" style="position: absolute; top: 12px; right: 14px; min-height: 34px; padding: 0 14px; border-radius: 99px; background: rgba(0,0,0,.22); color: #FFFFFF; font-size: 13px; font-weight: 700; z-index: 3">{{ L.skipW }}</button>
+        <div style="position: absolute; left: 50%; bottom: -40px; width: 220px; height: 300px; margin-left: -110px; border-radius: 38px; background: #10131A; padding: 8px; box-sizing: border-box; box-shadow: 0 30px 60px rgba(0,0,0,.35)">
+          <div style="width: 100%; height: 100%; border-radius: 30px; background: #F3F6F4; padding: 34px 10px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; overflow: hidden">
+            <sc-if value="{{ isPerk1 }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #5B6862; padding: 0 2px">YOUR CLAIMS</div>
+              <sc-for list="{{ perkMatches }}" as="m" hint-placeholder-count="4">
+                <div style="display: flex; align-items: center; gap: 6px; background: #FFFFFF; border-radius: 10px; padding: 6px; box-shadow: 0 1px 2px rgba(10,15,13,.06)">
+                  <sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 20px; height: 20px; flex: none; border-radius: 5px; object-fit: contain"></sc-if>
+                  <sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ m.tileStyle }}; width: 20px; height: 20px; flex: none; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800">{{ m.initial }}</div></sc-if>
+                  <span style="flex-grow: 1; min-width: 0; font-size: 10.5px; font-weight: 800; color: #0A0F0D; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.co }}</span>
+                  <span style="font-size: 8.5px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 2px 5px; border-radius: 99px">{{ m.st }}</span>
+                </div>
+              </sc-for>
+            </sc-if>
+          </div>
+          <div style="position: absolute; top: 18px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 99px; background: #10131A"></div>
+        </div>
+        <sc-if value="{{ isPerk2 }}" hint-placeholder-val="{{ false }}">
+          <div class="notif" style="position: absolute; left: 50%; bottom: 70px; width: 300px; max-width: 88%; transform: translateX(-50%); z-index: 2">
+            <div style="position: absolute; left: 6%; right: 6%; top: 14px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.55)"></div>
+            <div style="position: absolute; left: 12%; right: 12%; top: 26px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.35)"></div>
+            <div style="position: relative; display: flex; align-items: center; gap: 10px; padding: 12px; border-radius: 18px; background: rgba(255,255,255,.96); box-shadow: 0 16px 34px rgba(0,0,0,.2)">
+              <div style="width: 40px; height: 40px; flex: none; border-radius: 10px; background: #0F3B2E; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg></div>
+              <div style="display: flex; flex-direction: column; gap: 1px; text-align: left; min-width: 0"><span style="font-size: 14px; font-weight: 800; color: #0A0F0D">{{ L.newMatchT }} 🔔</span><span style="font-size: 12.5px; line-height: 1.35; color: #43504A">{{ newMatch.line }}</span></div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+      <div style="position: relative; flex: none; margin-top: -26px; border-radius: 28px 28px 0 0; background: #FFFFFF; padding: 18px 22px 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; z-index: 2">
+        <div style="display: flex; gap: 5px"><span style="{{ dot1 }}"></span><span style="{{ dot2 }}"></span><span style="{{ dot3 }}"></span></div>
+        <span style="font-size: 11px; font-weight: 800; letter-spacing: 1.4px; color: #5B6862">{{ L.youHave }}</span>
+        <sc-if value="{{ isPerk1 }}" hint-placeholder-val="{{ true }}"><h1 style="margin: 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 32px; line-height: 1.1; color: #0A0F0D">{{ L.pk1a }}<br><em style="color: #12805C">{{ L.pk1b }}</em></h1><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5B6862; max-width: 360px">{{ L.pk1p }}</p></sc-if>
+        <sc-if value="{{ isPerk2 }}" hint-placeholder-val="{{ false }}"><h1 style="margin: 0; font-family: 'Instrument Serif', serif; font-weight: 400; font-size: 32px; line-height: 1.1; color: #0A0F0D">{{ L.pk2a }}<br><em style="color: #12805C">{{ L.pk2b }}</em></h1><p style="margin: 0; font-size: 14px; line-height: 1.5; color: #5B6862; max-width: 360px">{{ L.pk2p }}</p></sc-if>
+        <button onClick="{{ perkNext }}" style="{{ primary }}">{{ L.nextW }}</button>
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- DASHBOARD -->
+  <sc-if value="{{ isDash }}" hint-placeholder-val="{{ false }}">
+    <div style="padding: 4px 22px 12px; display: flex; flex-direction: column; gap: 10px">
+      <div style="display: flex; justify-content: space-between; align-items: center"><div style="font-size: 22px; font-weight: 800; letter-spacing: -0.6px">{{ L.yourClaims }}</div><button onClick="{{ restart }}" style="background: transparent; color: #5B6862; font-size: 13px; font-weight: 700; min-height: 44px">{{ L.restart }}</button></div>
+      <div style="display: flex; align-items: baseline; gap: 8px"><div style="font-size: 32px; font-weight: 800; letter-spacing: -1px; color: #0F3B2E">{{ filedLabel }}</div><div style="font-size: 14px; font-weight: 600; color: #5B6862">{{ filedOfLabel }}</div></div>
+      <div style="height: 6px; border-radius: 99px; background: #E8EEEA; overflow: hidden"><div style="{{ filedBar }}"></div></div>
+    </div>
+    <div class="scroll enter" style="flex-grow: 1; overflow-y: auto; padding: 4px 22px 24px; display: flex; flex-direction: column; gap: 10px">
+      <sc-for list="{{ matches }}" as="m" hint-placeholder-count="4">
+        <div style="border: 1px solid #E8EEEA; border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px">
+          <div style="display: flex; gap: 12px; align-items: center">
+            <sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 40px; height: 40px; flex: none; border-radius: 10px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box"></sc-if><sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ m.tileStyle }}; width: 40px; height: 40px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800">{{ m.initial }}</div></sc-if>
+            <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="font-size: 14px; font-weight: 800">{{ m.co }}</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">{{ m.deadline }}</div></div>
+            <div style="font-size: 14px; font-weight: 800; white-space: nowrap">{{ m.amtLabel }}</div>
+          </div>
+          <div style="display: flex; align-items: center; justify-content: space-between">
+            <div style="{{ m.tagStyle }}">{{ m.tag }}</div>
+            <sc-if value="{{ m.notDone }}" hint-placeholder-val="{{ true }}"><button onClick="{{ m.act }}" style="{{ m.btnStyle }}">{{ m.btn }}</button></sc-if>
+            <sc-if value="{{ m.done }}" hint-placeholder-val="{{ false }}"><div style="font-size: 13px; font-weight: 800; color: #17603F">{{ m.doneLabel }}</div></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </sc-if>
+      </div>
+    </main>
+  </div>
+</div>
+</template><div id="root"></div>
+<script src="../runtime.js"></script><script src="../live.js"></script><script>
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
+      p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } };
+  }
+  dict() {
+    return {
+      notLaw: ['Not a law firm · Free to check', 'No somos abogados · Revisar es gratis'],
+      qWord: ['Question', 'Pregunta'], of: ['of', 'de'],
+      estSoFar: ['YOUR ESTIMATE SO FAR', 'TU ESTIMADO HASTA AHORA'], matched: ['matched', 'encontrados'],
+      asideEmpty: ['Settlements you match will appear here as you answer.', 'Los acuerdos que coincidan aparecerán aquí mientras respondes.'],
+      b1: ['Every settlement is court-approved', 'Cada acuerdo está aprobado por un tribunal'], b2: ['We pre-fill and submit your claims', 'Llenamos y enviamos tus reclamos'],
+      b3: ['Payouts come straight from the settlement', 'Los pagos vienen directo del acuerdo'], b4: ['Cancel anytime', 'Cancela cuando quieras'],
+      asideNote: ['Amounts are caps or estimates from each settlement notice and are not guaranteed.', 'Los montos son límites o estimados de cada aviso y no están garantizados.'],
+      i1a: ["There's money out there with ", 'Hay dinero por ahí con '], i1b: ['your name on it.', 'tu nombre.'],
+      i1p: ['Companies settle class action lawsuits all the time. Most people never claim their share.', 'Las empresas resuelven demandas colectivas todo el tiempo. La mayoría de la gente nunca reclama su parte.'],
+      exHead: ['REAL SETTLEMENTS, OPEN NOW', 'ACUERDOS REALES, ABIERTOS AHORA'], exNote: ['Examples', 'Ejemplos'],
+      exFoot: ['Just examples. Your own matches show up after a few quick questions.', 'Solo son ejemplos. Tus coincidencias aparecen después de unas preguntas rápidas.'],
+      next: ['Next', 'Siguiente'], start: ['Get started', 'Comenzar'], cont: ['Continue', 'Continuar'],
+      i2a: ['You answer ', 'Tú respondes '], i2b: [' questions. We do the paperwork.', ' preguntas. Nosotros hacemos el papeleo.'],
+      match: ['Match', 'Busca'], matchP: ['Tap yes or no on brands. Each one is a real, open settlement.', 'Responde sí o no sobre marcas. Cada una es un acuerdo real y abierto.'],
+      file: ['File', 'Reclama'], fileP: ['We pre-fill each claim form. You sign with a tap.', 'Llenamos cada formulario por ti. Tú firmas con un toque.'],
+      paid: ['Get paid', 'Cobra'], paidP: ['We track every claim until the settlement pays you.', 'Damos seguimiento a cada reclamo hasta que el acuerdo te pague.'],
+      disclaim: ['Claimclub is a claims preparation service, not a law firm or settlement administrator. Payouts are decided by courts and administrators.', 'Claimclub es un servicio de preparación de reclamos, no un bufete de abogados ni un administrador de acuerdos. Los pagos los deciden los tribunales y administradores.'],
+      stateH: ['Which state do you live in?', '¿En qué estado vives?'], stateP: ['Some settlements only pay residents of certain states.', 'Algunos acuerdos solo pagan a residentes de ciertos estados.'],
+      tapAns: ['Tap an answer to continue', 'Toca una respuesta para continuar'],
+      calcH: ['Checking your answers', 'Revisando tus respuestas'], calcA: ['Matching against ', 'Comparando con '], calcB: [' found', ''],
+      calc2: ['Checking deadlines and state rules', 'Revisando fechas límite y reglas estatales'], calc3: ['Estimating your payout', 'Calculando tu pago'],
+      owed: ['Based on your answers, you could be owed', 'Según tus respuestas, podrías recibir'],
+      noMatchH: ['No matches yet, but new settlements open every week.', 'Aún no hay coincidencias, pero cada semana se abren nuevos acuerdos.'],
+      noMatchP: ["Add your email and we'll alert you when one fits.", 'Agrega tu correo y te avisaremos cuando haya uno para ti.'],
+      checkNote: ["This check is an illustration of your estimate, not a payment. Amounts come from each settlement's notice and are not guaranteed.", 'Este cheque ilustra tu estimado, no es un pago. Los montos vienen del aviso de cada acuerdo y no están garantizados.'],
+      claimMoney: ['Claim my money', 'Reclamar mi dinero'],
+      saveH: ['Save your matches', 'Guarda tus coincidencias'], saveP: ["We'll use this to pre-fill your claims and send deadline reminders.", 'Lo usaremos para llenar tus reclamos y enviarte recordatorios de fechas límite.'],
+      google: ['Continue with Google', 'Continuar con Google'], appleBtn: ['Continue with Apple', 'Continuar con Apple'], orEmail: ['Or enter your email', 'O escribe tu correo'],
+      detH: ['Your details', 'Tus datos'], detP: ['These go on every claim form. Use your legal name and current address.', 'Van en cada formulario de reclamo. Usa tu nombre legal y tu dirección actual.'],
+      fFirst: ['First name', 'Nombre'], fMiddle: ['Middle (optional)', 'Segundo nombre (opcional)'], fLast: ['Last name', 'Apellido'],
+      fStreet: ['Street address', 'Dirección'], fApt: ['Apt, suite (optional)', 'Apto., suite (opcional)'], fCity: ['City', 'Ciudad'], fState: ['State', 'Estado'], fZip: ['ZIP', 'Código postal'],
+      fPhone: ['Mobile phone', 'Teléfono celular'], fDob: ['Date of birth (optional)', 'Fecha de nacimiento (opcional)'],
+      detSafe: ['Encrypted and used only for your claims. We never sell your data.', 'Cifrado y usado solo para tus reclamos. Nunca vendemos tus datos.'],
+      authH: ['Claim authorization form', 'Formulario de autorización de reclamo'], claimWord: ['Claim', 'Reclamo'],
+      secClaimant: ['A. CLAIMANT', 'A. RECLAMANTE'], secClaim: ['CLAIM', 'RECLAMO'], secAuth: ['AUTHORIZATION', 'AUTORIZACIÓN'],
+      rName: ['Full name', 'Nombre completo'], rAddr: ['Address', 'Dirección'], rEmail: ['Email', 'Correo'], rPhone: ['Phone', 'Teléfono'],
+      rSettle: ['Settlement', 'Acuerdo'], rEst: ['Estimated payout', 'Pago estimado'], rDl: ['Claim deadline', 'Fecha límite'], rClass: ['Class definition', 'Definición del grupo'],
+      notGiven: ['Not provided', 'No proporcionado'],
+      tapSign: ['Tap to sign', 'Toca para firmar'], sigLine: ['Signature', 'Firma'], dateW: ['Date', 'Fecha'], printName: ['Print name', 'Nombre en letra de molde'],
+      editForm: ['Edit details', 'Editar datos'], skip: ['Skip for now', 'Omitir por ahora'], submitAuth: ['Submit signed form', 'Enviar formulario firmado'],
+      secAnswers: ['B. CLAIM FORM ANSWERS', 'B. RESPUESTAS DEL FORMULARIO'], secCert: ['C. SETTLEMENT CERTIFICATION', 'C. CERTIFICACIÓN DEL ACUERDO'], secFile: ['D. FILING AUTHORIZATION', 'D. AUTORIZACIÓN DE PRESENTACIÓN'],
+      payoutQ: ['Payout method', 'Método de pago'], payoutA: ['Paper check to the address above', 'Cheque por correo a la dirección de arriba'],
+      certNote: ['As printed on the official claim form', 'Tal como aparece en el formulario oficial'],
+      consentTxt: ['I agree to sign electronically and have read the ', 'Acepto firmar electrónicamente y he leído el '], agreeLink: ['Claim Filing Authorization Agreement', 'Acuerdo de Autorización de Presentación de Reclamos'],
+      eachNote: ['Each claim needs its own signature.', 'Cada reclamo necesita su propia firma.'],
+      authHelp: ['Read the form, check the box at the bottom, then tap the signature line to sign. We submit it after your filing fee is paid.', 'Lee el formulario, marca la casilla de abajo y toca la línea de firma para firmar. Lo enviamos después de pagar tu tarifa.'],
+      payUpTo: ['You could be owed up to', 'Podrías recibir hasta'], fromW: ['from ', 'de '],
+      member: ['Claimclub membership', 'Membresía Claimclub'], month: ['/ month', '/ mes'],
+      unlockA: ['Unlock all ', 'Desbloquea los '], unlockB: [' by name', ' por nombre'],
+      track: ['Track every claim until it pays', 'Seguimiento de cada reclamo hasta el pago'], alerts: ['Alerts when new settlements match you', 'Alertas cuando un nuevo acuerdo coincida contigo'],
+      startMem: ['Start membership · $19.99/mo', 'Iniciar membresía · $19.99/mes'],
+      billed: ['Billed monthly. Cancel anytime. You can also file any claim yourself, free, on its official settlement site.', 'Cobro mensual. Cancela cuando quieras. También puedes presentar cualquier reclamo tú mismo, gratis, en su sitio oficial.'],
+      yourClaims: ['Your claims', 'Tus reclamos'], restart: ['Restart demo', 'Reiniciar demo'], filedOf: ['filed of up to ', 'presentado de hasta '],
+      payee: ['You', 'Usted'],
+      feeH: ['File your claims', 'Presenta tus reclamos'], feeSub: ['One filing fee covers every claim below. We submit them as soon as you pay.', 'Una sola tarifa cubre todos los reclamos de abajo. Los enviamos en cuanto pagues.'],
+      feeHead: ['FILING SUMMARY', 'RESUMEN DE PRESENTACIÓN'], included: ['Included', 'Incluido'],
+      feeLine: ['Filing fee', 'Tarifa de presentación'], estBack: ['Estimated back to you', 'Estimado que podrías recibir'], dueToday: ['Due today', 'A pagar hoy'],
+      payBtn: ['Pay filing fee · $19.99', 'Pagar tarifa · $19.99'], applePay: ['Pay with Apple Pay', 'Pagar con Apple Pay'],
+      feeTerms: ['One-time filing fee for the claims above. No subscription. Settlement payouts go straight to you; we never take a cut.', 'Tarifa única por los reclamos de arriba. Sin suscripción. Los pagos de los acuerdos van directo a ti; nunca nos quedamos con una parte.'],
+      orW: ['or', 'o'], memPromoH: ['Or join and file free', 'O únete y presenta gratis'],
+      memPromoP: ['We file every claim you match, now and as new settlements open. Plans from $7.99/month.', 'Presentamos cada reclamo que coincida contigo, ahora y cuando se abran nuevos acuerdos. Planes desde $7.99 al mes.'],
+      seePlans: ['See membership plans', 'Ver planes de membresía'], memPromoP2: ['First filing free · from', 'Primera presentación gratis · desde'], perMo: ['/ month', '/ mes'],
+      plansH: ['Choose your plan', 'Elige tu plan'], plansSub: ['Every plan includes unlimited filing. Your first filing is free.', 'Todos los planes incluyen presentaciones ilimitadas. Tu primera presentación es gratis.'],
+      potential: ['Your potential claim value', 'Valor potencial de tus reclamos'], members: ['members', 'miembros'],
+      bestValue: ['BEST VALUE', 'MEJOR VALOR'], stopLaw: ['Stop paying lawyers.', 'Deja de pagarle a abogados.'], keep100: ['Keep 100% of your payouts.', 'Quédate con el 100% de tus pagos.'],
+      noCommit: ['No commitment. Cancel anytime.', 'Sin compromiso. Cancela cuando quieras.'], startPaid: ['Start getting paid', 'Empieza a cobrar'],
+      termsW: ['Terms', 'Términos'], privacyW: ['Privacy', 'Privacidad'],
+      bankH1: ['Never miss your', 'Nunca te pierdas tus'], bankH2: ['payout updates', 'avisos de pago'],
+      bankP: ['Connect the account your settlement payments go to. We alert you the moment a payout lands. Read-only: we can never move your money.', 'Conecta la cuenta donde recibes los pagos de los acuerdos. Te avisamos en cuanto llegue un pago. Solo lectura: nunca podemos mover tu dinero.'],
+      bankSec: ['Bank-level security', 'Seguridad bancaria'], bankEnc: ['256-bit encryption', 'Cifrado de 256 bits'], bankRO: ['Read-only', 'Solo lectura'],
+      connectBank: ['Connect bank account', 'Conectar cuenta bancaria'], notNow: ['Not now', 'Ahora no'], connected: ['Bank connected', 'Banco conectado'],
+      payoutTitle: ['Payout received', 'Pago recibido'],
+      pk1a: ['Your claims,', 'Tus reclamos,'], pk1b: ['all in one dashboard', 'en un solo panel'],
+      pk1p: ['See every claim you filed and exactly where it stands, from submitted to paid, plus anything that still needs you.', 'Ve cada reclamo que presentaste y en qué etapa está, de enviado a pagado, y lo que aún necesita de ti.'],
+      pk2a: ['Constant updates on', 'Avisos constantes de'], pk2b: ['new claims you qualify for', 'nuevos reclamos para ti'],
+      pk2p: ['New settlements open every week. We check each one against your answers and tell you the moment you can file.', 'Cada semana se abren nuevos acuerdos. Revisamos cada uno con tus respuestas y te avisamos en cuanto puedas presentar.'],
+      newMatchT: ['New claim match', 'Nuevo reclamo para ti'], youHave: ['YOUR MEMBERSHIP INCLUDES', 'TU MEMBRESÍA INCLUYE'], nextW: ['Next', 'Siguiente'], skipW: ['Skip', 'Omitir'],
+      memberActive: ['Membership active', 'Membresía activa'],
+      coH: ['Checkout', 'Pago'], coOr: ['or pay with card', 'o paga con tarjeta'], coCard: ['Card number', 'Número de tarjeta'], coExp: ['MM / YY', 'MM / AA'], coCvc: ['CVC', 'CVC'], coZip: ['ZIP', 'C.P.'],
+      coSecure: ['Payments are encrypted and processed by our payment partner. We never store your full card number.', 'Los pagos están cifrados y los procesa nuestro socio de pagos. Nunca guardamos el número completo de tu tarjeta.'],
+      coBusyT: ['Processing payment', 'Procesando el pago'], coDoneT: ['Payment received', 'Pago recibido'], coDoneP: ['Thanks! One more quick step.', '¡Gracias! Un paso más.'], dueToday2: ['Due today', 'A pagar hoy'],
+      saBtn: ['Sign all forms at once', 'Firmar todos a la vez'], saH: ['Sign all your claim forms', 'Firma todos tus formularios'],
+      saP: ['Your details are already on every form. One signature applies to each form listed below, and each one is filed under your name.', 'Tus datos ya están en cada formulario. Una firma se aplica a cada formulario de la lista, y cada uno se presenta a tu nombre.'],
+      saConsent: ['I have reviewed these forms, the statements in each are true, and I agree to sign each one electronically under the ', 'Revisé estos formularios, las declaraciones de cada uno son verdaderas y acepto firmar cada uno electrónicamente según el '],
+      cancelW: ['Cancel', 'Cancelar'],
+      moreH: ['That is just your top 10', 'Eso es solo de tus 10 principales'],
+      moreCheck: ['Check the other offers', 'Revisar las demás ofertas'],
+      paidH: ['Payment received', 'Pago recibido'], perksH: ['Your membership also includes', 'Tu membresía también incluye'],
+      perksSub: ['Your membership is active and your first filing is free. Here is what it does for you every month.', 'Tu membresía está activa y tu primera presentación es gratis. Esto es lo que hace por ti cada mes.'],
+      toDash: ['Go to my claims', 'Ir a mis reclamos'],
+      p1: ['New settlement alerts', 'Alertas de nuevos acuerdos'], p1d: ['We check new settlements weekly and tell you when one matches.', 'Revisamos acuerdos nuevos cada semana y te avisamos en cuanto uno coincide contigo.'],
+      p2: ['One-tap filing for new matches', 'Presentación con un toque'], p2d: ['Future claims come pre-filled and ready to sign.', 'Tus datos quedan guardados, así que los próximos reclamos ya vienen listos para firmar.'],
+      p3: ['Claim tracking', 'Seguimiento de reclamos'], p3d: ['See where every claim stands, from submitted to approved to paid.', 'Ve el estado de cada reclamo, de enviado a aprobado a pagado.'],
+      p4: ['Deadline and document reminders', 'Recordatorios de fechas y documentos'], p4d: ['If an administrator needs more, we tell you what and when.', 'Si un administrador pide más información, te decimos qué enviar y cuándo.'],
+      p5: ['Payout alerts', 'Alertas de pago'], p5d: ['Know when money is sent, so no check goes uncashed.', 'Sabrás cuándo un acuerdo empieza a pagar, para que ningún cheque se quede sin cobrar.'],
+      p6: ['Arbitration claim matching', 'Reclamos de arbitraje'], p6d: ['Partner law firms for claims worth more than a settlement.', 'Te conectamos con bufetes asociados para reclamos que pagan más que un acuerdo.']
+    };
+  }
+  quickMode() { return true; }
+  quiz() {
+    const st = this.state.st, es = this.state.lang === 'es';
+    const yn = (id) => [[id, 'Yes', 'Sí'], ['no', 'No', 'No']];
+    const TOP = [
+      { key: 'apple', brand: 'Apple', cat: 'apps', title: ['Did you buy an iPhone 15 Pro, 15 Pro Max or any iPhone 16?', '¿Compraste un iPhone 15 Pro, 15 Pro Max o cualquier iPhone 16?'], sub: ['Bought in the U.S. in 2024 or 2025.', 'Comprado en EE. UU. en 2024 o 2025.'], opts: yn('apple') },
+      { key: 'amazon', brand: 'Amazon', cat: 'products', title: ['Have you ever returned something to Amazon?', '¿Alguna vez devolviste algo a Amazon?'], sub: ['Any return since 2017. Some refunds came late, short or never.', 'Cualquier devolución desde 2017. Algunos reembolsos llegaron tarde, incompletos o nunca.'], opts: yn('amazon') },
+      { key: 'visa', brand: 'Visa & Mastercard', cat: 'bank', title: ["Have you paid a fee to use another bank's ATM?", '¿Has pagado una comisión por usar el cajero de otro banco?'], sub: ['Any out-of-network ATM fee in the U.S.', 'Cualquier comisión de cajero fuera de tu red en EE. UU.'], opts: yn('visa') },
+      { key: 'googleplay', brand: 'Google Play', cat: 'apps', title: ['Have you bought apps or in-app items on Google Play?', '¿Has comprado apps o artículos dentro de apps en Google Play?'], sub: ['On any Android phone or tablet.', 'En cualquier teléfono o tableta Android.'], opts: yn('googleplay') },
+      { key: 'realpage', brand: 'RealPage', cat: 'bank', title: ['Do you rent in a large apartment building?', '¿Rentas en un edificio grande de apartamentos?'], sub: ['Many big landlords set rents with RealPage software.', 'Muchos grandes arrendadores fijan rentas con el software de RealPage.'], opts: yn('realpage') },
+      { key: 'tyson', brand: 'Tyson & beef packers', cat: 'products', title: ['Have you bought beef at a grocery store?', '¿Has comprado carne de res en el supermercado?'], sub: ['Ground beef, steaks or roasts from a store.', 'Carne molida, filetes o asados de una tienda.'], opts: yn('tyson') },
+      { key: 'cvs', brand: 'CVS', cat: 'privacy', title: ['Have you used the CVS website or app?', '¿Has usado el sitio web o la app de CVS?'], sub: ['To shop, fill prescriptions or book a visit.', 'Para comprar, surtir recetas o agendar una cita.'], opts: yn('cvs') },
+      { key: 'goodrx', brand: 'GoodRx', cat: 'health', title: ['Have you used GoodRx?', '¿Has usado GoodRx?'], sub: ['The app or a GoodRx discount card for a prescription.', 'La app o una tarjeta de descuento GoodRx para una receta.'], opts: yn('goodrx') },
+      { key: 'netflix', brand: 'Netflix', cat: 'arb', title: ['Do you have a Netflix account?', '¿Tienes cuenta de Netflix?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('netflix') },
+      { key: 'openai', brand: 'ChatGPT', cat: 'arb', title: ['Do you use ChatGPT?', '¿Usas ChatGPT?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('openai') }
+    ];
+    if (this.quickMode()) return TOP.map(q => Object.assign({}, q, { title: q.title[es ? 1 : 0], sub: q.sub[es ? 1 : 0], opts: q.opts.map(o => [o[0], es ? o[2] : o[1]]) }));
+    const Q = [
+      { key: 'apple', brand: 'Apple', cat: 'apps', title: ['Did you buy an iPhone 15 Pro, 15 Pro Max or any iPhone 16?', '¿Compraste un iPhone 15 Pro, 15 Pro Max o cualquier iPhone 16?'], sub: ['Bought in the U.S. in 2024 or 2025.', 'Comprado en EE. UU. en 2024 o 2025.'], opts: [['apple', 'Yes', 'Sí'], ['no', 'No', 'No']] },
+      { key: 'amazon', brand: 'Amazon', cat: 'products', title: ['Has Amazon ever refunded a return late, short, or not at all?', '¿Amazon te reembolsó una devolución tarde, incompleta o nunca?'], sub: ['Any return since September 2017.', 'Cualquier devolución desde septiembre de 2017.'], opts: [['amazon', 'Yes', 'Sí'], ['amazon', 'Not sure', 'No estoy seguro'], ['no', 'No', 'No']] },
+      { key: 'bofa', brand: 'Bank of America', cat: 'bank', title: ['Did Bank of America deny your dispute of a debit card or ATM charge?', '¿Bank of America rechazó tu disputa de un cargo de débito o cajero?'], sub: ['An unauthorized charge you reported between May 2023 and July 2026.', 'Un cargo no autorizado que reportaste entre mayo de 2023 y julio de 2026.'], opts: [['bofa', 'Yes', 'Sí'], ['no', 'No', 'No']] },
+      { key: 'apps', multi: true, cat: 'apps', cols: 2, title: ['Have you used any of these?', '¿Has usado alguno de estos?'], sub: ['Tap all that apply.', 'Toca todos los que apliquen.'],
+        opts: [['cvs', 'CVS website or app', 'Sitio o app de CVS'], ['goodrx', 'GoodRx', 'GoodRx'], ['kroger', 'Kroger pharmacy, with insurance', 'Farmacia Kroger, con seguro'], ['googleplay', 'Bought apps on Google Play', 'Compraste apps en Google Play'],
+          ['knotts', "Six Flags Knott's or Great America tickets", "Boletos de Six Flags Knott's o Great America"], ['seatgeek', 'SeatGeek tickets for a Nevada event', 'Boletos de SeatGeek para un evento en Nevada']]
+          .concat(st === 'CA' ? [['venetian', 'The Venetian Las Vegas website', 'Sitio web de The Venetian Las Vegas']] : []).concat(st === 'IL' ? [['neutrogena', 'Neutrogena Skin360 skin scan', 'Escaneo de piel Neutrogena Skin360']] : []).concat([['none', 'None of these', 'Ninguno']]) },
+      { key: 'accts', multi: true, cat: 'arb', cols: 2, title: ['Do you have an account with any of these?', '¿Tienes cuenta en alguno de estos?'], sub: ['Privacy claims filed through a partner law firm. Tap all that apply.', 'Reclamos de privacidad presentados por un bufete asociado. Toca todos los que apliquen.'],
+        opts: [['netflix', 'Netflix', 'Netflix'], ['youtube', 'YouTube', 'YouTube'], ['google', 'Google', 'Google'], ['openai', 'ChatGPT', 'ChatGPT'], ['disney', 'Disney+', 'Disney+'], ['yahoo', 'Yahoo', 'Yahoo'],
+          ['ubereats', 'Uber Eats', 'Uber Eats'], ['walgreens', 'Walgreens', 'Walgreens'], ['bestbuy', 'Best Buy', 'Best Buy'], ['myfitnesspal', 'MyFitnessPal', 'MyFitnessPal'], ['flo', 'Flo', 'Flo'], ['ubisoft', 'Ubisoft', 'Ubisoft'],
+          ['equinox', 'Equinox', 'Equinox'], ['lemonade', 'Lemonade', 'Lemonade'], ['fanatics', 'Fanatics', 'Fanatics'], ['vesync', 'VeSync or Levoit', 'VeSync o Levoit'], ['ups', 'UPS My Choice', 'UPS My Choice']]
+          .concat(['CA', 'PA', 'FL', 'WA', 'MA'].includes(st) || st === 'Other' ? [['bn', 'Barnes & Noble', 'Barnes & Noble']] : []).concat(st === 'CA' ? [['alo', 'Alo Yoga', 'Alo Yoga']] : []).concat([['none', 'None of these', 'Ninguno']]) },
+      { key: 'prod', multi: true, cat: 'products', cols: 2, title: ['Have you bought or owned any of these?', '¿Has comprado o tenido alguno de estos?'], sub: ['Tap all that apply. No receipts needed for most.', 'Toca todos los que apliquen. La mayoría no pide recibos.'],
+        opts: [['squatch', 'Dr. Squatch soap or deodorant', 'Jabón o desodorante Dr. Squatch'], ['thinkware', 'A Thinkware dash cam', 'Una cámara Thinkware'], ['tyson', 'Beef from a grocery store', 'Carne de res del supermercado'], ['pork', 'Pork from a grocery store', 'Carne de cerdo del supermercado'],
+          ['kia', '2016 to 2017 Kia Optima or 2017 Sportage', 'Kia Optima 2016 a 2017 o Sportage 2017'], ['hyundaikia', 'A Hyundai or Kia with an airbag recall', 'Un Hyundai o Kia con retiro de bolsas de aire'], ['toyota', 'A Toyota with an airbag recall', 'Un Toyota con retiro de bolsas de aire'], ['deere', 'John Deere equipment repaired at a dealer', 'Equipo John Deere reparado en un distribuidor'],
+          ['smarttv', 'A smart TV', 'Una smart TV'], ['dexcom', 'A Dexcom glucose monitor', 'Un monitor de glucosa Dexcom']]
+          .concat(st === 'CA' ? [['vanilla', 'A Vanilla gift card that got drained', 'Una tarjeta Vanilla que vaciaron']] : []).concat([['none', 'None of these', 'Ninguno']]) },
+      { key: 'money', multi: true, cat: 'bank', cols: 2, title: ['Any of these happen with your money?', '¿Te pasó algo de esto con tu dinero?'], sub: ['Tap all that apply.', 'Toca todos los que apliquen.'],
+        opts: [['visa', 'Paid an out-of-network ATM fee', 'Pagaste una comisión en un cajero de otro banco'], ['realpage', 'Rented in a large apartment building', 'Rentaste en un edificio grande de apartamentos'], ['equifax', 'Disputed an error with Equifax', 'Disputaste un error con Equifax'], ['transunion', 'Have a TransUnion credit report', 'Tienes un reporte de crédito de TransUnion'],
+          ['westernunion', 'Sent money to a scammer by Western Union', 'Enviaste dinero a un estafador por Western Union'], ['navy', 'Navy Federal denied a loan fraud claim', 'Navy Federal rechazó un reclamo de fraude'], ['bright', 'Took a loan from Bright Lending', 'Pediste un préstamo a Bright Lending'], ['onemain', 'Took a loan from OneMain', 'Pediste un préstamo a OneMain'], ['none', 'None of these', 'Ninguno']] },
+      { key: 'breach', multi: true, cat: 'privacy', cols: 2, title: ['Did you get a data breach notice from any of these?', '¿Recibiste un aviso de filtración de datos de alguno de estos?'], sub: ['An email or letter saying your information was exposed.', 'Un correo o carta diciendo que tus datos quedaron expuestos.'],
+        opts: [['columbia', 'Columbia University', 'Columbia University'], ['davita', 'DaVita', 'DaVita'], ['sirva', 'Sirva', 'Sirva'], ['bauer', 'Bauer Built', 'Bauer Built'], ['woodloch', 'Woodloch Pines', 'Woodloch Pines'], ['benkeith', 'Ben E. Keith', 'Ben E. Keith'], ['safefleet', 'Safe Fleet', 'Safe Fleet'], ['tennis', 'Merchant of Tennis', 'Merchant of Tennis'],
+          ['jbs', 'JBS', 'JBS'], ['renal', 'Innovative Renal Care', 'Innovative Renal Care'], ['prime', 'Prime Healthcare', 'Prime Healthcare'], ['pp', 'LSC lab testing', 'Laboratorio LSC'], ['ey', 'EY', 'EY'], ['apollomd', 'ApolloMD', 'ApolloMD'], ['none', 'None of these', 'Ninguno']] },
+      { key: 'other', multi: true, cat: 'apps', cols: 2, title: ['Did any of these happen to you?', '¿Te pasó alguno de estos?'], sub: ['Tap all that apply.', 'Toca todos los que apliquen.'],
+        opts: [['nissan', 'Marketing texts from Al Piemonte Nissan', 'Mensajes de Al Piemonte Nissan'], ['connectamerica', 'Calls or texts from ConnectAmerica', 'Llamadas o mensajes de ConnectAmerica'], ['indegene', 'Marketing texts from Indegene', 'Mensajes de Indegene'], ['suffolk', 'Paid a Suffolk County red-light camera fee', 'Pagaste una multa de semáforo en Suffolk County'],
+          ['hirevue', 'Did a HireVue video job interview', 'Hiciste una entrevista en video con HireVue'], ['sandoz', 'Paid for generic prescriptions', 'Pagaste medicamentos genéricos'], ['cone', 'Used the Cone Health patient portal', 'Usaste el portal de Cone Health'], ['duke', 'Used the Duke Health patient portal', 'Usaste el portal de Duke Health'], ['xactus', 'Had a mortgage credit check', 'Te hicieron un chequeo de crédito hipotecario'], ['none', 'None of these', 'Ninguno']] },
+      { key: 'invest', multi: true, cat: 'invest', cols: 2, title: ['Any of these apply to you?', '¿Alguno de estos aplica a ti?'], sub: ['Investments and work. Tap all that apply.', 'Inversiones y trabajo. Toca todos los que apliquen.'],
+        opts: [['ni', 'Owned National Instruments stock in 2022', 'Acciones de National Instruments en 2022'], ['skin', 'Bought BeautyHealth stock, 2022 to 2023', 'Acciones de BeautyHealth, 2022 a 2023'], ['marqeta', 'Bought Marqeta stock in 2024', 'Acciones de Marqeta en 2024'], ['twitter', 'Sold Twitter stock in 2022', 'Vendiste acciones de Twitter en 2022'], ['upsfair', 'Bought UPS stock', 'Compraste acciones de UPS'],
+          ['capone', 'In the Capital One 401(k)', 'En el 401(k) de Capital One'], ['starbucks', 'Got a Starbucks COBRA notice', 'Recibiste un aviso COBRA de Starbucks'], ['stv', 'Applied to an STV job in Washington', 'Solicitaste empleo en STV en Washington'], ['none', 'None of these', 'Ninguno']] }
+    ];
+    return Q.map(q => Object.assign({}, q, { title: q.title[es ? 1 : 0], sub: q.sub[es ? 1 : 0], opts: q.opts.map(o => [o[0], es ? o[2] : o[1]]) }));
+  }
+  matched() {
+    const a = this.state.a, D = this.data(), ids = new Set();
+    Object.values(a).forEach(v => (Array.isArray(v) ? v : [v]).forEach(x => { if (x && x !== 'no' && x !== 'none') ids.add(x); }));
+    return D.filter(d => ids.has(d.id) && this.daysLeft(d.dl) > 0);
+  }
+  answerOf(id) {
+    const Q = this.quiz(), a = this.state.a, es = this.state.lang === 'es';
+    for (const q of Q) {
+      const v = a[q.key];
+      if (q.multi ? (v || []).includes(id) : v === id) {
+        const o = q.opts.find(x => x[0] === id);
+        return q.multi ? { q: q.title, a: o[1] + (es ? ': Sí' : ': Yes') } : { q: q.title, a: o ? o[1] : (es ? 'Sí' : 'Yes') };
+      }
+    }
+    const d = this.data().find(x => x.id === id);
+    return d ? { q: d.who, a: es ? 'Sí' : 'Yes' } : { q: '', a: '' };
+  }
+  authList() { return this.matched().filter(m => m.mode === 'here'); }
+  componentDidUpdate() {
+    if (this.stepName() === 'calc' && !this._calc) {
+      this._calc = setTimeout(() => { this._calc = null; this.go(1); }, 2600);
+    }
+  }
+  componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
+  steps() {
+    if (this.quickMode()) return ['intro1'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks', 'bank', 'dash']);
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks', 'dash']);
+  }
+  stepName() { return this.steps()[this.state.step]; }
+  go(d) {
+    const S = this.steps(), noAuth = this.authList().length === 0;
+    this.setState(st => {
+      let n = st.step + d;
+      if (d < 0 && S[n] === 'calc') n -= 1;
+      if (S[n] === 'all' && !st.sawAll) n += d;
+      if (S[n] === 'auth' && noAuth) n += d;
+      const extra = {};
+      if (S[n] === 'auth') extra.ai = d < 0 ? Math.max(0, this.authList().length - 1) : 0;
+      return Object.assign({ step: Math.max(0, Math.min(S.length - 1, n)) }, extra);
+    });
+  }
+  back() {
+    if (this.stepName() === 'auth' && this.state.ai > 0) { this.setState({ ai: this.state.ai - 1 }); return; }
+    this.go(-1);
+  }
+  renderVals() {
+    const s = this.state, K = this.cats(), S = this.skin(), Q = this.quiz(), name = this.stepName();
+    const es = s.lang === 'es', D = this.dict(), L = {};
+    Object.keys(D).forEach(k => { L[k] = D[k][es ? 1 : 0]; });
+    const ml = this.matched();
+    const settle = ml.filter(m => m.cat !== 'arb'), arbs = ml.filter(m => m.cat === 'arb');
+    const total = settle.reduce((t, m) => t + m.amt, 0);
+    const varies = settle.filter(m => !m.amt).length;
+    const qIndex = name && name[0] === 'q' ? Number(name.slice(1)) : -1;
+    const quick = this.quickMode();
+    const qTotal = quick ? Q.length : Q.length + 1;
+    const qNum = name === 'state' ? 1 : qIndex >= 0 ? qIndex + (quick ? 1 : 2) : 0;
+    const plural = (n, en1, enN, es1, esN) => n + ' ' + (es ? (n === 1 ? es1 : esN) : (n === 1 ? en1 : enN));
+    const countLabel = plural(ml.length, 'settlement', 'settlements', 'acuerdo', 'acuerdos');
+    const amtOf = (m) => m.cat === 'arb' ? (m.max ? (es ? 'Hasta ' : 'Up to ') + this.money(m.max) : (es ? 'Arbitraje' : 'Arbitration')) : m.amt > 0 ? (es ? 'Hasta ' : 'Up to ') + this.money(m.amt) : (es ? 'Varía' : 'Varies');
+    let q = { opts: [], multi: false, single: false };
+    let nextDisabled = true;
+    if (qIndex >= 0) {
+      const raw = Q[qIndex], qc = K[raw.cat], cur = s.a[raw.key];
+      q = {
+        title: raw.title, sub: raw.sub, multi: !!raw.multi, single: !raw.multi, hasBrand: !!raw.brand, brand: raw.brand || '', catLabel: qc.label,
+        brandLogo: raw.brand ? (this.logos()[raw.key] || '') : '', hasBrandLogo: !!(raw.brand && this.logos()[raw.key]),
+        brandStyle: S.brand(qc), isQuick: false, notQuick: true, gridStyle: 'display:grid;grid-template-columns:repeat(' + (raw.cols || 1) + ',minmax(0,1fr));gap:10px',
+        opts: raw.opts.map(([id, label], oi) => {
+          const sel = raw.multi ? (cur || []).includes(id) : (cur === id && s['l_' + raw.key] === oi);
+          const d = this.data().find(x => x.id === id);
+          const c = d ? K[d.cat] : K.invest;
+          return {
+            logo: raw.multi ? (this.logos()[id] || '') : '', hasLogo: !!(raw.multi && this.logos()[id]), label, sel, sub: d && raw.multi ? amtOf(d) : '', hasSub: !!(d && raw.multi),
+            style: S.opt(sel, c, !!raw.multi), markStyle: S.mark(sel, c, !!raw.multi),
+            tile: 'position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;padding:9px 10px;border-radius:14px;background:' + (sel ? '#EAF2EE' : '#FFFFFF') + ';box-shadow:inset 0 0 0 ' + (sel ? '2px #0F3B2E' : '1.5px #DDE5E0') + ';min-height:0',
+            check: 'position:absolute;top:8px;right:8px;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;' + (sel ? 'background:#0F3B2E;color:#FFFFFF' : 'box-shadow:inset 0 0 0 1.5px #CFDAD3;color:transparent'),
+            pick: () => this.pick(raw, id, oi, d)
+          };
+        })
+      };
+      nextDisabled = !(raw.multi && (cur || []).length > 0);
+    }
+    const states = ['CA', 'TX', 'FL', 'NY', 'IL', 'PA', 'OH', 'GA', 'WA', 'NJ', 'NC', 'Other'].map(x => ({
+      label: x === 'Other' ? (es ? 'Otro' : 'Other') : x, style: S.stateBtn(s.st === x), pick: () => { this.setState({ st: x }); clearTimeout(this._t); this._t = setTimeout(() => this.go(1), 300); }
+    }));
+    const em = (s.email || '').trim().toLowerCase();
+    const disposable = /@(mailinator|guerrillamail|10minutemail|tempmail|temp-mail|yopmail|trashmail|getnada|sharklasers|dispostable|fakeinbox|throwawaymail)\./;
+    const emailErr = !em ? '' : !/^[a-z0-9._%+-]+@[a-z0-9-]+(\.[a-z0-9-]+)*\.[a-z]{2,}$/.test(em) ? (es ? 'Escribe un correo válido' : 'Enter a valid email address') : disposable.test(em) ? (es ? 'Usa un correo permanente, no uno temporal' : 'Use a permanent email, not a temporary one') : /^(test|asdf|fake|abc|none|noemail|no)@/.test(em) ? (es ? 'Usa tu correo real' : 'Use your real email address') : '';
+    const emailOk = !!em && !emailErr;
+    const filedAmt = settle.filter(m => s.filed[m.id]).reduce((t, m) => t + m.amt, 0);
+    const matches = ml.map(m => {
+      const c = K[m.cat], done = !!s.filed[m.id] || m.mode === 'auto', lg = this.logos()[m.id];
+      const arb = m.cat === 'arb';
+      return {
+        logo: lg || '', hasLogo: !!lg, noLogo: !lg, co: m.co, title: m.title, pay: m.pay, catLabel: c.label,
+        deadline: m.dl ? (es ? 'Fecha límite ' : 'Deadline ') + this.fmtDate(m.dl) : (es ? 'Sin fecha límite' : 'No deadline'),
+        amtLabel: amtOf(m), signed: !!s.signed[m.id], unsigned: !s.signed[m.id],
+        tileStyle: S.tile(c), initial: m.co.replace(/[^A-Za-z]/g, '').slice(0, 1),
+        done: done || !!s.signed[m.id], notDone: !(done || s.signed[m.id]),
+        tag: arb ? (es ? 'Bufete asociado' : 'Partner law firm') : m.mode === 'here' ? (es ? 'Se presenta aquí' : 'Files here') : m.mode === 'auto' ? (es ? 'Pago automático' : 'Paid automatically') : (es ? 'Sitio oficial requerido' : 'Official site required'),
+        tagStyle: 'font-size:12px;font-weight:700;padding:4px 8px;border-radius:7px;' + (arb ? 'background:#EAF2EE;color:#43504A' : m.mode === 'here' ? 'background:#E9F6EF;color:#17603F' : m.mode === 'auto' ? 'background:#ECF0FC;color:#2C4BB8' : 'background:#FFF4D6;color:#6B4600'),
+        btn: m.mode === 'here' ? (es ? 'Presentar' : 'File now') : (es ? 'Abrir sitio' : 'Open site'), btnStyle: S.act(m.mode === 'here'),
+        doneLabel: m.mode === 'auto' ? (es ? 'Nada que hacer' : 'No action needed') : s.signed[m.id] ? (es ? 'Firmado' : 'Signed') : m.mode === 'here' ? (es ? 'Enviado' : 'Submitted') : (es ? 'Abierto' : 'Opened'),
+        act: () => this.setState({ filed: Object.assign({}, s.filed, { [m.id]: true }) })
+      };
+    });
+    const segs = [];
+    for (let i = 1; i <= qTotal; i++) segs.push({ style: S.seg(i < qNum, i === qNum) });
+    // details form
+    const p = s.p;
+    const setP = (k) => (e) => this.setState({ p: Object.assign({}, this.state.p, { [k]: e.target.value }) });
+    const stCode0 = s.st && s.st !== 'Other' ? s.st : '';
+    const DE = this.validate(p, stCode0, es);
+    const detOk = Object.keys(DE).length === 0;
+    const showDE = s.detTried ? DE : {};
+    const inp = 'height:50px;border-radius:12px;border:1.5px solid #DDE5E0;padding:0 14px;font-size:16px;font-family:inherit;color:#0A0F0D;background:#FFFFFF;width:100%;box-sizing:border-box;min-width:0';
+    const fullName = [p.first, p.middle, p.last].map(x => (x || '').trim()).filter(Boolean).join(' ');
+    const stCode = stCode0;
+    // authorization form
+    const AL = this.authList();
+    const ai = Math.min(s.ai, Math.max(0, AL.length - 1));
+    const cur = AL[ai];
+    const today = new Date();
+    const dateStr = (today.getMonth() + 1) + '/' + today.getDate() + '/' + today.getFullYear();
+    let auth = { has: false, rows: [], claim: [] };
+    if (cur) {
+      const arb = cur.cat === 'arb', lg = this.logos()[cur.id];
+      const signedNow = !!s.signed[cur.id];
+      const nm = fullName || 'Your name';
+      const attest = arb
+        ? (es ? 'Revisé la información de arriba y es verdadera y correcta. Autorizo a Claimclub a enviarla a un bufete asociado para que evalúe un posible reclamo de arbitraje individual contra ' + cur.co + ' en mi nombre. Entiendo que no se presenta nada hasta que firme un acuerdo aparte con el bufete, que indicará cualquier honorario. Claimclub no recibe ninguna parte de lo que se otorgue.'
+              : 'I have reviewed the information above and it is true and correct. I authorize Claimclub to send it to a partner law firm so the firm can review a possible individual arbitration claim against ' + cur.co + ' for me. I understand no claim is filed until I sign a separate agreement with the firm, which will disclose any fees. Claimclub takes no part of any award.')
+        : (es ? 'Revisé las respuestas de arriba y son verdaderas y correctas. Autorizo a Claimclub a presentar este reclamo al administrador del acuerdo ' + cur.co + ' a mi nombre, usando mi firma electrónica de abajo, y a recibir actualizaciones, según el Acuerdo de Autorización de Presentación de Reclamos. Cualquier pago se me enviará directamente. Claimclub no recibe ninguna parte. Puedo revocar esta autorización antes de que se presente el reclamo.'
+              : 'I have reviewed the answers above and they are true and correct. I authorize Claimclub to submit this claim to the ' + cur.co + ' settlement administrator under my name, using my electronic signature below, and to receive updates about it, as described in the Claim Filing Authorization Agreement. Any payment will be sent directly to me. Claimclub takes no part of it. I can revoke this authorization at any time before the claim is submitted.');
+      const cert = es ? 'Declaro bajo pena de perjurio, conforme a las leyes de los Estados Unidos, que la información de este formulario es verdadera y correcta según mi leal saber, y que soy miembro del grupo del acuerdo descrito en el aviso.'
+                      : 'I declare under penalty of perjury under the laws of the United States that the information in this claim form is true and correct to the best of my knowledge, and that I am a member of the Settlement Class described in the notice.';
+      const ans = this.answerOf(cur.id);
+      const consentOn = !!s.consent[cur.id];
+      const advance = () => { if (ai + 1 < AL.length) this.setState({ ai: ai + 1 }); else this.go(1); };
+      auth = {
+        has: true, co: cur.title.startsWith(cur.co) ? '' : cur.co, title: cur.title, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: cur.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[cur.cat]),
+        step: L.claimWord + ' ' + (ai + 1) + ' ' + L.of + ' ' + AL.length,
+        bar: 'height:100%;border-radius:99px;background:#12805C;transition:width .3s ease;width:' + Math.round((ai + (signedNow ? 1 : 0)) / AL.length * 100) + '%',
+        rows: [[L.rName, fullName || L.notGiven], [L.rAddr, [p.street, p.apt].filter(x => (x || '').trim()).join(', ') + (p.city ? ', ' + p.city : '') + (stCode ? ', ' + stCode : '') + (p.zip ? ' ' + p.zip : '') || L.notGiven], [L.rEmail, s.email || L.notGiven], [L.rPhone, p.phone || L.notGiven]].map(([k, v]) => ({ k, v })),
+        nameLine: [fullName || L.notGiven, p.phone].filter(Boolean).join(' · '),
+        addrLine: [p.street, p.apt].filter(x => (x || '').trim()).join(', ') + (p.city ? ', ' + p.city : '') + (stCode ? ', ' + stCode : '') + (p.zip ? ' ' + p.zip : ''),
+        emailLine: s.email || L.notGiven, who: cur.who,
+        metaLine: L.rEst + ': ' + amtOf(cur) + ' · ' + L.rDl + ': ' + (cur.dl ? this.fmtDate(cur.dl) : (es ? 'Sin fecha límite' : 'No deadline')),
+        claim: [[L.rSettle, cur.co + ' ' + cur.title], [L.rEst, amtOf(cur)], [L.rDl, cur.dl ? this.fmtDate(cur.dl) : (es ? 'Sin fecha límite' : 'No deadline')], [L.rClass, cur.who]].map(([k, v]) => ({ k, v })),
+        attest, cert, hasCert: !arb, consentOn, consentOff: !consentOn,
+        answers: [[ans.q, ans.a]].concat(arb ? [] : [[L.payoutQ, L.payoutA]]).filter(r => r[0]).map(([k, v]) => ({ k, v })),
+        toggleConsent: () => this.setState({ consent: Object.assign({}, this.state.consent, { [cur.id]: !this.state.consent[cur.id] }) }),
+        consentBox: 'width:22px;height:22px;flex:none;border-radius:6px;display:flex;align-items:center;justify-content:center;' + (consentOn ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#FFFFFF;box-shadow:inset 0 0 0 1.5px #9AA8A0'),
+        cantSubmit: !(signedNow && consentOn),
+        signed: signedNow, unsigned: !signedNow, sigName: fullName || 'Alex Rivera', sigDate: signedNow ? dateStr : '', printName: fullName,
+        sign: () => this.setState({ signed: Object.assign({}, this.state.signed, { [cur.id]: true }) }),
+        submit: () => { if (this.state.signed[cur.id] && this.state.consent[cur.id]) advance(); },
+        submitStyle: S.btn(signedNow && consentOn),
+        skip: () => { this.setState({ skipped: Object.assign({}, this.state.skipped, { [cur.id]: true }) }); advance(); },
+        edit: () => this.setState({ step: this.steps().indexOf('details') }),
+        arbNote: arb, kind: arb ? (es ? 'ARBITRAJE · BUFETE ASOCIADO' : 'ARBITRATION · PARTNER LAW FIRM') : (es ? 'ACUERDO DE DEMANDA COLECTIVA' : 'CLASS ACTION SETTLEMENT')
+      };
+    }
+    const signedCount = AL.filter(m => s.signed[m.id]).length;
+    const topIds = quick ? Q.map(q => q.key) : [];
+    const more = s.a.more || [];
+    const ql = (s.allQ || '').trim().toLowerCase();
+    const allPool = this.data().filter(d => !topIds.includes(d.id) && this.daysLeft(d.dl) > 0 && !d.dir && (!d.st || !s.st || d.st === s.st || s.st === 'Other'));
+    const tile = (sel) => 'display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 10px;border-radius:12px;background:' + (sel ? '#EAF2EE' : '#FFFFFF') + ';box-shadow:inset 0 0 0 ' + (sel ? '2px #0F3B2E' : '1px #DDE5E0');
+    const chk = (sel) => 'width:20px;height:20px;flex:none;border-radius:50%;display:flex;align-items:center;justify-content:center;' + (sel ? 'background:#0F3B2E;color:#FFFFFF' : 'box-shadow:inset 0 0 0 1.5px #CFDAD3;color:transparent');
+    const allGroups = Object.keys(K).map(ck => ({ label: K[ck].label, items: allPool.filter(d => d.cat === ck && (!ql || (d.co + ' ' + d.title + ' ' + d.who).toLowerCase().includes(ql))).map(d => {
+      const sel = more.includes(d.id), lg = this.logos()[d.id];
+      return { co: d.co, title: d.title.startsWith(d.co) ? d.title : d.co + ' ' + d.title, who: d.who, amt: amtOf(d), logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: d.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[d.cat]), sel, rowStyle: tile(sel), check: chk(sel),
+        pick: () => { const m = (this.state.a.more || []).slice(); const i = m.indexOf(d.id); if (i >= 0) m.splice(i, 1); else m.push(d.id); this.setState({ a: Object.assign({}, this.state.a, { more: m }), bump: this.state.bump + 1 }); } };
+    }) })).filter(g => g.items.length);
+    const pickedN = ml.length;
+    const toCalc = () => this.setState({ step: this.steps().indexOf('calc') });
+    const others = allPool.filter(d => !more.includes(d.id));
+    const moreN = others.length;
+    const allOpen = this.data().filter(d => this.daysLeft(d.dl) > 0 && !d.dir && (!d.st || !s.st || d.st === s.st || s.st === 'Other'));
+    const allValue = this.money(Math.round(allOpen.reduce((t, d) => t + (d.max || d.amt || 0), 0)));
+    const moreLabel = this.money(Math.round(others.filter(d => d.cat !== 'arb').reduce((t, d) => t + (d.max || d.amt || 0), 0)));
+    const showBack = qNum > 0 || ['details', 'auth', 'all', 'picked', 'pay', 'plans'].includes(name) || (name === 'checkout' && !s.payState);
+    return {
+      L, isEn: !es, isEs: es,
+      enStyle: this.langStyle(!es), esStyle: this.langStyle(es),
+      setEn: () => this.setState({ lang: 'en' }), setEs: () => this.setState({ lang: 'es' }),
+      isIntro1: name === 'intro1', isIntro2: name === 'intro2', isState: name === 'state', isQ: qIndex >= 0,
+      isCalc: name === 'calc', isReveal: name === 'reveal', isEmail: name === 'email', isDetails: name === 'details', isAuth: name === 'auth', isAll: name === 'all', isPicked: name === 'picked', notAuth: name !== 'auth',
+      mainStyle: name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
+      inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0,
+      quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
+      setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
+      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name)),
+      qLabel: qNum + ' ' + L.of + ' ' + qTotal, qFull: L.qWord + ' ' + qNum + ' ' + L.of + ' ' + qTotal, segs, q, states,
+      segGrid: 'flex-grow:1;display:grid;grid-template-columns:repeat(' + qTotal + ',minmax(0,1fr));gap:4px',
+      i2h: L.i2a + qTotal + L.i2b,
+      totalLabel: this.money(total), totalNum: total.toFixed(2), countLabel, countMatched: countLabel + ' ' + L.matched,
+      calc1: L.calcA + countLabel + L.calcB, fromCount: L.fromW + countLabel, unlockAll: L.unlockA + countLabel + L.unlockB, filedOfLabel: L.filedOf + this.money(total),
+      variesLabel: [varies ? (es ? '+ ' + varies + ' con pagos variables' : '+ ' + varies + ' with variable payouts') : '', arbs.length ? (es ? '+ ' + arbs.length + ' reclamos de arbitraje' : '+ ' + plural(arbs.length, 'arbitration claim', 'arbitration claims', '', '')) : ''].filter(Boolean).join(' · '),
+      hasVaries: varies > 0 || arbs.length > 0,
+      hasMatches: ml.length > 0, noMatches: ml.length === 0,
+      bumpClass: s.bump % 2 ? 'bumpA' : 'bumpB', matches,
+      checkLogos: matches.slice(0, 6).map((m, i) => Object.assign({}, m, { popStyle: 'animation-delay:' + (2.1 + i * 0.12).toFixed(2) + 's' })),
+      checkMore: ml.length > 6 ? '+' + (ml.length - 6) + (es ? ' más' : ' more') : '', hasCheckMore: ml.length > 6,
+      amountWords: this.words(total), checkDate: this.fmtDate(new Date().toISOString().slice(0, 10)),
+      teaser: ['apple', 'amazon', 'goodrx'].map(id => this.data().find(d => d.id === id)).map(d => ({
+        logo: this.logos()[d.id] || '', hasLogo: !!this.logos()[d.id], noLogo: !this.logos()[d.id], co: d.co, tileStyle: S.tile(K[d.cat]), initial: d.co.slice(0, 1),
+        line: es ? ('acordó pagar ' + d.fund + '. ' + ((d.max || d.amt) ? 'Quienes califiquen reciben hasta ' + this.money(d.max || d.amt) + '.' : 'Quienes califiquen reciben una parte.'))
+                 : ('settled for ' + d.fund + '. ' + ((d.max || d.amt) ? 'People who qualify get up to ' + this.money(d.max || d.amt) + '.' : 'People who qualify get a share.'))
+      })),
+      next: () => this.go(1), back: () => this.back(),
+      nextDisabled, nextStyle: S.btn(!nextDisabled), primary: S.btn(true),
+      email: s.email, onEmail: (e) => this.setState({ email: e.target.value }),
+      emailErr: s.emailTried ? emailErr : '', hasEmailErr: !!(s.emailTried && emailErr), emailDisabled: !em, emailStyle: S.btn(!!em), emailNext: () => { if (emailOk) this.go(1); else this.setState({ emailTried: true }); }, quickSignIn: () => { if (!emailOk) this.setState({ email: 'alex.rivera@gmail.com' }); this.go(1); },
+      p, inp, stCode: stCode || '', setFirst: setP('first'), setMiddle: setP('middle'), setLast: setP('last'), setStreet: setP('street'), setApt: setP('apt'), setCity: setP('city'), setZip: setP('zip'), setPhone: setP('phone'), setDob: setP('dob'),
+      detDisabled: false, detStyle: S.btn(true), detNext: () => { if (detOk) this.go(1); else this.setState({ detTried: true }); },
+      fe: showDE, detErrN: Object.keys(showDE).length, hasDetErr: Object.keys(showDE).length > 0,
+      detErrMsg: es ? 'Revisa los campos marcados para que tus reclamos no sean rechazados.' : 'Fix the highlighted fields so your claims are not rejected.',
+      fs: ['first', 'middle', 'last', 'street', 'apt', 'city', 'st', 'zip', 'phone', 'dob'].reduce((o, k) => { o[k] = inp + (showDE[k] ? ';border-color:#C8323B;background:#FFF7F7' : ''); return o; }, {}),
+      stOpts: [['', es ? 'Elige' : 'Select']].concat(['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'].map(x => [x, x])).map(([v, l]) => ({ v, l, sel: v === stCode0 })),
+      pickSt: (e) => this.setState({ st: e.target.value || null }),
+      auth, signedCount, hasSigned: signedCount > 0,
+      pickedH: pickedN ? (es ? 'Coincides con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'You matched ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Ninguno de los 10 principales aplicó' : 'None of the top 10 applied'),
+      pickedSub: pickedN ? (es ? 'Continúa para ver tu estimado, o revisa las demás ofertas abiertas para sumar más.' : 'Continue to see your estimate, or check the other open offers to add more.') : (es ? 'Hay ' + (allPool.length) + ' ofertas abiertas más. Revisa la lista para encontrar las tuyas.' : 'There are ' + allPool.length + ' more open offers. Browse the list to find yours.'),
+      hasPicked: pickedN > 0, noPicked: pickedN === 0, pickedTotal: this.money(total),
+      browseStyle: pickedN ? 'display:block;width:100%;min-height:52px;margin-top:8px;border-radius:999px;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E;font-size:16px;font-weight:800' : S.btn(true),
+      allGroups, allPoolN: allPool.length + topIds.length, allQ: s.allQ, setAllQ: (e) => this.setState({ allQ: e.target.value }),
+      allH: es ? 'Todas las ofertas abiertas' : 'All open offers', allSub: es ? 'Toca las que apliquen a ti. Tus 10 principales ya están guardadas.' : 'Tap any that apply to you. Your picks from the top 10 are already saved.',
+      searchPh: es ? 'Buscar empresa o producto' : 'Search a company or product',
+      browseAll: () => this.setState({ sawAll: true, step: this.steps().indexOf('all') }),
+      browseLabel: es ? 'Ver las ' + (allPool.length + topIds.length) + ' ofertas abiertas' : 'Browse all ' + (allPool.length + topIds.length) + ' open offers',
+      quickCont: toCalc, quickContDisabled: pickedN === 0, quickContStyle: S.btn(pickedN > 0),
+      quickContLabel: pickedN ? (es ? 'Continuar con ' + plural(pickedN, '', '', 'reclamo', 'reclamos') : 'Continue with ' + plural(pickedN, 'claim', 'claims', '', '')) : (es ? 'Elige al menos uno' : 'Pick at least one'),
+      qTileGrid: 'display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px',
+      billItems: (signedCount ? AL.filter(m => s.signed[m.id]) : AL).map(m => { const lg = this.logos()[m.id]; return { logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[m.cat]), co: m.co, title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, amt: amtOf(m) }; }),
+      billCount: plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
+      estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + m.amt, 0)),
+      isPerk1: s.pi === 0, isPerk2: s.pi === 1,
+      perkNext: () => { if (this.state.pi < 1) this.setState({ pi: this.state.pi + 1 }); else this.setState({ step: this.steps().indexOf('bank') }); },
+      perkSkip: () => this.setState({ step: this.steps().indexOf('bank') }),
+      dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(name === 'bank'),
+      showDots: s.paid === 'member', perkMatches: ml.slice(0, 4).map(m => { const lg = this.logos()[m.id]; return { co: m.co, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.slice(0, 1), tileStyle: S.tile(K[m.cat]), st: s.signed[m.id] ? (es ? 'Presentado' : 'Filed') : m.mode === 'site' ? (es ? 'Sitio oficial' : 'Official site') : (es ? 'Listo' : 'Ready'), amt: amtOf(m) }; }),
+      newMatch: (() => { const d = allPool.find(x => !more.includes(x.id) && x.cat !== 'arb' && (x.max || x.amt) >= 50); return d ? { co: d.co, line: es ? 'Podrías calificar para ' + (d.title.startsWith(d.co) ? d.title : d.co + ' ' + d.title) + '. Toca para presentar.' : 'You may qualify for the ' + (d.title.startsWith(d.co) ? d.title : d.co + ' ' + d.title) + '. Tap to file.' } : { co: '', line: '' }; })(),
+      perks: [['p1', 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0'], ['p2', 'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'], ['p3', 'M3 3v18h18 M7 14l4-4 4 4 5-5'], ['p4', 'M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z'], ['p5', 'M12 2v20 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'], ['p6', 'M12 3v18 M5 7h14 M5 7l-3 7a4 4 0 0 0 6 0Z M19 7l-3 7a4 4 0 0 0 6 0Z']].map(([k, d]) => ({ title: L[k], body: L[k + 'd'], d })),
+      signedLabel: es ? signedCount + ' autorizaciones firmadas, listas para enviar al activar tu membresía' : signedCount + (signedCount === 1 ? ' authorization signed' : ' authorizations signed') + ', ready to submit when your membership starts',
+      unlock: () => this.setState({ buying: 'fee', payState: '', step: this.steps().indexOf('checkout') }),
+      toPlans: () => this.setState({ step: this.steps().indexOf('plans') }),
+      plans: [['1m', es ? '1 MES' : '1 MONTH', '$9.99', es ? 'Cobro mensual' : 'Billed monthly', '$9.99/mo', ''], ['3m', es ? '3 MESES' : '3 MONTHS', '$8.99', es ? 'Cobro cada 3 meses' : 'Billed every 3 months', '$26.97/3mo', es ? 'Ahorra 10%' : 'Save 10%'], ['6m', es ? '6 MESES' : '6 MONTHS', '$7.99', es ? 'Cobro cada 6 meses' : 'Billed every 6 months', '$47.94/6mo', es ? 'Ahorra 20%' : 'Save 20%']].map(([id, name, per, billed, total, save]) => ({
+        id, name, per, unit: es ? '/mes' : '/mo', billed, total, save, hasSave: !!save, best: id === '6m', notBest: id !== '6m', sel: s.plan === id,
+        style: 'position:relative;display:flex;flex-direction:column;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:#FFFFFF;' + (s.plan === id ? 'box-shadow:inset 0 0 0 2px #0F3B2E,0 10px 24px rgba(10,15,13,.08)' : 'box-shadow:inset 0 0 0 1px #DDE5E0'),
+        pick: () => this.setState({ plan: id }) })),
+      planRenew: (() => { const p = { '1m': ['$9.99', es ? 'cada mes' : 'every month'], '3m': ['$26.97', es ? 'cada 3 meses' : 'every 3 months'], '6m': ['$47.94', es ? 'cada 6 meses' : 'every 6 months'] }[s.plan]; return es ? 'Se renueva automáticamente a ' + p[0] + ' ' + p[1] + ' hasta que canceles.' : 'Auto-renews at ' + p[0] + ' ' + p[1] + ' until you cancel.'; })(),
+      subscribe: () => this.setState({ buying: 'member', payState: '', step: this.steps().indexOf('checkout') }),
+      coItem: s.buying === 'member' ? (es ? 'Membresía Claimclub · ' : 'Claimclub membership · ') + ({ '1m': es ? '1 mes' : '1 month', '3m': es ? '3 meses' : '3 months', '6m': es ? '6 meses' : '6 months' }[s.plan]) : (es ? 'Tarifa de presentación · ' : 'Filing fee · ') + plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
+      coSub: s.buying === 'member' ? (es ? 'Tu primera presentación es gratis. ' : 'Your first filing is free. ') + (({ '1m': ['$9.99', es ? 'cada mes' : 'every month'], '3m': ['$26.97', es ? 'cada 3 meses' : 'every 3 months'], '6m': ['$47.94', es ? 'cada 6 meses' : 'every 6 months'] })[s.plan]).join(' ').replace(/^/, es ? 'Se renueva a ' : 'Renews at ') + (es ? ' hasta que canceles.' : ' until you cancel.') : (es ? 'Pago único. Sin suscripción.' : 'One-time payment. No subscription.'),
+      coPrice: s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$19.99',
+      coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? ({ '1m': '$9.99', '3m': '$26.97', '6m': '$47.94' }[s.plan]) : '$19.99'),
+      coIdle: !s.payState, coBusy: s.payState === 'busy', coDone: s.payState === 'done',
+      card: s.card, exp: s.exp, cvc: s.cvc, czip: s.czip,
+      setCard: (e) => this.setState({ card: e.target.value }), setExp: (e) => this.setState({ exp: e.target.value }), setCvc: (e) => this.setState({ cvc: e.target.value }), setCzip: (e) => this.setState({ czip: e.target.value }),
+      payCardStyle: S.btn(!!(s.card || '').trim()), payCardDisabled: !(s.card || '').trim(),
+      ce: s.cardTried ? this.cardCheck(s.card, s.exp, s.cvc, s.czip, es) : {}, hasCardErr: s.cardTried && Object.keys(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).length > 0,
+      cardErrText: s.cardTried ? Object.values(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).join(' · ') : '',
+      payCard: () => { const E = this.cardCheck(this.state.card, this.state.exp, this.state.cvc, this.state.czip, es); if (Object.keys(E).length) this.setState({ cardTried: true }); else this.payNow(); },
+      payNow: () => this.payNow(),
+      connectBankAct: () => { this.setState({ bankDone: true }); clearTimeout(this._bk); this._bk = setTimeout(() => this.afterBank(), 1400); },
+      skipBank: () => this.afterBank(), bankDone: s.bankDone, bankTodo: !s.bankDone,
+      payoutLine: (() => { const m = settle.find(x => x.amt > 0) || ml[0]; return m ? (es ? 'Recibiste ' + this.money(m.amt || 50) + ' de tu reclamo de ' + m.co + '.' : 'You received ' + this.money(m.amt || 50) + ' from your ' + m.co + ' claim.') : ''; })(),
+      memberCount: '148,000+',
+      allValue, allOpenN: allOpen.length, potentialSub: es ? 'En las ' + allOpen.length + ' ofertas abiertas. Tus coincidencias: ' + this.money(total) + '.' : 'Across all ' + allOpen.length + ' open offers. Your matches so far: ' + this.money(total) + '.',
+      moreTotal: moreLabel, moreSmall: es ? '+ hasta ' + moreLabel + ' en otras ofertas abiertas' : '+ up to ' + moreLabel + ' in other open offers', moreCount: moreN, hasMore: moreN > 0,
+      moreLine: es ? 'Hay hasta ' + moreLabel + ' más en ' + moreN + ' ofertas abiertas que aún no has revisado. Las revisamos todas por ti cuando te unes.' : 'There is up to ' + moreLabel + ' more in ' + moreN + ' other open offers you have not checked yet. We check them all for you when you join.',
+      saOpen: s.saOpen, saList: AL.map(m => { const lg = this.logos()[m.id]; return { co: m.co, title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[m.cat]), amt: amtOf(m) }; }),
+      saCount: AL.length, hasSa: AL.length > 1, saBtnLabel: (es ? 'Firmar los ' : 'Sign all ') + AL.length + (es ? ' formularios a la vez' : ' forms at once'),
+      openSa: () => this.setState({ saOpen: true }), closeSa: () => this.setState({ saOpen: false }),
+      saConsentOn: s.saConsent, saBox: 'width:20px;height:20px;flex:none;border-radius:5px;display:flex;align-items:center;justify-content:center;' + (s.saConsent ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#FFFFFF;box-shadow:inset 0 0 0 1.5px #9AA8A0'),
+      toggleSaConsent: () => this.setState({ saConsent: !this.state.saConsent }),
+      saSigned: s.saSigned, saUnsigned: !s.saSigned, saSign: () => this.setState({ saSigned: true }),
+      saDisabled: !(s.saConsent && s.saSigned), saStyle: S.btn(s.saConsent && s.saSigned),
+      saGo: () => { if (!(this.state.saConsent && this.state.saSigned)) return; const sg = {}, cs = {}; AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; }); this.setState({ signed: sg, consent: cs, saOpen: false, step: this.steps().indexOf('pay') }); },
+      saGoLabel: (es ? 'Firmar los ' : 'Sign all ') + AL.length + (es ? ' formularios' : ' forms'),
+      filedLabel: this.money(filedAmt),
+      filedBar: 'height:100%;border-radius:99px;transition:width .4s ease;background:#218358;width:' + (total ? Math.round(filedAmt / total * 100) : 0) + '%',
+      restart: () => this.setState({ step: 0, st: null, a: {}, filed: {}, email: '', ai: 0, signed: {}, skipped: {}, consent: {}, p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } })
+    };
+  }
+  payNow() {
+    if (this.state.payState) return;
+    this.setState({ payState: 'busy' });
+    clearTimeout(this._pay);
+    this._pay = setTimeout(() => { this.setState({ payState: 'done', paid: this.state.buying }); this.saveForApp(); this._pay = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf(this.state.buying === 'member' ? 'perks' : 'bank') }), 1300); }, 1400);
+  }
+  afterBank() { this.saveForApp(); this.setState({ step: this.steps().indexOf('dash') }); }
+  saveForApp() {
+    try {
+      const ml = this.matched(), p = this.state.p;
+      const data = { ids: ml.map(m => m.id), signed: Object.keys(this.state.signed).filter(k => this.state.signed[k]), bank: !!this.state.bankDone, plan: this.state.paid === 'member' ? this.state.plan : '', paid: this.state.paid,
+        p: { name: [p.first, p.middle, p.last].filter(Boolean).join(' '), email: this.state.email, phone: p.phone, street: [p.street, p.apt].filter(Boolean).join(', '), city: p.city, st: this.state.st && this.state.st !== 'Other' ? this.state.st : '', zip: p.zip, dob: p.dob } };
+      localStorage.setItem('claimclub_session', JSON.stringify(data));
+    } catch (e) {}
+  }
+  validate(p, st, es) {
+    const E = {}, t = (v) => (v || '').trim();
+    const junk = /^(test|testing|asdf\w*|qwer\w*|fake|none|na|n\/a|xxx+|abc|aaa+|john doe|jane doe|null|undefined|sdf\w*)$/i;
+    const hasVowel = (v) => /[aeiouyáéíóúü]/i.test(v);
+    const nameBad = (v) => !/^[A-Za-zÀ-ÿ' .-]{2,40}$/.test(v) || junk.test(v) || /(.)\1\1/i.test(v) || (v.length > 3 && !hasVowel(v));
+    const msg = (en, sp) => es ? sp : en;
+    if (!t(p.first)) E.first = msg('Enter your first name', 'Escribe tu nombre'); else if (nameBad(t(p.first))) E.first = msg('Enter your real first name, letters only', 'Escribe tu nombre real, solo letras');
+    if (t(p.middle) && !/^[A-Za-zÀ-ÿ' .-]{1,40}$/.test(t(p.middle))) E.middle = msg('Letters only', 'Solo letras');
+    if (!t(p.last)) E.last = msg('Enter your last name', 'Escribe tu apellido'); else if (nameBad(t(p.last))) E.last = msg('Enter your real last name, letters only', 'Escribe tu apellido real, solo letras');
+    const street = t(p.street);
+    if (!street) E.street = msg('Enter your street address', 'Escribe tu dirección');
+    else if (!(/^\d+[A-Za-z]?\s+[A-Za-zÀ-ÿ0-9.'#-]{2,}(\s+\S+)*$/.test(street) || /^p\.?\s*o\.?\s*box\s+\d+/i.test(street)) || junk.test(street)) E.street = msg('Use a street number and name, like 1452 Maple Ave', 'Usa número y calle, por ejemplo 1452 Maple Ave');
+    const city = t(p.city);
+    if (!city) E.city = msg('Enter your city', 'Escribe tu ciudad'); else if (!/^[A-Za-zÀ-ÿ' .-]{2,40}$/.test(city) || !hasVowel(city) || junk.test(city)) E.city = msg('Enter a real city name', 'Escribe una ciudad real');
+    if (!st) E.st = msg('Choose your state', 'Elige tu estado');
+    const zip = t(p.zip);
+    if (!/^\d{5}(-\d{4})?$/.test(zip)) E.zip = msg('Use a 5-digit ZIP', 'Usa un código postal de 5 dígitos');
+    else if (st && !this.zipFits(zip, st)) E.zip = msg('This ZIP is not in ' + st, 'Este código postal no es de ' + st);
+    const ph = (p.phone || '').replace(/\D/g, '').replace(/^1(?=\d{10}$)/, '');
+    if (!ph) E.phone = msg('Enter your mobile number', 'Escribe tu número celular');
+    else if (ph.length !== 10 || /^[01]/.test(ph) || /^\d{3}[01]/.test(ph) || /^(\d)\1+$/.test(ph) || ph.slice(3, 6) === '555' || ph === '1234567890') E.phone = msg('Enter a real 10-digit US mobile number', 'Escribe un celular real de 10 dígitos');
+    if (t(p.dob)) {
+      const m = t(p.dob).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      const d = m ? new Date(+m[3], +m[1] - 1, +m[2]) : null;
+      const age = d ? (Date.now() - d.getTime()) / 31557600000 : -1;
+      if (!m || !d || d.getMonth() !== +m[1] - 1) E.dob = msg('Use MM/DD/YYYY', 'Usa MM/DD/AAAA'); else if (age < 18) E.dob = msg('You must be 18 or older', 'Debes tener 18 años o más'); else if (age > 110) E.dob = msg('Check the year', 'Revisa el año');
+    }
+    return E;
+  }
+  zipFits(zip, st) {
+    const z = parseInt(zip.slice(0, 3), 10);
+    const R = { AL: [[350, 369]], AK: [[995, 999]], AZ: [[850, 865]], AR: [[716, 729]], CA: [[900, 961]], CO: [[800, 816]], CT: [[60, 69]], DE: [[197, 199]], DC: [[200, 205], [569, 569]], FL: [[320, 349]], GA: [[300, 319], [398, 399]], HI: [[967, 968]], ID: [[832, 838]], IL: [[600, 629]], IN: [[460, 479]], IA: [[500, 528]], KS: [[660, 679]], KY: [[400, 427]], LA: [[700, 714]], ME: [[39, 49]], MD: [[206, 219]], MA: [[10, 27], [55, 55]], MI: [[480, 499]], MN: [[550, 567]], MS: [[386, 397]], MO: [[630, 658]], MT: [[590, 599]], NE: [[680, 693]], NV: [[889, 898]], NH: [[30, 38]], NJ: [[70, 89]], NM: [[870, 884]], NY: [[100, 149], [5, 5], [63, 63]], NC: [[270, 289]], ND: [[580, 588]], OH: [[430, 459]], OK: [[730, 749]], OR: [[970, 979]], PA: [[150, 196]], RI: [[28, 29]], SC: [[290, 299]], SD: [[570, 577]], TN: [[370, 385]], TX: [[750, 799], [733, 733], [885, 885]], UT: [[840, 847]], VT: [[50, 59]], VA: [[201, 201], [220, 246]], WA: [[980, 994]], WV: [[247, 268]], WI: [[530, 549]], WY: [[820, 831]] };
+    return !R[st] || R[st].some(([a, b]) => z >= a && z <= b);
+  }
+  cardCheck(card, exp, cvc, zip, es) {
+    const E = {}, n = (card || '').replace(/\D/g, '');
+    let sum = 0, alt = false;
+    for (let i = n.length - 1; i >= 0; i--) { let d = +n[i]; if (alt) { d *= 2; if (d > 9) d -= 9; } sum += d; alt = !alt; }
+    if (n.length < 13 || n.length > 19 || sum % 10 !== 0) E.card = es ? 'Número de tarjeta no válido' : 'That card number is not valid';
+    const m = (exp || '').replace(/\s/g, '').match(/^(\d{2})\/?(\d{2})$/);
+    const now = new Date(), y = now.getFullYear() % 100, mo = now.getMonth() + 1;
+    if (!m || +m[1] < 1 || +m[1] > 12 || +m[2] < y || (+m[2] === y && +m[1] < mo) || +m[2] > y + 20) E.exp = es ? 'Fecha de vencimiento no válida' : 'Check the expiry date';
+    if (!/^\d{3,4}$/.test((cvc || '').trim())) E.cvc = es ? 'CVC no válido' : 'Check the CVC';
+    if (!/^\d{5}$/.test((zip || '').trim())) E.czip = es ? 'Código postal no válido' : 'Use a 5-digit ZIP';
+    return E;
+  }
+  dotStyle(on) { return 'height:4px;border-radius:99px;transition:width .3s,background .3s;' + (on ? 'width:30px;background:#0A0F0D' : 'width:16px;background:#DDE5E0'); }
+  langStyle(on) { return 'min-width:40px;height:32px;padding:0 10px;border-radius:99px;font-family:inherit;font-size:12px;font-weight:800;letter-spacing:.4px;' + (on ? 'background:#0F3B2E;color:#FFFFFF' : 'background:transparent;color:#5B6862'); }
+  words(n) {
+    const ones = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'];
+    const tens = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+    const under1k = (x) => { let out = []; if (x >= 100) { out.push(ones[Math.floor(x / 100)] + ' hundred'); x %= 100; } if (x >= 20) { out.push(tens[Math.floor(x / 10)] + (x % 10 ? '-' + ones[x % 10] : '')); } else if (x > 0) out.push(ones[x]); return out.join(' '); };
+    const whole = Math.floor(n), cents = Math.round((n - whole) * 100);
+    let w = whole === 0 ? 'zero' : (whole >= 1000 ? under1k(Math.floor(whole / 1000)) + ' thousand ' : '') + under1k(whole % 1000);
+    w = w.trim(); w = w.charAt(0).toUpperCase() + w.slice(1);
+    return w + ' and ' + String(cents).padStart(2, '0') + '/100';
+  }
+  pick(raw, id, oi, d) {
+    const a = this.state.a;
+    if (raw.multi) {
+      let arr = (a[raw.key] || []).slice(); let adding = false;
+      if (id === 'none') arr = ['none'];
+      else {
+        arr = arr.filter(x => x !== 'none');
+        if (arr.includes(id)) arr = arr.filter(x => x !== id); else { arr.push(id); adding = true; }
+      }
+      this.setState({ a: Object.assign({}, a, { [raw.key]: arr }), bump: this.state.bump + (adding && d && d.amt > 0 ? 1 : 0) });
+    } else {
+      this.setState({ a: Object.assign({}, a, { [raw.key]: id }), ['l_' + raw.key]: oi, bump: this.state.bump + (d && d.amt > 0 ? 1 : 0) });
+      clearTimeout(this._t);
+      this._t = setTimeout(() => this.go(1), 380);
+    }
+  }
+
+  // Real open settlements, compiled Nov 12 2026 from OpenClassActions.com and ClaimDepot listings. Verify against each official settlement site before launch.
+  data() {
+    return [
+      { id: 'apple', co: 'Apple', title: 'Apple Intelligence Siri Settlement', cat: 'apps', fund: '$250M', pay: '$25 per iPhone, up to $95', amt: 95, max: 95, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'U.S. buyers of iPhone 15 Pro, 15 Pro Max or any iPhone 16, 2024 to 2025', pop: true },
+      { id: 'amazon', co: 'Amazon', title: 'Amazon Returns Refund Settlement', cat: 'products', fund: '$309.5M', pay: 'Refund owed, often automatic', amt: 0, proof: 'Automatic', mode: 'auto', dl: '2026-12-01', who: 'Customers with missing, late or incorrect return refunds since Sept 2017', pop: true },
+      { id: 'goodrx', co: 'GoodRx', title: 'GoodRx User Privacy Settlement', cat: 'privacy', fund: '$32M', pay: 'Pro rata cash share', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'GoodRx users whose data was shared with advertisers', pop: true },
+      { id: 'cvs', co: 'CVS', title: 'CVS Digital Privacy Settlement', cat: 'privacy', fund: '', pay: 'Up to $5, or $10 with proof', amt: 5, max: 10, proof: 'No proof', mode: 'here', dl: '2026-11-16', who: 'U.S. users of CVS websites or app before July 27, 2026' },
+      { id: 'bofa', co: 'Bank of America', title: 'Debit Card & ATM Dispute Settlement', cat: 'bank', fund: '$2M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Customers whose unauthorized-transaction claim was denied, May 2023 to July 2026', pop: true },
+      { id: 'squatch', co: 'Dr. Squatch', title: '"Natural" Labeling Settlement', cat: 'products', fund: '$9M', pay: '$2.50 per product, up to $12.50', amt: 12.5, max: 12.5, proof: 'No proof', mode: 'here', dl: '2026-11-27', who: 'Buyers of "natural"-labeled Dr. Squatch products, Nov 2018 to Aug 2026' },
+      { id: 'thinkware', co: 'Thinkware', title: 'Dash Cam False Advertising Settlement', cat: 'products', fund: '$850K', pay: 'About $6.70 per camera', amt: 6.7, max: 6.7, proof: 'No proof', mode: 'here', dl: '2026-12-14', who: 'Buyers of listed Thinkware dash cams, 2019 to 2024' },
+      { id: 'knotts', co: 'Six Flags', title: "Knott's & Great America Ticket Fee Settlement", cat: 'apps', fund: '', pay: '$8 per claim', amt: 8, max: 8, proof: 'No proof', mode: 'here', dl: '2026-12-22', who: "Online ticket buyers at Knott's Berry Farm and California's Great America" },
+      { id: 'kia', co: 'Kia', title: 'Window Regulator Settlement', cat: 'auto', fund: '', pay: '$40 service card, up to $400 per repair', amt: 40, max: 400, proof: 'Proof for repairs', mode: 'site', dl: '2026-11-23', who: 'Owners or lessees of 2016 to 2017 Kia Optima and 2017 Sportage' },
+      { id: 'vanilla', co: 'Vanilla Gift', title: 'Drained Gift Card Restitution (CA)', cat: 'bank', fund: '$1.525M', pay: 'Up to $15 per card', amt: 15, max: 15, proof: 'No proof', mode: 'here', dl: '2027-02-19', who: 'California holders of drained Vanilla gift cards', st: 'CA' },
+      { id: 'venetian', co: 'The Venetian', title: 'Website Privacy Settlement (CA)', cat: 'privacy', fund: '$1.6M', pay: 'About $3.60, or $71.39 if you booked', amt: 71.39, max: 71.39, proof: 'Notice ID', mode: 'here', dl: '2026-11-24', who: 'California residents who browsed or booked on the Venetian site, 2024 to 2026', st: 'CA' },
+      { id: 'neutrogena', co: 'Neutrogena', title: 'Skin360 Biometric Privacy (IL)', cat: 'health', fund: '$4.7M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-11-25', who: 'Illinois users of Skin360 skin assessments, 2019 to 2023', st: 'IL' },
+      { id: 'kroger', co: 'Kroger', title: 'Prescription Pricing Settlement', cat: 'health', fund: '$17M', pay: 'Pro rata share', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People who paid toward insured Kroger pharmacy prescriptions, 2018 to 2026' },
+      { id: 'navy', co: 'Navy Federal', title: 'Unauthorized Loans Settlement', cat: 'bank', fund: '', pay: '$250 cash', amt: 250, max: 250, proof: 'Notice ID', mode: 'here', dl: '2026-11-29', who: 'Members with denied fraud claims on loans, 2023 to 2025' },
+      { id: 'bright', co: 'Bright Lending', title: 'Loan Settlement', cat: 'bank', fund: '', pay: 'Cash or debt cancellation', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'Borrowers with a Bright Lending loan since Oct 2020' },
+      { id: 'columbia', co: 'Columbia University', title: 'Data Breach Settlement', cat: 'privacy', fund: '$16.1M', pay: 'Cash, or up to $8,500 documented', amt: 0, max: 8500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-21', who: 'People notified of the May 2025 cyberattack' },
+      { id: 'pp', co: 'Planned Parenthood (LSC)', title: 'Lab Data Breach Settlement', cat: 'privacy', fund: '$6.1M', pay: 'Up to $1,000, or $5,000 documented', amt: 1000, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-24', who: 'Patients and payers tied to LSC lab testing' },
+      { id: 'sirva', co: 'Sirva', title: 'Relocation Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50 cash, or up to $4,500 documented', amt: 50, max: 4500, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'People notified of the Sirva breach' },
+      { id: 'bauer', co: 'Bauer Built', title: 'Tire & Service Data Breach', cat: 'privacy', fund: '', pay: '$45, or up to $5,000 in losses', amt: 45, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People notified of the Bauer Built breach' },
+      { id: 'woodloch', co: 'Woodloch Pines', title: 'Resort Data Breach Settlement', cat: 'privacy', fund: '', pay: '$60, or up to $3,500 documented', amt: 60, max: 3500, proof: 'No proof', mode: 'here', dl: '2027-01-13', who: 'People notified of the Woodloch Pines breach' },
+      { id: 'benkeith', co: 'Ben E. Keith', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$35, or up to $5,000 in losses', amt: 35, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-26', who: 'People notified of the Ben E. Keith breach' },
+      { id: 'safefleet', co: 'Safe Fleet', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50, or up to $2,500 documented', amt: 50, max: 2500, proof: 'Notice ID', mode: 'here', dl: '2026-12-02', who: 'U.S. people in the April 2024 incident' },
+      { id: 'tennis', co: 'Merchant of Tennis', title: 'US Merchants Data Breach', cat: 'privacy', fund: '$685K', pay: 'About $45 in CA, $15 elsewhere', amt: 45, max: 2000, proof: 'No proof', mode: 'here', dl: '2027-01-27', who: 'People notified of the US Merchants breach' },
+      { id: 'jbs', co: 'JBS', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: 'Up to $5,000 plus credit monitoring', amt: 0, max: 5000, proof: 'Proof for losses', mode: 'here', dl: '2026-12-23', who: 'People who received a 2025 JBS breach notice' },
+      { id: 'renal', co: 'Innovative Renal Care', title: 'Data Breach Settlement', cat: 'health', fund: '$900K', pay: 'About $100, or $5,000 documented', amt: 100, max: 5000, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People notified of the Feb 2024 American Renal Management incident' },
+      { id: 'prime', co: 'Prime Healthcare', title: 'Patient Portal Privacy Settlement', cat: 'health', fund: '', pay: '$20 plus privacy monitoring', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'Patient portal users, 2019 to 2023' },
+      { id: 'nissan', co: 'Al Piemonte Nissan', title: 'Marketing Texts & Calls Settlement', cat: 'apps', fund: '$3.7M', pay: '$20 cash or $100 voucher', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-15', who: 'Do Not Call numbers that got repeat marketing' },
+      { id: 'connectamerica', co: 'ConnectAmerica', title: 'Telemarketing (TCPA) Settlement', cat: 'apps', fund: '$4M', pay: 'Up to $275 (estimated)', amt: 275, max: 275, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'People who got ConnectAmerica.com marketing calls or texts' },
+      { id: 'indegene', co: 'Indegene', title: 'Text Message (TCPA) Settlement', cat: 'apps', fund: '$4.7M', pay: 'Up to $250', amt: 250, max: 250, proof: 'No proof', mode: 'here', dl: '2026-12-09', who: 'People who received Indegene marketing texts' },
+      { id: 'suffolk', co: 'Suffolk County, NY', title: 'Red-Light Camera Fee Settlement', cat: 'auto', fund: '$45M', pay: 'Up to $36 per violation', amt: 36, max: 36, proof: 'Notice ID', mode: 'site', dl: '2026-12-08', who: 'People charged red-light camera fees in Suffolk County' },
+      { id: 'ni', co: 'National Instruments', title: 'Securities Settlement (NATI)', cat: 'invest', fund: '$28M', pay: 'About $3.01 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-14', who: 'Investors who sold in two Aug to Sept 2022 windows' },
+      { id: 'skin', co: 'BeautyHealth', title: 'Securities Settlement (SKIN)', cat: 'invest', fund: '$18M', pay: 'About $0.35 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-19', who: 'Buyers from May 2022 to Nov 2023' },
+      { id: 'marqeta', co: 'Marqeta', title: 'Securities Settlement (MQ)', cat: 'invest', fund: '', pay: 'About $0.11 per security', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2026-12-31', who: 'Buyers of Marqeta stock or options, Feb to Nov 2024' },
+      { id: 'starbucks', co: 'Starbucks', title: 'COBRA Notice Settlement', cat: 'invest', fund: '', pay: '$30 to $74 (estimated)', amt: 74, max: 74, proof: 'No proof', mode: 'here', dl: '2026-12-02', who: 'People who got a Starbucks COBRA notice, July 2016 to Jan 2023' },
+      { id: 'stv', co: 'STV Inc.', title: 'WA Job Posting Pay Settlement', cat: 'invest', fund: '', pay: 'About $1,592.71 (estimated)', amt: 1592.71, max: 1592.71, proof: 'No proof', mode: 'here', dl: '2026-12-08', who: 'Washington applicants to STV postings that omitted pay ranges' },
+      { id: 'visa', co: 'Visa & Mastercard', title: 'ATM Access Fee Settlement', cat: 'bank', fund: '', pay: 'Share of fund, up to $1,000', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: '2027-02-09', who: 'People who paid an out-of-network ATM surcharge in the U.S.' },
+      { id: 'googleplay', co: 'Google Play', title: 'Play Store Antitrust Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'People who bought apps or in-app items on Google Play' },
+      { id: 'equifax', co: 'Equifax', title: 'Credit Dispute Settlement', cat: 'privacy', fund: '', pay: 'Up to $400 (estimated)', amt: 400, max: 400, proof: 'No proof', mode: 'here', dl: '2026-11-28', who: 'People who disputed an error on their Equifax credit report' },
+      { id: 'capone', co: 'Capital One', title: '401(k) ERISA Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Participants in the Capital One 401(k) plan' },
+      { id: 'twitter', co: 'Twitter', title: 'Acquisition Shareholder Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Brokerage records', mode: 'site', dl: '2026-11-23', who: 'People who sold Twitter stock in 2022 before the acquisition' },
+      { id: 'hyundaikia', co: 'Hyundai & Kia', title: 'Airbag Control Unit Settlement', cat: 'auto', fund: '', pay: 'Up to $350 (estimated)', amt: 0, max: 350, proof: 'VIN', mode: 'site', dl: '2027-04-06', who: 'Owners or lessees of listed Hyundai and Kia vehicles' },
+      { id: 'toyota', co: 'Toyota', title: 'Airbag Safety Settlement', cat: 'auto', fund: '', pay: '$250 or more (estimated)', amt: 0, max: 250, proof: 'VIN', mode: 'site', dl: '2028-12-11', who: 'Owners or lessees of listed Toyota vehicles' },
+      { id: 'tyson', co: 'Tyson & beef packers', title: 'Beef Purchaser Settlement', cat: 'products', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-11-30', who: 'People who bought beef from stores in eligible states. See notice for dates.' },
+      { id: 'westernunion', co: 'Western Union', title: 'Scam Victim Remission', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Transfer details', mode: 'site', dl: '2026-12-31', who: 'People who sent money to a scammer through Western Union' },
+      { id: 'seatgeek', co: 'SeatGeek', title: 'Nevada Ticket Fee Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-05', who: 'SeatGeek buyers of tickets to Nevada events' },
+      { id: 'realpage', co: 'RealPage', title: 'Rent Price-Fixing Settlement', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-29', who: 'Renters in large apartment buildings whose landlord used RealPage pricing' },
+      { id: 'deere', co: 'John Deere', title: 'Right to Repair Settlement', cat: 'auto', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People who paid an authorized Deere dealer for repairs' },
+      { id: 'upsfair', co: 'UPS', title: 'UPS Fair Fund (Investors)', cat: 'invest', fund: '', pay: 'Pro rata share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-10', who: 'People who bought UPS stock in the covered period' },
+      { id: 'davita', co: 'DaVita', title: 'Ransomware Data Breach', cat: 'health', fund: '', pay: 'Up to $2,500 documented', amt: 0, max: 2500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-19', who: 'Patients notified of the DaVita ransomware attack' },
+      { id: 'harvard', co: 'Harvard Medical School', title: 'Morgue Remains Settlement', cat: 'health', fund: '', pay: 'Payment amount varies', amt: 0, proof: 'Family records', mode: 'site', dl: '2026-12-09', who: 'Families of people who donated their bodies to Harvard Medical School', dir: true },
+      { id: 'netflix', co: 'Netflix', title: 'Viewing Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Netflix subscribers whose viewing data may have been shared' },
+      { id: 'google', co: 'Google', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $12 if the claim wins', amt: 0, max: 12, proof: 'No proof', mode: 'here', dl: null, who: 'Google account holders' },
+      { id: 'youtube', co: 'YouTube', title: 'Video Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $92 if the claim wins', amt: 0, max: 92, proof: 'No proof', mode: 'here', dl: null, who: 'YouTube users who watched while signed in' },
+      { id: 'openai', co: 'ChatGPT', title: 'ChatGPT Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'ChatGPT users' },
+      { id: 'ups', co: 'UPS', title: 'UPS Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People who used UPS.com or UPS My Choice' },
+      { id: 'walgreens', co: 'Walgreens', title: 'Pharmacy Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Walgreens website and app users' },
+      { id: 'disney', co: 'Disney+', title: 'Streaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $15 if the claim wins', amt: 0, max: 15, proof: 'No proof', mode: 'here', dl: null, who: 'Disney+ subscribers' },
+      { id: 'transunion', co: 'TransUnion', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'People with a TransUnion credit file' },
+      { id: 'bestbuy', co: 'Best Buy', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'BestBuy.com shoppers' },
+      { id: 'yahoo', co: 'Yahoo', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Yahoo Mail and account users' },
+      { id: 'dexcom', co: 'Dexcom', title: 'Glucose Monitor Arbitration', cat: 'arb', fund: '', pay: 'Amount varies if the claim wins', amt: 0, proof: 'No proof', mode: 'here', dl: null, who: 'Dexcom glucose monitor users' },
+      { id: 'ubereats', co: 'Uber Eats', title: 'Delivery Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Uber Eats customers' },
+      { id: 'smarttv', co: 'Smart TV makers', title: 'TV Viewing Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Owners of smart TVs that track what you watch' },
+      { id: 'myfitnesspal', co: 'MyFitnessPal', title: 'App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'MyFitnessPal app users' },
+      { id: 'flo', co: 'Flo', title: 'Health App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $60 if the claim wins', amt: 0, max: 60, proof: 'No proof', mode: 'here', dl: null, who: 'Flo period tracker users' },
+      { id: 'bn', co: 'Barnes & Noble', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Barnes & Noble shoppers in CA, PA, FL, WA or MA', sts: ['CA', 'PA', 'FL', 'WA', 'MA'] },
+      { id: 'ubisoft', co: 'Ubisoft', title: 'Gaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Ubisoft account holders' },
+      { id: 'sandoz', co: 'Sandoz', title: 'Generic Drug Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who paid for certain generic drugs' },
+      { id: 'equinox', co: 'Equinox', title: 'Membership Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Equinox gym members' },
+      { id: 'onemain', co: 'OneMain Financial', title: 'Loan Add-On Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,000 if the claim wins', amt: 0, max: 2000, proof: 'No proof', mode: 'here', dl: null, who: 'OneMain loan borrowers' },
+      { id: 'pork', co: 'Pork producers', title: 'Pork Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who bought pork at stores' },
+      { id: 'fanatics', co: 'Fanatics', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Fanatics shoppers' },
+      { id: 'lemonade', co: 'Lemonade', title: 'Insurance Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Lemonade insurance customers' },
+      { id: 'cone', co: 'Cone Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Cone Health website and portal users' },
+      { id: 'duke', co: 'Duke Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $50 if the claim wins', amt: 0, max: 50, proof: 'No proof', mode: 'here', dl: null, who: 'Duke Health website and portal users' },
+      { id: 'ey', co: 'EY', title: 'Data Exposure Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People whose data EY handled' },
+      { id: 'hirevue', co: 'HireVue', title: 'Video Interview Arbitration', cat: 'arb', fund: '', pay: 'Up to $150 if the claim wins', amt: 0, max: 150, proof: 'No proof', mode: 'here', dl: null, who: 'Job applicants who did a HireVue video interview' },
+      { id: 'alo', co: 'Alo Yoga', title: 'Website Privacy Arbitration (CA)', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'California shoppers on the Alo Yoga site', st: 'CA' },
+      { id: 'apollomd', co: 'ApolloMD', title: 'Patient Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'ApolloMD patients' },
+      { id: 'xactus', co: 'Xactus', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $500 if the claim wins', amt: 0, max: 500, proof: 'No proof', mode: 'here', dl: null, who: 'People with a credit report pulled by Xactus' },
+      { id: 'vesync', co: 'VeSync', title: 'Smart Device Arbitration', cat: 'arb', fund: '', pay: 'Up to $10 if the claim wins', amt: 0, max: 10, proof: 'No proof', mode: 'here', dl: null, who: 'VeSync and Levoit app users' }
+    ];
+  }
+  logos() {
+    return {
+      amazon: '../assets/9e823dce7e60dc8d8b58da2243d7151d.svg',
+      apple: '../assets/7fd6ec4499df609a19ab46e16342f49d.svg',
+      bofa: '../assets/121d9429923e05b984526c8965383d6a.svg',
+      kia: '../assets/cc08603ea59eb7c07048d2d8f1c09ae5.svg',
+      nissan: '../assets/2c6c0147dc39394c5de2a3b314164628.svg',
+      starbucks: '../assets/28379ee7c2bc6b1d08ee6e6ec8cde00a.svg',
+      bauer: '../assets/b955a240145916623f39c76683f30cf2.png',
+      benkeith: '../assets/29ff61ec24681d5c4d098a4b00c41796.png',
+      bright: '../assets/eb27eb5f5e3cd2368ac64f52865e9f17.png',
+      columbia: '../assets/0c6525be1fec809009a40a8f755ba9e8.png',
+      connectamerica: '../assets/6e5968261f1fcb1f34972c0c90a652b5.png',
+      cvs: '../assets/1ceb7905467ce333f9268b10d05d201d.png',
+      goodrx: '../assets/20058f58cf0cc867f90794121d8fa7cd.png',
+      indegene: '../assets/9a01c32e4766fa5616d39bba22155995.png',
+      jbs: '../assets/1823e932ddfe1864917090c26daf3e3c.png',
+      knotts: '../assets/41faa40085ee9bfc601f3cf6dc22de18.png',
+      kroger: '../assets/1bde1fe61d713099dffdf1ede7857c39.png',
+      marqeta: '../assets/daa5e78a6d8e2808bcb1d7ce25e31a51.png',
+      neutrogena: '../assets/40fb463bce222cf3f1b518dc1bc1fd04.png',
+      ni: '../assets/ca912521b43185af8910ffffb41625c3.png',
+      pp: '../assets/b7a78d62f965fd493ae93fb5e42d82b5.png',
+      prime: '../assets/b4969a7e7813b7e435d526fa12e08cae.png',
+      renal: '../assets/9f4c930d3fc38b7e8c24c12e5e9fd5df.png',
+      safefleet: '../assets/9ea6cecf1eb2d258422736e6d3e36e0d.png',
+      skin: '../assets/a750434c034a22317973e9602a3a9030.png',
+      squatch: '../assets/2d81ba8fe0a13c9f47d35e8ecbd1db1d.png',
+      stv: '../assets/686fffc3ac5ff6ba36692a9563832def.png',
+      tennis: '../assets/8db229a64846a396aafb5c1848f5ab55.png',
+      thinkware: '../assets/5e5f7c4064859d61093e9429473e317a.png',
+      vanilla: '../assets/1e92776c9b64da9e2c92b826004d86b3.png',
+      venetian: '../assets/9251b6773160e67632e4ca43dec7af06.png',
+      alo: '../assets/fdb7b0510aa06894590bffab215ec078.png',
+      apollomd: '../assets/c0a61a7c297e7da93b9470848d12abf3.png',
+      bestbuy: '../assets/62c4915f11e1ddce207e74e3c34db041.png',
+      bn: '../assets/2d595697e05cf84959e2b421a7277d71.png',
+      capone: '../assets/2823583cce09dc3307f1a694be36c9ad.png',
+      cone: '../assets/d6998a6452e0ca82ce8bbd1c49d9456f.png',
+      davita: '../assets/0a472a5b02cefc3d772c7a3aea676665.png',
+      deere: '../assets/3e2bb5b852c7973fc304d07752c747ae.svg',
+      dexcom: '../assets/ff1b608f7dbff7a788a98b45b41127a9.png',
+      disney: '../assets/fa6927e6a22590e6ee1b1a90524e26a5.png',
+      duke: '../assets/be420537faabfec00ce2c17c048a4f5f.png',
+      equifax: '../assets/f0fd40dfbbdad8b7c7e13aefc1e6c491.png',
+      equinox: '../assets/389c1ed8a8da560084a3fade0f82c301.png',
+      ey: '../assets/73f8286dc9b0107f01d6a0f5fdb73852.png',
+      fanatics: '../assets/e78df59559e5fe98823cedc450ae7afc.png',
+      flo: '../assets/3adb34cdc36c981654d584f93c2a51a4.png',
+      google: '../assets/bc7d6ff01faeaa1ee93f78dd2a19b8d3.png',
+      googleplay: '../assets/7f4390cee228878d694a9ab5d8bd863a.svg',
+      harvard: '../assets/6e253a632aaaa8d316db9b90126f8c91.png',
+      hirevue: '../assets/b6f1dfa70da5137f1540ce8704508075.png',
+      hyundaikia: '../assets/f2cd6e8b58449c54475ce67893f4e185.png',
+      lemonade: '../assets/053d86c045fa9f29ad441b554507af17.png',
+      myfitnesspal: '../assets/76f4d9cde188275eb456858e5862ab36.png',
+      netflix: '../assets/6450426b362962920828f44df101d658.svg',
+      onemain: '../assets/bfa996313c50641a9b2cd4764f597714.png',
+      openai: '../assets/ca263b6032fa6a766d31857e07e4f899.png',
+      pork: '../assets/fc0acc83971ef9580779700617f1af68.png',
+      realpage: '../assets/db93ff119ed82ac214d13401f1e7f659.png',
+      sandoz: '../assets/ef65795f842e1e2a0dbb8f004cee8f33.png',
+      seatgeek: '../assets/eca7cec41e19cdcab5dd3aa5733d499a.png',
+      toyota: '../assets/c09a0cd345b7dc960272d35462f45b6d.svg',
+      transunion: '../assets/36fcc4a081856eae8c148ff495771fa3.png',
+      twitter: '../assets/91eb8d5ec405fe13b8bd4f3fcfff3000.png',
+      tyson: '../assets/c655327b9222899295d427826bd844fe.png',
+      ubereats: '../assets/aef72c362064ee3718727080ccd975be.png',
+      ubisoft: '../assets/8403f48b9b86ef76c3fff8b81d28d414.svg',
+      ups: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg',
+      vesync: '../assets/9c873bf364d0554ad84bff4d28c73137.png',
+      visa: '../assets/17d130cb2fd653ada0d1561043e8aa56.svg',
+      walgreens: '../assets/a833516094f812b15934c7f0cd87f63a.png',
+      westernunion: '../assets/b4c1d18b0a5c8a620f9cb206b07e6a82.png',
+      xactus: '../assets/168806c3e04f9d52bb4dde170628cb0e.png',
+      yahoo: '../assets/7ff3707668ea6d5dfae8df54965f0582.png',
+      youtube: '../assets/1ca9c6db3a8f268ba14f266fe2eb4d00.png',
+      upsfair: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg'
+    };
+  }
+  cats() {
+    return {
+      privacy: { bg: '#3E63DD', fg: '#FFFFFF', tint: '#ECF0FC', ink: '#2C4BB8', label: 'Data & privacy' },
+      products: { bg: '#E5590A', fg: '#FFFFFF', tint: '#FDEEE5', ink: '#B54608', label: 'Products' },
+      auto: { bg: '#218358', fg: '#FFFFFF', tint: '#E9F6EF', ink: '#17603F', label: 'Auto' },
+      bank: { bg: '#3DDC97', fg: '#0F3B2E', tint: '#FFF6E0', ink: '#7A5200', label: 'Banking & fees' },
+      apps: { bg: '#12805C', fg: '#FFFFFF', tint: '#FBEAF4', ink: '#A82F7C', label: 'Apps & services' },
+      health: { bg: '#E5484D', fg: '#FFFFFF', tint: '#FDECEC', ink: '#B8333A', label: 'Health' },
+      invest: { bg: '#0F3B2E', fg: '#FFFFFF', tint: '#EAF2EE', ink: '#12805C', label: 'Investor & employee' },
+      arb: { bg: '#5B6862', fg: '#FFFFFF', tint: '#EAF2EE', ink: '#43504A', label: 'Arbitration' }
+    };
+  }
+  daysLeft(dl) {
+    if (!dl) return 999;
+    const d = new Date(dl + 'T23:59:00');
+    return Math.max(0, Math.ceil((d - new Date()) / 86400000));
+  }
+  fmtDate(dl) {
+    if (!dl) return 'No deadline';
+    const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const [y, mo, da] = dl.split('-').map(Number);
+    return m[mo - 1] + ' ' + da + ', ' + y;
+  }
+  money(n) {
+    return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: n % 1 ? 2 : 0 });
+  }
+
+  cats() {
+    return {
+      privacy: { bg: '#0F3B2E', fg: '#FFFFFF', tint: '#E3ECE8', ink: '#0F3B2E', label: 'Data & privacy' },
+      products: { bg: '#12805C', fg: '#FFFFFF', tint: '#E6F4EC', ink: '#0E6649', label: 'Products' },
+      auto: { bg: '#2F5D4E', fg: '#FFFFFF', tint: '#E5EDEA', ink: '#2F5D4E', label: 'Auto' },
+      bank: { bg: '#3DDC97', fg: '#0A0F0D', tint: '#E3FAEF', ink: '#0E6649', label: 'Banking & fees' },
+      apps: { bg: '#0A0F0D', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#0A0F0D', label: 'Apps & services' },
+      health: { bg: '#B7EFD3', fg: '#0A0F0D', tint: '#EAF9F1', ink: '#0E6649', label: 'Health' },
+      invest: { bg: '#DDE5E0', fg: '#0A0F0D', tint: '#F3F6F4', ink: '#43504A', label: 'Investor & employee' },
+      arb: { bg: '#43504A', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#43504A', label: 'Arbitration' }
+    };
+  }
+  skin() {
+    return {
+      tile: (c) => 'background:' + c.bg + ';color:' + c.fg,
+      brand: (c) => 'align-self:stretch;background:' + c.bg + ';color:' + c.fg + ';font-size:28px;font-weight:800;letter-spacing:-0.8px;padding:26px 20px;border-radius:22px;text-align:center',
+      opt: (sel, c, multi) => 'min-height:58px;padding:12px 14px;border-radius:16px;display:flex;align-items:center;gap:12px;text-align:left;font-family:inherit;font-size:15px;font-weight:700;transition:all .15s ease;'
+        + (sel ? 'background:' + c.bg + ';color:' + c.fg : 'background:' + c.tint + ';color:#0A0F0D'),
+      mark: (sel, c, multi) => 'width:22px;height:22px;flex:none;box-sizing:border-box;border-radius:' + (multi ? '7px' : '50%') + ';display:flex;align-items:center;justify-content:center;'
+        + (sel ? 'background:#FFFFFF;color:' + (c.bg === '#3DDC97' ? '#0F3B2E' : c.bg) : 'background:#FFFFFF;box-shadow:inset 0 0 0 1.5px ' + c.bg),
+      seg: (done, cur) => 'height:6px;border-radius:99px;background:' + (done ? '#0F3B2E' : cur ? '#3DDC97' : '#E8EEEA'),
+      btn: (on) => 'width:100%;height:58px;border-radius:999px;font-family:inherit;font-size:16px;font-weight:800;' + (on ? 'background:#3DDC97;color:#0F3B2E' : 'background:#E8EEEA;color:#6E7A73;cursor:not-allowed'),
+      stateBtn: (on) => 'height:54px;border-radius:16px;font-family:inherit;font-size:16px;font-weight:800;' + (on ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#EAF2EE;color:#0F3B2E'),
+      act: (here) => 'min-height:40px;padding:0 14px;border-radius:999px;font-family:inherit;font-weight:800;font-size:13px;' + (here ? 'background:#3DDC97;color:#0F3B2E' : 'background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E')
+    };
+  }
+}
+
+bootDC(Component,{},(c,v)=>ccLive(c,v));
+</script></body></html>

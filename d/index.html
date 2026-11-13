@@ -1,0 +1,619 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Claimclub · You could be owed money</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='40' fill='none' stroke='%230F3B2E' stroke-width='14'/%3E%3C/svg%3E">
+<script>if(innerWidth<820)location.replace('../m/index.html')</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=Caveat:wght@500;600&display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#FFFFFF}
+a{color:#12805C}a:hover{color:#0F3B2E}
+button{font-family:inherit;cursor:pointer;border:0}
+.shelf{scrollbar-width:thin}
+.shelf::-webkit-scrollbar{height:8px}.shelf::-webkit-scrollbar-thumb{background:#CFDAD3;border-radius:9px}
+.lift{transition:transform .18s ease}
+.lift:hover{transform:translateY(-4px)}
+@keyframes up{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:none}}
+@keyframes phoneL{from{opacity:0;transform:translateY(80px) rotate(-8deg)}to{opacity:1;transform:rotate(-6deg)}}
+@keyframes phoneR{from{opacity:0;transform:translateY(80px) rotate(8deg)}to{opacity:1;transform:rotate(5deg)}}
+@keyframes chip{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes rise{from{opacity:0;transform:translateY(44px)}to{opacity:1;transform:none}}
+.u1{animation:up .7s ease .05s both}.u2{animation:up .7s ease .15s both}.u3{animation:up .7s ease .25s both}
+.pl{animation:phoneL .9s cubic-bezier(.2,.8,.2,1) .3s both}.pr{animation:phoneR .9s cubic-bezier(.2,.8,.2,1) .3s both}
+.mesh{background:radial-gradient(140% 120% at 100% 0%, #1F7A57 0%, rgba(31,122,87,0) 55%),radial-gradient(120% 120% at 0% 100%, #05211A 0%, rgba(5,33,26,0) 60%),linear-gradient(165deg, #134A39 0%, #0F3B2E 45%, #0A2C22 100%)}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,30px)}}
+.orb1{animation:drift 14s ease-in-out infinite}.orb2{animation:drift 18s ease-in-out -6s infinite reverse}
+@keyframes marq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.marq{animation:marq 45s linear infinite}
+.c1{animation:chip 4s ease-in-out infinite}
+@keyframes nin{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:none}}.n1{animation:nin .6s ease .2s both}.n2{animation:nin .6s ease .45s both}.n3{animation:nin .6s ease .7s both}
+@keyframes orbit{to{transform:rotate(360deg)}}@keyframes counter{to{transform:rotate(-360deg)}}
+.spin{animation:orbit 60s linear infinite}.spin img{animation:counter 60s linear infinite}
+@keyframes fan1{from{opacity:0;translate:0 40px}to{opacity:1;translate:0 0}}
+.s1{animation:fan1 .8s cubic-bezier(.2,.8,.2,1) .3s both}.s2{animation:fan1 .8s cubic-bezier(.2,.8,.2,1) .45s both}.s3{animation:fan1 .8s cubic-bezier(.2,.8,.2,1) .6s both}
+@keyframes pulse{0%,100%{box-shadow:inset 0 0 0 6px #3DDC97,0 0 0 0 rgba(255,178,36,.5)}50%{box-shadow:inset 0 0 0 6px #3DDC97,0 0 0 10px rgba(255,178,36,0)}}.pulse{animation:pulse 2s ease-in-out infinite}.c2{animation:chip 5s ease-in-out .8s infinite}
+@supports (animation-timeline: view()){.rv{animation:rise linear both;animation-timeline:view();animation-range:entry 0% cover 25%}}
+@media (prefers-reduced-motion: reduce){.spin,.spin img,.s1,.s2,.s3,.pulse,.marq,.orb1,.orb2,.u1,.u2,.u3,.pl,.pr,.c1,.c2,.rv{animation:none !important}}
+details summary{cursor:pointer;list-style:none}details summary::-webkit-details-marker{display:none}
+input:focus{outline:2px solid #3DDC97;outline-offset:1px}
+@media (max-width: 900px){.heroWrap{padding:14px 14px 14px !important}.phonecol{display:none !important}.herogrid{padding:32px 22px !important;justify-content:center}.herotext{align-items:center;text-align:center}.herotext > div{justify-content:center}.deskrow{display:none !important}.mobilelist{display:flex !important}}
+.phones > div{flex:none}
+.ink{stroke-dasharray:400;stroke-dashoffset:400;animation:inkdraw 1.2s ease forwards;animation-timeline:view();animation-range:entry 40% cover 55%}
+@supports not (animation-timeline: view()){.ink{animation:inkdraw 1.2s ease .3s forwards}}
+@keyframes inkdraw{to{stroke-dashoffset:0}}
+@media (prefers-reduced-motion: reduce){.ink{animation:none;stroke-dashoffset:0}}
+
+:root{color-scheme:light}
+input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
+/* clean scrollbars */
+::-webkit-scrollbar,.scroll::-webkit-scrollbar{width:6px;height:6px;background:transparent}
+::-webkit-scrollbar-track,.scroll::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb,.scroll::-webkit-scrollbar-thumb{background:rgba(10,15,13,.16);border-radius:99px;border:0}
+::-webkit-scrollbar-thumb:hover,.scroll::-webkit-scrollbar-thumb:hover{background:rgba(10,15,13,.3)}
+::-webkit-scrollbar-corner{background:transparent}
+::-webkit-scrollbar:horizontal,.scroll::-webkit-scrollbar:horizontal{height:0;display:none}
+@supports (-moz-appearance:none){*{scrollbar-width:thin;scrollbar-color:rgba(10,15,13,.18) transparent}}
+</style>
+<style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
+<div class="screen" style="font-family: 'Manrope', sans-serif; color: #0A0F0D; background: #FFFFFF; height: 100vh; overflow-y: auto">
+
+  <header style="position: sticky; top: 0; z-index: 20; background: #0A0F0D">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 4vw; display: flex; align-items: center; justify-content: space-between; gap: 20px">
+      <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.6px; color: #FFFFFF">claim<span style="font-weight: 500">club</span><span style="font-size: 0.72em; font-weight: 600; color: #3DDC97; margin-left: -0.06em">.io</span></span></a>
+      <sc-if value="{{ full }}" hint-placeholder-val="{{ false }}">
+        <nav style="display: flex; flex-wrap: wrap; gap: 28px; font-size: 15px; font-weight: 600"><a href="#settlements" style="color: #D7E3DC; text-decoration: none">Settlements</a><a href="#how" style="color: #D7E3DC; text-decoration: none">How it works</a><a href="#pricing" style="color: #D7E3DC; text-decoration: none">Pricing</a><a href="#faq" style="color: #D7E3DC; text-decoration: none">FAQ</a></nav>
+      </sc-if>
+      <div style="display: flex; align-items: center; gap: 16px">
+        <sc-if value="{{ full }}" hint-placeholder-val="{{ false }}"><a href="#login" style="font-size: 15px; font-weight: 600; color: #FFFFFF; text-decoration: none">Log in</a></sc-if>
+        <a href="start.html" style="background: #3DDC97; color: #0F3B2E; text-decoration: none; font-size: 15px; font-weight: 800; padding: 11px 18px; border-radius: 999px">Get started</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="top" class="heroWrap" style="padding: 28px 48px 28px"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; border-radius: 32px; min-height: calc(100vh - 124px); display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
+    <div class="herogrid" style="position: relative; flex-grow: 1; width: 100%; box-sizing: border-box; max-width: 1240px; margin: 0 auto; padding: 56px 64px; display: flex; flex-wrap: wrap; align-items: center; gap: 32px 72px">
+      <div class="herotext" style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 24px">
+        <h1 class="u1" style="margin: 0; font-size: clamp(38px, 4.6vw, 68px); line-height: 1.02; font-weight: 800; letter-spacing: -0.045em">Big companies settle lawsuits all the time. <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #3DDC97">You could be owed a share.</span></h1>
+        <p class="u2" style="margin: 0; font-size: 18px; line-height: 1.55; color: #C9D6CF; max-width: 520px">If you used a product or service that settled a class action, you can claim cash. Tap the claims that apply to you, see your total in under a minute, and we file them for you.</p>
+        <div class="u3" style="display: flex; flex-wrap: wrap; gap: 12px">
+          <a href="start.html" style="background: #FFFFFF; color: #0F3B2E; text-decoration: none; font-size: 17px; font-weight: 800; padding: 17px 28px; border-radius: 999px">See what I could be owed</a>
+          <a href="#settlements" style="color: #FFFFFF; text-decoration: none; font-size: 16px; font-weight: 700; padding: 17px 22px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px rgba(255,255,255,.4)">Browse settlements</a>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 22px; font-size: 14px; font-weight: 600; color: #D7E3DC">
+          <span style="display: flex; align-items: center; gap: 8px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><strong style="color: #FFFFFF">4.8</strong> · 2,317 reviews</span>
+          <span><strong style="color: #FFFFFF">148,000+</strong> members</span>
+        </div>
+      </div>
+      <div class="phonecol" style="flex: 0 0 auto; display: flex; justify-content: center; margin: 0 auto">
+      <sc-if value="{{ visPhone }}" hint-placeholder-val="{{ false }}">      <div class="phones" style="position: relative; display: flex; justify-content: center; gap: 0; height: 470px; width: 300px">
+        <div class="pr" style="width: 280px; height: 470px; background: #FFFFFF; border: 8px solid #000000; border-radius: 40px; padding: 18px 14px; box-sizing: border-box; color: #0A0F0D; text-align: left; display: flex; flex-direction: column; gap: 10px; z-index: 1">
+          <div style="font-size: 12px; font-weight: 700; color: #5B6862">YOUR MATCHES</div>
+          <sc-for list="{{ phone }}" as="c" hint-placeholder-count="4">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 14px; background: #F3F6F4">
+              <sc-if value="{{ c.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ c.logo }}" alt="" style="width: 38px; height: 38px; flex: none; border-radius: 10px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box"></sc-if><sc-if value="{{ c.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ c.tileStyle }}; width: 38px; height: 38px; flex: none; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: 800">{{ c.initial }}</div></sc-if>
+              <div style="flex-grow: 1; min-width: 0; font-size: 13px; font-weight: 800">{{ c.co }}</div>
+              <div style="font-size: 11px; font-weight: 800; color: #FFFFFF; background: #0F3B2E; padding: 6px 8px; border-radius: 8px; white-space: nowrap">{{ c.headline }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visStack }}" hint-placeholder-val="{{ true }}">
+      <div class="vis-stack" style="position: relative; width: 420px; height: 440px">
+        <div class="s3" style="position: absolute; left: 70px; top: 30px; width: 300px; background: #FFFFFF; color: #0A0F0D; border-radius: 26px; padding: 22px; box-shadow: 0 30px 60px rgba(0,0,0,.28); transform: rotate(8deg); display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; gap: 12px"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 52px; height: 52px; border-radius: 14px; object-fit: contain; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 6px; box-sizing: border-box"><div style="font-size: 17px; font-weight: 800">GoodRx</div></div>
+          <div style="font-size: 22px; font-weight: 800; color: #0F3B2E">Cash share</div>
+        </div>
+        <div class="s2" style="position: absolute; left: 40px; top: 60px; width: 300px; background: #FFFFFF; color: #0A0F0D; border-radius: 26px; padding: 22px; box-shadow: 0 30px 60px rgba(0,0,0,.28); transform: rotate(-6deg); display: flex; flex-direction: column; gap: 14px">
+          <div style="display: flex; align-items: center; gap: 12px"><img src="../assets/9e823dce7e60dc8d8b58da2243d7151d.svg" alt="" style="width: 52px; height: 52px; border-radius: 14px; object-fit: contain; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 8px; box-sizing: border-box"><div style="font-size: 17px; font-weight: 800">Amazon</div></div>
+          <div style="font-size: 22px; font-weight: 800; color: #0F3B2E">Refund owed</div>
+        </div>
+        <div class="s1" style="position: absolute; left: 60px; top: 120px; width: 320px; background: #FFFFFF; color: #0A0F0D; border-radius: 28px; padding: 24px; box-shadow: 0 40px 80px rgba(0,0,0,.35); display: flex; flex-direction: column; gap: 16px">
+          <div style="display: flex; justify-content: space-between; align-items: center"><div style="display: flex; align-items: center; gap: 12px"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 56px; height: 56px; border-radius: 16px; object-fit: contain; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 12px; box-sizing: border-box"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 18px; font-weight: 800">Apple</div><div style="font-size: 13px; font-weight: 600; color: #5B6862">Siri settlement</div></div></div><span style="font-size: 12px; font-weight: 800; background: #E9F6EF; color: #17603F; padding: 5px 9px; border-radius: 99px">No proof</span></div>
+          <div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 13px; font-weight: 700; color: #5B6862">You may be owed</div><div style="font-size: 40px; font-weight: 800; letter-spacing: -1.4px; color: #0F3B2E">Up to $95</div></div>
+          <div style="display: flex; align-items: center; justify-content: space-between; background: #0F3B2E; color: #FFFFFF; border-radius: 16px; padding: 14px 18px; font-size: 16px; font-weight: 800"><span>Claim in one tap</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></div>
+        </div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visTracker }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-tracker" style="position: relative; width: 420px; height: 440px">
+        <div style="position: absolute; left: 20px; top: 20px; width: 380px; background: #FFFFFF; color: #0A0F0D; border-radius: 28px; padding: 26px; box-shadow: 0 40px 80px rgba(0,0,0,.32); display: flex; flex-direction: column; gap: 20px">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 13px; font-weight: 700; color: #5B6862">Example estimate</div><div style="font-size: 44px; font-weight: 800; letter-spacing: -1.6px; color: #0F3B2E">$281</div></div><span style="font-size: 12px; font-weight: 800; background: #E9F6EF; color: #17603F; padding: 6px 10px; border-radius: 99px">5 matches</span></div>
+          <div style="display: flex; align-items: center"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 4px #DDE5E0; padding: 9px; box-sizing: border-box"><img src="../assets/9e823dce7e60dc8d8b58da2243d7151d.svg" alt="" style="width: 44px; height: 44px; margin-left: -10px; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 4px #DDE5E0; padding: 8px; box-sizing: border-box"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 44px; height: 44px; margin-left: -10px; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 4px #DDE5E0; padding: 6px; box-sizing: border-box"><img src="../assets/121d9429923e05b984526c8965383d6a.svg" alt="" style="width: 44px; height: 44px; margin-left: -10px; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 4px #DDE5E0; padding: 8px; box-sizing: border-box"><img src="../assets/4f9c9d93c68d2ec217d0cda68ec69521.png" alt="" style="width: 44px; height: 44px; margin-left: -10px; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: 0 0 0 3px #FFFFFF, 0 0 0 4px #DDE5E0; padding: 6px; box-sizing: border-box"></div>
+          <div style="display: flex; flex-direction: column; gap: 0">
+            <div style="display: flex; gap: 14px; align-items: flex-start"><div style="display: flex; flex-direction: column; align-items: center"><div style="width: 22px; height: 22px; border-radius: 50%; background: #12805C"></div><div style="width: 2px; height: 26px; background: #12805C"></div></div><div style="font-size: 15px; font-weight: 700; padding-top: 1px">Matched to 5 settlements</div></div>
+            <div style="display: flex; gap: 14px; align-items: flex-start"><div style="display: flex; flex-direction: column; align-items: center"><div style="width: 22px; height: 22px; border-radius: 50%; background: #12805C"></div><div style="width: 2px; height: 26px; background: #12805C"></div></div><div style="font-size: 15px; font-weight: 700; padding-top: 1px">Claims filed for you</div></div>
+            <div style="display: flex; gap: 14px; align-items: flex-start"><div style="display: flex; flex-direction: column; align-items: center"><div class="pulse" style="width: 22px; height: 22px; border-radius: 50%; background: #FFFFFF; box-shadow: inset 0 0 0 6px #3DDC97"></div><div style="width: 2px; height: 26px; background: #DDE5E0"></div></div><div style="font-size: 15px; font-weight: 700; padding-top: 1px">Under review</div></div>
+            <div style="display: flex; gap: 14px; align-items: flex-start"><div style="width: 22px; height: 22px; border-radius: 50%; background: #FFFFFF; box-shadow: inset 0 0 0 2px #DDE5E0"></div><div style="font-size: 15px; font-weight: 700; color: #5B6862; padding-top: 1px">Paid by the settlement</div></div>
+          </div>
+        </div>
+        <div class="c1" style="position: absolute; right: -10px; bottom: 10px; background: #0F3B2E; color: #FFFFFF; padding: 14px 18px; border-radius: 18px; font-size: 14px; font-weight: 700; box-shadow: 0 20px 40px rgba(0,0,0,.3); display: flex; align-items: center; gap: 10px"><span style="width: 10px; height: 10px; border-radius: 50%; background: #3DDC97"></span>Apple claim submitted</div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visCheck }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-check" style="position: relative; width: 460px; height: 420px; display: flex; align-items: center; justify-content: center">
+        <div class="s2" style="position: absolute; width: 400px; height: 200px; border-radius: 18px; background: #E9F6EF; transform: rotate(-7deg) translate(-10px, 40px); box-shadow: 0 30px 60px rgba(0,0,0,.25)"></div>
+        <div class="s1" style="position: relative; width: 430px; background: #FFFFFF; color: #0A0F0D; border-radius: 18px; padding: 24px 26px; box-shadow: 0 40px 80px rgba(0,0,0,.35); transform: rotate(3deg); display: flex; flex-direction: column; gap: 16px; background-image: repeating-linear-gradient(0deg, rgba(18,128,92,.05) 0 1px, transparent 1px 6px)">
+          <div style="display: flex; justify-content: space-between; align-items: center"><div style="display: flex; align-items: center; gap: 8px"><svg width="22" height="22" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 13px; font-weight: 800; letter-spacing: 1px; color: #0F3B2E">SETTLEMENT PAYMENT</span></div><span style="font-size: 12px; font-weight: 700; color: #5B6862">Example</span></div>
+          <div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; border-bottom: 1.5px solid #C3CEC8; padding-bottom: 10px"><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 11px; font-weight: 700; color: #5B6862">PAY TO THE ORDER OF</span><span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 30px; color: #0A0F0D">You</span></div><div style="font-size: 30px; font-weight: 800; color: #0F3B2E; background: #E9F6EF; padding: 6px 12px; border-radius: 10px">$95.00</div></div>
+          <div style="display: flex; justify-content: space-between; align-items: center"><div style="display: flex; align-items: center; gap: 10px"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 40px; height: 40px; flex: none; border-radius: 10px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 8px; box-sizing: border-box"><div style="display: flex; flex-direction: column"><span style="font-size: 11px; font-weight: 700; color: #5B6862">MEMO</span><span style="font-size: 14px; font-weight: 700">Apple Siri settlement</span></div></div><span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 20px; color: #5B6862">Settlement Admin.</span></div>
+        </div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visNotifs }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-notifs" style="position: relative; width: 420px; display: flex; flex-direction: column; gap: 12px">
+        <div style="font-size: 12px; font-weight: 700; letter-spacing: 1.4px; color: #C9D6CF; padding-left: 6px">EXAMPLE ALERTS</div>
+        <div class="n1" style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,.96); color: #0A0F0D; border-radius: 22px; padding: 14px 16px; box-shadow: 0 20px 40px rgba(0,0,0,.25)"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 7px; box-sizing: border-box"><div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 800">New match</span><span style="font-size: 12px; font-weight: 600; color: #5B6862">now</span></div><span style="font-size: 13px; color: #43504A">GoodRx privacy settlement, no proof needed</span></div></div>
+        <div class="n2" style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,.96); color: #0A0F0D; border-radius: 22px; padding: 14px 16px; box-shadow: 0 20px 40px rgba(0,0,0,.25)"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 7px; box-sizing: border-box"><div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 800">Claim filed</span><span style="font-size: 12px; font-weight: 600; color: #5B6862">2m ago</span></div><span style="font-size: 13px; color: #43504A">Apple Siri settlement, up to $95</span></div></div>
+        <div class="n3" style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,.96); color: #0A0F0D; border-radius: 22px; padding: 14px 16px; box-shadow: 0 20px 40px rgba(0,0,0,.25)"><img src="../assets/4f9c9d93c68d2ec217d0cda68ec69521.png" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 7px; box-sizing: border-box"><div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 800">Deadline soon</span><span style="font-size: 12px; font-weight: 600; color: #5B6862">1h ago</span></div><span style="font-size: 13px; color: #43504A">CVS privacy claim closes in 4 days</span></div></div>
+        <div class="n4" style="display: flex; gap: 12px; align-items: center; background: rgba(255,255,255,.96); color: #0A0F0D; border-radius: 22px; padding: 14px 16px; box-shadow: 0 20px 40px rgba(0,0,0,.25);opacity:.85;transform:scale(.97)"><img src="../assets/121d9429923e05b984526c8965383d6a.svg" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 7px; box-sizing: border-box"><div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-size: 14px; font-weight: 800">Claim submitted</span><span style="font-size: 12px; font-weight: 600; color: #5B6862">Today</span></div><span style="font-size: 13px; color: #43504A">Bank of America dispute settlement</span></div></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visQuiz }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-quiz" style="position: relative; width: 420px; height: 440px">
+        <div class="s1" style="position: absolute; left: 10px; top: 20px; width: 380px; background: #FFFFFF; color: #0A0F0D; border-radius: 28px; padding: 26px; box-shadow: 0 40px 80px rgba(0,0,0,.32); display: flex; flex-direction: column; gap: 18px">
+          <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 12px; font-weight: 700; color: #5B6862">QUESTION 1 OF 9</span><div style="display: flex; gap: 4px"><span style="width: 22px; height: 4px; border-radius: 9px; background: #0F3B2E"></span><span style="width: 22px; height: 4px; border-radius: 9px; background: #DDE5E0"></span><span style="width: 22px; height: 4px; border-radius: 9px; background: #DDE5E0"></span><span style="width: 22px; height: 4px; border-radius: 9px; background: #DDE5E0"></span></div></div>
+          <div style="align-self: center; width: 92px; height: 92px; border-radius: 26px; box-shadow: 0 12px 30px rgba(10,15,13,.12), inset 0 0 0 1px #DDE5E0; display: flex; align-items: center; justify-content: center"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 50px; height: 50px; object-fit: contain"></div>
+          <div style="font-size: 21px; font-weight: 800; line-height: 1.25; text-align: center">Did you buy an iPhone 15 Pro or any iPhone 16?</div>
+          <div style="display: flex; gap: 10px"><div style="flex: 1; text-align: center; padding: 15px; border-radius: 14px; background: #0F3B2E; color: #FFFFFF; font-weight: 800">Yes</div><div style="flex: 1; text-align: center; padding: 15px; border-radius: 14px; background: #F3F6F4; font-weight: 800; box-shadow: inset 0 0 0 1px #DDE5E0">No</div></div>
+        </div>
+        <div class="c1" style="position: absolute; right: -6px; bottom: 30px; background: #3DDC97; color: #0F3B2E; padding: 14px 18px; border-radius: 18px; box-shadow: 0 20px 40px rgba(0,0,0,.3); display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 800">FOUND SO FAR</span><span style="font-size: 26px; font-weight: 800; letter-spacing: -0.8px">+$95</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visGrid }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-grid" style="width: 430px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; transform: rotate(-4deg)">
+        <div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/4f9c9d93c68d2ec217d0cda68ec69521.png" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 2px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Up to $5</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22);outline: 3px solid #3DDC97; outline-offset: 3px"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 8px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #0F3B2E; background: #3DDC97; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Up to $95</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 2px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Cash</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/9e823dce7e60dc8d8b58da2243d7151d.svg" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 6px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Refund</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/121d9429923e05b984526c8965383d6a.svg" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 6px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Cash</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/e05a93bf866b3f9b966057a2bfaa397b.png" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 0px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">$12.50</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/cc08603ea59eb7c07048d2d8f1c09ae5.svg" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 4px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">$40</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/0c6525be1fec809009a40a8f755ba9e8.png" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 2px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Cash</span></div><div style="background: #FFFFFF; border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 12px; box-shadow: 0 16px 34px rgba(0,0,0,.22)"><img src="../assets/79bba5c6da639284c2f8b8dc1a24fb16.png" alt="" style="width: 54px; height: 54px; object-fit: contain; padding: 2px; box-sizing: border-box"><span style="font-size: 12px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 3px 8px; border-radius: 99px; white-space: nowrap">Cash</span></div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visGauge }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-gauge" style="position: relative; width: 440px; height: 440px">
+        <svg width="440" height="440" viewBox="0 0 440 440" aria-hidden="true" class="s1"><path d="M220.0 24.0A196 196 0 0 1 370.1 346.0L334.9 316.4A150 150 0 0 0 220.0 70.0Z" fill="#3DDC97"></path><path d="M363.3 353.7A196 196 0 0 1 153.0 404.2L168.7 361.0A150 150 0 0 0 329.7 322.3Z" fill="#FFFFFF"></path><path d="M143.4 400.4A196 196 0 0 1 24.7 237.1L70.6 233.1A150 150 0 0 0 161.4 358.1Z" fill="#12805C"></path><path d="M24.1 226.8A196 196 0 0 1 94.0 69.9L123.6 105.1A150 150 0 0 0 70.1 225.2Z" fill="#B7EFD3"></path><path d="M102.0 63.5A196 196 0 0 1 209.7 24.3L212.1 70.2A150 150 0 0 0 129.7 100.2Z" fill="rgba(255,255,255,.12)"></path></svg>
+        <div style="position: absolute; left: 90px; top: 90px; width: 260px; height: 260px; border-radius: 50%; background: #FFFFFF; color: #0A0F0D; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 30px 60px rgba(0,0,0,.3)">
+          <span style="font-size: 12px; font-weight: 700; letter-spacing: 1.2px; color: #5B6862">EXAMPLE ESTIMATE</span>
+          <span style="font-size: 52px; font-weight: 800; letter-spacing: -2px; color: #0F3B2E">$281</span>
+          <div style="display: flex"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 6px; box-sizing: border-box;box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #DDE5E0"><img src="../assets/9e823dce7e60dc8d8b58da2243d7151d.svg" alt="" style="width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box;margin-left: -6px; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #DDE5E0"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 4px; box-sizing: border-box;margin-left: -6px; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #DDE5E0"><img src="../assets/4f9c9d93c68d2ec217d0cda68ec69521.png" alt="" style="width: 30px; height: 30px; flex: none; border-radius: 50%; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 4px; box-sizing: border-box;margin-left: -6px; box-shadow: 0 0 0 2px #FFFFFF, 0 0 0 3px #DDE5E0"></div>
+          <span style="font-size: 13px; font-weight: 700; color: #43504A">across 5 settlements</span>
+        </div>
+      </div>
+      </sc-if>
+      <sc-if value="{{ visOrbit }}" hint-placeholder-val="{{ false }}">
+      <div class="vis-orbit" style="position: relative; width: 440px; height: 440px">
+        <div style="position: absolute; inset: 40px; border-radius: 50%; border: 1.5px dashed rgba(255,255,255,.25)"></div>
+        <div style="position: absolute; inset: 120px; border-radius: 50%; border: 1.5px dashed rgba(255,255,255,.2)"></div>
+        <div style="position: absolute; left: 150px; top: 150px; width: 140px; height: 140px; border-radius: 50%; background: #FFFFFF; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; box-shadow: 0 30px 60px rgba(0,0,0,.3)"><svg width="54" height="54" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0F3B2E" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0F3B2E" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0F3B2E" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0F3B2E" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0F3B2E" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><div style="font-size: 12px; font-weight: 800; color: #0F3B2E">{{ openCount }} open</div></div>
+        <div class="spin" style="position: absolute; inset: 0">
+          <sc-for list="{{ orbit }}" as="o" hint-placeholder-count="8"><img src="{{ o.logo }}" alt="{{ o.co }}" style="{{ o.style }}"></sc-for>
+        </div>
+      </div>
+      </sc-if>
+      </div>
+    </div>
+    <div style="position: relative; padding: 18px 0 22px; border-top: 1px solid rgba(255,255,255,.12); margin-top: 0">
+      <div style="overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent)">
+          <div class="marq" style="display: flex; gap: 14px; width: max-content">
+            <sc-for list="{{ logoStrip }}" as="l" hint-placeholder-count="8"><div style="flex: none; min-width: 210px; height: 64px; box-sizing: border-box; display: flex; align-items: center; gap: 12px; background: #FFFFFF; color: #0A0F0D; border-radius: 16px; padding: 8px 18px 8px 8px"><img src="{{ l.logo }}" alt="" style="width: 48px; height: 48px; flex: none; border-radius: 12px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 6px; box-sizing: border-box"><div style="min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 16px; font-weight: 800; color: #0F3B2E; white-space: nowrap">{{ l.headline }}</span><span style="font-size: 12px; font-weight: 600; color: #5B6862; white-space: nowrap">{{ l.co }}</span></div></div></sc-for>
+          </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- SETTLEMENTS: one row -->
+  <section id="settlements" style="padding: 90px 0 80px">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 0 4vw; display: flex; flex-direction: column; gap: 20px">
+      <div class="rv" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 50px); font-weight: 800; letter-spacing: -0.04em; color: #0F3B2E">Open settlements you can claim</h2><div style="font-size: 16px; color: #43504A">{{ resultCount }} · scroll the row or pick a category</div></div>
+        <div style="position: relative; flex: 0 1 360px">
+          <label for="searchC" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search settlements</label>
+          <input id="searchC" type="search" placeholder="Search a company" value="{{ q }}" onChange="{{ onSearch }}" style="width: 100%; box-sizing: border-box; height: 50px; border-radius: 999px; border: 0; padding: 0 18px 0 46px; font-size: 15px; font-family: inherit; color: #0A0F0D; background: #F3F6F4; box-shadow: inset 0 0 0 1px #DDE5E0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B6862" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 18px; top: 16px"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px"><sc-for list="{{ filters }}" as="f" hint-placeholder-count="8"><button onClick="{{ f.pick }}" style="{{ f.style }}; flex: none; white-space: nowrap">{{ f.label }}</button></sc-for></div>
+    </div>
+    <div class="shelf deskrow" style="display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px max(4vw, calc((100% - 1280px) / 2 + 4vw)) 18px">
+      <sc-for list="{{ cards }}" as="c" hint-placeholder-count="6">
+        <a href="start.html" class="lift" style="flex: 0 0 232px; scroll-snap-align: start; background: #FFFFFF; border-radius: 24px; padding: 18px; box-sizing: border-box; text-decoration: none; color: #0A0F0D; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 1px 0 #DDE5E0, 0 10px 30px rgba(10,15,13,.07); border: 1px solid #DDE5E0">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start">
+            <sc-if value="{{ c.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ c.logo }}" alt="{{ c.co }} logo" style="width: 68px; height: 68px; border-radius: 18px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 8px; box-sizing: border-box"></sc-if>
+            <sc-if value="{{ c.noLogo }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ c.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ c.logo }}" alt="" style="width: 68px; height: 68px; flex: none; border-radius: 18px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 5px; box-sizing: border-box"></sc-if><sc-if value="{{ c.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ c.tileStyle }}; width: 68px; height: 68px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 800">{{ c.initial }}</div></sc-if></sc-if>
+            <sc-if value="{{ c.urgent }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 800; background: #FDECEC; color: #B8333A; padding: 5px 9px; border-radius: 99px; white-space: nowrap">{{ c.daysLabel }}</span></sc-if>
+            <sc-if value="{{ c.calm }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 700; background: #EAF2EE; color: #12805C; padding: 5px 9px; border-radius: 99px; white-space: nowrap">{{ c.daysLabel }}</span></sc-if>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 4px; min-height: 64px"><div style="font-size: 18px; font-weight: 800; letter-spacing: -0.3px">{{ c.co }}</div><div style="font-size: 13px; color: #5B6862; line-height: 1.35">{{ c.title }}</div></div>
+          <div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 22px; font-weight: 800; letter-spacing: -0.5px; color: #0F3B2E; white-space: nowrap">{{ c.headline }}</div><sc-if value="{{ c.withProof }}" hint-placeholder-val="{{ false }}"><div style="font-size: 12px; font-weight: 600; color: #5B6862">{{ c.proofNote }}</div></sc-if></div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 12px; border-top: 1px solid #E8EEEA">
+            <span style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #43504A"><span style="{{ c.dotStyle }}"></span>{{ c.catLabel }}</span>
+            <sc-if value="{{ c.noProof }}" hint-placeholder-val="{{ true }}"><span style="font-size: 11px; font-weight: 800; background: #E9F6EF; color: #17603F; padding: 4px 8px; border-radius: 8px">No proof</span></sc-if>
+          </div>
+        </a>
+      </sc-for>
+      <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="flex: 0 0 320px; padding: 30px; color: #5B6862; font-weight: 600">No open settlements match that search.</div></sc-if>
+    </div>
+    <div class="mobilelist" style="display: none; flex-direction: column; gap: 8px; padding: 6px 16px 0">
+      <sc-for list="{{ mobileCards }}" as="c" hint-placeholder-count="6">
+        <a href="start.html" style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 10px 12px; text-decoration: none; color: #0A0F0D">
+          <sc-if value="{{ c.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ c.logo }}" alt="{{ c.co }} logo" style="width: 48px; height: 48px; flex: none; border-radius: 13px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 6px; box-sizing: border-box"></sc-if>
+          <sc-if value="{{ c.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ c.tileStyle }}; width: 48px; height: 48px; flex: none; border-radius: 13px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800">{{ c.initial }}</div></sc-if>
+          <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><div style="font-size: 15px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.co }}</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">{{ c.daysLabel }}<sc-if value="{{ c.noProof }}" hint-placeholder-val="{{ true }}"> · No proof</sc-if></div></div>
+          <div style="font-size: 14px; font-weight: 800; color: #0F3B2E; white-space: nowrap">{{ c.headline }}</div>
+        </a>
+      </sc-for>
+      <sc-if value="{{ hasMoreMobile }}" hint-placeholder-val="{{ true }}"><button onClick="{{ toggleAll }}" style="margin-top: 6px; height: 50px; border-radius: 999px; background: #F3F6F4; color: #0F3B2E; font-size: 15px; font-weight: 800; box-shadow: inset 0 0 0 1px #DDE5E0">{{ moreLabel }}</button></sc-if>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how" style="padding: 100px 4vw; background: #F3F6F4">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px">
+      <div class="rv" style="display: flex; flex-direction: column; gap: 10px; max-width: 700px"><div style="font-size: 13px; font-weight: 700; letter-spacing: 1.6px; color: #12805C">HOW CLAIMCLUB WORKS</div><h2 style="margin: 0; font-size: clamp(34px, 3.8vw, 52px); line-height: 1.05; font-weight: 800; letter-spacing: -1.6px; color: #0F3B2E">We find it, file it, and track it to payout.</h2></div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 18px">
+        <div class="rv" style="background: #FFFFFF; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+          <div style="font-size: 13px; font-weight: 800; color: #12805C">01</div>
+          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px">Find out which companies owe you</div>
+          <div style="font-size: 16px; line-height: 1.6; color: #43504A">Tap yes or no on brands you've used. Each answer is checked against a real, open settlement.</div>
+          <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; background: #F3F6F4; border-radius: 16px; margin-top: auto; position: relative; overflow: visible; pointer-events: none; user-select: none">
+            
+            <div style="font-size: 14px; font-weight: 700; padding-right: 70px">Did you buy an iPhone 15 Pro or iPhone 16?</div><span style="position: absolute; right: 6px; top: 6px; font-family: Caveat, cursive; font-size: 20px; font-weight: 600; color: #D9342B; transform: rotate(-6deg); white-space: nowrap">just tap!</span>
+            <div style="display: flex; gap: 8px"><div style="position: relative; flex: 1; text-align: center; padding: 8px; border-radius: 8px; background: #FFFFFF; color: #0A0F0D; font-weight: 700; font-size: 13px; box-shadow: inset 0 0 0 1px #DDE5E0">Yes<svg aria-hidden="true" viewBox="0 0 120 50" preserveAspectRatio="none" style="position: absolute; left: -8px; top: -7px; width: calc(100% + 16px); height: calc(100% + 14px); overflow: visible"><path class="ink" d="M8 26 C 6 8, 70 2, 108 12 C 122 18, 114 44, 60 46 C 20 47, 4 38, 12 20" fill="none" stroke="#D9342B" stroke-width="2.4" stroke-linecap="round"></path></svg><svg class="ink-cursor" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="position: absolute; right: 18px; bottom: -16px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25))"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z" fill="#0A0F0D" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"></path></svg></div><div style="flex: 1; text-align: center; padding: 8px; border-radius: 8px; color: #5B6862; font-weight: 600; font-size: 13px; box-shadow: inset 0 0 0 1px #DDE5E0; background: #FFFFFF">No</div></div>
+          </div>
+        </div>
+        <div class="rv" style="background: #FFFFFF; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+          <div style="font-size: 13px; font-weight: 800; color: #12805C">02</div>
+          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px">File any claim in one tap</div>
+          <div style="font-size: 16px; line-height: 1.6; color: #43504A">We pre-fill the official claim form from your answers. Review it, sign with a tap, and we submit it.</div>
+          <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 8px; padding: 14px; background: #F3F6F4; border-radius: 16px; margin-top: auto; position: relative; overflow: visible; pointer-events: none; user-select: none">
+            
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600"><span style="color: #5B6862">Name</span><span>Pre-filled</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600"><span style="color: #5B6862">Payment</span><span>PayPal</span></div>
+            <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 600"><span style="color: #5B6862">Signature</span><span style="position: relative; font-family: 'Instrument Serif', serif; font-style: italic; font-size: 17px">Signed<svg aria-hidden="true" viewBox="0 0 80 12" style="position: absolute; left: -6px; bottom: -8px; width: 70px; height: 12px; overflow: visible"><path class="ink" d="M2 7 C 20 2, 45 11, 78 4" fill="none" stroke="#D9342B" stroke-width="2.2" stroke-linecap="round"></path></svg><svg class="ink-cursor" width="26" height="26" viewBox="0 0 24 24" aria-hidden="true" style="position: absolute; right: -18px; top: 10px; filter: drop-shadow(0 2px 3px rgba(0,0,0,.25))"><path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z" fill="#0A0F0D" stroke="#FFFFFF" stroke-width="1.5" stroke-linejoin="round"></path></svg></span></div><span style="position: absolute; left: 12px; bottom: -10px; font-family: Caveat, cursive; font-size: 20px; font-weight: 600; color: #D9342B; transform: rotate(-3deg); white-space: nowrap">one tap to sign</span>
+          </div>
+        </div>
+        <div class="rv" style="background: #FFFFFF; border-radius: 24px; padding: 28px; display: flex; flex-direction: column; gap: 16px">
+          <div style="font-size: 13px; font-weight: 800; color: #12805C">03</div>
+          <div style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px">Track every claim to payout</div>
+          <div style="font-size: 16px; line-height: 1.6; color: #43504A">See each claim's status and get alerted when it pays. Settlements pay you directly.</div>
+          <div aria-hidden="true" style="display: flex; flex-direction: column; gap: 12px; padding: 14px; background: #F3F6F4; border-radius: 16px; margin-top: auto; position: relative; overflow: visible; pointer-events: none; user-select: none"><div style="display: flex; justify-content: space-between; align-items: center">
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 26px; height: 26px; border-radius: 50%; background: #218358"></div><div style="font-size: 11px; font-weight: 700">Filed</div></div>
+            <div style="flex-grow: 1; height: 2px; background: #218358; margin: 0 4px 18px"></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="position: relative; width: 26px; height: 26px; border-radius: 50%; background: #218358"><svg aria-hidden="true" viewBox="0 0 40 40" style="position: absolute; left: -9px; top: -9px; width: 44px; height: 44px; overflow: visible"><path class="ink" d="M20 3 C 36 2, 40 20, 34 31 C 26 42, 6 40, 3 26 C 0 12, 10 4, 24 6" fill="none" stroke="#D9342B" stroke-width="2.2" stroke-linecap="round"></path></svg></div><div style="font-size: 11px; font-weight: 700">Submitted</div></div>
+            <div style="flex-grow: 1; height: 2px; background: #DDE5E0; margin: 0 4px 18px"></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; border: 2px solid #DDE5E0; box-sizing: border-box"></div><div style="font-size: 11px; font-weight: 700">Approved</div></div>
+            <div style="flex-grow: 1; height: 2px; background: #DDE5E0; margin: 0 4px 18px"></div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 6px"><div style="width: 26px; height: 26px; border-radius: 50%; background: #FFFFFF; border: 2px solid #DDE5E0; box-sizing: border-box"></div><div style="font-size: 11px; font-weight: 700">Paid</div></div><span style="position: absolute; left: 40%; bottom: -14px; font-family: Caveat, cursive; font-size: 20px; font-weight: 600; color: #D9342B; transform: rotate(-4deg); white-space: nowrap">you are here</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEWS (sample content) -->
+  <section style="padding: 100px 4vw">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 32px">
+      <div class="rv" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px"><h2 style="margin: 0; font-size: clamp(32px, 3.4vw, 46px); font-weight: 800; letter-spacing: -1.4px; color: #0F3B2E">What members say</h2><div style="display: flex; align-items: center; gap: 10px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="20" height="20" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><span style="font-size: 18px; font-weight: 800">4.8</span><span style="font-size: 15px; font-weight: 600; color: #43504A">from 2,317 reviews</span></div></div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px">
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><div style="font-size: 16px; line-height: 1.6; font-weight: 500">I had no idea I was part of the Apple Siri settlement. The claim was filed before I finished my coffee.</div><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 14px; font-weight: 800">Marcus T.</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">Verified member</div></div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #43504A; background: #F3F6F4; padding: 5px 9px 5px 5px; border-radius: 99px"><img src="../assets/7fd6ec4499df609a19ab46e16342f49d.svg" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: contain; background: #FFFFFF">Apple</div></div></div>
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><div style="font-size: 16px; line-height: 1.6; font-weight: 500">Found four settlements I qualified for, including a data breach letter I'd totally forgotten about.</div><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 14px; font-weight: 800">Priya S.</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">Verified member</div></div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #43504A; background: #F3F6F4; padding: 5px 9px 5px 5px; border-radius: 99px"><img src="../assets/0c6525be1fec809009a40a8f755ba9e8.png" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: contain; background: #FFFFFF">Columbia</div></div></div>
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><div style="font-size: 16px; line-height: 1.6; font-weight: 500">Easier than any form I've ever filled out. I like that it tells you up front which ones need proof.</div><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 14px; font-weight: 800">Danielle R.</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">Verified member</div></div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #43504A; background: #F3F6F4; padding: 5px 9px 5px 5px; border-radius: 99px"><img src="../assets/53105612f75094b555dcad8ddabc83e7.png" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: contain; background: #FFFFFF">GoodRx</div></div></div>
+        <div class="rv" style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 22px; padding: 24px; display: flex; flex-direction: column; gap: 14px"><span style="display: inline-flex; gap: 2px" role="img" aria-label="5 out of 5 stars"><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg><svg width="16" height="16" viewBox="0 0 24 24" fill="#3DDC97" aria-hidden="true"><path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path></svg></span><div style="font-size: 16px; line-height: 1.6; font-weight: 500">I tried filing on my own once and gave up halfway. This did it in a few taps.</div><div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: auto"><div style="display: flex; flex-direction: column; gap: 2px"><div style="font-size: 14px; font-weight: 800">Jordan M.</div><div style="font-size: 12px; font-weight: 600; color: #5B6862">Verified member</div></div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: #43504A; background: #F3F6F4; padding: 5px 9px 5px 5px; border-radius: 99px"><img src="../assets/121d9429923e05b984526c8965383d6a.svg" alt="" style="width: 20px; height: 20px; border-radius: 50%; object-fit: contain; background: #FFFFFF">Bank of America</div></div></div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; padding: 22px 0; border-top: 1px solid #E8EEEA; border-bottom: 1px solid #E8EEEA; font-size: 14px; font-weight: 700; color: #43504A">
+        <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3DDC97"></span>Every settlement is court-approved</div>
+        <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3DDC97"></span>Payouts come straight from the settlement</div>
+        <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3DDC97"></span>Your details are encrypted</div>
+        <div style="display: flex; align-items: center; gap: 8px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #3DDC97"></span>Cancel anytime in one tap</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing" style="padding: 0 4vw 100px">
+    <div class="rv" style="max-width: 1240px; margin: 0 auto; background: #0F3B2E; color: #FFFFFF; border-radius: 32px; padding: 56px; box-sizing: border-box; display: flex; flex-wrap: wrap; gap: 48px; align-items: center; justify-content: space-between">
+      <div style="flex: 1 1 420px; display: flex; flex-direction: column; gap: 14px"><div style="font-size: 13px; font-weight: 700; letter-spacing: 1.6px; color: #B9CCC2">MEMBERSHIP</div><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 48px); line-height: 1.05; font-weight: 800; letter-spacing: -1.4px">See your estimate free. Unlock and file for $19.99 a month.</h2><div style="font-size: 16px; line-height: 1.7; color: #D7E3DC">Every matched settlement, pre-filled one-tap filing, claim tracking, and alerts when new settlements match you. Cancel anytime.</div></div>
+      <a href="start.html" style="background: #FFFFFF; color: #0F3B2E; text-decoration: none; font-size: 17px; font-weight: 800; padding: 18px 28px; border-radius: 14px">Check my eligibility</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="padding: 0 4vw 100px">
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column">
+      <h2 class="rv" style="margin: 0 0 24px; font-size: clamp(32px, 3.4vw, 46px); font-weight: 800; letter-spacing: -1.4px; color: #0F3B2E">Frequently asked questions</h2>
+      <details class="rv" style="border-top: 1px solid #DDE5E0; padding: 22px 0"><summary style="font-size: 19px; font-weight: 700">What does Claimclub do?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.7; color: #43504A">We track open class action settlements, match them to you from a short quiz, pre-fill the claim forms, submit them, and follow each claim until it pays.</p></details>
+      <details class="rv" style="border-top: 1px solid #DDE5E0; padding: 22px 0"><summary style="font-size: 19px; font-weight: 700">Are these settlements real?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.7; color: #43504A">Yes. Every listing is a court-approved settlement with a public claim deadline. You can also file any of them yourself, for free, on the official settlement website.</p></details>
+      <details class="rv" style="border-top: 1px solid #DDE5E0; padding: 22px 0"><summary style="font-size: 19px; font-weight: 700">How accurate are the payout amounts?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.7; color: #43504A">They come from each settlement's notice. Many are caps or estimates, and final amounts depend on court approval and how many people file.</p></details>
+      <details class="rv" style="border-top: 1px solid #DDE5E0; border-bottom: 1px solid #DDE5E0; padding: 22px 0"><summary style="font-size: 19px; font-weight: 700">Why do some claims send me to another site?</summary><p style="margin: 12px 0 0; font-size: 16px; line-height: 1.7; color: #43504A">A few settlements only accept claims through their official portal, usually because they need documents like brokerage records. We label those up front and copy your details over.</p></details>
+    </div>
+  </section>
+
+  <footer style="padding: 56px 4vw 40px; background: #0A0F0D; color: #C9D6CF">
+    <div style="max-width: 1240px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 20px"><div style="display: flex; align-items: center; gap: 10px"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 20px; font-weight: 800; color: #FFFFFF">claim<span style="font-weight: 500">club</span><span style="font-size: 0.72em; font-weight: 600; color: #3DDC97; margin-left: -0.06em">.io</span></span></div><div style="display: flex; gap: 24px; font-size: 14px; font-weight: 600"><a href="#settlements" style="color: #C9D6CF; text-decoration: none">Settlements</a><a href="#privacy" style="color: #C9D6CF; text-decoration: none">Privacy</a><a href="#terms" style="color: #C9D6CF; text-decoration: none">Terms</a><a href="#contact" style="color: #C9D6CF; text-decoration: none">Contact</a></div></div>
+      <p style="margin: 0; font-size: 13px; line-height: 1.7; max-width: 900px">Claimclub is a claims preparation service. It is not a law firm, settlement administrator, or class counsel, and does not provide legal advice. Eligibility and payouts are decided by courts and settlement administrators. Amounts shown are estimates or caps from settlement notices and are not guaranteed. You can file any claim directly with the settlement administrator at no cost.</p>
+    </div>
+  </footer>
+</div>
+</template><div id="root"></div>
+<script src="../runtime.js"></script><script src="../live.js"></script><script>
+
+class Component extends DCLogic {
+  get rowMode() { return true; }
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all', q: '', showAll: false, faq: -1 };
+  }
+  renderVals() {
+    const s = this.state, K = this.cats(), S = this.skin();
+    const all = this.data().map(d => Object.assign({}, d, { days: this.daysLeft(d.dl) })).filter(d => d.days > 0);
+    const filters = [
+      { id: 'all', label: 'All' }, { id: 'noproof', label: 'No proof needed' }, { id: 'soon', label: 'Closing soon' },
+      { id: 'privacy', label: 'Data & privacy' }, { id: 'products', label: 'Products' }, { id: 'apps', label: 'Apps & services' },
+      { id: 'bank', label: 'Banking & fees' }, { id: 'health', label: 'Health' }, { id: 'auto', label: 'Auto' }, { id: 'invest', label: 'Investor & employee' }, { id: 'arb', label: 'Arbitration' }
+    ];
+    const q = s.q.trim().toLowerCase();
+    let list = all.filter(d => {
+      if (q && !(d.co + ' ' + d.title + ' ' + d.who).toLowerCase().includes(q)) return false;
+      if (s.filter === 'noproof') return d.proof === 'No proof';
+      if (s.filter === 'soon') return d.days <= 21;
+      if (s.filter !== 'all') return d.cat === s.filter;
+      return true;
+    });
+    list.sort((a, b) => (b.pop ? 1 : 0) - (a.pop ? 1 : 0) || a.days - b.days);
+    const card = (d) => {
+      const c = K[d.cat]; const lg = this.logos()[d.id];
+      return {
+        logo: lg || '', hasLogo: !!lg, noLogo: !lg, co: d.co, title: d.title, pay: d.pay, who: d.who, fund: d.fund, hasFund: !!d.fund, catLabel: c.label,
+        headline: (d.max || d.amt) > 0 ? 'Up to ' + this.money(d.max || d.amt) : (d.proof === 'Automatic' ? 'Automatic' : 'Cash share'),
+        withProof: !!(d.max && d.max > d.amt), proofNote: d.cat === 'arb' ? 'Not guaranteed' : d.max && d.max > d.amt ? (d.amt > 0 ? this.money(d.amt) + ' without proof' : 'With documentation') : '',
+        deadline: this.fmtDate(d.dl), daysLabel: !d.dl ? 'No deadline' : d.days + (d.days === 1 ? ' day left' : ' days left'),
+        urgent: d.days <= 14, calm: d.days > 14, pop: !!d.pop, noProof: d.proof === 'No proof', proof: d.proof,
+        modeLabel: d.cat === 'arb' ? 'Filed with a partner law firm' : d.mode === 'here' ? 'File on Claimclub' : d.mode === 'auto' ? 'Paid automatically' : 'Official site required',
+        tileStyle: S.tile(c), dotStyle: 'width:10px;height:10px;border-radius:3px;flex:none;background:' + c.bg,
+        initial: d.co.replace(/[^A-Za-z]/g, '').slice(0, 1)
+      };
+    };
+    const shown = (s.showAll || this.rowMode) ? list : list.slice(0, 12);
+    const soon = all.slice().sort((a, b) => a.days - b.days).slice(0, 5).map(card);
+    const phone = all.filter(d => d.pop).slice(0, 4).map(card);
+    const byDays = (arr) => arr.slice().sort((a, b) => a.days - b.days);
+    const shelves = [
+      { title: 'Popular right now', items: all.filter(d => d.pop) },
+      { title: 'No proof needed', items: byDays(all.filter(d => d.proof === 'No proof')) },
+      { title: 'Data breaches', items: byDays(all.filter(d => d.cat === 'privacy' || d.cat === 'health')) },
+      { title: 'Products, apps & fees', items: byDays(all.filter(d => ['products', 'apps', 'bank', 'auto'].includes(d.cat))) },
+      { title: 'Investors & employees', items: byDays(all.filter(d => d.cat === 'invest')) },
+      { title: 'Arbitration claims', items: all.filter(d => d.cat === 'arb') }
+    ].map(sh => ({ title: sh.title, count: sh.items.length + ' open', items: sh.items.map(card) }));
+    const header = (this.props.header ?? this.defaultHeader ?? 'slim');
+    const vis = this.props.heroVisual ?? this.defaultVisual ?? 'tracker';
+    const orbitSrc = all.filter(d => this.logos && this.logos()[d.id]).sort((a, b) => (b.pop ? 1 : 0) - (a.pop ? 1 : 0)).slice(0, 10);
+    const orbit = orbitSrc.map((d, i) => { const ring = i < 6 ? 180 : 100, n = i < 6 ? 6 : orbitSrc.length - 6, k = i < 6 ? i : i - 6, ang = (k / n) * Math.PI * 2 + (i < 6 ? 0 : 0.5), sz = i < 6 ? 64 : 50;
+      return { logo: this.logos()[d.id], co: d.co, style: 'position:absolute;left:' + Math.round(220 + ring * Math.cos(ang) - sz / 2) + 'px;top:' + Math.round(220 + ring * Math.sin(ang) - sz / 2) + 'px;width:' + sz + 'px;height:' + sz + 'px;border-radius:50%;object-fit:contain;background:#FFFFFF;padding:' + Math.round(sz * 0.18) + 'px;box-sizing:border-box;box-shadow:0 12px 30px rgba(0,0,0,.25)' }; });
+    return {
+      visStack: vis === 'stack', visTracker: vis === 'tracker', visOrbit: vis === 'orbit', visPhone: vis === 'phone', visCheck: vis === 'check', visNotifs: vis === 'notifs', visQuiz: vis === 'quiz', visGrid: vis === 'grid', visGauge: vis === 'gauge', orbit,
+      slim: header === 'slim', full: header === 'full',
+      filters: filters.map(f => ({ label: f.label, style: S.chip(s.filter === f.id), pick: () => this.setState({ filter: f.id, showAll: false }) })),
+      logoStrip: (() => { const ls = all.filter(d => d.cat !== 'arb' && this.logos && this.logos()[d.id] && (d.max || d.amt) >= 50).sort((a, b) => (b.max || b.amt) - (a.max || a.amt)).slice(0, 16).map(card); return ls.concat(ls); })(),
+      mobileCards: (s.showAll ? list : list.slice(0, 8)).map(card), hasMoreMobile: list.length > 8,
+      cards: shown.map(card), soon, phone, shelves,
+      resultCount: list.length + (list.length === 1 ? ' settlement' : ' settlements'),
+      openCount: all.length, settleCount: all.filter(d => d.cat !== 'arb').length, arbCount: all.filter(d => d.cat === 'arb').length, noProofCount: all.filter(d => d.proof === 'No proof').length,
+      moreLabel: s.showAll ? 'Show fewer' : 'Show all ' + list.length + ' settlements',
+      hasMore: list.length > 12, empty: list.length === 0,
+      toggleAll: () => this.setState({ showAll: !s.showAll }),
+      q: s.q, onSearch: (e) => this.setState({ q: e.target.value, showAll: false })
+    };
+  }
+
+  // Real open settlements, compiled Nov 12 2026 from OpenClassActions.com and ClaimDepot listings. Verify against each official settlement site before launch.
+  data() {
+    return [
+      { id: 'apple', co: 'Apple', title: 'Apple Intelligence Siri Settlement', cat: 'apps', fund: '$250M', pay: '$25 per iPhone, up to $95', amt: 95, max: 95, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'U.S. buyers of iPhone 15 Pro, 15 Pro Max or any iPhone 16, 2024 to 2025', pop: true },
+      { id: 'amazon', co: 'Amazon', title: 'Amazon Returns Refund Settlement', cat: 'products', fund: '$309.5M', pay: 'Refund owed, often automatic', amt: 0, proof: 'Automatic', mode: 'auto', dl: '2026-12-01', who: 'Customers with missing, late or incorrect return refunds since Sept 2017', pop: true },
+      { id: 'goodrx', co: 'GoodRx', title: 'GoodRx User Privacy Settlement', cat: 'privacy', fund: '$32M', pay: 'Pro rata cash share', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'GoodRx users whose data was shared with advertisers', pop: true },
+      { id: 'cvs', co: 'CVS', title: 'CVS Digital Privacy Settlement', cat: 'privacy', fund: '', pay: 'Up to $5, or $10 with proof', amt: 5, max: 10, proof: 'No proof', mode: 'here', dl: '2026-11-16', who: 'U.S. users of CVS websites or app before July 27, 2026' },
+      { id: 'bofa', co: 'Bank of America', title: 'Debit Card & ATM Dispute Settlement', cat: 'bank', fund: '$2M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Customers whose unauthorized-transaction claim was denied, May 2023 to July 2026', pop: true },
+      { id: 'squatch', co: 'Dr. Squatch', title: '"Natural" Labeling Settlement', cat: 'products', fund: '$9M', pay: '$2.50 per product, up to $12.50', amt: 12.5, max: 12.5, proof: 'No proof', mode: 'here', dl: '2026-11-27', who: 'Buyers of "natural"-labeled Dr. Squatch products, Nov 2018 to Aug 2026' },
+      { id: 'thinkware', co: 'Thinkware', title: 'Dash Cam False Advertising Settlement', cat: 'products', fund: '$850K', pay: 'About $6.70 per camera', amt: 6.7, max: 6.7, proof: 'No proof', mode: 'here', dl: '2026-12-14', who: 'Buyers of listed Thinkware dash cams, 2019 to 2024' },
+      { id: 'knotts', co: 'Six Flags', title: "Knott's & Great America Ticket Fee Settlement", cat: 'apps', fund: '', pay: '$8 per claim', amt: 8, max: 8, proof: 'No proof', mode: 'here', dl: '2026-12-22', who: "Online ticket buyers at Knott's Berry Farm and California's Great America" },
+      { id: 'kia', co: 'Kia', title: 'Window Regulator Settlement', cat: 'auto', fund: '', pay: '$40 service card, up to $400 per repair', amt: 40, max: 400, proof: 'Proof for repairs', mode: 'site', dl: '2026-11-23', who: 'Owners or lessees of 2016 to 2017 Kia Optima and 2017 Sportage' },
+      { id: 'vanilla', co: 'Vanilla Gift', title: 'Drained Gift Card Restitution (CA)', cat: 'bank', fund: '$1.525M', pay: 'Up to $15 per card', amt: 15, max: 15, proof: 'No proof', mode: 'here', dl: '2027-02-19', who: 'California holders of drained Vanilla gift cards', st: 'CA' },
+      { id: 'venetian', co: 'The Venetian', title: 'Website Privacy Settlement (CA)', cat: 'privacy', fund: '$1.6M', pay: 'About $3.60, or $71.39 if you booked', amt: 71.39, max: 71.39, proof: 'Notice ID', mode: 'here', dl: '2026-11-24', who: 'California residents who browsed or booked on the Venetian site, 2024 to 2026', st: 'CA' },
+      { id: 'neutrogena', co: 'Neutrogena', title: 'Skin360 Biometric Privacy (IL)', cat: 'health', fund: '$4.7M', pay: 'Equal share of fund', amt: 0, proof: 'No proof', mode: 'here', dl: '2026-11-25', who: 'Illinois users of Skin360 skin assessments, 2019 to 2023', st: 'IL' },
+      { id: 'kroger', co: 'Kroger', title: 'Prescription Pricing Settlement', cat: 'health', fund: '$17M', pay: 'Pro rata share', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People who paid toward insured Kroger pharmacy prescriptions, 2018 to 2026' },
+      { id: 'navy', co: 'Navy Federal', title: 'Unauthorized Loans Settlement', cat: 'bank', fund: '', pay: '$250 cash', amt: 250, max: 250, proof: 'Notice ID', mode: 'here', dl: '2026-11-29', who: 'Members with denied fraud claims on loans, 2023 to 2025' },
+      { id: 'bright', co: 'Bright Lending', title: 'Loan Settlement', cat: 'bank', fund: '', pay: 'Cash or debt cancellation', amt: 0, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'Borrowers with a Bright Lending loan since Oct 2020' },
+      { id: 'columbia', co: 'Columbia University', title: 'Data Breach Settlement', cat: 'privacy', fund: '$16.1M', pay: 'Cash, or up to $8,500 documented', amt: 0, max: 8500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-21', who: 'People notified of the May 2025 cyberattack' },
+      { id: 'pp', co: 'Planned Parenthood (LSC)', title: 'Lab Data Breach Settlement', cat: 'privacy', fund: '$6.1M', pay: 'Up to $1,000, or $5,000 documented', amt: 1000, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-24', who: 'Patients and payers tied to LSC lab testing' },
+      { id: 'sirva', co: 'Sirva', title: 'Relocation Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50 cash, or up to $4,500 documented', amt: 50, max: 4500, proof: 'No proof', mode: 'here', dl: '2026-12-29', who: 'People notified of the Sirva breach' },
+      { id: 'bauer', co: 'Bauer Built', title: 'Tire & Service Data Breach', cat: 'privacy', fund: '', pay: '$45, or up to $5,000 in losses', amt: 45, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People notified of the Bauer Built breach' },
+      { id: 'woodloch', co: 'Woodloch Pines', title: 'Resort Data Breach Settlement', cat: 'privacy', fund: '', pay: '$60, or up to $3,500 documented', amt: 60, max: 3500, proof: 'No proof', mode: 'here', dl: '2027-01-13', who: 'People notified of the Woodloch Pines breach' },
+      { id: 'benkeith', co: 'Ben E. Keith', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$35, or up to $5,000 in losses', amt: 35, max: 5000, proof: 'No proof', mode: 'here', dl: '2026-11-26', who: 'People notified of the Ben E. Keith breach' },
+      { id: 'safefleet', co: 'Safe Fleet', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: '$50, or up to $2,500 documented', amt: 50, max: 2500, proof: 'Notice ID', mode: 'here', dl: '2026-12-02', who: 'U.S. people in the April 2024 incident' },
+      { id: 'tennis', co: 'Merchant of Tennis', title: 'US Merchants Data Breach', cat: 'privacy', fund: '$685K', pay: 'About $45 in CA, $15 elsewhere', amt: 45, max: 2000, proof: 'No proof', mode: 'here', dl: '2027-01-27', who: 'People notified of the US Merchants breach' },
+      { id: 'jbs', co: 'JBS', title: 'Data Breach Settlement', cat: 'privacy', fund: '', pay: 'Up to $5,000 plus credit monitoring', amt: 0, max: 5000, proof: 'Proof for losses', mode: 'here', dl: '2026-12-23', who: 'People who received a 2025 JBS breach notice' },
+      { id: 'renal', co: 'Innovative Renal Care', title: 'Data Breach Settlement', cat: 'health', fund: '$900K', pay: 'About $100, or $5,000 documented', amt: 100, max: 5000, proof: 'Notice ID', mode: 'here', dl: '2026-12-21', who: 'People notified of the Feb 2024 American Renal Management incident' },
+      { id: 'prime', co: 'Prime Healthcare', title: 'Patient Portal Privacy Settlement', cat: 'health', fund: '', pay: '$20 plus privacy monitoring', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'Patient portal users, 2019 to 2023' },
+      { id: 'nissan', co: 'Al Piemonte Nissan', title: 'Marketing Texts & Calls Settlement', cat: 'apps', fund: '$3.7M', pay: '$20 cash or $100 voucher', amt: 20, max: 20, proof: 'No proof', mode: 'here', dl: '2026-12-15', who: 'Do Not Call numbers that got repeat marketing' },
+      { id: 'connectamerica', co: 'ConnectAmerica', title: 'Telemarketing (TCPA) Settlement', cat: 'apps', fund: '$4M', pay: 'Up to $275 (estimated)', amt: 275, max: 275, proof: 'No proof', mode: 'here', dl: '2026-12-21', who: 'People who got ConnectAmerica.com marketing calls or texts' },
+      { id: 'indegene', co: 'Indegene', title: 'Text Message (TCPA) Settlement', cat: 'apps', fund: '$4.7M', pay: 'Up to $250', amt: 250, max: 250, proof: 'No proof', mode: 'here', dl: '2026-12-09', who: 'People who received Indegene marketing texts' },
+      { id: 'suffolk', co: 'Suffolk County, NY', title: 'Red-Light Camera Fee Settlement', cat: 'auto', fund: '$45M', pay: 'Up to $36 per violation', amt: 36, max: 36, proof: 'Notice ID', mode: 'site', dl: '2026-12-08', who: 'People charged red-light camera fees in Suffolk County' },
+      { id: 'ni', co: 'National Instruments', title: 'Securities Settlement (NATI)', cat: 'invest', fund: '$28M', pay: 'About $3.01 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-14', who: 'Investors who sold in two Aug to Sept 2022 windows' },
+      { id: 'skin', co: 'BeautyHealth', title: 'Securities Settlement (SKIN)', cat: 'invest', fund: '$18M', pay: 'About $0.35 per share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-19', who: 'Buyers from May 2022 to Nov 2023' },
+      { id: 'marqeta', co: 'Marqeta', title: 'Securities Settlement (MQ)', cat: 'invest', fund: '', pay: 'About $0.11 per security', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2026-12-31', who: 'Buyers of Marqeta stock or options, Feb to Nov 2024' },
+      { id: 'starbucks', co: 'Starbucks', title: 'COBRA Notice Settlement', cat: 'invest', fund: '', pay: '$30 to $74 (estimated)', amt: 74, max: 74, proof: 'No proof', mode: 'here', dl: '2026-12-02', who: 'People who got a Starbucks COBRA notice, July 2016 to Jan 2023' },
+      { id: 'stv', co: 'STV Inc.', title: 'WA Job Posting Pay Settlement', cat: 'invest', fund: '', pay: 'About $1,592.71 (estimated)', amt: 1592.71, max: 1592.71, proof: 'No proof', mode: 'here', dl: '2026-12-08', who: 'Washington applicants to STV postings that omitted pay ranges' },
+      { id: 'visa', co: 'Visa & Mastercard', title: 'ATM Access Fee Settlement', cat: 'bank', fund: '', pay: 'Share of fund, up to $1,000', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: '2027-02-09', who: 'People who paid an out-of-network ATM surcharge in the U.S.' },
+      { id: 'googleplay', co: 'Google Play', title: 'Play Store Antitrust Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'People who bought apps or in-app items on Google Play' },
+      { id: 'equifax', co: 'Equifax', title: 'Credit Dispute Settlement', cat: 'privacy', fund: '', pay: 'Up to $400 (estimated)', amt: 400, max: 400, proof: 'No proof', mode: 'here', dl: '2026-11-28', who: 'People who disputed an error on their Equifax credit report' },
+      { id: 'capone', co: 'Capital One', title: '401(k) ERISA Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-11', who: 'Participants in the Capital One 401(k) plan' },
+      { id: 'twitter', co: 'Twitter', title: 'Acquisition Shareholder Settlement', cat: 'invest', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Brokerage records', mode: 'site', dl: '2026-11-23', who: 'People who sold Twitter stock in 2022 before the acquisition' },
+      { id: 'hyundaikia', co: 'Hyundai & Kia', title: 'Airbag Control Unit Settlement', cat: 'auto', fund: '', pay: 'Up to $350 (estimated)', amt: 0, max: 350, proof: 'VIN', mode: 'site', dl: '2027-04-06', who: 'Owners or lessees of listed Hyundai and Kia vehicles' },
+      { id: 'toyota', co: 'Toyota', title: 'Airbag Safety Settlement', cat: 'auto', fund: '', pay: '$250 or more (estimated)', amt: 0, max: 250, proof: 'VIN', mode: 'site', dl: '2028-12-11', who: 'Owners or lessees of listed Toyota vehicles' },
+      { id: 'tyson', co: 'Tyson & beef packers', title: 'Beef Purchaser Settlement', cat: 'products', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-11-30', who: 'People who bought beef from stores in eligible states. See notice for dates.' },
+      { id: 'westernunion', co: 'Western Union', title: 'Scam Victim Remission', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 0, max: 100, proof: 'Transfer details', mode: 'site', dl: '2026-12-31', who: 'People who sent money to a scammer through Western Union' },
+      { id: 'seatgeek', co: 'SeatGeek', title: 'Nevada Ticket Fee Settlement', cat: 'apps', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-05', who: 'SeatGeek buyers of tickets to Nevada events' },
+      { id: 'realpage', co: 'RealPage', title: 'Rent Price-Fixing Settlement', cat: 'bank', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2027-01-29', who: 'Renters in large apartment buildings whose landlord used RealPage pricing' },
+      { id: 'deere', co: 'John Deere', title: 'Right to Repair Settlement', cat: 'auto', fund: '', pay: 'Up to $100 (estimated)', amt: 100, max: 100, proof: 'No proof', mode: 'here', dl: '2026-12-31', who: 'People who paid an authorized Deere dealer for repairs' },
+      { id: 'upsfair', co: 'UPS', title: 'UPS Fair Fund (Investors)', cat: 'invest', fund: '', pay: 'Pro rata share', amt: 0, proof: 'Brokerage records', mode: 'site', dl: '2027-01-10', who: 'People who bought UPS stock in the covered period' },
+      { id: 'davita', co: 'DaVita', title: 'Ransomware Data Breach', cat: 'health', fund: '', pay: 'Up to $2,500 documented', amt: 0, max: 2500, proof: 'Proof for losses', mode: 'here', dl: '2027-01-19', who: 'Patients notified of the DaVita ransomware attack' },
+      { id: 'harvard', co: 'Harvard Medical School', title: 'Morgue Remains Settlement', cat: 'health', fund: '', pay: 'Payment amount varies', amt: 0, proof: 'Family records', mode: 'site', dl: '2026-12-09', who: 'Families of people who donated their bodies to Harvard Medical School', dir: true },
+      { id: 'netflix', co: 'Netflix', title: 'Viewing Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Netflix subscribers whose viewing data may have been shared' },
+      { id: 'google', co: 'Google', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $12 if the claim wins', amt: 0, max: 12, proof: 'No proof', mode: 'here', dl: null, who: 'Google account holders' },
+      { id: 'youtube', co: 'YouTube', title: 'Video Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $92 if the claim wins', amt: 0, max: 92, proof: 'No proof', mode: 'here', dl: null, who: 'YouTube users who watched while signed in' },
+      { id: 'openai', co: 'ChatGPT', title: 'ChatGPT Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'ChatGPT users' },
+      { id: 'ups', co: 'UPS', title: 'UPS Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People who used UPS.com or UPS My Choice' },
+      { id: 'walgreens', co: 'Walgreens', title: 'Pharmacy Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Walgreens website and app users' },
+      { id: 'disney', co: 'Disney+', title: 'Streaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $15 if the claim wins', amt: 0, max: 15, proof: 'No proof', mode: 'here', dl: null, who: 'Disney+ subscribers' },
+      { id: 'transunion', co: 'TransUnion', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'People with a TransUnion credit file' },
+      { id: 'bestbuy', co: 'Best Buy', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'BestBuy.com shoppers' },
+      { id: 'yahoo', co: 'Yahoo', title: 'Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Yahoo Mail and account users' },
+      { id: 'dexcom', co: 'Dexcom', title: 'Glucose Monitor Arbitration', cat: 'arb', fund: '', pay: 'Amount varies if the claim wins', amt: 0, proof: 'No proof', mode: 'here', dl: null, who: 'Dexcom glucose monitor users' },
+      { id: 'ubereats', co: 'Uber Eats', title: 'Delivery Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Uber Eats customers' },
+      { id: 'smarttv', co: 'Smart TV makers', title: 'TV Viewing Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Owners of smart TVs that track what you watch' },
+      { id: 'myfitnesspal', co: 'MyFitnessPal', title: 'App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $1,000 if the claim wins', amt: 0, max: 1000, proof: 'No proof', mode: 'here', dl: null, who: 'MyFitnessPal app users' },
+      { id: 'flo', co: 'Flo', title: 'Health App Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $60 if the claim wins', amt: 0, max: 60, proof: 'No proof', mode: 'here', dl: null, who: 'Flo period tracker users' },
+      { id: 'bn', co: 'Barnes & Noble', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Barnes & Noble shoppers in CA, PA, FL, WA or MA', sts: ['CA', 'PA', 'FL', 'WA', 'MA'] },
+      { id: 'ubisoft', co: 'Ubisoft', title: 'Gaming Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,500 if the claim wins', amt: 0, max: 2500, proof: 'No proof', mode: 'here', dl: null, who: 'Ubisoft account holders' },
+      { id: 'sandoz', co: 'Sandoz', title: 'Generic Drug Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who paid for certain generic drugs' },
+      { id: 'equinox', co: 'Equinox', title: 'Membership Fee Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Equinox gym members' },
+      { id: 'onemain', co: 'OneMain Financial', title: 'Loan Add-On Arbitration', cat: 'arb', fund: '', pay: 'Up to $2,000 if the claim wins', amt: 0, max: 2000, proof: 'No proof', mode: 'here', dl: null, who: 'OneMain loan borrowers' },
+      { id: 'pork', co: 'Pork producers', title: 'Pork Pricing Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'People who bought pork at stores' },
+      { id: 'fanatics', co: 'Fanatics', title: 'Website Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'Fanatics shoppers' },
+      { id: 'lemonade', co: 'Lemonade', title: 'Insurance Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'Lemonade insurance customers' },
+      { id: 'cone', co: 'Cone Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $100 if the claim wins', amt: 0, max: 100, proof: 'No proof', mode: 'here', dl: null, who: 'Cone Health website and portal users' },
+      { id: 'duke', co: 'Duke Health', title: 'Patient Privacy Arbitration', cat: 'arb', fund: '', pay: 'Up to $50 if the claim wins', amt: 0, max: 50, proof: 'No proof', mode: 'here', dl: null, who: 'Duke Health website and portal users' },
+      { id: 'ey', co: 'EY', title: 'Data Exposure Arbitration', cat: 'arb', fund: '', pay: 'Up to $10,000 if the claim wins', amt: 0, max: 10000, proof: 'No proof', mode: 'here', dl: null, who: 'People whose data EY handled' },
+      { id: 'hirevue', co: 'HireVue', title: 'Video Interview Arbitration', cat: 'arb', fund: '', pay: 'Up to $150 if the claim wins', amt: 0, max: 150, proof: 'No proof', mode: 'here', dl: null, who: 'Job applicants who did a HireVue video interview' },
+      { id: 'alo', co: 'Alo Yoga', title: 'Website Privacy Arbitration (CA)', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'California shoppers on the Alo Yoga site', st: 'CA' },
+      { id: 'apollomd', co: 'ApolloMD', title: 'Patient Data Arbitration', cat: 'arb', fund: '', pay: 'Up to $5,000 if the claim wins', amt: 0, max: 5000, proof: 'No proof', mode: 'here', dl: null, who: 'ApolloMD patients' },
+      { id: 'xactus', co: 'Xactus', title: 'Credit Report Arbitration', cat: 'arb', fund: '', pay: 'Up to $500 if the claim wins', amt: 0, max: 500, proof: 'No proof', mode: 'here', dl: null, who: 'People with a credit report pulled by Xactus' },
+      { id: 'vesync', co: 'VeSync', title: 'Smart Device Arbitration', cat: 'arb', fund: '', pay: 'Up to $10 if the claim wins', amt: 0, max: 10, proof: 'No proof', mode: 'here', dl: null, who: 'VeSync and Levoit app users' }
+    ];
+  }
+  logos() {
+    return {
+      amazon: '../assets/9e823dce7e60dc8d8b58da2243d7151d.svg',
+      apple: '../assets/7fd6ec4499df609a19ab46e16342f49d.svg',
+      bofa: '../assets/121d9429923e05b984526c8965383d6a.svg',
+      kia: '../assets/cc08603ea59eb7c07048d2d8f1c09ae5.svg',
+      nissan: '../assets/2c6c0147dc39394c5de2a3b314164628.svg',
+      starbucks: '../assets/28379ee7c2bc6b1d08ee6e6ec8cde00a.svg',
+      bauer: '../assets/b955a240145916623f39c76683f30cf2.png',
+      benkeith: '../assets/29ff61ec24681d5c4d098a4b00c41796.png',
+      bright: '../assets/eb27eb5f5e3cd2368ac64f52865e9f17.png',
+      columbia: '../assets/0c6525be1fec809009a40a8f755ba9e8.png',
+      connectamerica: '../assets/6e5968261f1fcb1f34972c0c90a652b5.png',
+      cvs: '../assets/1ceb7905467ce333f9268b10d05d201d.png',
+      goodrx: '../assets/20058f58cf0cc867f90794121d8fa7cd.png',
+      indegene: '../assets/9a01c32e4766fa5616d39bba22155995.png',
+      jbs: '../assets/1823e932ddfe1864917090c26daf3e3c.png',
+      knotts: '../assets/41faa40085ee9bfc601f3cf6dc22de18.png',
+      kroger: '../assets/1bde1fe61d713099dffdf1ede7857c39.png',
+      marqeta: '../assets/daa5e78a6d8e2808bcb1d7ce25e31a51.png',
+      neutrogena: '../assets/40fb463bce222cf3f1b518dc1bc1fd04.png',
+      ni: '../assets/ca912521b43185af8910ffffb41625c3.png',
+      pp: '../assets/b7a78d62f965fd493ae93fb5e42d82b5.png',
+      prime: '../assets/b4969a7e7813b7e435d526fa12e08cae.png',
+      renal: '../assets/9f4c930d3fc38b7e8c24c12e5e9fd5df.png',
+      safefleet: '../assets/9ea6cecf1eb2d258422736e6d3e36e0d.png',
+      skin: '../assets/a750434c034a22317973e9602a3a9030.png',
+      squatch: '../assets/2d81ba8fe0a13c9f47d35e8ecbd1db1d.png',
+      stv: '../assets/686fffc3ac5ff6ba36692a9563832def.png',
+      tennis: '../assets/8db229a64846a396aafb5c1848f5ab55.png',
+      thinkware: '../assets/5e5f7c4064859d61093e9429473e317a.png',
+      vanilla: '../assets/1e92776c9b64da9e2c92b826004d86b3.png',
+      venetian: '../assets/9251b6773160e67632e4ca43dec7af06.png',
+      alo: '../assets/fdb7b0510aa06894590bffab215ec078.png',
+      apollomd: '../assets/c0a61a7c297e7da93b9470848d12abf3.png',
+      bestbuy: '../assets/62c4915f11e1ddce207e74e3c34db041.png',
+      bn: '../assets/2d595697e05cf84959e2b421a7277d71.png',
+      capone: '../assets/2823583cce09dc3307f1a694be36c9ad.png',
+      cone: '../assets/d6998a6452e0ca82ce8bbd1c49d9456f.png',
+      davita: '../assets/0a472a5b02cefc3d772c7a3aea676665.png',
+      deere: '../assets/3e2bb5b852c7973fc304d07752c747ae.svg',
+      dexcom: '../assets/ff1b608f7dbff7a788a98b45b41127a9.png',
+      disney: '../assets/fa6927e6a22590e6ee1b1a90524e26a5.png',
+      duke: '../assets/be420537faabfec00ce2c17c048a4f5f.png',
+      equifax: '../assets/f0fd40dfbbdad8b7c7e13aefc1e6c491.png',
+      equinox: '../assets/389c1ed8a8da560084a3fade0f82c301.png',
+      ey: '../assets/73f8286dc9b0107f01d6a0f5fdb73852.png',
+      fanatics: '../assets/e78df59559e5fe98823cedc450ae7afc.png',
+      flo: '../assets/3adb34cdc36c981654d584f93c2a51a4.png',
+      google: '../assets/bc7d6ff01faeaa1ee93f78dd2a19b8d3.png',
+      googleplay: '../assets/7f4390cee228878d694a9ab5d8bd863a.svg',
+      harvard: '../assets/6e253a632aaaa8d316db9b90126f8c91.png',
+      hirevue: '../assets/b6f1dfa70da5137f1540ce8704508075.png',
+      hyundaikia: '../assets/f2cd6e8b58449c54475ce67893f4e185.png',
+      lemonade: '../assets/053d86c045fa9f29ad441b554507af17.png',
+      myfitnesspal: '../assets/76f4d9cde188275eb456858e5862ab36.png',
+      netflix: '../assets/6450426b362962920828f44df101d658.svg',
+      onemain: '../assets/bfa996313c50641a9b2cd4764f597714.png',
+      openai: '../assets/ca263b6032fa6a766d31857e07e4f899.png',
+      pork: '../assets/fc0acc83971ef9580779700617f1af68.png',
+      realpage: '../assets/db93ff119ed82ac214d13401f1e7f659.png',
+      sandoz: '../assets/ef65795f842e1e2a0dbb8f004cee8f33.png',
+      seatgeek: '../assets/eca7cec41e19cdcab5dd3aa5733d499a.png',
+      toyota: '../assets/c09a0cd345b7dc960272d35462f45b6d.svg',
+      transunion: '../assets/36fcc4a081856eae8c148ff495771fa3.png',
+      twitter: '../assets/91eb8d5ec405fe13b8bd4f3fcfff3000.png',
+      tyson: '../assets/c655327b9222899295d427826bd844fe.png',
+      ubereats: '../assets/aef72c362064ee3718727080ccd975be.png',
+      ubisoft: '../assets/8403f48b9b86ef76c3fff8b81d28d414.svg',
+      ups: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg',
+      vesync: '../assets/9c873bf364d0554ad84bff4d28c73137.png',
+      visa: '../assets/17d130cb2fd653ada0d1561043e8aa56.svg',
+      walgreens: '../assets/a833516094f812b15934c7f0cd87f63a.png',
+      westernunion: '../assets/b4c1d18b0a5c8a620f9cb206b07e6a82.png',
+      xactus: '../assets/168806c3e04f9d52bb4dde170628cb0e.png',
+      yahoo: '../assets/7ff3707668ea6d5dfae8df54965f0582.png',
+      youtube: '../assets/1ca9c6db3a8f268ba14f266fe2eb4d00.png',
+      upsfair: '../assets/c6a21d4f347a63f139c0c63d1d76ccb2.svg'
+    };
+  }
+  cats() {
+    return {
+      privacy: { bg: '#3E63DD', fg: '#FFFFFF', tint: '#ECF0FC', ink: '#2C4BB8', label: 'Data & privacy' },
+      products: { bg: '#E5590A', fg: '#FFFFFF', tint: '#FDEEE5', ink: '#B54608', label: 'Products' },
+      auto: { bg: '#218358', fg: '#FFFFFF', tint: '#E9F6EF', ink: '#17603F', label: 'Auto' },
+      bank: { bg: '#3DDC97', fg: '#0F3B2E', tint: '#FFF6E0', ink: '#7A5200', label: 'Banking & fees' },
+      apps: { bg: '#12805C', fg: '#FFFFFF', tint: '#FBEAF4', ink: '#A82F7C', label: 'Apps & services' },
+      health: { bg: '#E5484D', fg: '#FFFFFF', tint: '#FDECEC', ink: '#B8333A', label: 'Health' },
+      invest: { bg: '#0F3B2E', fg: '#FFFFFF', tint: '#EAF2EE', ink: '#12805C', label: 'Investor & employee' },
+      arb: { bg: '#5B6862', fg: '#FFFFFF', tint: '#EAF2EE', ink: '#43504A', label: 'Arbitration' }
+    };
+  }
+  daysLeft(dl) {
+    if (!dl) return 999;
+    const d = new Date(dl + 'T23:59:00');
+    return Math.max(0, Math.ceil((d - new Date()) / 86400000));
+  }
+  fmtDate(dl) {
+    if (!dl) return 'No deadline';
+    const m = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const [y, mo, da] = dl.split('-').map(Number);
+    return m[mo - 1] + ' ' + da + ', ' + y;
+  }
+  money(n) {
+    return '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { maximumFractionDigits: n % 1 ? 2 : 0 });
+  }
+
+  cats() {
+    return {
+      privacy: { bg: '#0F3B2E', fg: '#FFFFFF', tint: '#E3ECE8', ink: '#0F3B2E', label: 'Data & privacy' },
+      products: { bg: '#12805C', fg: '#FFFFFF', tint: '#E6F4EC', ink: '#0E6649', label: 'Products' },
+      auto: { bg: '#2F5D4E', fg: '#FFFFFF', tint: '#E5EDEA', ink: '#2F5D4E', label: 'Auto' },
+      bank: { bg: '#3DDC97', fg: '#0A0F0D', tint: '#E3FAEF', ink: '#0E6649', label: 'Banking & fees' },
+      apps: { bg: '#0A0F0D', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#0A0F0D', label: 'Apps & services' },
+      health: { bg: '#B7EFD3', fg: '#0A0F0D', tint: '#EAF9F1', ink: '#0E6649', label: 'Health' },
+      invest: { bg: '#DDE5E0', fg: '#0A0F0D', tint: '#F3F6F4', ink: '#43504A', label: 'Investor & employee' },
+      arb: { bg: '#43504A', fg: '#FFFFFF', tint: '#EEF2EF', ink: '#43504A', label: 'Arbitration' }
+    };
+  }
+  skin() {
+    return {
+      tile: (c) => 'background:' + c.bg + ';color:' + c.fg,
+      chip: (on) => 'min-height:40px;padding:0 16px;border-radius:999px;font-size:14px;font-weight:700;' + (on ? 'background:#0F3B2E;color:#FFFFFF' : 'background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1px #DDE5E0')
+    };
+  }
+}
+
+bootDC(Component,{},null);
+</script></body></html>
