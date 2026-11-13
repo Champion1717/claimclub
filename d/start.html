@@ -926,6 +926,8 @@ class Component extends DCLogic {
     const toCalc = () => this.setState({ step: this.steps().indexOf('calc') });
     const others = allPool.filter(d => !more.includes(d.id));
     const moreN = others.length;
+    const checkedN = Q.length + more.length;
+    L.moreH = es ? 'Eso es solo ' + (checkedN === 1 ? '1 oferta' : checkedN + ' ofertas') : 'That is just ' + (checkedN === 1 ? '1 offer' : checkedN + ' offers');
     const allOpen = this.data().filter(d => this.daysLeft(d.dl) > 0 && !d.dir && (!d.st || !s.st || d.st === s.st || s.st === 'Other'));
     const allValue = this.money(Math.round(allOpen.reduce((t, d) => t + (d.max || d.amt || 0), 0)));
     const moreLabel = this.money(Math.round(others.filter(d => d.cat !== 'arb').reduce((t, d) => t + (d.max || d.amt || 0), 0)));
@@ -975,7 +977,7 @@ class Component extends DCLogic {
       hasPicked: pickedN > 0, noPicked: pickedN === 0, pickedTotal: this.money(total),
       browseStyle: pickedN ? 'display:block;width:100%;min-height:52px;margin-top:8px;border-radius:999px;background:#FFFFFF;color:#0F3B2E;box-shadow:inset 0 0 0 1.5px #0F3B2E;font-size:16px;font-weight:800' : S.btn(true),
       allGroups, allPoolN: allPool.length + topIds.length, allQ: s.allQ, setAllQ: (e) => this.setState({ allQ: e.target.value }),
-      allH: es ? 'Todas las ofertas abiertas' : 'All open offers', allSub: es ? 'Toca las que apliquen a ti. Tus 10 principales ya están guardadas.' : 'Tap any that apply to you. Your picks from the top 10 are already saved.',
+      allH: es ? 'Todas las ofertas abiertas' : 'All open offers', allSub: es ? 'Toca las que apliquen a ti. Lo que ya elegiste está guardado.' : 'Tap any that apply to you. Your picks so far are already saved.',
       searchPh: es ? 'Buscar empresa o producto' : 'Search a company or product',
       browseAll: () => this.setState({ sawAll: true, step: this.steps().indexOf('all') }),
       showMoreQuiz: !!(s.focus && !s.focusMore), moreQuiz: () => this.setState({ focusMore: true, step: 1 }),

@@ -31,7 +31,7 @@ Commit everything and `git push origin main`.
 - `cc/src/LandingC2.tpl.html` + `landing.js`: homepage (green.py turns it into LandingG2; `LandingG2.tpl.html` is generated, don't edit it).
 - `cc/src/FlowC2.tpl.html` (mobile) / `FlowC2D.tpl.html` (desktop) + `flow.js`: quiz → estimate → email → details (with validation) → authorization forms → filing fee / membership → checkout → perks → bank → dashboard.
 - `cc/project/AppG2.dc.html` (desktop) / `AppG2M.dc.html` (mobile): member dashboard. These are edited directly: the logic is `src/app.js`, pasted into both files over the old copy.
-- Homepage hero visual: the design canvas shows the `stats` figure (set by `g2land.py` via `defaultVisual`). The live site forces the `tracker` card through the `livevis` patch in `site/build.py`.
+- Homepage hero visual: both the canvas and the live site use the animated `stats` figure (set by `g2land.py` via `defaultVisual` and the canvas prop default). Count-up lives in `landing.js` `countUp()`; shimmer/stagger CSS in the template (`.shine`, `.strow`, `.live`, `.floaty`).
 - Settlement tiles link to `start.html?offer=<id>`. That focus mode (`state.focus` in flow.js) asks that one settlement's question, then offers "Check N more common settlements" (`focusMore`), "Browse all open offers", or continue.
 - `cc/src/data.js`: the 81 settlements/offers. Logos are `/_blob/<id>`, mapped to local files by `blobmap.json`.
 - Templates are written in purple tokens (#3B1F9E, #1B0F4F, #FFB224, #140B3A...). `green.py` / `post.py` recolor them to the green brand. Write new styles in the purple tokens too.
