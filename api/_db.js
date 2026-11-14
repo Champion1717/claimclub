@@ -20,6 +20,7 @@ async function userFrom(req) {
 }
 function readJson(req) {
   if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
+  if (typeof req.body === 'string') { try { return Promise.resolve(JSON.parse(req.body || '{}')); } catch (e) { return Promise.resolve({}); } }
   return new Promise((resolve) => { let d = ''; req.on('data', (c) => (d += c)); req.on('end', () => { try { resolve(JSON.parse(d || '{}')); } catch (e) { resolve({}); } }); });
 }
 const MONTHS = { '1m': 1, '3m': 3, '6m': 6 };

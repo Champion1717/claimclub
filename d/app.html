@@ -54,7 +54,12 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
     <div class="greet" style="flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px">
       <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Hi {{ firstName }}</h1><span style="font-size: 13px; color: var(--fg-5B6862,#5B6862)">{{ greetA }}<b style="color: var(--fg-0A0F0D,#0A0F0D)">{{ greetB }}</b>{{ greetC }}</span></div>
       <div style="display: flex; gap: 8px; flex-wrap: wrap">
-        <span style="display: flex; flex-direction: column; padding: 7px 12px; border-radius: 12px; background: var(--bg-FFFFFF,#FFFFFF); box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)"><span style="font-size: 11px; color: var(--fg-5B6862,#5B6862); font-weight: 700">Estimated</span><span style="font-size: 16px; font-weight: 800">{{ estTotal }}</span></span>
+        <span style="position: relative; display: flex"><button onClick="{{ payWin.toggle }}" aria-expanded="{{ payWin.open }}" aria-label="Estimated payout timing" style="display: flex; align-items: stretch; gap: 10px; padding: 7px 12px; border-radius: 12px; background: var(--bg-FFFFFF,#FFFFFF); box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6); text-align: left; color: inherit"><span style="display: flex; flex-direction: column"><span style="font-size: 11px; color: var(--fg-5B6862,#5B6862); font-weight: 700">Estimated</span><span style="font-size: 16px; font-weight: 800">{{ estTotal }}</span></span><span style="width: 1px; background: var(--bg-E3EAE6,#E3EAE6)"></span><span style="display: flex; flex-direction: column"><span style="font-size: 11px; color: var(--fg-5B6862,#5B6862); font-weight: 700; display: flex; align-items: center; gap: 4px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"></path></svg>Expected payout</span><span style="font-size: 16px; font-weight: 800; color: var(--fg-12805C,#12805C); white-space: nowrap">{{ payWin.label }}</span></span></button>
+          <sc-if value="{{ payWin.open }}" hint-placeholder-val="{{ false }}"><div class="cardin payPop" role="dialog" aria-label="Expected payout timing" style="position: absolute; top: calc(100% + 8px); right: 0; z-index: 30; width: 320px; max-width: calc(100vw - 32px); padding: 14px; border-radius: 16px; background: var(--bg-FFFFFF,#FFFFFF); box-shadow: 0 0 0 1px var(--ln-E3EAE6,#E3EAE6), 0 18px 40px rgba(10,15,13,.16); display: flex; flex-direction: column; gap: 10px; text-align: left">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-size: 14px; font-weight: 800">When you could get paid</span><button onClick="{{ payWin.toggle }}" aria-label="Close" style="width: 26px; height: 26px; border-radius: 50%; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button></div>
+            <span style="font-size: 12.5px; line-height: 1.5; color: var(--fg-5B6862,#5B6862)">Settlements pay after the claim deadline passes and the court gives final approval, usually 2 to 6 months later. These are estimates, not promises.</span>
+            <sc-for list="{{ payWin.rows }}" as="w" hint-placeholder-count="4"><div style="display: flex; justify-content: space-between; gap: 10px; font-size: 13px; padding: 7px 0; border-top: 1px solid var(--ln-EEF2F0,#EEF2F0)"><span style="font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap">{{ w.co }} <span style="color: var(--fg-12805C,#12805C)">{{ w.amt }}</span></span><span style="flex: none; font-weight: 800; color: var(--fg-43504A,#43504A)">{{ w.when }}</span></div></sc-for>
+          </div></sc-if></span>
         <span style="display: flex; flex-direction: column; padding: 7px 12px; border-radius: 12px; background: var(--bg-FFFFFF,#FFFFFF); box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)"><span style="font-size: 11px; color: var(--fg-5B6862,#5B6862); font-weight: 700">Tracking</span><span style="font-size: 16px; font-weight: 800">{{ trackN }}</span></span>
         <span style="display: flex; flex-direction: column; padding: 7px 12px; border-radius: 12px; background: var(--bg-FFFFFF,#FFFFFF); box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)"><span style="font-size: 11px; color: var(--fg-5B6862,#5B6862); font-weight: 700">Paid to you</span><span style="font-size: 16px; font-weight: 800; color: var(--fg-12805C,#12805C)">{{ paidTotal }}</span></span>
       </div>
@@ -184,10 +189,10 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
             </div>
           </section>
           <section style="{{ cardPay }}"><div style="display: flex; align-items: center; gap: 6px; padding: 12px 0 4px"><div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 16px">How you get paid</h2><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862)">Administrators pay you directly. Claimclub never holds your money.</span></div><button onClick="{{ tBank.toggle }}" aria-label="Why we need this" style="width: 26px; height: 26px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: transparent; color: var(--fg-7C8AA5,#7C8AA5)"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4 M12 8h.01"></path></svg></button></div>
-            <sc-if value="{{ tBank.open }}" hint-placeholder-val="{{ false }}"><div style="margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--bg-F3F6F4,#F3F6F4); font-size: 13px; line-height: 1.5; color: var(--fg-43504A,#43504A)">Most administrators pay by direct deposit, PayPal or check. We pick your default on every claim you file, and you can change it per claim.</div></sc-if>
-            <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ln-EEF2F0,#EEF2F0)"><span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--bg-EEF2F0,#EEF2F0); display: flex; align-items: center; justify-content: center; color: var(--fg-0F3B2E,#0F3B2E)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18 M3 10h18 M5 6l7-3 7 3 M4 10v11 M20 10v11 M8 14v3 M12 14v3 M16 14v3"></path></svg></span>
+            <sc-if value="{{ tBank.open }}" hint-placeholder-val="{{ false }}"><div style="margin: 0 0 12px; padding: 10px 12px; border-radius: 12px; background: var(--bg-F3F6F4,#F3F6F4); font-size: 13px; line-height: 1.5; color: var(--fg-43504A,#43504A)">Administrators pay by PayPal, Venmo, Zelle, prepaid card, check and sometimes direct deposit. We pick your default on every claim you file, and you can change it per claim.</div></sc-if>
+            <sc-if value="{{ bankFeature }}" hint-placeholder-val="{{ true }}"><div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ln-EEF2F0,#EEF2F0)"><span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--bg-EEF2F0,#EEF2F0); display: flex; align-items: center; justify-content: center; color: var(--fg-0F3B2E,#0F3B2E)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18 M3 10h18 M5 6l7-3 7 3 M4 10v11 M20 10v11 M8 14v3 M12 14v3 M16 14v3"></path></svg></span>
               <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><sc-if value="{{ bankOn }}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; font-weight: 800">Bank connected</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862)">Checking · verified through your bank</span></sc-if><sc-if value="{{ bankOff }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 800">No bank connected</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862)">Needed for direct deposit</span></sc-if></div>
-              <sc-if value="{{ bankOff }}" hint-placeholder-val="{{ true }}"><button onClick="{{ connect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 13px; font-weight: 800">Connect</button></sc-if><sc-if value="{{ bankOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ disconnect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13px; font-weight: 800">Disconnect</button></sc-if></div>
+              <sc-if value="{{ bankOff }}" hint-placeholder-val="{{ true }}"><button onClick="{{ connect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 13px; font-weight: 800">Connect</button></sc-if><sc-if value="{{ bankOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ disconnect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13px; font-weight: 800">Disconnect</button></sc-if></div></sc-if>
             <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0"><span style="font-size: 12px; font-weight: 800; color: var(--fg-5B6862,#5B6862)">Default payout method</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); margin-top: -4px">We pick this on every claim form that offers it. If a settlement does not offer it, we use the next best option and tell you.</span>
               <div role="radiogroup" aria-label="Default payout method" style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{ pays }}" as="p" hint-placeholder-count="6"><div style="{{ p.st }}"><button onClick="{{ p.tap }}" role="radio" aria-checked="{{ p.on }}" style="display: flex; align-items: flex-start; gap: 12px; flex-grow: 1; min-width: 0; padding: 0; background: transparent; text-align: left; color: inherit"><span style="{{ p.dot }}"></span><span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--bg-EEF2F0,#EEF2F0); display: flex; align-items: center; justify-content: center; color: var(--fg-0F3B2E,#0F3B2E)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ p.d }}"></path></svg></span><span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">{{ p.o }}</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); line-height: 1.4">{{ p.sub }}</span><sc-if value="{{ p.showDetail }}" hint-placeholder-val="{{ false }}"><span style="{{ p.detSt }}">{{ p.detail }}</span></sc-if></span></button>
                 <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.edit }}" style="flex: none; align-self: center; min-height: 30px; padding: 0 12px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 12px; font-weight: 800">Edit</button></sc-if>
@@ -311,8 +316,8 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
         <button onClick="{{ sendCode }}" style="min-height: 48px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><sc-if value="{{ authBusy }}" hint-placeholder-val="{{ false }}"><span class="spin"></span></sc-if>Email me a code</button>
       </sc-if>
       <sc-if value="{{ codeStep }}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Check your email</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">Enter the code we sent to <b style="color: var(--fg-0A0F0D,#0A0F0D)">{{ loginEmail }}</b>.</span></div>
-        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" value="{{ code }}" onChange="{{ onCode }}" placeholder="Code" aria-label="Sign-in code" style="height: 56px; border-radius: 14px; border: 1.5px solid var(--ln-DDE5E0,#DDE5E0); padding: 0 16px; font-size: 26px; letter-spacing: 8px; text-align: center; font-family: inherit; font-weight: 800; color: var(--fg-0A0F0D,#0A0F0D); background: var(--bg-FFFFFF,#FFFFFF)">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Check your email</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">Enter the 6-digit code we sent to <b style="color: var(--fg-0A0F0D,#0A0F0D)">{{ loginEmail }}</b>.</span></div>
+        <div class="otpBox" style="position: relative; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px"><sc-for list="{{ codeBoxes }}" as="b" hint-placeholder-count="6"><div aria-hidden="true" style="{{ b.st }}">{{ b.d }}</div></sc-for><input type="text" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]*" maxlength="6" autofocus value="{{ code }}" onChange="{{ onCode }}" aria-label="6-digit sign-in code" style="position: absolute; inset: 0; width: 100%; height: 100%; box-sizing: border-box; opacity: 0; border: 0; padding: 0; font-size: 16px; color: transparent; caret-color: transparent; background: transparent; cursor: text"></div>
         <button onClick="{{ verify }}" style="min-height: 48px; border-radius: 99px; background: var(--bg-3DDC97,#3DDC97); color: var(--fg-0A0F0B,#0A0F0B); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><sc-if value="{{ authBusy }}" hint-placeholder-val="{{ false }}"><span class="spin" style="border-color: rgba(10,15,13,.25); border-top-color: #0A0F0D"></span></sc-if>Sign in</button>
         <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800"><button onClick="{{ otherEmail }}" style="background: transparent; padding: 0; color: var(--fg-5B6862,#5B6862)">Use a different email</button><button onClick="{{ sendCode }}" style="background: transparent; padding: 0; color: var(--fg-12805C,#12805C)">Send a new code</button></div>
       </sc-if>
@@ -329,7 +334,7 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { st: { apple: 'ready', cvs: 'ready', googleplay: 'ready', amazon: 'ready', tyson: 'ready', goodrx: 'review', realpage: 'filed', netflix: 'filed', kroger: 'approved', squatch: 'paid' }, busy: '', note: null, just: '', seq: 48210, focus: 0, view: 'all', acct: { email: 1, auth: 1, name: 1 }, info: '', ans: {}, sheet: null, form: {}, view: 'dash', scale: 'm', theme: 'light', prof: { name: 'Henry Sidwell', email: 'henry@example.com', phone: '', dob: '', addr: '1234 Market St, Apt 5, San Francisco, CA 94103', past: [] }, edit: '', draft: '', err: '', pastDraft: '', payDef: 'Check', payH: {}, payEdit: '', payDraft: '', payErr: '', det: '', q: '', cat: 'all', scope: 'all', sort: 'soon', openS: '', shown: 20, added: [], hl: '', bankAsk: false };
+    this.state = { st: { apple: 'ready', cvs: 'ready', googleplay: 'ready', amazon: 'ready', tyson: 'ready', goodrx: 'review', realpage: 'filed', netflix: 'filed', kroger: 'approved', squatch: 'paid' }, busy: '', note: null, just: '', seq: 48210, focus: 0, view: 'all', acct: { email: 1, auth: 1, name: 1 }, info: '', ans: {}, sheet: null, form: {}, view: 'dash', scale: 'm', theme: 'light', prof: { name: 'Henry Sidwell', email: 'henry@example.com', phone: '', dob: '', addr: '1234 Market St, Apt 5, San Francisco, CA 94103', past: [] }, edit: '', draft: '', err: '', pastDraft: '', bankOn: true, payDef: 'Check', payH: {}, payEdit: '', payDraft: '', payErr: '', det: '', q: '', cat: 'all', scope: 'all', sort: 'soon', openS: '', shown: 20, added: [], hl: '', bankAsk: false };
     this.state.mm = ''; this.state.mmPick = ''; this.state.cancelled = false; this.state.plan = '1m'; this.state.joinedOn = 'Nov 12, 2026';
     this.state.authState = 'off'; this.state.noAcct = false; this.state.loginEmail = ''; this.state.code = ''; this.state.codeSent = false; this.state.authErr = ''; this.state.authBusy = false; this.state.renewsAt = '';
     this.loadLive();
@@ -344,7 +349,7 @@ class Component extends DCLogic {
     this._live = true;
     const P = ss.p || {}, D = this.sets(), st = {}, signed = ss.signed || [];
     const mine = ss.ids.map(id => D.find(d => d.id === id)).filter(Boolean);
-    mine.forEach(d => { st[d.id] = signed.indexOf(d.id) >= 0 ? 'filed' : 'ready'; });
+    mine.forEach(d => { st[d.id] = signed.indexOf(d.id) >= 0 ? 'requested' : 'ready'; });
     this._mine = mine.map(d => this.toClaim(d));
     const addr = [P.street, P.city, [P.st, P.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
     Object.assign(this.state, { st, plan: ss.plan || '', paidKind: ss.paid || (ss.plan ? 'member' : 'fee'), joinedOn: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
@@ -364,7 +369,7 @@ class Component extends DCLogic {
     this.setState({ authState: 'checking' });
     fetch('/api/config').then(r => r.json()).then(cfg => {
       if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) { this.setState({ authState: 'off' }); return; }
-      this._cfg = cfg;
+      this._cfg = cfg; this.setState({ bankOn: !!cfg.bankConnect });
       this._sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
       return this._sb.auth.getSession().then(({ data }) => {
         if (data && data.session) return this.afterLogin(data.session);
@@ -388,12 +393,19 @@ class Component extends DCLogic {
   }
   verifyCode() {
     const token = (this.state.code || '').replace(/[^0-9]/g, '');
-    if (token.length < 6 || token.length > 8) { this.setState({ authErr: 'Enter the code from your email' }); return; }
+    if (token.length < 6 || token.length > 8) { this.setState({ authErr: 'Enter the 6-digit code from your email' }); return; }
+    if (this._verifying || this._signedIn) return;
+    this._verifying = true; clearTimeout(this._otpT);
     this.setState({ authBusy: true, authErr: '' });
     this._sb.auth.verifyOtp({ email: this.state.loginEmail.trim().toLowerCase(), token, type: 'email' }).then(({ data, error }) => {
-      if (error || !data.session) { this.setState({ authBusy: false, authErr: 'That code did not work. Check it or send a new one.' }); return; }
-      this.afterLogin(data.session);
-    });
+      if (!error && data && data.session) { this._signedIn = true; this._verifying = false; this.afterLogin(data.session); return; }
+      // A code can only be used once. If another tap already signed us in, ignore this failure.
+      return this._sb.auth.getSession().then(({ data: d2 }) => {
+        this._verifying = false;
+        if (d2 && d2.session) { if (!this._signedIn) { this._signedIn = true; this.afterLogin(d2.session); } return; }
+        this.setState({ authBusy: false, code: '', authErr: 'That code did not work. Check your email or send a new one.' });
+      });
+    }).catch(() => { this._verifying = false; this.setState({ authBusy: false, authErr: 'Could not reach sign-in. Check your connection and try again.' }); });
   }
   api(action, extra) {
     return fetch('/api/membership', { method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + this._token }, body: JSON.stringify(Object.assign({ action }, extra || {})) }).then(r => r.json()).catch(() => ({}));
@@ -409,7 +421,7 @@ class Component extends DCLogic {
     // First sign-in on this device after the claim flow: copy what they entered into their account.
     if (local && local.ids && local.ids.length && (!local.p || !local.p.email || local.p.email.toLowerCase() === email.toLowerCase())) {
       const have = new Set(rows.map(r => r.settlement_id)), signed = local.signed || [];
-      const add = local.ids.filter(id => !have.has(id)).map(id => ({ user_id: uid, settlement_id: id, status: signed.indexOf(id) >= 0 ? 'filed' : 'ready', source: 'flow', filed_at: signed.indexOf(id) >= 0 ? new Date().toISOString() : null }));
+      const add = local.ids.filter(id => !have.has(id)).map(id => ({ user_id: uid, settlement_id: id, status: signed.indexOf(id) >= 0 ? 'requested' : 'ready', source: 'flow' }));
       if (add.length) { const { data: ins } = await sb.from('claims').insert(add).select(); rows = rows.concat(ins || []); }
       const P = local.p || {}, addr = [P.street, P.city, [P.st, P.zip].filter(Boolean).join(' ')].filter(Boolean).join(', ');
       const patch = {}; const put = (k, v) => { if (v && !(prof && prof[k])) patch[k] = v; };
@@ -425,7 +437,7 @@ class Component extends DCLogic {
   applyAccount(P, rows, mem) {
     const D = this.sets(), st = {}, mine = [];
     rows.forEach(r => { const d = D.find(x => x.id === r.settlement_id); if (!d) return; st[r.settlement_id] = r.status === 'removed' ? 'gone' : r.status; mine.push(this.toClaim(d)); });
-    this._live = true; this._db = true; this._mine = mine; this._rows = {}; rows.forEach(r => { this._rows[r.settlement_id] = r.status; });
+    this._live = true; this._db = true; this._mine = mine; this._rows = {}; this._meta = {}; rows.forEach(r => { this._rows[r.settlement_id] = r.status; this._meta[r.settlement_id] = { ref: r.claim_ref || '', note: r.admin_note || '', filedAt: r.filed_at || '', requestedAt: r.requested_at || '' }; });
     const fmt = (iso) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '';
     const next = { authState: 'ready', st, added: [], ans: {},
       prof: { name: P.name || '', email: P.email || '', phone: P.phone || '', dob: P.dob || '', addr: P.address || '', past: P.past_addresses || [] },
@@ -448,11 +460,11 @@ class Component extends DCLogic {
       sb.from('profiles').update({ name: P.name, email: P.email, phone: P.phone, dob: P.dob, address: P.addr, past_addresses: P.past || [], lived_here_10y: !!s.acct.past && !(P.past || []).length, bank_connected: !!s.acct.bank, pay_default: s.payDef, payout_handles: s.payH || {}, theme: s.theme, scale: s.scale }).eq('id', uid).then(() => {});
       const ups = [];
       this.claims().forEach(c => { const v = s.st[c.id]; if (!v) return; const status = v === 'gone' ? 'removed' : v; if (this._rows[c.id] === status) return;
-        ups.push({ user_id: uid, settlement_id: c.id, status, source: this._mine.some(m => m.id === c.id) ? 'flow' : 'added', filed_at: status === 'filed' ? new Date().toISOString() : null }); this._rows[c.id] = status; });
+        ups.push({ user_id: uid, settlement_id: c.id, status, source: this._mine.some(m => m.id === c.id) ? 'flow' : 'added' }); this._rows[c.id] = status; });
       if (ups.length) sb.from('claims').upsert(ups, { onConflict: 'user_id,settlement_id' }).then(() => {});
     });
   }
-  signOut() { if (this._sb) this._sb.auth.signOut().then(() => { try { localStorage.removeItem('claimclub_app'); } catch (e) {} location.reload(); }); }
+  signOut() { this._signedIn = false; if (this._sb) this._sb.auth.signOut().then(() => { try { localStorage.removeItem('claimclub_app'); } catch (e) {} location.reload(); }); }
   componentDidUpdate() {
     if (this._db) { clearTimeout(this._syncT); this._syncT = setTimeout(() => this.syncNow(), 700); }
     const s = this.state;
@@ -584,6 +596,7 @@ class Component extends DCLogic {
       ['Zelle', 'Sent to the phone or email you use with Zelle.', 'M13 2 3 14h9l-1 8 10-12h-9l1-8z', 'handle'],
       ['Prepaid card', 'A virtual Visa or Mastercard emailed to you. Spend it or move it to your bank.', 'M2 5h20v14H2Z M2 10h20', 'email'],
       ['Check', 'Mailed to your address on file. Slowest option.', 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7', 'addr']];
+    if (!s.bankOn) PM.splice(0, 1);
     const H = s.payH || {}, okHandle = (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || /^\D*(\d\D*){10,11}$/.test(v);
     const pays = PM.map(([o, sub, d, need]) => { const on = s.payDef === o, ed = s.payEdit === o;
       const detail = need === 'bank' ? (s.acct.bank ? 'Checking account connected' : 'Connect a bank to use this') : need === 'handle' ? (H[o] ? 'Sends to ' + H[o] : 'Add the email or phone for this account') : need === 'email' ? (P.email ? 'Emailed to ' + P.email : 'Add your email first') : (P.addr ? 'Mailed to ' + P.addr : 'Add your mailing address first');
@@ -598,13 +611,13 @@ class Component extends DCLogic {
         onDraft: (e) => this.setState({ payDraft: e.target.value, payErr: '' }),
         save: () => { const v = (this.state.payDraft || '').trim(); if (!okHandle(v)) { this.setState({ payErr: 'Enter the email or 10 digit phone on your ' + o + ' account' }); return; } this.setState({ payH: Object.assign({}, this.state.payH, { [o]: v }), payEdit: '', payDraft: '', payErr: '' }); },
         cancel: () => this.setState({ payEdit: '', payDraft: '', payErr: '' }) }; });
-    const payNow = pays.find(p => p.on) || pays[5];
+    const payNow = pays.find(p => p.on) || pays[pays.length - 1];
     const bt = tip('i-bank'), pt = tip('i-past');
     return { personal: F.slice(0, 4).map(row), address: row(F[4]),
       pastList: P.past.map((p, i) => ({ p, rm: () => this.setState({ prof: Object.assign({}, P, { past: P.past.filter((_, j) => j !== i) }) }) })), hasPast: P.past.length > 0, pastDraft: s.pastDraft,
       onPast: (e) => this.setState({ pastDraft: e.target.value }), addPast: () => { const v = s.pastDraft.trim(); if (v.length < 8) return; this.setState({ prof: Object.assign({}, P, { past: P.past.concat([v]) }), pastDraft: '', acct: Object.assign({}, s.acct, { past: 1 }) }); },
       noPast: () => this.setState({ acct: Object.assign({}, s.acct, { past: 1 }) }), pastDone: !!s.acct.past && !P.past.length,
-      bankOn: !!s.acct.bank, bankOff: !s.acct.bank, connect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }), payDef: 'Direct deposit' }), disconnect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 0 }), payDef: s.payDef === 'Direct deposit' ? 'Check' : s.payDef }),
+      bankFeature: !!s.bankOn, bankOn: !!s.acct.bank, bankOff: !s.acct.bank, connect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }), payDef: 'Direct deposit' }), disconnect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 0 }), payDef: s.payDef === 'Direct deposit' ? 'Check' : s.payDef }),
       pays, payNeedsBank: s.payDef === 'Direct deposit' && !s.acct.bank, payNowLabel: payNow.o, payNowDetail: payNow.detail, tBank: bt, tPast: pt,
       cardPersonal: ring('dob'), cardAddr: ring('past'), cardPay: ring('bank'), cardPlain: ring('') };
   }
@@ -666,7 +679,7 @@ class Component extends DCLogic {
       onIn: (e) => this.setForm(x.k, e.target.value),
       opts: (x.opts || []).map(o => { const on = x.type === 'multi' ? (f[x.k] || []).indexOf(o) >= 0 : f[x.k] === o; return { o, st: chip(on), tap: () => { if (x.type === 'multi') { const a = (f[x.k] || []).slice(), i = a.indexOf(o); i >= 0 ? a.splice(i, 1) : a.push(o); this.setForm(x.k, a); } else this.setForm(x.k, o); } }; }) }));
     const ok2 = F.fields.every(x => x.optional || (x.type === 'multi' ? (f[x.k] || []).length > 0 : x.type === 'text' ? /@/.test(f[x.k] || '') : !!f[x.k]));
-    const bank = !!s.acct.bank, pm = f.pay || (bank ? 'Direct deposit' : '');
+    const bank = !!s.acct.bank, pm = f.pay || (bank && s.bankOn ? 'Direct deposit' : (s.payDef !== 'Direct deposit' ? s.payDef : ''));
     const needBank = pm === 'Direct deposit' && !bank;
     const ok3 = !!pm && !needBank && !!f.sign;
     const step = sh.step, can = step === 1 ? ok1 : step === 2 ? ok2 : ok3;
@@ -677,7 +690,7 @@ class Component extends DCLogic {
         co: c.co, title: c.title, logo: this.logos()[c.id], amt: c.amt, step, s1: step === 1, s2: step === 2, s3: step === 3, stepTitle: titles[step - 1],
         dots: [1, 2, 3].map(i => ({ st: 'flex:1;height:5px;border-radius:99px;background:' + (i <= step ? '#12805C' : 'var(--bg-E3EAE6,#E3EAE6)') })),
         qs, anyNo, fields, est: F.est(f), summary: F.sum(f) || '',
-        pay: ['Direct deposit', 'PayPal', 'Check'].map(o => ({ o, st: chip(pm === o), tap: () => this.setForm('pay', o) })), needBank,
+        pay: (s.bankOn ? ['Direct deposit', 'PayPal', 'Check'] : ['PayPal', 'Venmo', 'Zelle', 'Check']).map(o => ({ o, st: chip(pm === o), tap: () => this.setForm('pay', o) })), needBank,
         connectBank: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }) }),
         sign: !!f.sign, signTap: () => this.setForm('sign', !f.sign), signBox: 'width:22px;height:22px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;' + (f.sign ? 'background:var(--bg-12805C,#12805C)' : 'box-shadow:inset 0 0 0 2px var(--ln-C9D3CD,#C9D3CD);background:var(--bg-FFFFFF,#FFFFFF)'),
         hasBack: step > 1, back: () => this.setState({ sheet: { id: sh.id, step: step - 1 } }),
@@ -695,12 +708,12 @@ class Component extends DCLogic {
     clearTimeout(this._t1); clearTimeout(this._t2);
     this._t1 = setTimeout(() => {
       const c = this.claims().find(x => x.id === id), seq = this.state.seq + 1;
-      this.setState({ busy: '', just: id, seq, st: Object.assign({}, this.state.st, { [id]: 'filed' }), note: { head: 'Filed with ' + c.co, sub: 'Claim CC-' + seq + " · We'll track it until it pays", logo: this.logo(id, c.co) } });
+      this.setState({ busy: '', just: id, seq, st: Object.assign({}, this.state.st, { [id]: 'requested' }), note: { head: 'Filing request sent', sub: "We're filing your " + c.co + " claim. You'll get the claim ID by email.", logo: this.logo(id, c.co) } });
       this._t2 = setTimeout(() => this.setState({ note: null, just: '' }), 4200);
     }, 900);
   }
   setup() {
-    return [
+    return this.bankList([
       { id: 'email', label: 'Verify your email', tag: 'Account', cta: 'Verify', why: 'We send your filing receipts and claim updates here, and use it to recover your account.' },
       { id: 'auth', label: 'Sign the filing authorization', tag: 'For filing', cta: 'Sign', why: 'This gives Claimclub permission to submit claim forms in your name. Administrators need it before anyone can file for you.' },
       { id: 'name', label: 'Legal name and current address', tag: 'For filing', cta: 'Add', why: 'Administrators match claims to their class list by name and mailing address. A mismatch is the most common reason a claim gets rejected.' },
@@ -708,36 +721,51 @@ class Component extends DCLogic {
       { id: 'past', label: 'Past addresses, last 10 years', tag: 'For filing', cta: 'Add', optional: true, why: 'Lots of settlements cover purchases or accounts from years ago. Old addresses help administrators find you on their class list, so more of your claims get approved.' },
       { id: 'bank', label: 'Connect a bank for payouts', tag: 'For payouts', cta: 'Connect', why: 'Most administrators pay by direct deposit, PayPal or check. A connected bank lets us pick direct deposit on each claim so money goes straight to you. Claimclub never holds your payout.' },
       { id: 'notify', label: 'Turn on text alerts', tag: 'For notifications', cta: 'Turn on', why: 'We text you when a claim is approved, when a payout is sent, and when a new settlement matches you before its deadline.' }
-    ];
+    ]).filter(x => x.id !== 'bank' || this.state.bankOn);
   }
+  bankList(a) { return a; }
   detVals() {
     const s = this.state, id = s.det, d = id && this.sets().find(x => x.id === id);
     if (!d) return { detOpen: false, dt: { facts: [], tl: [], links: [] } };
-    const c = this.toClaim(d), st = s.st[id] || 'ready', order = ['ready', 'filed', 'review', 'approved', 'paid'], idx = order.indexOf(st);
+    const c = this.toClaim(d), st = s.st[id] || 'ready', order = ['ready', 'requested', 'filed', 'review', 'approved', 'paid'], idx = Math.max(0, order.indexOf(st === 'needs_info' ? 'requested' : st === 'denied' ? 'review' : st)), meta = (this._meta || {})[id] || {};
     const days = this.daysTo(d.dl), dlFmt = d.dl ? new Date(d.dl + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
     const how = d.mode === 'auto' ? 'Paid automatically to people on the class list. There is no form to file; we track it for you.' : d.cat === 'arb' ? 'Handled through individual arbitration by a partner law firm. We send them your details once you confirm.' : d.mode === 'site' ? 'Filed on the official settlement website. We pre-fill it with your saved info and you confirm.' : 'We file it on the official claim form in your name using your saved info, then send you the claim ID.';
     const H = s.payH || {}, P = s.prof || {};
-    const dest = s.payDef === 'Direct deposit' ? (s.acct.bank ? 'Direct deposit to your connected bank' : 'Direct deposit (connect a bank in Your info)') : ['PayPal', 'Venmo', 'Zelle'].indexOf(s.payDef) >= 0 ? s.payDef + (H[s.payDef] ? ' · ' + H[s.payDef] : ' (add your account in Your info)') : s.payDef === 'Prepaid card' ? 'Prepaid card emailed to ' + (P.email || 'you') : 'Check mailed to ' + (P.addr || 'your address');
+    const dest = s.payDef === 'Direct deposit' && !s.bankOn ? 'Check mailed to ' + (P.addr || 'your address') : s.payDef === 'Direct deposit' ? (s.acct.bank ? 'Direct deposit to your connected bank' : 'Direct deposit (connect a bank in Your info)') : ['PayPal', 'Venmo', 'Zelle'].indexOf(s.payDef) >= 0 ? s.payDef + (H[s.payDef] ? ' · ' + H[s.payDef] : ' (add your account in Your info)') : s.payDef === 'Prepaid card' ? 'Prepaid card emailed to ' + (P.email || 'you') : 'Check mailed to ' + (P.addr || 'your address');
     const facts = [['Estimated payout', d.pay || c.amt], ['Settlement fund', d.fund || 'Not published'], ['Claim deadline', d.dl ? dlFmt + (days > 0 ? ' · ' + days + ' days left' : ' · closed') : 'Open until the firm closes intake'], ['Proof needed', d.proof || 'None'], ['Where', d.area || (d.st ? d.st + ' residents' : 'Nationwide')], ['Payout goes to', dest]];
     if (d.case) facts.unshift(['Case', d.case]);
     if (d.court) facts.splice(1, 0, ['Court', d.court]);
     if (d.admin) facts.push(['Administrator', d.admin]);
-    const tl = ['Ready to file', 'Filed', 'In review', 'Approved', 'Paid'].map((t, i) => ({ t, st: 'flex:1;display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:800;color:' + (i <= idx ? '#0A0F0D' : '#8A968F'), bar: 'height:6px;border-radius:99px;background:' + (i < idx ? '#12805C' : i === idx ? '#3DDC97' : 'var(--bg-E3EAE6,#E3EAE6)') }));
+    if (meta.ref) facts.unshift(['Claim ID', meta.ref]);
+    if (meta.note && st === 'needs_info') facts.unshift(['What we need', meta.note]);
+    const tl = ['Ready', 'Filing', 'Filed', 'In review', 'Approved', 'Paid'].map((t, i) => ({ t, st: 'flex:1;display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:800;color:' + (i <= idx ? '#0A0F0D' : '#8A968F'), bar: 'height:6px;border-radius:99px;background:' + (i < idx ? '#12805C' : i === idx ? '#3DDC97' : 'var(--bg-E3EAE6,#E3EAE6)') }));
     const isReady = st === 'ready';
     return { detOpen: true, dt: { co: d.co, title: d.title, logo: this.logo(d.id, d.co), amt: c.amt, who: d.who, how, facts: facts.map(([k, v]) => ({ k, v })), tl,
-      stLabel: { ready: 'Ready to file', filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid' }[st] || 'Ready to file',
+      stLabel: { ready: 'Ready to file', requested: 'Filing in progress', needs_info: 'Action needed', filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid', denied: 'Not approved' }[st] || 'Ready to file',
       hasUrl: !!d.url, url: d.url || '', isReady, notReady: !isReady,
       close: () => this.setState({ det: '' }), file: () => { this.setState({ det: '' }); this.file(id); },
       note: 'From the court-approved settlement notice. Payout amounts are estimates and depend on how many people file.' } };
   }
+  payWindow(all) {
+    const s = this.state, MO = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], day = 864e5, now = Date.now();
+    const fmt = (t) => { const d = new Date(t); return MO[d.getMonth()] + ' ' + d.getFullYear(); };
+    const span = (a, b) => { const A = new Date(a), B = new Date(b); return A.getFullYear() === B.getFullYear() ? MO[A.getMonth()] + ' to ' + MO[B.getMonth()] + ' ' + B.getFullYear() : fmt(a) + ' to ' + fmt(b); };
+    const open = all.filter(r => r.st !== 'paid' && r.st !== 'gone' && r.st !== 'denied' && r.kind !== 'arb');
+    const est = open.map(r => { const base = now + Math.max(0, r.days) * day; return { co: r.co, amt: r.amt, a: base + 60 * day, b: base + 180 * day }; }).sort((x, y) => x.a - y.a);
+    const toggle = () => this.setState({ payPop: !this.state.payPop });
+    if (!est.length) return { label: all.some(r => r.st === 'paid') ? 'Paid' : 'Varies', open: !!s.payPop, toggle, rows: [] };
+    const first = est[0].a, last = Math.max.apply(null, est.map(e => e.b));
+    return { label: span(first, last), open: !!s.payPop, toggle, rows: est.slice(0, 5).map(e => ({ co: e.co, amt: e.amt, when: span(e.a, e.b) })) };
+  }
   renderVals() {
     const s = this.state, L = this.logos();
-    const ST = ['filed', 'review', 'approved', 'paid'], STL = { filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid' };
-    const NEXT = { filed: 'Waiting on the administrator to confirm', review: 'Administrator is reviewing claims', approved: 'Payouts start after final court approval', paid: 'Paid to you' };
+    const ST = ['filed', 'review', 'approved', 'paid'], STL = { requested: 'Filing', needs_info: 'Action needed', filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid', denied: 'Not approved' };
+    const M = this._meta || {};
+    const NEXT = { requested: "We're submitting it. You'll get the claim ID by email", needs_info: 'We need a little more info to file it', filed: 'Waiting on the administrator to confirm', review: 'Administrator is reviewing claims', approved: 'Payouts start after final court approval', paid: 'Paid to you', denied: 'The administrator did not approve this claim' };
     const row = (c) => {
       const st = s.st[c.id], idx = ST.indexOf(st), urgent = c.days > 0 && c.days <= 7;
       return Object.assign({}, c, {
-        logo: this.logo(c.id, c.co), st, stLabel: STL[st] || 'Ready to file', next: NEXT[st] || '', isReady: st === 'ready', isPaid: st === 'paid',
+        logo: this.logo(c.id, c.co), st, stLabel: STL[st] || 'Ready to file', next: (st === 'needs_info' && M[c.id] && M[c.id].note) || (st === 'filed' && M[c.id] && M[c.id].ref ? 'Claim ID ' + M[c.id].ref + ' · waiting on the administrator' : NEXT[st] || ''), isReady: st === 'ready', isPaid: st === 'paid',
         isAuto: c.kind === 'auto', needs: !!c.need, oneTap: !c.need, isArb: c.kind === 'arb',
         kindNote: c.need ? 'Needs a few details · about 1 min' : c.kind === 'auto' ? 'Paid automatically. File to add it to your tracking.' : c.kind === 'arb' ? 'Handled by a partner law firm' : 'We file it. No proof needed.',
         dl: c.days > 0 ? c.days + 'd left' : '', urgent,
@@ -748,7 +776,7 @@ class Component extends DCLogic {
         btn: 'min-width:112px;min-height:44px;padding:0 20px;border-radius:99px;font-size:15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;' + (s.busy === c.id ? 'background:var(--bg-12805C,#12805C);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)'),
         rowCls: s.just === c.id ? 'just' : '', cardCls: s.just === c.id ? 'cardin' : '',
         segs: ST.map((x, i) => ({ st: 'flex:1;height:6px;border-radius:99px;background:' + (i <= idx ? (st === 'paid' ? '#12805C' : '#1E9E70') : 'var(--bg-E3EAE6,#E3EAE6)') })),
-        pill: 'font-size:12px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;' + ({ filed: 'background:var(--bg-E8EEFB,#E8EEFB);color:var(--fg-2C4FA8,#2C4FA8)', review: 'background:var(--bg-FFF4DB,#FFF4DB);color:var(--fg-8A5A00,#8A5A00)', approved: 'background:var(--bg-E9F6EF,#E9F6EF);color:var(--fg-17603F,#17603F)', paid: 'background:var(--bg-12805C,#12805C);color:var(--fg-FFFFFF,#FFFFFF)' }[st] || 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)')
+        pill: 'font-size:12px;font-weight:800;padding:4px 10px;border-radius:99px;white-space:nowrap;' + ({ requested: 'background:var(--bg-EEF2F0,#EEF2F0);color:var(--fg-43504A,#43504A)', needs_info: 'background:var(--bg-FFF4DB,#FFF4DB);color:var(--fg-8A5A00,#8A5A00)', denied: 'background:var(--bg-FDECEC,#FDECEC);color:var(--fg-B8333A,#B8333A)', filed: 'background:var(--bg-E8EEFB,#E8EEFB);color:var(--fg-2C4FA8,#2C4FA8)', review: 'background:var(--bg-FFF4DB,#FFF4DB);color:var(--fg-8A5A00,#8A5A00)', approved: 'background:var(--bg-E9F6EF,#E9F6EF);color:var(--fg-17603F,#17603F)', paid: 'background:var(--bg-12805C,#12805C);color:var(--fg-FFFFFF,#FFFFFF)' }[st] || 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)')
       });
     };
     const all = this.claims().filter(c => s.st[c.id] !== 'gone').map(row);
@@ -769,7 +797,7 @@ class Component extends DCLogic {
       skip: () => this.setState({ focus: ready.length ? (fc + 1) % ready.length : 0 }),
       queue: ready.map((r, i) => Object.assign({}, r, { qStyle: 'width:44px;height:44px;flex:none;border-radius:13px;background:var(--bg-FFFFFF,#FFFFFF);padding:7px;box-sizing:border-box;box-shadow:' + (i === fc ? '0 0 0 2.5px #0F3B2E' : 'inset 0 0 0 1px var(--ln-DDE5E0,#DDE5E0)'), pick: () => this.setState({ focus: i }) })),
       filedPct: Math.round(track.length / all.length * 100), donePctStyle: 'width:' + Math.round(track.length / all.length * 100) + '%;height:100%;border-radius:99px;background:var(--bg-3DDC97,#3DDC97);transition:width .6s cubic-bezier(.2,.8,.2,1)',
-      ...this.setupVals(), ...this.sheetVals(), ...this.detVals(),
+      payWin: this.payWindow(all), ...this.setupVals(), ...this.sheetVals(), ...this.detVals(),
       isDash: s.view === 'dash', isAll: s.view === 'all', isInfo: s.view === 'info', isSet: s.view === 'settings',
       goDash: () => this.setState({ view: 'dash' }), findAll: () => this.setState({ view: 'all', scope: 'all', cat: 'all', q: '', shown: 20, openS: '' }), findNear: () => this.setState({ view: 'all', scope: 'near', cat: 'all', q: '', shown: 20, openS: '' }), findAllLabel: 'Browse all ' + this.sets().filter(d => this.daysTo(d.dl) > 0 && !d.st).length + ' settlements', goAll: () => this.setState({ view: 'all' }), goInfo: () => this.setState({ view: 'info' }), goSet: () => this.setState({ view: 'settings' }),
       ...['dash', 'all', 'info', 'settings'].reduce((o, v) => { const on = s.view === v, K = v.charAt(0).toUpperCase() + v.slice(1);
@@ -778,7 +806,9 @@ class Component extends DCLogic {
       ...this.setsVals(), ...this.infoVals(), ...this.mmVals(),
       needAuth: s.authState === 'signin' || s.authState === 'checking', authChecking: s.authState === 'checking', authForm: s.authState === 'signin',
       emailStep: !s.codeSent, codeStep: !!s.codeSent, loginEmail: s.loginEmail, onLoginEmail: (e) => this.setState({ loginEmail: e.target.value, authErr: '' }),
-      code: s.code, onCode: (e) => { const v = e.target.value.replace(/[^0-9]/g, '').slice(0, 8); this.setState({ code: v, authErr: '' }); clearTimeout(this._otpT); if (v.length === 8) this._otpT = setTimeout(() => this.verifyCode(), 60); else if (v.length === 6) this._otpT = setTimeout(() => { if ((this.state.code || '').length === 6) this.verifyCode(); }, 1200); },
+      code: s.code, onCode: (e) => { const v = (e.target.value || '').replace(/[^0-9]/g, '').slice(0, 6); if (v === this.state.code) return; this.setState({ code: v, authErr: '' }); clearTimeout(this._otpT); if (v.length === 6) this._otpT = setTimeout(() => this.verifyCode(), 120); },
+      codeBoxes: [0, 1, 2, 3, 4, 5].map(i => { const c = (s.code || '')[i] || '', act = i === Math.min((s.code || '').length, 5) && !s.authBusy;
+        return { d: c, st: 'height:56px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:var(--fg-0A0F0D,#0A0F0D);background:var(--bg-FFFFFF,#FFFFFF);transition:box-shadow .12s;box-shadow:' + (s.authErr ? 'inset 0 0 0 1.5px #E5484D' : act ? 'inset 0 0 0 2px #12805C,0 0 0 4px rgba(61,220,151,.25)' : c ? 'inset 0 0 0 1.5px #9AA8A0' : 'inset 0 0 0 1.5px #DDE5E0') }; }),
       sendCode: () => this.sendCode(), verify: () => this.verifyCode(), otherEmail: () => this.setState({ codeSent: false, code: '', authErr: '', noAcct: false }), noAcct: !!s.noAcct,
       authErr: s.authErr, hasAuthErr: !!s.authErr, authBusy: s.authBusy, authIdle: !s.authBusy, signedIn: !!this._db, signOut: () => this.signOut(), acctEmail: s.prof.email,
       firstName: ((s.prof.name || '').split(' ')[0]) || 'there', profName: s.prof.name || 'Saved in Your info', initial: ((s.prof.name || 'C').charAt(0) || 'C').toUpperCase(), joinedOn: s.joinedOn,

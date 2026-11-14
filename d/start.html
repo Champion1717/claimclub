@@ -50,6 +50,7 @@ button:active{transform:translateY(1px)}
 @keyframes enter{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
 @keyframes notif{from{opacity:0;translate:0 -18px}to{opacity:1;translate:0 0}}
 .notif{animation:notif .6s .3s ease both}
+@keyframes exitIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes tick{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .bumpA{animation:bumpA .4s ease}.bumpB{animation:bumpB .4s ease}
@@ -92,6 +93,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
 </style>
 <style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
 <div style="position: relative; width: 100%; height: 100vh; min-height: 760px; box-sizing: border-box; background: #FFFFFF; color: #0A0F0D; font-family: 'Manrope', sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <sc-if value="{{ exiting }}" hint-placeholder-val="{{ false }}"><div role="status" aria-live="polite" style="position: absolute; inset: 0; z-index: 400; background: #F3F6F4; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; animation: exitIn .3s ease both"><div style="width: 44px; height: 44px; border-radius: 50%; border: 3px solid #DDE5E0; border-top-color: #12805C; animation: spin .8s linear infinite"></div><div style="font-size: 14px; font-weight: 700; color: #5B6862">{{ L.openingDash }}</div></div></sc-if>
   <sc-if value="{{ unlockOn }}" hint-placeholder-val="{{ false }}"><div class="{{ unlockCls }}" role="status" aria-live="polite"><div class="glow"></div><div class="ring"></div><div class="ring r2"></div><sc-for list="{{ confetti }}" as="c" hint-placeholder-count="0"><span class="conf" style="{{ c.st }}"></span></sc-for><svg class="ulogo" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><div class="k">{{ L.unlockK }}</div><h2>{{ L.unlockH }}</h2><p>{{ L.unlockP }}</p></div></sc-if>
   <header style="display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 18px 36px; border-bottom: 1px solid #E8EEEA">
     <div style="display: flex; align-items: center; gap: 16px; min-width: 260px">
@@ -324,9 +326,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
     <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 20px 22px 26px; display: flex; flex-direction: column; gap: 14px">
       <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.saveH }}</h1>
       <div style="font-size: 15px; color: #5B6862; margin-bottom: 6px">{{ L.saveP }}</div>
-      <button onClick="{{ quickSignIn }}" style="height: 54px; border-radius: 14px; background: #FFFFFF; color: #0A0F0D; border: 1.5px solid #DDE5E0; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"></path><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"></path><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"></path><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"></path></svg>{{ L.google }}</button>
-      <button onClick="{{ quickSignIn }}" style="height: 54px; border-radius: 14px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.appleBtn }}</button>
-      <label for="emailCD" style="font-size: 13px; font-weight: 700; color: #43504A; margin-top: 8px">{{ L.orEmail }}</label>
+      <label for="emailCD" style="font-size: 13px; font-weight: 700; color: #43504A; margin-top: 4px">{{ L.orEmail }}</label>
       <input id="emailCD" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" value="{{ email }}" onChange="{{ onEmail }}" style="height: 54px; border-radius: 14px; border: 1.5px solid #DDE5E0; padding: 0 16px; font-size: 16px; font-family: inherit; color: #0A0F0D"><sc-if value="{{ hasEmailErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 12.5px; font-weight: 700; color: #C8323B">{{ emailErr }}</span></sc-if>
       <sc-if value="{{ emailExists }}" hint-placeholder-val="{{ false }}"><div role="alert" class="enter" style="display: flex; flex-direction: column; gap: 10px; padding: 14px 16px; border-radius: 16px; background: #E9F6EF; box-shadow: inset 0 0 0 1.5px #3DDC97"><div style="display: flex; align-items: flex-start; gap: 10px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#12805C" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg><div style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 15px; font-weight: 800; color: #0F3B2E">{{ L.hasAcctH }}</span><span style="font-size: 13.5px; line-height: 1.45; color: #43504A">{{ L.hasAcctP }}</span></div></div><div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap"><a href="{{ loginHref }}" style="min-height: 44px; padding: 0 22px; border-radius: 999px; background: #0F3B2E; color: #FFFFFF; font-size: 15px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; justify-content: center">{{ L.logIn }}</a><button onClick="{{ otherEmailFlow }}" style="min-height: 44px; background: transparent; padding: 0; color: #12805C; font-size: 14px; font-weight: 800">{{ L.diffEmail }}</button></div></div></sc-if>
       <button onClick="{{ emailNext }}" disabled="{{ emailDisabled }}" style="{{ emailStyle }}"><sc-if value="{{ emailBusy }}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 8px"><span style="width: 16px; height: 16px; border-radius: 50%; border: 2.5px solid rgba(10,15,13,.25); border-top-color: currentColor; animation: spin .7s linear infinite"></span>{{ L.checking }}</span></sc-if><sc-if value="{{ emailIdle }}" hint-placeholder-val="{{ true }}">{{ L.cont }}</sc-if></button>
@@ -510,7 +510,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
     <div class="enter obwrap" style="flex-grow: 1; min-height: 0; display: flex; flex-direction: column; background: #FFFFFF">
       <div class="obvis" style="position: relative; flex: 1 1 52%; min-height: 0; overflow: hidden; background: radial-gradient(120% 80% at 100% 0%, rgba(255,255,255,.14), transparent 50%), radial-gradient(90% 70% at 0% 100%, rgba(255,255,255,.08), transparent 60%), linear-gradient(160deg, #0F3B2E, #1B6B4D 60%, #2A8A63)">
         <button onClick="{{ skipBank }}" aria-label="{{ L.notNow }}" style="position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,.22); color: #FFFFFF; display: flex; align-items: center; justify-content: center; z-index: 3"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button>
-        <div class="obphone" style="position: absolute; left: 50%; bottom: -40px; width: 200px; height: 300px; margin-left: -100px; border-radius: 38px; background: #10131A; padding: 8px; box-sizing: border-box; box-shadow: 0 30px 60px rgba(0,0,0,.35)"><div style="width: 100%; height: 100%; border-radius: 30px; background: linear-gradient(180deg, #CFEFE0, #9ED8BC 70%, #7CC7A4)"></div><div style="position: absolute; top: 18px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 99px; background: #10131A"></div></div>
+        <div class="obphone" style="position: absolute; left: 50%; bottom: -40px; width: 220px; height: 300px; margin-left: -110px; border-radius: 38px; background: #10131A; padding: 8px; box-sizing: border-box; box-shadow: 0 30px 60px rgba(0,0,0,.35)"><div style="width: 100%; height: 100%; border-radius: 30px; background: #F3F6F4; padding: 34px 10px 10px; box-sizing: border-box; display: flex; flex-direction: column; gap: 6px; overflow: hidden"><div style="display: flex; align-items: center; gap: 5px; font-size: 9px; font-weight: 800; letter-spacing: 1px; color: #5B6862; padding: 0 2px"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>{{ L.yourPayouts }}</div><sc-for list="{{ perkMatches }}" as="m" hint-placeholder-count="4"><div style="display: flex; align-items: center; gap: 6px; background: #FFFFFF; border-radius: 10px; padding: 6px; box-shadow: 0 1px 2px rgba(10,15,13,.06)"><sc-if value="{{ m.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ m.logo }}" alt="" style="width: 20px; height: 20px; flex: none; border-radius: 5px; object-fit: contain"></sc-if><sc-if value="{{ m.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ m.tileStyle }}; width: 20px; height: 20px; flex: none; border-radius: 5px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800">{{ m.initial }}</div></sc-if><span style="flex-grow: 1; min-width: 0; font-size: 10.5px; font-weight: 800; color: #0A0F0D; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ m.co }}</span><span style="font-size: 8.5px; font-weight: 800; color: #17603F; background: #E9F6EF; padding: 2px 5px; border-radius: 99px; white-space: nowrap">{{ m.amt }}</span></div></sc-for></div><div style="position: absolute; top: 18px; left: 50%; width: 64px; height: 18px; margin-left: -32px; border-radius: 99px; background: #10131A"></div></div>
         <div class="notif" style="position: absolute; left: 50%; bottom: 70px; width: 300px; max-width: 88%; transform: translateX(-50%); z-index: 2">
           <div style="position: absolute; left: 6%; right: 6%; top: 14px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.55)"></div>
           <div style="position: absolute; left: 12%; right: 12%; top: 26px; height: 60px; border-radius: 18px; background: rgba(255,255,255,.35)"></div>
@@ -619,7 +619,7 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
+    this.state = { bankOn: true, step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
       p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } };
     let fid = props && props.offer;
     try { if (!fid && typeof location !== 'undefined' && location.search) fid = new URLSearchParams(location.search).get('offer'); } catch (e) {}
@@ -655,7 +655,7 @@ class Component extends DCLogic {
       checkNote: ["This check is an illustration of your estimate, not a payment. Amounts come from each settlement's notice and are not guaranteed.", 'Este cheque ilustra tu estimado, no es un pago. Los montos vienen del aviso de cada acuerdo y no están garantizados.'],
       claimMoney: ['Claim my money', 'Reclamar mi dinero'],
       saveH: ['Save your matches', 'Guarda tus coincidencias'], saveP: ["We'll use this to pre-fill your claims and send deadline reminders.", 'Lo usaremos para llenar tus reclamos y enviarte recordatorios de fechas límite.'],
-      google: ['Continue with Google', 'Continuar con Google'], appleBtn: ['Continue with Apple', 'Continuar con Apple'], orEmail: ['Or enter your email', 'O escribe tu correo'],
+      google: ['Continue with Google', 'Continuar con Google'], appleBtn: ['Continue with Apple', 'Continuar con Apple'], orEmail: ['Your email', 'Tu correo'],
       detH: ['Your details', 'Tus datos'], detP: ['These go on every claim form. Use your legal name and current address.', 'Van en cada formulario de reclamo. Usa tu nombre legal y tu dirección actual.'],
       fFirst: ['First name', 'Nombre'], fMiddle: ['Middle (optional)', 'Segundo nombre (opcional)'], fLast: ['Last name', 'Apellido'],
       fStreet: ['Street address', 'Dirección'], fApt: ['Apt, suite (optional)', 'Apto., suite (opcional)'], fCity: ['City', 'Ciudad'], fState: ['State', 'Estado'], fZip: ['ZIP', 'Código postal'],
@@ -695,7 +695,7 @@ class Component extends DCLogic {
       bestValue: ['BEST VALUE', 'MEJOR VALOR'], stopLaw: ['Stop paying lawyers.', 'Deja de pagarle a abogados.'], keep100: ['Keep 100% of your payouts.', 'Quédate con el 100% de tus pagos.'],
       noCommit: ['No commitment. Cancel anytime.', 'Sin compromiso. Cancela cuando quieras.'], startPaid: ['Start getting paid', 'Empieza a cobrar'],
       termsW: ['Terms', 'Términos'], privacyW: ['Privacy', 'Privacidad'],
-      bankH1: ['Never miss your', 'Nunca te pierdas tus'], bankH2: ['payout updates', 'avisos de pago'],
+      bankH1: ['Never miss your', 'Nunca te pierdas tus'], openingDash: ['Opening your dashboard', 'Abriendo tu panel'], yourPayouts: ['YOUR PAYOUTS', 'TUS PAGOS'], bankH2: ['payout updates', 'avisos de pago'],
       bankP: ['Connect the account your settlement payments go to. We alert you the moment a payout lands. Read-only: we can never move your money.', 'Conecta la cuenta donde recibes los pagos de los acuerdos. Te avisamos en cuanto llegue un pago. Solo lectura: nunca podemos mover tu dinero.'],
       bankSec: ['Bank-level security', 'Seguridad bancaria'], bankEnc: ['256-bit encryption', 'Cifrado de 256 bits'], bankRO: ['Read-only', 'Solo lectura'],
       connectBank: ['Connect bank account', 'Conectar cuenta bancaria'], notNow: ['Not now', 'Ahora no'], connected: ['Bank connected', 'Banco conectado'],
@@ -806,15 +806,24 @@ class Component extends DCLogic {
     return d ? { q: d.who, a: es ? 'Sí' : 'Yes' } : { q: '', a: '' };
   }
   authList() { return this.matched().filter(m => m.mode === 'here'); }
+  componentDidMount() {
+    setTimeout(() => this.track(), 0);
+    // Bank connections are switched on and off in /admin > Settings. Off until the live config says otherwise.
+    if (this.isLiveHost() && typeof fetch !== 'undefined') {
+      if (this.state.bankOn) this.setState({ bankOn: false });
+      fetch('/api/config').then(r => r.json()).then(c => { if (c && c.bankConnect) this.setState({ bankOn: true }); }).catch(() => {});
+    }
+  }
   componentDidUpdate() {
+    this.track();
     if (this.stepName() === 'calc' && !this._calc) {
       this._calc = setTimeout(() => { this._calc = null; this.go(1); }, 2600);
     }
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return (this.state.focus ? [] : ['intro1']).concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks', 'bank', 'dash']);
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks', 'dash']);
+    if (this.quickMode()) return (this.state.focus ? [] : ['intro1']).concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
@@ -841,6 +850,41 @@ class Component extends DCLogic {
     setTimeout(() => finish(false), 4000);
     fetch('/api/account-exists', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: em }) })
       .then(r => r.ok ? r.json() : { exists: false }).then(j => finish(!!(j && j.exists))).catch(() => finish(false));
+  }
+  attestText(cur, es) {
+    const arb = cur.cat === 'arb';
+    return arb
+        ? (es ? 'Revisé la información de arriba y es verdadera y correcta. Autorizo a Claimclub a enviarla a un bufete asociado para que evalúe un posible reclamo de arbitraje individual contra ' + cur.co + ' en mi nombre. Entiendo que no se presenta nada hasta que firme un acuerdo aparte con el bufete, que indicará cualquier honorario. Claimclub no recibe ninguna parte de lo que se otorgue.'
+              : 'I have reviewed the information above and it is true and correct. I authorize Claimclub to send it to a partner law firm so the firm can review a possible individual arbitration claim against ' + cur.co + ' for me. I understand no claim is filed until I sign a separate agreement with the firm, which will disclose any fees. Claimclub takes no part of any award.')
+        : (es ? 'Revisé las respuestas de arriba y son verdaderas y correctas. Autorizo a Claimclub a presentar este reclamo al administrador del acuerdo ' + cur.co + ' a mi nombre, usando mi firma electrónica de abajo, y a recibir actualizaciones, según el Acuerdo de Autorización de Presentación de Reclamos. Cualquier pago se me enviará directamente. Claimclub no recibe ninguna parte. Puedo revocar esta autorización antes de que se presente el reclamo.'
+              : 'I have reviewed the answers above and they are true and correct. I authorize Claimclub to submit this claim to the ' + cur.co + ' settlement administrator under my name, using my electronic signature below, and to receive updates about it, as described in the Claim Filing Authorization Agreement. Any payment will be sent directly to me. Claimclub takes no part of it. I can revoke this authorization at any time before the claim is submitted.');
+  }
+  certText(es) { return es ? 'Declaro bajo pena de perjurio, conforme a las leyes de los Estados Unidos, que la información de este formulario es verdadera y correcta según mi leal saber, y que soy miembro del grupo del acuerdo descrito en el aviso.'
+                      : 'I declare under penalty of perjury under the laws of the United States that the information in this claim form is true and correct to the best of my knowledge, and that I am a member of the Settlement Class described in the notice.'; }
+  signRecords(list, method) {
+    const s = this.state, es = s.lang === 'es', p = s.p || {};
+    const name = [p.first, p.middle, p.last].map(x => (x || '').trim()).filter(Boolean).join(' ');
+    const now = new Date().toISOString();
+    const details = { name, first: p.first || '', middle: p.middle || '', last: p.last || '', street: p.street || '', apt: p.apt || '', city: p.city || '', state: s.st && s.st !== 'Other' ? s.st : '', zip: p.zip || '', phone: p.phone || '', dob: p.dob || '', email: s.email || '' };
+    return list.map(m => { const a = this.answerOf(m.id);
+      return { settlement_id: m.id, settlement_title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, signer_name: name, signature_text: name, details, answers: a.q ? [{ q: a.q, a: a.a }] : [],
+        statements: { attestation: this.attestText(m, es), perjury: m.cat === 'arb' ? '' : this.certText(es), consent: method === 'bulk' ? this.txt('saConsent') + this.txt('agreeLink') : this.txt('consentTxt') + this.txt('agreeLink'), agreement_url: 'https://claimclub.io/legal/authorization.html' },
+        agreement_version: '2026-11-13', client_signed_at: now }; });
+  }
+  txt(k) { const v = (this.dict && this.dict()[k]) || null; return v ? v[this.state.lang === 'es' ? 1 : 0] : ''; }
+  recordSign(list, method) {
+    if (!list.length || typeof fetch === 'undefined' || !this.isLiveHost()) return;
+    const body = JSON.stringify({ email: (this.state.email || '').trim().toLowerCase(), lang: this.state.lang, page: location.pathname, method, records: this.signRecords(list, method) });
+    try { fetch('/api/sign', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); } catch (e) {}
+  }
+  isLiveHost() { return typeof location !== 'undefined' && /^https?:$/.test(location.protocol) && /(^|\.)claimclub\.io$|vercel\.app$|^localhost$|^127\.0\.0\.1$/.test(location.hostname); }
+  track() {
+    const name = this.stepName();
+    if (!name || name === this._lastTracked || !this.isLiveHost() || typeof fetch === 'undefined') return;
+    this._lastTracked = name;
+    let sid = ''; try { sid = sessionStorage.getItem('cc_sid') || ''; if (!sid) { sid = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('cc_sid', sid); } } catch (e) { return; }
+    const body = JSON.stringify({ sid, step: name, idx: this.state.step, device: typeof innerWidth !== 'undefined' && innerWidth < 820 ? 'm' : 'd', lang: this.state.lang, offer: this.state.focus || '' });
+    try { fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); } catch (e) {}
   }
   planInfo(id, es) {
     return ({ '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
@@ -933,13 +977,8 @@ class Component extends DCLogic {
       const arb = cur.cat === 'arb', lg = this.logos()[cur.id];
       const signedNow = !!s.signed[cur.id];
       const nm = fullName || 'Your name';
-      const attest = arb
-        ? (es ? 'Revisé la información de arriba y es verdadera y correcta. Autorizo a Claimclub a enviarla a un bufete asociado para que evalúe un posible reclamo de arbitraje individual contra ' + cur.co + ' en mi nombre. Entiendo que no se presenta nada hasta que firme un acuerdo aparte con el bufete, que indicará cualquier honorario. Claimclub no recibe ninguna parte de lo que se otorgue.'
-              : 'I have reviewed the information above and it is true and correct. I authorize Claimclub to send it to a partner law firm so the firm can review a possible individual arbitration claim against ' + cur.co + ' for me. I understand no claim is filed until I sign a separate agreement with the firm, which will disclose any fees. Claimclub takes no part of any award.')
-        : (es ? 'Revisé las respuestas de arriba y son verdaderas y correctas. Autorizo a Claimclub a presentar este reclamo al administrador del acuerdo ' + cur.co + ' a mi nombre, usando mi firma electrónica de abajo, y a recibir actualizaciones, según el Acuerdo de Autorización de Presentación de Reclamos. Cualquier pago se me enviará directamente. Claimclub no recibe ninguna parte. Puedo revocar esta autorización antes de que se presente el reclamo.'
-              : 'I have reviewed the answers above and they are true and correct. I authorize Claimclub to submit this claim to the ' + cur.co + ' settlement administrator under my name, using my electronic signature below, and to receive updates about it, as described in the Claim Filing Authorization Agreement. Any payment will be sent directly to me. Claimclub takes no part of it. I can revoke this authorization at any time before the claim is submitted.');
-      const cert = es ? 'Declaro bajo pena de perjurio, conforme a las leyes de los Estados Unidos, que la información de este formulario es verdadera y correcta según mi leal saber, y que soy miembro del grupo del acuerdo descrito en el aviso.'
-                      : 'I declare under penalty of perjury under the laws of the United States that the information in this claim form is true and correct to the best of my knowledge, and that I am a member of the Settlement Class described in the notice.';
+      const attest = this.attestText(cur, es);
+      const cert = this.certText(es);
       const ans = this.answerOf(cur.id);
       const consentOn = !!s.consent[cur.id];
       const advance = () => { if (ai + 1 < AL.length) this.setState({ ai: ai + 1 }); else this.go(1); };
@@ -960,7 +999,7 @@ class Component extends DCLogic {
         cantSubmit: !(signedNow && consentOn),
         signed: signedNow, unsigned: !signedNow, sigName: fullName || 'Alex Rivera', sigDate: signedNow ? dateStr : '', printName: fullName,
         sign: () => this.setState({ signed: Object.assign({}, this.state.signed, { [cur.id]: true }) }),
-        submit: () => { if (this.state.signed[cur.id] && this.state.consent[cur.id]) advance(); },
+        submit: () => { if (this.state.signed[cur.id] && this.state.consent[cur.id]) { this.recordSign([cur], 'single'); advance(); } },
         submitStyle: S.btn(signedNow && consentOn),
         skip: () => { this.setState({ skipped: Object.assign({}, this.state.skipped, { [cur.id]: true }) }); advance(); },
         edit: () => this.setState({ step: this.steps().indexOf('details') }),
@@ -1050,9 +1089,9 @@ class Component extends DCLogic {
       billCount: plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
       estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
       isPerk1: s.pi === 0, isPerk2: s.pi === 1, isPerk3: s.pi === 2,
-      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.setState({ step: this.steps().indexOf('bank') }); },
-      perkSkip: () => this.setState({ step: this.steps().indexOf('bank') }),
-      dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank'),
+      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.toBank(); },
+      perkSkip: () => this.toBank(),
+      dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank') + (s.bankOn ? '' : ';display:none'),
       perkSt: (s.p && s.p.st) || s.st && s.st !== 'Other' && s.st || 'CA',
       perkLocal: (() => { const code = (s.p && s.p.st) || (s.st && s.st !== 'Other' ? s.st : 'CA'); let L2 = this.data().filter(d => d.st && d.st.split(',').includes(code) && this.daysLeft(d.dl) > 0); if (L2.length < 3) L2 = L2.concat(this.data().filter(d => d.st && !L2.includes(d) && this.daysLeft(d.dl) > 0)); return L2.slice(0, 4).map(d => ({ co: d.co, initial: d.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[d.cat]), area: d.area || d.st, amt: (d.max || d.amt) > 0 ? (es ? 'Hasta ' : 'Up to ') + this.money(d.max || d.amt) : (es ? 'Varía' : 'Varies') })); })(),
       showDots: s.paid === 'member', perkMatches: ml.slice(0, 4).map(m => { const lg = this.logos()[m.id]; return { co: m.co, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.slice(0, 1), tileStyle: S.tile(K[m.cat]), st: s.signed[m.id] ? (es ? 'Presentado' : 'Filed') : m.mode === 'site' ? (es ? 'Sitio oficial' : 'Official site') : (es ? 'Listo' : 'Ready'), amt: amtOf(m) }; }),
@@ -1078,7 +1117,7 @@ class Component extends DCLogic {
       coPrice: s.buying === 'member' ? this.planInfo(s.plan, es).first : '$49.99',
       coPayLabel: (es ? 'Pagar ' : 'Pay ') + (s.buying === 'member' ? this.planInfo(s.plan, es).first : '$49.99'),
       coIdle: !s.payState, coBusy: s.payState === 'busy', coDone: s.payState === 'done',
-      unlockOn: !!s.unlock, unlockCls: 'unl' + (s.unlock === 'out' ? ' out' : ''), confetti: s.unlock ? this.confetti() : [],
+      exiting: !!s.exiting, unlockOn: !!s.unlock, unlockCls: 'unl' + (s.unlock === 'out' ? ' out' : ''), confetti: s.unlock ? this.confetti() : [],
       card: s.card, exp: s.exp, cvc: s.cvc, czip: s.czip,
       setCard: (e) => this.setState({ card: e.target.value }), setExp: (e) => this.setState({ exp: this.slashFmt(e.target.value, this.state.exp, [2, 2]) }), setCvc: (e) => this.setState({ cvc: e.target.value }), setCzip: (e) => this.setState({ czip: e.target.value }),
       payCardStyle: S.btn(!!(s.card || '').trim()), payCardDisabled: !(s.card || '').trim(),
@@ -1100,7 +1139,7 @@ class Component extends DCLogic {
       toggleSaConsent: () => this.setState({ saConsent: !this.state.saConsent }),
       saSigned: s.saSigned, saUnsigned: !s.saSigned, saSign: () => this.setState({ saSigned: true }),
       saDisabled: !(s.saConsent && s.saSigned), saStyle: S.btn(s.saConsent && s.saSigned),
-      saGo: () => { if (!(this.state.saConsent && this.state.saSigned)) return; const sg = {}, cs = {}; AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; }); this.setState({ signed: sg, consent: cs, saOpen: false, step: this.steps().indexOf('pay') }); },
+      saGo: () => { if (!(this.state.saConsent && this.state.saSigned)) return; this.recordSign(AL, 'bulk'); const sg = {}, cs = {}; AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; }); this.setState({ signed: sg, consent: cs, saOpen: false, step: this.steps().indexOf('pay') }); },
       saGoLabel: (es ? 'Firmar los ' : 'Sign all ') + AL.length + (es ? ' formularios' : ' forms'),
       filedLabel: this.money(filedAmt),
       filedBar: 'height:100%;border-radius:99px;transition:width .4s ease;background:#218358;width:' + (total ? Math.round(filedAmt / total * 100) : 0) + '%',
@@ -1115,7 +1154,7 @@ class Component extends DCLogic {
   }
   finishPay(kind) {
     clearTimeout(this._fin); clearTimeout(this._fin2); clearTimeout(this._fin3);
-    if (kind !== 'member') { this._fin = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('bank') }), 1300); return; }
+    if (kind !== 'member') { this._fin = setTimeout(() => { if (this.state.bankOn) this.setState({ pi: 0, step: this.steps().indexOf('bank') }); else this.afterBank(); }, 1300); return; }
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._fin = setTimeout(() => this.setState({ unlock: 'in' }), 450);
     this._fin2 = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('perks'), unlock: 'out' }), reduce ? 1600 : 3000);
@@ -1132,7 +1171,8 @@ class Component extends DCLogic {
     }
     return (this._conf = out);
   }
-  afterBank() { this.saveForApp(); this.setState({ step: this.steps().indexOf('dash') }); }
+  toBank() { if (this.state.bankOn) this.setState({ step: this.steps().indexOf('bank') }); else this.afterBank(); }
+  afterBank() { this.saveForApp(); this.setState({ exiting: true }); clearTimeout(this._ex); this._ex = setTimeout(() => { try { location.href = 'DashA.dc.html'; } catch (e) {} }, 700); }
   saveForApp() {
     try {
       const ml = this.matched(), p = this.state.p;
