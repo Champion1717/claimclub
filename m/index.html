@@ -55,6 +55,7 @@ input:focus{outline:2px solid #3DDC97;outline-offset:1px}
 @media (min-width: 760px) and (max-width: 900px){.phonecol:has(.vis-stats){display:flex !important;width:100%}.vis-stats{width:min(440px,100%) !important}}
 @media (min-width: 901px) and (max-width: 1023px){.mesh{min-height:0 !important}.herogrid{justify-content:center !important;padding:56px 48px !important}.herotext{flex-basis:100% !important;align-items:center;text-align:center}.herotext > div{justify-content:center}.herotext p,.herotext > div{max-width:640px}}
 @media (min-width: 1024px) and (max-width: 1180px){.herogrid{gap:28px 32px !important;padding:44px 32px 40px !important}.herotext{flex-basis:380px !important}.vis-stats{width:min(420px,42vw) !important}.vis-stats [data-countup]{font-size:clamp(30px,3.4vw,44px) !important;letter-spacing:-1px !important}}
+@media (min-width: 901px) and (max-height: 860px){.herogrid{padding:32px 4vw 28px !important}.herotext{gap:18px !important}}
 @media (max-width: 420px){.loginA{font-size:14px !important}}
 @media (max-width: 900px){.heroWrap{padding:0 !important}.mesh{min-height:0 !important}.phonecol{display:none !important}.herogrid{padding:32px 22px !important;justify-content:center}.herotext{align-items:center;text-align:center}.herotext > div{justify-content:center}.deskrow{display:none !important}.mobilelist{display:flex !important}}
 .phones > div{flex:none}
@@ -91,7 +92,7 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
   </header>
 
   <!-- HERO -->
-  <section id="top" class="heroWrap" style="padding: 0"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; min-height: calc(100vh - 67px); display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
+  <section id="top" class="heroWrap" style="padding: 0"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; min-height: min(660px, calc(100vh - 67px - 190px)); display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
     <div class="herogrid" style="position: relative; flex-grow: 1; width: 100%; box-sizing: border-box; max-width: 1280px; margin: 0 auto; padding: 56px 4vw 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px 56px">
       <div class="herotext" style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 24px">
         <h1 class="u1" style="margin: 0; font-size: clamp(36px, 4.2vw, 60px); line-height: 1.02; font-weight: 800; letter-spacing: -0.045em">Big companies settle lawsuits all the time. <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #3DDC97">You could be owed a share.</span></h1>
@@ -243,7 +244,7 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
   </div></section>
 
   <!-- SETTLEMENTS: one row -->
-  <section id="settlements" style="padding: 72px 0 80px">
+  <section id="settlements" style="padding: 48px 0 80px">
     <div style="max-width: 1280px; margin: 0 auto; padding: 0 4vw; display: flex; flex-direction: column; gap: 20px">
       <div class="rv" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
         <div style="display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 50px); font-weight: 800; letter-spacing: -0.04em; color: #0F3B2E">Open settlements you can claim</h2><div style="font-size: 16px; color: #43504A">{{ resultCount }} nationwide · plus {{ localCount }} local settlements for members</div></div>
@@ -520,7 +521,13 @@ class Component extends DCLogic {
       visStack: vis === 'stack', visTracker: vis === 'tracker', visOrbit: vis === 'orbit', visPhone: vis === 'phone', visCheck: vis === 'check', visNotifs: vis === 'notifs', visQuiz: vis === 'quiz', visGrid: vis === 'grid', visGauge: vis === 'gauge', orbit,
       slim: header === 'slim', full: header === 'full',
       filters: filters.map(f => ({ label: f.label, style: S.chip(s.filter === f.id), pick: () => this.setState({ filter: f.id, showAll: false }) })),
-      logoStrip: (() => { const ls = all.filter(d => d.cat !== 'arb' && this.logos && this.logos()[d.id] && (d.max || d.amt) >= 50).sort((a, b) => (b.max || b.amt) - (a.max || a.amt)).slice(0, 16).map(card); return ls.concat(ls); })(),
+      logoStrip: (() => {
+        // Broad settlements most people qualify for (everyday purchases, phones, renting, banking), in this order.
+        const COMMON = ['googleplay', 'tyson', 'visa', 'apple', 'amazon', 'realpage', 'cvs', 'equifax', 'genericdrugs', 'fleatick', 'kroger', 'goodrx', 'tenet', 'mdlive', 'westernunion', 'warnermusic'];
+        const L = this.logos ? this.logos() : {};
+        let ls = COMMON.map(id => all.find(d => d.id === id)).filter(d => d && L[d.id]);
+        if (ls.length < 8) ls = ls.concat(all.filter(d => d.cat !== 'arb' && L[d.id] && !ls.includes(d) && /^(People|U\.S\.|Customers|Renters) who (bought|paid|used|rent)/.test(d.who)).slice(0, 8 - ls.length));
+        ls = ls.slice(0, 14).map(card); return ls.concat(ls); })(),
       mobileCards: (s.showAll ? figured : figured.slice(0, 8)).map(card), hasMoreMobile: figured.length > 8,
       cards: shown.map(card), soon, phone, shelves,
       resultCount: list.length + (list.length === 1 ? ' settlement' : ' settlements'),
