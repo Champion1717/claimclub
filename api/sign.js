@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
       details: r.details && typeof r.details === 'object' ? r.details : {},
       answers: Array.isArray(r.answers) ? r.answers.slice(0, 20) : [],
       statements: r.statements && typeof r.statements === 'object' ? r.statements : {},
-      agreement_version: clip(r.agreement_version || '2026-11-13', 40), lang: clip(b.lang, 5),
+      agreement_version: clip(r.agreement_version || '2026-11-14', 40), lang: clip(b.lang, 5),
       client_signed_at: r.client_signed_at && !isNaN(Date.parse(r.client_signed_at)) ? new Date(r.client_signed_at).toISOString() : null,
       ip, user_agent: ua, page: clip(b.page, 300)
     };

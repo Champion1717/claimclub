@@ -42,7 +42,7 @@ async function sendClaimEmail({ to, userId, status, title, ref, note, amount, me
     const r = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: { Authorization: 'Bearer ' + process.env.RESEND_API_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ from: FROM(), to: [to], subject: c.subject, html: html(c), reply_to: process.env.EMAIL_REPLY_TO || undefined })
+      body: JSON.stringify({ from: FROM(), to: [to], subject: c.subject, html: html(c), reply_to: process.env.EMAIL_REPLY_TO || 'support@mail.claimclub.io' })
     });
     const j = await r.json().catch(() => ({}));
     if (!r.ok) throw new Error(j.message || ('Resend ' + r.status));

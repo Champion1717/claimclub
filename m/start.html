@@ -820,7 +820,7 @@ class Component extends DCLogic {
     return list.map(m => { const a = this.answerOf(m.id);
       return { settlement_id: m.id, settlement_title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, signer_name: name, signature_text: name, details, answers: a.q ? [{ q: a.q, a: a.a }] : [],
         statements: { attestation: this.attestText(m, es), perjury: m.cat === 'arb' ? '' : this.certText(es), consent: method === 'bulk' ? this.txt('saConsent') + this.txt('agreeLink') : this.txt('consentTxt') + this.txt('agreeLink'), agreement_url: 'https://claimclub.io/legal/authorization.html' },
-        agreement_version: '2026-11-13', client_signed_at: now }; });
+        agreement_version: '2026-11-14', client_signed_at: now }; });
   }
   txt(k) { const v = (this.dict && this.dict()[k]) || null; return v ? v[this.state.lang === 'es' ? 1 : 0] : ''; }
   recordSign(list, method) {
