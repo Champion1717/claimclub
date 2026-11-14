@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const extra = kind === 'member' ? { discounts: [{ coupon: await introCoupon(stripe, plan) }] } : { allow_promotion_codes: true };
+    const extra = kind === 'member' ? { discounts: [{ coupon: await introCoupon(stripe, plan) }], subscription_data: { metadata: { plan } } } : { allow_promotion_codes: true };
     const session = await stripe.checkout.sessions.create({
       mode: kind === 'fee' ? 'payment' : 'subscription',
       line_items: [line],
