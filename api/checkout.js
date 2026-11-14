@@ -2,18 +2,18 @@
 const Stripe = require('stripe');
 
 // Full renewal price per billing period, and the first-period charge (75% off, rounded to the cent).
-const FEE = 9900;
+const FEE = 4999;
 const PLANS = {
-  '1m': { amount: 2999, first: 750, months: 1, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_1M' },
-  '3m': { amount: 7497, first: 1874, months: 3, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_3M' },
-  '6m': { amount: 11994, first: 2999, months: 6, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_6M' },
+  '1m': { amount: 2999, first: 799, months: 1, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_1M' },
+  '3m': { amount: 7499, first: 1899, months: 3, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_3M' },
+  '6m': { amount: 11999, first: 2999, months: 6, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_6M' },
 };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {
-  const p = PLANS[plan], id = 'cc_intro75_' + plan;
+  const p = PLANS[plan], id = 'cc_intro_v2_' + plan;
   try { return (await stripe.coupons.retrieve(id)).id; } catch (e) {
-    const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: '75% off your first billing period' });
+    const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: 'Intro price for your first billing period' });
     return c.id;
   }
 }

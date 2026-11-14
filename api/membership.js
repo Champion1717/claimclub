@@ -2,7 +2,7 @@
 // Requires the member's access token. Memberships can only be changed through here (never directly from the browser).
 const Stripe = require('stripe');
 const { db, userFrom, readJson, renewsAt, send } = require('./_db');
-const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7497, months: 3 }, '6m': { amount: 11994, months: 6 } };
+const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7499, months: 3 }, '6m': { amount: 11999, months: 6 } };
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'Method not allowed' });

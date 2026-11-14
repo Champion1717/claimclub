@@ -1,1 +1,1 @@
-{"trailingSlash": false}
+{"trailingSlash": false, "rewrites": [{"source": "/login", "destination": "/d/app.html"}]}

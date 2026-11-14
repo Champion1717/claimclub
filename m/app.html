@@ -6,6 +6,7 @@
 <style>
 button{font-family:inherit;border:0;cursor:pointer}
 .scroll{scrollbar-width:thin;scrollbar-color:#C9D3CD transparent}.scroll::-webkit-scrollbar{width:8px;height:8px}.scroll::-webkit-scrollbar-thumb{background:var(--bg-C9D3CD,#C9D3CD);border-radius:99px}.scroll::-webkit-scrollbar-track{background:transparent}
+.cname:hover .cnameT{text-decoration:underline;text-underline-offset:3px}
 button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spin{width:16px;height:16px;border-radius:50%;border:2.5px solid rgba(255,255,255,.35);border-top-color:#FFFFFF;animation:spin .7s linear infinite}
@@ -45,7 +46,7 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
 .dk .authWrap{background:var(--bg-0D1311,#0D1311) !important}
 .dk section[aria-label="Ready to file"],.dk section[aria-label="Find more claims"]{box-shadow:inset 0 0 0 1px var(--ln-1E4536,#1E4536)}
 
-.amain{padding:14px 14px 20px !important}.amain>div{gap:12px !important}
+.dtgrid{grid-template-columns:1fr !important}.amain{padding:14px 14px 20px !important}.amain>div{gap:12px !important}
 .shWrap{align-items:flex-end !important}.shCard{width:100% !important;max-width:none !important;max-height:92% !important;border-radius:22px 22px 0 0 !important}
 .greet h1{font-size:20px !important}.greet>div:last-child{width:100%}.greet>div:last-child>span{flex:1}
 .setupRow{flex-wrap:wrap;gap:10px !important;padding:12px !important}.setupProg{width:100% !important}.setupDiv{display:none}.curLbl{white-space:normal !important}
@@ -93,7 +94,7 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
       <div style="display: flex; flex-direction: column; gap: 6px; padding: 0 10px 10px">
       <sc-for list="{{ ready }}" as="r" hint-placeholder-count="5"><div class="arow {{ r.cardCls }}" style="color: var(--fg-0A0F0D,#0A0F0D)">
         <img src="{{ r.logo }}" alt="" style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: var(--bg-FFFFFF,#FFFFFF); padding: 6px; box-sizing: border-box; object-fit: contain; box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)">
-        <div style="min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">{{ r.co }} <span style="color: var(--fg-12805C,#12805C)">{{ r.amt }}</span></span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ r.title }}</span></div>
+        <button onClick="{{ r.info }}" aria-label="Details for the {{ r.co }} settlement" class="cname" style="min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 0; background: transparent; text-align: left; color: inherit"><span style="font-size: 14px; font-weight: 800"><span class="cnameT">{{ r.co }}</span> <span style="color: var(--fg-12805C,#12805C)">{{ r.amt }}</span></span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%">{{ r.title }}</span></button>
         <div class="hideS" style="min-width: 0; font-size: 12px; color: var(--fg-43504A,#43504A); display: flex; align-items: center; gap: 6px"><sc-if value="{{ r.needs }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8A5A00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9 M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg></sc-if>{{ r.kindNote }}</div>
         <span style="{{ r.dlStyle }}">{{ r.dl }}</span>
         <button onClick="{{ r.file }}" style="{{ r.btnA }}" aria-label="File the {{ r.co }} claim"><sc-if value="{{ r.busy }}" hint-placeholder-val="{{ false }}"><span class="spin"></span>Filing</sc-if><sc-if value="{{ r.idle }}" hint-placeholder-val="{{ true }}">File</sc-if></button>
@@ -103,7 +104,7 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
     <sc-if value="{{ showFind }}" hint-placeholder-val="{{ false }}"><section aria-label="Find more claims" class="cardin" style="flex-shrink: 0; background: var(--bg-0F3B2E,#0F3B2E); border-radius: 18px; color: var(--fg-FFFFFF,#FFFFFF); padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 14px">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap">
         <div style="display: flex; align-items: center; gap: 12px"><span style="width: 34px; height: 34px; flex: none; border-radius: 50%; background: var(--bg-3DDC97,#3DDC97); display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0A0F0D" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg></span><div style="display: flex; flex-direction: column; gap: 2px"><h2 style="margin: 0; font-size: 16px">{{ findTitle }}</h2><span style="font-size: 12px; color: var(--fg-B9CCC2,#B9CCC2)">Answer a quick question and we'll add any match to Ready to file.</span></div></div>
-        <div class="findBtns" style="display: flex; gap: 8px"><button style="min-height: 34px; padding: 0 14px; border-radius: 99px; background: var(--bg-FFFFFF,#FFFFFF); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13px; font-weight: 800">Browse all 294 settlements</button><button style="min-height: 34px; padding: 0 14px; border-radius: 99px; background: rgba(255,255,255,.12); color: var(--fg-FFFFFF,#FFFFFF); font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>Scan near me</button></div>
+        <div class="findBtns" style="display: flex; gap: 8px"><button onClick="{{ findAll }}" style="min-height: 34px; padding: 0 14px; border-radius: 99px; background: var(--bg-FFFFFF,#FFFFFF); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13px; font-weight: 800">{{ findAllLabel }}</button><button onClick="{{ findNear }}" style="min-height: 34px; padding: 0 14px; border-radius: 99px; background: rgba(255,255,255,.12); color: var(--fg-FFFFFF,#FFFFFF); font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"></path><circle cx="12" cy="10" r="3"></circle></svg>Scan near me</button></div>
       </div>
       <sc-if value="{{ hasMore }}" hint-placeholder-val="{{ true }}"><div class="moreGrid" style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 10px">
         <sc-for list="{{ more }}" as="m" hint-placeholder-count="3"><div class="cardin" style="background: var(--bg-FFFFFF,#FFFFFF); color: var(--fg-0A0F0D,#0A0F0D); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px">
@@ -120,7 +121,7 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
       <sc-if value="{{ tTrack.open }}" hint-placeholder-val="{{ false }}"><div style="margin: 0 16px 12px; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.5; background: var(--bg-EEF2F8,#EEF2F8); color: var(--fg-33415C,#33415C)">Administrators move claims through four stages. Payouts usually start after the court gives final approval, which can take a few months. We check every claim and text you when its status changes.</div></sc-if>
       <sc-for list="{{ track }}" as="r" hint-placeholder-count="5"><div class="trow {{ r.rowCls }}">
         <img src="{{ r.logo }}" alt="" style="width: 34px; height: 34px; flex: none; border-radius: 10px; background: var(--bg-FFFFFF,#FFFFFF); padding: 6px; box-sizing: border-box; object-fit: contain; box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)">
-        <div style="min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">{{ r.co }} <span style="color: var(--fg-12805C,#12805C)">{{ r.amt }}</span></span><span style="font-size: 12px; color: var(--fg-5B6A85,#5B6A85)">{{ r.next }}</span></div>
+        <button onClick="{{ r.info }}" aria-label="Details for the {{ r.co }} settlement" class="cname" style="min-width: 0; display: flex; flex-direction: column; gap: 2px; padding: 0; background: transparent; text-align: left; color: inherit"><span style="font-size: 14px; font-weight: 800"><span class="cnameT">{{ r.co }}</span> <span style="color: var(--fg-12805C,#12805C)">{{ r.amt }}</span></span><span style="font-size: 12px; color: var(--fg-5B6A85,#5B6A85)">{{ r.next }}</span></button>
         <div class="hideS" style="display: flex; flex-direction: column; gap: 6px"><div style="display: flex; gap: 4px"><sc-for list="{{ r.trSegs }}" as="g" hint-placeholder-count="4"><span style="{{ g.st }}"></span></sc-for></div><div style="display: grid; grid-template-columns: repeat(4,1fr); font-size: 11px; font-weight: 700; color: var(--fg-8A93A6,#8A93A6)"><span>Filed</span><span>In review</span><span>Approved</span><span>Paid</span></div></div>
         <span style="{{ r.pill }}; justify-self: end">{{ r.stLabel }}</span>
       </div></sc-for>
@@ -202,8 +203,11 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
             <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ln-EEF2F0,#EEF2F0)"><span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--bg-EEF2F0,#EEF2F0); display: flex; align-items: center; justify-content: center; color: var(--fg-0F3B2E,#0F3B2E)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18 M3 10h18 M5 6l7-3 7 3 M4 10v11 M20 10v11 M8 14v3 M12 14v3 M16 14v3"></path></svg></span>
               <div style="flex-grow: 1; display: flex; flex-direction: column; gap: 2px"><sc-if value="{{ bankOn }}" hint-placeholder-val="{{ false }}"><span style="font-size: 14px; font-weight: 800">Bank connected</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862)">Checking · verified through your bank</span></sc-if><sc-if value="{{ bankOff }}" hint-placeholder-val="{{ true }}"><span style="font-size: 14px; font-weight: 800">No bank connected</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862)">Needed for direct deposit</span></sc-if></div>
               <sc-if value="{{ bankOff }}" hint-placeholder-val="{{ true }}"><button onClick="{{ connect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 13px; font-weight: 800">Connect</button></sc-if><sc-if value="{{ bankOn }}" hint-placeholder-val="{{ false }}"><button onClick="{{ disconnect }}" style="flex: none; min-height: 32px; padding: 0 14px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13px; font-weight: 800">Disconnect</button></sc-if></div>
-            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0"><span style="font-size: 12px; font-weight: 800; color: var(--fg-5B6862,#5B6862)">Default payout method</span><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{ pays }}" as="p" hint-placeholder-count="3"><button onClick="{{ p.tap }}" style="{{ p.st }}">{{ p.o }}</button></sc-for></div>
-              <sc-if value="{{ payNeedsBank }}" hint-placeholder-val="{{ false }}"><span style="font-size: 12px; font-weight: 700; color: var(--fg-8A5A00,#8A5A00)">Connect a bank to use direct deposit.</span></sc-if></div>
+            <div style="display: flex; flex-direction: column; gap: 8px; padding: 12px 0"><span style="font-size: 12px; font-weight: 800; color: var(--fg-5B6862,#5B6862)">Default payout method</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); margin-top: -4px">We pick this on every claim form that offers it. If a settlement does not offer it, we use the next best option and tell you.</span>
+              <div role="radiogroup" aria-label="Default payout method" style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{ pays }}" as="p" hint-placeholder-count="6"><div style="{{ p.st }}"><button onClick="{{ p.tap }}" role="radio" aria-checked="{{ p.on }}" style="display: flex; align-items: flex-start; gap: 12px; flex-grow: 1; min-width: 0; padding: 0; background: transparent; text-align: left; color: inherit"><span style="{{ p.dot }}"></span><span style="width: 36px; height: 36px; flex: none; border-radius: 10px; background: var(--bg-EEF2F0,#EEF2F0); display: flex; align-items: center; justify-content: center; color: var(--fg-0F3B2E,#0F3B2E)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ p.d }}"></path></svg></span><span style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 800">{{ p.o }}</span><span style="font-size: 12px; color: var(--fg-5B6862,#5B6862); line-height: 1.4">{{ p.sub }}</span><sc-if value="{{ p.showDetail }}" hint-placeholder-val="{{ false }}"><span style="{{ p.detSt }}">{{ p.detail }}</span></sc-if></span></button>
+                <sc-if value="{{ p.canEdit }}" hint-placeholder-val="{{ false }}"><button onClick="{{ p.edit }}" style="flex: none; align-self: center; min-height: 30px; padding: 0 12px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 12px; font-weight: 800">Edit</button></sc-if>
+                <sc-if value="{{ p.needBank }}" hint-placeholder-val="{{ false }}"><button onClick="{{ connect }}" style="flex: none; align-self: center; min-height: 30px; padding: 0 12px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 12px; font-weight: 800">Connect</button></sc-if>
+              </div><sc-if value="{{ p.editing }}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 6px; margin: -2px 0 4px; padding: 12px; border-radius: 14px; background: var(--bg-F3F6F4,#F3F6F4)"><label style="font-size: 12px; font-weight: 800; color: var(--fg-43504A,#43504A)">Email or phone on your {{ p.o }} account</label><div style="display: flex; gap: 8px"><input value="{{ p.draft }}" onChange="{{ p.onDraft }}" aria-label="Email or phone on your {{ p.o }} account" placeholder="you@email.com or (555) 555-5555" autocomplete="email" style="flex-grow: 1; min-width: 0; height: 38px; padding: 0 12px; border-radius: 10px; border: 1.5px solid var(--ln-DDE5E0,#DDE5E0); font-family: inherit; font-size: 14px; background: var(--bg-FFFFFF,#FFFFFF); color: var(--fg-0A0F0D,#0A0F0D)"><button onClick="{{ p.save }}" style="flex: none; min-height: 38px; padding: 0 16px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 13px; font-weight: 800">Save</button><button onClick="{{ p.cancel }}" style="flex: none; min-height: 38px; padding: 0 12px; border-radius: 99px; background: transparent; color: var(--fg-43504A,#43504A); font-size: 13px; font-weight: 800">Cancel</button></div><sc-if value="{{ p.hasErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 12px; font-weight: 700; color: var(--fg-B8333A,#B8333A)">{{ p.err }}</span></sc-if></div></sc-if></sc-for></div></div>
           </section>
         </div>
       </div>
@@ -292,6 +296,20 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
       </div>
     </div>
   </div></sc-if>
+  <sc-if value="{{ detOpen }}" hint-placeholder-val="{{ false }}"><div class="shWrap" style="position: absolute; inset: 0; z-index: 42; background: rgba(10,15,13,.45); display: flex; align-items: center; justify-content: center; animation: shFade .2s ease both">
+    <div class="shCard" role="dialog" aria-modal="true" aria-label="{{ dt.co }} settlement details" style="width: 580px; max-width: calc(100% - 32px); max-height: calc(100% - 48px); display: flex; flex-direction: column; background: var(--bg-FFFFFF,#FFFFFF); border-radius: 24px; box-shadow: 0 30px 80px rgba(0,0,0,.3); overflow: hidden; animation: shPop .3s cubic-bezier(.2,.9,.3,1.1) both">
+      <div style="padding: 18px 20px 14px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--ln-EEF2F0,#EEF2F0)"><img src="{{ dt.logo }}" alt="" style="width: 44px; height: 44px; flex: none; border-radius: 12px; padding: 6px; box-sizing: border-box; object-fit: contain; box-shadow: inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)"><div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 17px; font-weight: 800">{{ dt.co }} <span style="color: var(--fg-12805C,#12805C)">{{ dt.amt }}</span></span><span style="font-size: 13px; color: var(--fg-5B6862,#5B6862)">{{ dt.title }}</span></div><button onClick="{{ dt.close }}" aria-label="Close" style="width: 32px; height: 32px; flex: none; border-radius: 50%; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button></div>
+      <div class="scroll" style="flex: 1 1 auto; min-height: 0; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 16px">
+        <div style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 11px; font-weight: 800; letter-spacing: .6px; color: var(--fg-8A968F,#8A968F)">YOUR CLAIM · {{ dt.stLabel }}</span><div style="display: flex; gap: 6px"><sc-for list="{{ dt.tl }}" as="t" hint-placeholder-count="5"><div style="{{ t.st }}"><span style="{{ t.bar }}"></span><span>{{ t.t }}</span></div></sc-for></div></div>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 11px; font-weight: 800; letter-spacing: .6px; color: var(--fg-8A968F,#8A968F)">WHO QUALIFIES</span><span style="font-size: 14px; font-weight: 700; line-height: 1.5">{{ dt.who }}</span></div>
+        <div class="dtgrid" style="display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px 16px; padding: 14px; border-radius: 14px; background: var(--bg-F3F6F4,#F3F6F4)"><sc-for list="{{ dt.facts }}" as="f" hint-placeholder-count="6"><div style="min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 700; color: var(--fg-8A968F,#8A968F)">{{ f.k }}</span><span style="font-size: 13.5px; font-weight: 800; line-height: 1.4; overflow-wrap: anywhere">{{ f.v }}</span></div></sc-for></div>
+        <div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 11px; font-weight: 800; letter-spacing: .6px; color: var(--fg-8A968F,#8A968F)">HOW IT GETS FILED</span><span style="font-size: 13.5px; line-height: 1.5; color: var(--fg-43504A,#43504A)">{{ dt.how }}</span></div>
+        <sc-if value="{{ dt.hasUrl }}" hint-placeholder-val="{{ false }}"><a href="{{ dt.url }}" target="_blank" rel="noopener" style="font-size: 13px; font-weight: 800; color: var(--fg-12805C,#12805C)">Official settlement website</a></sc-if>
+        <span style="font-size: 11.5px; line-height: 1.5; color: var(--fg-8A968F,#8A968F)">{{ dt.note }}</span>
+      </div>
+      <div style="padding: 12px 20px 16px; border-top: 1px solid var(--ln-EEF2F0,#EEF2F0); display: flex; justify-content: flex-end; gap: 8px"><button onClick="{{ dt.close }}" style="min-height: 42px; padding: 0 18px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 14px; font-weight: 800">Close</button><sc-if value="{{ dt.isReady }}" hint-placeholder-val="{{ true }}"><button onClick="{{ dt.file }}" style="min-height: 42px; padding: 0 22px; border-radius: 99px; background: var(--bg-3DDC97,#3DDC97); color: var(--fg-0A0F0B,#0A0F0B); font-size: 14px; font-weight: 800">File this claim</button></sc-if></div>
+    </div>
+  </div></sc-if>
   <sc-if value="{{ hasNote }}" hint-placeholder-val="{{ false }}"><div class="note" role="status" aria-live="polite" style="position: absolute; bottom: 24px; right: 24px; z-index: 50; width: 380px; display: flex; align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; background: var(--bg-0A0F0C,#0A0F0C); color: var(--fg-FFFFFF,#FFFFFF); box-shadow: 0 24px 60px rgba(0,0,0,.28)">
     <div style="position: relative; width: 60px; height: 60px; flex: none"><span class="rg" style="position: absolute; inset: 8px; border-radius: 50%; border: 2px solid var(--ln-3DDC97,#3DDC97)"></span><sc-for list="{{ conf }}" as="c" hint-placeholder-count="0"><span class="cf" style="{{ c.st }}"></span></sc-for>
       <img src="{{ note.logo }}" alt="" style="position: absolute; inset: 6px; width: 48px; height: 48px; border-radius: 14px; background: var(--bg-FFFFFF,#FFFFFF); padding: 8px; box-sizing: border-box; object-fit: contain">
@@ -304,17 +322,19 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
     <sc-if value="{{ authForm }}" hint-placeholder-val="{{ true }}"><div class="cardin" style="width: 400px; max-width: 100%; background: var(--bg-FFFFFF,#FFFFFF); border-radius: 24px; box-shadow: 0 0 0 1px var(--ln-E3EAE6,#E3EAE6), 0 20px 60px rgba(10,15,13,.08); padding: 28px; display: flex; flex-direction: column; gap: 16px">
       <div style="display: flex; align-items: center; gap: 8px"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0A0F0D" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0A0F0D" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0A0F0D" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0A0F0D" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0A0F0D" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#12805C" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 19px; font-weight: 800; letter-spacing: -0.4px">claim<span style="font-weight: 500">club</span><span style="font-size: .72em; font-weight: 600; color: var(--fg-12805C,#12805C); margin-left: -0.06em">.io</span></span></div>
       <sc-if value="{{ emailStep }}" hint-placeholder-val="{{ true }}">
-        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Sign in to your dashboard</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">We'll email you a 6-digit code. No password needed.</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Log in to Claimclub</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">Enter the email you signed up with. We'll email you a sign-in code, no password needed.</span></div>
         <input type="email" autocomplete="email" value="{{ loginEmail }}" onChange="{{ onLoginEmail }}" placeholder="you@example.com" aria-label="Email" style="height: 48px; border-radius: 14px; border: 1.5px solid var(--ln-DDE5E0,#DDE5E0); padding: 0 16px; font-size: 16px; font-family: inherit; font-weight: 600; color: var(--fg-0A0F0D,#0A0F0D); background: var(--bg-FFFFFF,#FFFFFF)">
         <button onClick="{{ sendCode }}" style="min-height: 48px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><sc-if value="{{ authBusy }}" hint-placeholder-val="{{ false }}"><span class="spin"></span></sc-if>Email me a code</button>
       </sc-if>
       <sc-if value="{{ codeStep }}" hint-placeholder-val="{{ false }}">
-        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Check your email</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">Enter the 6-digit code we sent to <b style="color: var(--fg-0A0F0D,#0A0F0D)">{{ loginEmail }}</b>.</span></div>
-        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="{{ code }}" onChange="{{ onCode }}" placeholder="123456" aria-label="6-digit code" style="height: 56px; border-radius: 14px; border: 1.5px solid var(--ln-DDE5E0,#DDE5E0); padding: 0 16px; font-size: 26px; letter-spacing: 10px; text-align: center; font-family: inherit; font-weight: 800; color: var(--fg-0A0F0D,#0A0F0D); background: var(--bg-FFFFFF,#FFFFFF)">
+        <div style="display: flex; flex-direction: column; gap: 4px"><h1 style="margin: 0; font-size: 22px; letter-spacing: -0.5px">Check your email</h1><span style="font-size: 14px; color: var(--fg-5B6862,#5B6862)">Enter the code we sent to <b style="color: var(--fg-0A0F0D,#0A0F0D)">{{ loginEmail }}</b>.</span></div>
+        <input type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="8" value="{{ code }}" onChange="{{ onCode }}" placeholder="Code" aria-label="Sign-in code" style="height: 56px; border-radius: 14px; border: 1.5px solid var(--ln-DDE5E0,#DDE5E0); padding: 0 16px; font-size: 26px; letter-spacing: 8px; text-align: center; font-family: inherit; font-weight: 800; color: var(--fg-0A0F0D,#0A0F0D); background: var(--bg-FFFFFF,#FFFFFF)">
         <button onClick="{{ verify }}" style="min-height: 48px; border-radius: 99px; background: var(--bg-3DDC97,#3DDC97); color: var(--fg-0A0F0B,#0A0F0B); font-size: 15px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><sc-if value="{{ authBusy }}" hint-placeholder-val="{{ false }}"><span class="spin" style="border-color: rgba(10,15,13,.25); border-top-color: #0A0F0D"></span></sc-if>Sign in</button>
         <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 800"><button onClick="{{ otherEmail }}" style="background: transparent; padding: 0; color: var(--fg-5B6862,#5B6862)">Use a different email</button><button onClick="{{ sendCode }}" style="background: transparent; padding: 0; color: var(--fg-12805C,#12805C)">Send a new code</button></div>
       </sc-if>
       <sc-if value="{{ hasAuthErr }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 13px; font-weight: 700; color: var(--fg-B8333A,#B8333A)">{{ authErr }}</span></sc-if>
+      <sc-if value="{{ noAcct }}" hint-placeholder-val="{{ false }}"><a href="/d/start.html" style="min-height: 44px; border-radius: 99px; background: var(--bg-3DDC97,#3DDC97); color: var(--fg-0A0F0B,#0A0F0B); font-size: 15px; font-weight: 800; text-decoration: none; display: flex; align-items: center; justify-content: center">Check what you're owed</a></sc-if>
+      <span style="font-size: 13px; color: var(--fg-5B6862,#5B6862)">New to Claimclub? <a href="/d/start.html" style="color: var(--fg-12805C,#12805C); font-weight: 800">Check what you're owed</a></span>
       <span style="font-size: 12px; color: var(--fg-8A968F,#8A968F)">By signing in you agree to our <a href="https://claimclub.io/legal/terms.html" target="_blank" rel="noopener" style="color: var(--fg-5B6862,#5B6862)">Terms</a> and <a href="https://claimclub.io/legal/privacy.html" target="_blank" rel="noopener" style="color: var(--fg-5B6862,#5B6862)">Privacy Policy</a>.</span>
     </div></sc-if>
   </div></sc-if>
@@ -325,9 +345,9 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { st: { apple: 'ready', cvs: 'ready', googleplay: 'ready', amazon: 'ready', tyson: 'ready', goodrx: 'review', realpage: 'filed', netflix: 'filed', kroger: 'approved', squatch: 'paid' }, busy: '', note: null, just: '', seq: 48210, focus: 0, view: 'all', acct: { email: 1, auth: 1, name: 1 }, info: '', ans: {}, sheet: null, form: {}, view: 'dash', scale: 'm', theme: 'light', prof: { name: 'Henry Sidwell', email: 'henry@example.com', phone: '', dob: '', addr: '1234 Market St, Apt 5, San Francisco, CA 94103', past: [] }, edit: '', draft: '', err: '', pastDraft: '', payDef: 'Check', q: '', cat: 'all', scope: 'all', sort: 'soon', openS: '', shown: 20, added: [], hl: '', bankAsk: false };
+    this.state = { st: { apple: 'ready', cvs: 'ready', googleplay: 'ready', amazon: 'ready', tyson: 'ready', goodrx: 'review', realpage: 'filed', netflix: 'filed', kroger: 'approved', squatch: 'paid' }, busy: '', note: null, just: '', seq: 48210, focus: 0, view: 'all', acct: { email: 1, auth: 1, name: 1 }, info: '', ans: {}, sheet: null, form: {}, view: 'dash', scale: 'm', theme: 'light', prof: { name: 'Henry Sidwell', email: 'henry@example.com', phone: '', dob: '', addr: '1234 Market St, Apt 5, San Francisco, CA 94103', past: [] }, edit: '', draft: '', err: '', pastDraft: '', payDef: 'Check', payH: {}, payEdit: '', payDraft: '', payErr: '', det: '', q: '', cat: 'all', scope: 'all', sort: 'soon', openS: '', shown: 20, added: [], hl: '', bankAsk: false };
     this.state.mm = ''; this.state.mmPick = ''; this.state.cancelled = false; this.state.plan = '1m'; this.state.joinedOn = 'Nov 12, 2026';
-    this.state.authState = 'off'; this.state.loginEmail = ''; this.state.code = ''; this.state.codeSent = false; this.state.authErr = ''; this.state.authBusy = false; this.state.renewsAt = '';
+    this.state.authState = 'off'; this.state.noAcct = false; this.state.loginEmail = ''; this.state.code = ''; this.state.codeSent = false; this.state.authErr = ''; this.state.authBusy = false; this.state.renewsAt = '';
     this.loadLive();
   }
   loadLive() {
@@ -347,7 +367,7 @@ class Component extends DCLogic {
       prof: { name: P.name || '', email: P.email || '', phone: P.phone || '', dob: P.dob || '', addr, past: [] },
       acct: { email: P.email ? 1 : 0, auth: signed.length ? 1 : 0, name: P.name && addr ? 1 : 0, dob: P.dob && P.phone ? 1 : 0, bank: ss.bank ? 1 : 0 }, myState: P.st || '' });
     if (saved && saved.sig === ss.ids.join(',')) {
-      ['st', 'added', 'prof', 'acct', 'payDef', 'ans', 'cancelled', 'plan', 'seq', 'mmPending'].forEach(k => { if (saved[k] !== undefined) this.state[k] = saved[k]; });
+      ['st', 'added', 'prof', 'acct', 'payDef', 'payH', 'ans', 'cancelled', 'plan', 'seq', 'mmPending'].forEach(k => { if (saved[k] !== undefined) this.state[k] = saved[k]; });
     }
   }
   toClaim(d) {
@@ -364,7 +384,7 @@ class Component extends DCLogic {
       this._sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
       return this._sb.auth.getSession().then(({ data }) => {
         if (data && data.session) return this.afterLogin(data.session);
-        let em = ''; try { em = ((JSON.parse(localStorage.getItem('claimclub_session') || 'null') || {}).p || {}).email || ''; } catch (e) {}
+        let em = ''; try { em = new URLSearchParams(location.search).get('login') || ((JSON.parse(localStorage.getItem('claimclub_session') || 'null') || {}).p || {}).email || ''; } catch (e) {}
         this.setState({ authState: 'signin', loginEmail: em });
       });
     }).catch(() => this.setState({ authState: 'off' }));
@@ -372,14 +392,19 @@ class Component extends DCLogic {
   sendCode() {
     const email = (this.state.loginEmail || '').trim().toLowerCase();
     if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) { this.setState({ authErr: 'Enter the email you used to sign up' }); return; }
-    this.setState({ authBusy: true, authErr: '' });
-    this._sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } }).then(({ error }) => {
+    this.setState({ authBusy: true, authErr: '', noAcct: false });
+    let fresh = false; try { const ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); fresh = !!(ss && ss.ids && ss.ids.length && ((ss.p || {}).email || '').toLowerCase() === email); } catch (e) {}
+    const go = () => this._sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } }).then(({ error }) => {
       this.setState({ authBusy: false, codeSent: !error, code: '', authErr: error ? (/rate/i.test(error.message) ? 'Too many codes sent. Wait a minute and try again.' : error.message) : '' });
     });
+    if (fresh) { go(); return; }
+    fetch('/api/account-exists', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
+      .then(r => r.ok ? r.json() : { exists: true }).catch(() => ({ exists: true }))
+      .then(j => { if (j && j.exists === false) this.setState({ authBusy: false, noAcct: true, authErr: 'We could not find an account for ' + email + '. Check the spelling, or start a free check to sign up.' }); else go(); });
   }
   verifyCode() {
     const token = (this.state.code || '').replace(/[^0-9]/g, '');
-    if (token.length !== 6) { this.setState({ authErr: 'Enter the 6-digit code' }); return; }
+    if (token.length < 6 || token.length > 8) { this.setState({ authErr: 'Enter the code from your email' }); return; }
     this.setState({ authBusy: true, authErr: '' });
     this._sb.auth.verifyOtp({ email: this.state.loginEmail.trim().toLowerCase(), token, type: 'email' }).then(({ data, error }) => {
       if (error || !data.session) { this.setState({ authBusy: false, authErr: 'That code did not work. Check it or send a new one.' }); return; }
@@ -421,7 +446,7 @@ class Component extends DCLogic {
     const next = { authState: 'ready', st, added: [], ans: {},
       prof: { name: P.name || '', email: P.email || '', phone: P.phone || '', dob: P.dob || '', addr: P.address || '', past: P.past_addresses || [] },
       acct: { email: 1, auth: P.authorization_signed_at ? 1 : 0, name: P.name && P.address ? 1 : 0, dob: P.dob && P.phone ? 1 : 0, bank: P.bank_connected ? 1 : 0, past: (P.past_addresses && P.past_addresses.length) || P.lived_here_10y ? 1 : 0 },
-      payDef: P.pay_default || 'Check', myState: P.state || '', theme: P.theme || this.state.theme, scale: P.scale || this.state.scale,
+      payDef: P.pay_default || 'Check', payH: P.payout_handles || {}, myState: P.state || '', theme: P.theme || this.state.theme, scale: P.scale || this.state.scale,
       plan: mem && mem.kind === 'member' ? mem.plan : '', cancelled: !!(mem && mem.status === 'cancelling'), mmPending: (mem && mem.pending_plan) || '',
       joinedOn: fmt(mem && mem.started_at) || fmt(P.created_at), renewsAt: fmt(mem && mem.renews_at), hasMem: !!mem };
     this._synced = this.snapshot(Object.assign({}, this.state, next));
@@ -436,7 +461,7 @@ class Component extends DCLogic {
     sb.auth.getUser().then(({ data }) => {
       const uid = data && data.user && data.user.id; if (!uid) return;
       const P = s.prof;
-      sb.from('profiles').update({ name: P.name, email: P.email, phone: P.phone, dob: P.dob, address: P.addr, past_addresses: P.past || [], lived_here_10y: !!s.acct.past && !(P.past || []).length, bank_connected: !!s.acct.bank, pay_default: s.payDef, theme: s.theme, scale: s.scale }).eq('id', uid).then(() => {});
+      sb.from('profiles').update({ name: P.name, email: P.email, phone: P.phone, dob: P.dob, address: P.addr, past_addresses: P.past || [], lived_here_10y: !!s.acct.past && !(P.past || []).length, bank_connected: !!s.acct.bank, pay_default: s.payDef, payout_handles: s.payH || {}, theme: s.theme, scale: s.scale }).eq('id', uid).then(() => {});
       const ups = [];
       this.claims().forEach(c => { const v = s.st[c.id]; if (!v) return; const status = v === 'gone' ? 'removed' : v; if (this._rows[c.id] === status) return;
         ups.push({ user_id: uid, settlement_id: c.id, status, source: this._mine.some(m => m.id === c.id) ? 'flow' : 'added', filed_at: status === 'filed' ? new Date().toISOString() : null }); this._rows[c.id] = status; });
@@ -450,7 +475,7 @@ class Component extends DCLogic {
     try { localStorage.setItem('claimclub_prefs', JSON.stringify({ theme: s.theme, scale: s.scale })); } catch (e) {}
     if (!this._live || this._db) return;
     try { const ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); if (!ss) return;
-      localStorage.setItem('claimclub_app', JSON.stringify({ sig: ss.ids.join(','), st: s.st, added: s.added, prof: s.prof, acct: s.acct, payDef: s.payDef, ans: s.ans, cancelled: s.cancelled, plan: s.plan, seq: s.seq, mmPending: s.mmPending })); } catch (e) {}
+      localStorage.setItem('claimclub_app', JSON.stringify({ sig: ss.ids.join(','), st: s.st, added: s.added, prof: s.prof, acct: s.acct, payDef: s.payDef, payH: s.payH, ans: s.ans, cancelled: s.cancelled, plan: s.plan, seq: s.seq, mmPending: s.mmPending })); } catch (e) {}
   }
   claims() {
     if (this._live) return this._mine.concat(this.extras().filter(x => (this.state.ans || {})[x.id] === 'yes' && !this._mine.some(m => m.id === x.id)), (this.state.added || []).filter(x => !this._mine.some(m => m.id === x.id)));
@@ -495,20 +520,20 @@ class Component extends DCLogic {
     return out;
   }
   mmVals() {
-    const s = this.state, P = { '1m': { name: '1 month', per: '$29.99/mo', bill: '$29.99 every month', price: '$29.99', first: '$7.50' }, '3m': { name: '3 months', per: '$24.99/mo', bill: '$74.97 every 3 months', price: '$74.97', first: '$18.74', tag: 'Save 17%' }, '6m': { name: '6 months', per: '$19.99/mo', bill: '$119.94 every 6 months', price: '$119.94', first: '$29.99', tag: 'Save 33%' } };
+    const s = this.state, P = { '1m': { name: '1 month', per: '$29.99/mo', bill: '$29.99 every month', price: '$29.99', first: '$7.99' }, '3m': { name: '3 months', per: '$24.99/mo', bill: '$74.99 every 3 months', price: '$74.99', first: '$18.99', tag: 'Save 17%' }, '6m': { name: '6 months', per: '$19.99/mo', bill: '$119.99 every 6 months', price: '$119.99', first: '$29.99', tag: 'Save 33%' } };
     const member = !!s.plan, cur = P[s.plan] || P['1m'], pick = s.mmPick || s.plan || '6m';
     const d = new Date(); d.setMonth(d.getMonth() + ({ '1m': 1, '3m': 3, '6m': 6 }[s.plan] || 1)); const renew = s.renewsAt || d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     const row = (on) => 'width:100%;display:flex;align-items:center;gap:12px;text-align:left;padding:12px 14px;border-radius:14px;color:var(--fg-0A0F0D,#0A0F0D);' + (on ? 'background:var(--bg-EAF2EE,#EAF2EE);box-shadow:inset 0 0 0 2px var(--ln-12805C,#12805C)' : 'background:var(--bg-FFFFFF,#FFFFFF);box-shadow:inset 0 0 0 1.5px var(--ln-DDE5E0,#DDE5E0)');
     const dot = (on) => 'width:20px;height:20px;flex:none;border-radius:50%;box-sizing:border-box;' + (on ? 'border:6px solid var(--ln-12805C,#12805C);background:var(--bg-FFFFFF,#FFFFFF)' : 'border:2px solid var(--ln-C9D3CD,#C9D3CD)');
     return {
       planHead: member ? 'Membership' : 'Filing fee', planBadge: member ? (s.cancelled ? '· Ends ' + renew : '· Active') : '· Paid',
-      planLine: member ? cur.name.charAt(0).toUpperCase() + cur.name.slice(1) + ' · ' + cur.per : 'One-time · $99',
+      planLine: member ? cur.name.charAt(0).toUpperCase() + cur.name.slice(1) + ' · ' + cur.per : 'One-time · $49.99',
       mmOpen: !!s.mm, mmHome: s.mm === 'home', mmCancel: s.mm === 'cancel', mmDone: s.mm === 'done', isMember: member, notMember: !member,
       mmStatus: s.cancelled ? 'Ends ' + renew + '. You keep everything until then.' : (s.mmPending ? 'Switching to ' + P[s.mmPending].name + ' on ' + renew + '.' : 'Renews ' + renew + ' at ' + cur.bill + '.'),
       mmPlans: Object.keys(P).map(k => ({ name: P[k].name, per: P[k].per, bill: P[k].bill, tag: P[k].tag || '', hasTag: !!P[k].tag, cur: k === s.plan, st: row(pick === k), dot: dot(pick === k), tap: () => this.setState({ mmPick: k }) })),
       mmCanSwitch: member && pick !== s.plan && !s.cancelled, mmSwitchLabel: 'Switch to ' + P[pick].name,
       mmSwitch: () => { if (this._db) this.api('switch', { plan: pick }); this.setState({ mmPending: pick, mm: '', note: { head: 'Plan change scheduled', sub: 'Your plan switches to ' + P[pick].name + ' on ' + renew + '. No charge today.', logo: this.logo('cc', 'C') } }); },
-      mmBill: member ? [{ date: s.joinedOn, what: cur.name + ' membership, 75% off first period', amt: cur.first }] : [{ date: s.joinedOn, what: 'Filing fee', amt: '$99' }],
+      mmBill: member ? [{ date: s.joinedOn, what: cur.name + ' membership, 75% off first period', amt: cur.first }] : [{ date: s.joinedOn, what: 'Filing fee', amt: '$49.99' }],
       manage: () => this.setState({ mm: 'home', mmPick: '' }), mmClose: () => this.setState({ mm: '' }), mmToCancel: () => this.setState({ mm: 'cancel' }), mmKeep: () => this.setState({ mm: 'home' }),
       mmConfirm: () => { if (this._db) this.api('cancel'); this.setState({ cancelled: true, mmPending: '', mm: 'done' }); }, mmResume: () => { if (this._db) this.api('resume'); this.setState({ cancelled: false, mm: '', note: { head: 'Membership resumed', sub: 'It renews ' + renew + '.', logo: this.logo('cc', 'C') } }); },
       mmCancelled: !!s.cancelled, mmActive: !s.cancelled, renewDate: renew,
@@ -569,14 +594,34 @@ class Component extends DCLogic {
         start: () => this.setState({ edit: k, draft: P[k] || '', err: '' }), draft: s.draft, onDraft: (e) => { const v = e.target.value; this.setState({ draft: k === 'dob' ? this.slashFmt(v, s.draft, [2, 2, 4]) : v, err: '' }); },
         save: () => save(k), cancel: () => this.setState({ edit: '', draft: '', err: '' }), err: ed ? s.err : '', hasErr: ed && !!s.err };
     };
-    const pays = ['Direct deposit', 'PayPal', 'Check'].map(o => ({ o, st: 'min-height:34px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:800;' + (s.payDef === o ? 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-FFFFFF,#FFFFFF);color:var(--fg-0A0F0D,#0A0F0D);box-shadow:inset 0 0 0 1.5px var(--ln-DDE5E0,#DDE5E0)'), tap: () => this.setState({ payDef: o }) }));
+    const PM = [['Direct deposit', 'Straight to your bank. Fastest when the settlement offers it.', 'M3 21h18 M3 10h18 M5 6l7-3 7 3 M4 10v11 M20 10v11 M8 14v3 M12 14v3 M16 14v3', 'bank'],
+      ['PayPal', 'Sent to your PayPal email or phone.', 'M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1 M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4', 'handle'],
+      ['Venmo', 'Sent to your Venmo phone or email.', 'M7 2h10a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2Z M12 18h.01', 'handle'],
+      ['Zelle', 'Sent to the phone or email you use with Zelle.', 'M13 2 3 14h9l-1 8 10-12h-9l1-8z', 'handle'],
+      ['Prepaid card', 'A virtual Visa or Mastercard emailed to you. Spend it or move it to your bank.', 'M2 5h20v14H2Z M2 10h20', 'email'],
+      ['Check', 'Mailed to your address on file. Slowest option.', 'M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z M22 7l-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7', 'addr']];
+    const H = s.payH || {}, okHandle = (v) => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v) || /^\D*(\d\D*){10,11}$/.test(v);
+    const pays = PM.map(([o, sub, d, need]) => { const on = s.payDef === o, ed = s.payEdit === o;
+      const detail = need === 'bank' ? (s.acct.bank ? 'Checking account connected' : 'Connect a bank to use this') : need === 'handle' ? (H[o] ? 'Sends to ' + H[o] : 'Add the email or phone for this account') : need === 'email' ? (P.email ? 'Emailed to ' + P.email : 'Add your email first') : (P.addr ? 'Mailed to ' + P.addr : 'Add your mailing address first');
+      const missing = need === 'bank' ? !s.acct.bank : need === 'handle' ? !H[o] : need === 'email' ? !P.email : !P.addr;
+      return { o, sub, d, on, off: !on, detail, missing, ready: !missing, showDetail: on && !ed, editing: ed, isHandle: need === 'handle', canEdit: on && need === 'handle' && !ed,
+        needBank: on && need === 'bank' && !s.acct.bank, draft: s.payDraft, err: ed ? s.payErr : '', hasErr: ed && !!s.payErr,
+        st: 'width:100%;box-sizing:border-box;display:flex;align-items:flex-start;gap:12px;text-align:left;padding:12px;border-radius:14px;color:var(--fg-0A0F0D,#0A0F0D);transition:box-shadow .15s,background .15s;' + (on ? 'background:var(--bg-EAF2EE,#EAF2EE);box-shadow:inset 0 0 0 2px var(--ln-12805C,#12805C)' : 'background:var(--bg-FFFFFF,#FFFFFF);box-shadow:inset 0 0 0 1px var(--ln-E3EAE6,#E3EAE6)'),
+        dot: 'width:20px;height:20px;flex:none;margin-top:8px;border-radius:50%;box-sizing:border-box;background:var(--bg-FFFFFF,#FFFFFF);' + (on ? 'border:6px solid var(--ln-12805C,#12805C)' : 'border:2px solid var(--ln-C9D3CD,#C9D3CD)'),
+        detSt: 'font-size:12px;font-weight:800;color:' + (missing ? '#B7791F' : '#12805C'),
+        tap: () => this.setState(need === 'handle' && !H[o] ? { payDef: o, payEdit: o, payDraft: '', payErr: '' } : { payDef: o, payEdit: '', payErr: '' }),
+        edit: () => this.setState({ payEdit: o, payDraft: H[o] || '', payErr: '' }),
+        onDraft: (e) => this.setState({ payDraft: e.target.value, payErr: '' }),
+        save: () => { const v = (this.state.payDraft || '').trim(); if (!okHandle(v)) { this.setState({ payErr: 'Enter the email or 10 digit phone on your ' + o + ' account' }); return; } this.setState({ payH: Object.assign({}, this.state.payH, { [o]: v }), payEdit: '', payDraft: '', payErr: '' }); },
+        cancel: () => this.setState({ payEdit: '', payDraft: '', payErr: '' }) }; });
+    const payNow = pays.find(p => p.on) || pays[5];
     const bt = tip('i-bank'), pt = tip('i-past');
     return { personal: F.slice(0, 4).map(row), address: row(F[4]),
       pastList: P.past.map((p, i) => ({ p, rm: () => this.setState({ prof: Object.assign({}, P, { past: P.past.filter((_, j) => j !== i) }) }) })), hasPast: P.past.length > 0, pastDraft: s.pastDraft,
       onPast: (e) => this.setState({ pastDraft: e.target.value }), addPast: () => { const v = s.pastDraft.trim(); if (v.length < 8) return; this.setState({ prof: Object.assign({}, P, { past: P.past.concat([v]) }), pastDraft: '', acct: Object.assign({}, s.acct, { past: 1 }) }); },
       noPast: () => this.setState({ acct: Object.assign({}, s.acct, { past: 1 }) }), pastDone: !!s.acct.past && !P.past.length,
       bankOn: !!s.acct.bank, bankOff: !s.acct.bank, connect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }), payDef: 'Direct deposit' }), disconnect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 0 }), payDef: s.payDef === 'Direct deposit' ? 'Check' : s.payDef }),
-      pays, payNeedsBank: s.payDef === 'Direct deposit' && !s.acct.bank, tBank: bt, tPast: pt,
+      pays, payNeedsBank: s.payDef === 'Direct deposit' && !s.acct.bank, payNowLabel: payNow.o, payNowDetail: payNow.detail, tBank: bt, tPast: pt,
       cardPersonal: ring('dob'), cardAddr: ring('past'), cardPay: ring('bank'), cardPlain: ring('') };
   }
   setupVals() {
@@ -681,6 +726,26 @@ class Component extends DCLogic {
       { id: 'notify', label: 'Turn on text alerts', tag: 'For notifications', cta: 'Turn on', why: 'We text you when a claim is approved, when a payout is sent, and when a new settlement matches you before its deadline.' }
     ];
   }
+  detVals() {
+    const s = this.state, id = s.det, d = id && this.sets().find(x => x.id === id);
+    if (!d) return { detOpen: false, dt: { facts: [], tl: [], links: [] } };
+    const c = this.toClaim(d), st = s.st[id] || 'ready', order = ['ready', 'filed', 'review', 'approved', 'paid'], idx = order.indexOf(st);
+    const days = this.daysTo(d.dl), dlFmt = d.dl ? new Date(d.dl + 'T12:00:00').toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) : '';
+    const how = d.mode === 'auto' ? 'Paid automatically to people on the class list. There is no form to file; we track it for you.' : d.cat === 'arb' ? 'Handled through individual arbitration by a partner law firm. We send them your details once you confirm.' : d.mode === 'site' ? 'Filed on the official settlement website. We pre-fill it with your saved info and you confirm.' : 'We file it on the official claim form in your name using your saved info, then send you the claim ID.';
+    const H = s.payH || {}, P = s.prof || {};
+    const dest = s.payDef === 'Direct deposit' ? (s.acct.bank ? 'Direct deposit to your connected bank' : 'Direct deposit (connect a bank in Your info)') : ['PayPal', 'Venmo', 'Zelle'].indexOf(s.payDef) >= 0 ? s.payDef + (H[s.payDef] ? ' · ' + H[s.payDef] : ' (add your account in Your info)') : s.payDef === 'Prepaid card' ? 'Prepaid card emailed to ' + (P.email || 'you') : 'Check mailed to ' + (P.addr || 'your address');
+    const facts = [['Estimated payout', d.pay || c.amt], ['Settlement fund', d.fund || 'Not published'], ['Claim deadline', d.dl ? dlFmt + (days > 0 ? ' · ' + days + ' days left' : ' · closed') : 'Open until the firm closes intake'], ['Proof needed', d.proof || 'None'], ['Where', d.area || (d.st ? d.st + ' residents' : 'Nationwide')], ['Payout goes to', dest]];
+    if (d.case) facts.unshift(['Case', d.case]);
+    if (d.court) facts.splice(1, 0, ['Court', d.court]);
+    if (d.admin) facts.push(['Administrator', d.admin]);
+    const tl = ['Ready to file', 'Filed', 'In review', 'Approved', 'Paid'].map((t, i) => ({ t, st: 'flex:1;display:flex;flex-direction:column;gap:6px;font-size:11px;font-weight:800;color:' + (i <= idx ? '#0A0F0D' : '#8A968F'), bar: 'height:6px;border-radius:99px;background:' + (i < idx ? '#12805C' : i === idx ? '#3DDC97' : 'var(--bg-E3EAE6,#E3EAE6)') }));
+    const isReady = st === 'ready';
+    return { detOpen: true, dt: { co: d.co, title: d.title, logo: this.logo(d.id, d.co), amt: c.amt, who: d.who, how, facts: facts.map(([k, v]) => ({ k, v })), tl,
+      stLabel: { ready: 'Ready to file', filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid' }[st] || 'Ready to file',
+      hasUrl: !!d.url, url: d.url || '', isReady, notReady: !isReady,
+      close: () => this.setState({ det: '' }), file: () => { this.setState({ det: '' }); this.file(id); },
+      note: 'From the court-approved settlement notice. Payout amounts are estimates and depend on how many people file.' } };
+  }
   renderVals() {
     const s = this.state, L = this.logos();
     const ST = ['filed', 'review', 'approved', 'paid'], STL = { filed: 'Filed', review: 'In review', approved: 'Approved', paid: 'Paid' };
@@ -693,7 +758,7 @@ class Component extends DCLogic {
         kindNote: c.need ? 'Needs a few details · about 1 min' : c.kind === 'auto' ? 'Paid automatically. File to add it to your tracking.' : c.kind === 'arb' ? 'Handled by a partner law firm' : 'We file it. No proof needed.',
         dl: c.days > 0 ? c.days + 'd left' : '', urgent,
         dlStyle: 'font-size:12px;font-weight:800;padding:4px 9px;border-radius:99px;white-space:nowrap;' + (urgent ? 'background:var(--bg-FDECEC,#FDECEC);color:var(--fg-B8333A,#B8333A)' : 'background:var(--bg-EEF2F0,#EEF2F0);color:var(--fg-43504A,#43504A)'),
-        busy: s.busy === c.id, idle: s.busy !== c.id, file: () => this.file(c.id),
+        busy: s.busy === c.id, idle: s.busy !== c.id, file: () => this.file(c.id), info: () => this.setState({ det: c.id }),
         btnA: 'min-width:84px;min-height:34px;padding:0 16px;border-radius:99px;font-size:13px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--bg-3DDC97,#3DDC97);color:var(--fg-0A0F0B,#0A0F0B)',
         trSegs: ST.map((x, i) => ({ st: 'flex:1;height:6px;border-radius:99px;background:' + (i <= idx ? (st === 'paid' ? '#12805C' : '#4A72D9') : 'var(--bg-E1E6F0,#E1E6F0)') })),
         btn: 'min-width:112px;min-height:44px;padding:0 20px;border-radius:99px;font-size:15px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s;' + (s.busy === c.id ? 'background:var(--bg-12805C,#12805C);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)'),
@@ -720,17 +785,17 @@ class Component extends DCLogic {
       skip: () => this.setState({ focus: ready.length ? (fc + 1) % ready.length : 0 }),
       queue: ready.map((r, i) => Object.assign({}, r, { qStyle: 'width:44px;height:44px;flex:none;border-radius:13px;background:var(--bg-FFFFFF,#FFFFFF);padding:7px;box-sizing:border-box;box-shadow:' + (i === fc ? '0 0 0 2.5px #0F3B2E' : 'inset 0 0 0 1px var(--ln-DDE5E0,#DDE5E0)'), pick: () => this.setState({ focus: i }) })),
       filedPct: Math.round(track.length / all.length * 100), donePctStyle: 'width:' + Math.round(track.length / all.length * 100) + '%;height:100%;border-radius:99px;background:var(--bg-3DDC97,#3DDC97);transition:width .6s cubic-bezier(.2,.8,.2,1)',
-      ...this.setupVals(), ...this.sheetVals(),
+      ...this.setupVals(), ...this.sheetVals(), ...this.detVals(),
       isDash: s.view === 'dash', isAll: s.view === 'all', isInfo: s.view === 'info', isSet: s.view === 'settings',
-      goDash: () => this.setState({ view: 'dash' }), goAll: () => this.setState({ view: 'all' }), goInfo: () => this.setState({ view: 'info' }), goSet: () => this.setState({ view: 'settings' }),
+      goDash: () => this.setState({ view: 'dash' }), findAll: () => this.setState({ view: 'all', scope: 'all', cat: 'all', q: '', shown: 20, openS: '' }), findNear: () => this.setState({ view: 'all', scope: 'near', cat: 'all', q: '', shown: 20, openS: '' }), findAllLabel: 'Browse all ' + this.sets().filter(d => this.daysTo(d.dl) > 0 && !d.st).length + ' settlements', goAll: () => this.setState({ view: 'all' }), goInfo: () => this.setState({ view: 'info' }), goSet: () => this.setState({ view: 'settings' }),
       ...['dash', 'all', 'info', 'settings'].reduce((o, v) => { const on = s.view === v, K = v.charAt(0).toUpperCase() + v.slice(1);
         o['nav' + K] = 'display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;font-size:15px;font-weight:700;text-align:left;' + (on ? 'background:var(--bg-EAF2EE,#EAF2EE);color:var(--fg-0F3B2E,#0F3B2E)' : 'background:transparent;color:var(--fg-43504A,#43504A)');
         o['m' + K] = 'display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;font-weight:800;background:transparent;color:' + (on ? 'var(--fg-0F3B2E,#0F3B2E)' : 'var(--fg-8A968F,#8A968F)'); return o; }, {}),
       ...this.setsVals(), ...this.infoVals(), ...this.mmVals(),
       needAuth: s.authState === 'signin' || s.authState === 'checking', authChecking: s.authState === 'checking', authForm: s.authState === 'signin',
       emailStep: !s.codeSent, codeStep: !!s.codeSent, loginEmail: s.loginEmail, onLoginEmail: (e) => this.setState({ loginEmail: e.target.value, authErr: '' }),
-      code: s.code, onCode: (e) => { const v = e.target.value.replace(/[^0-9]/g, '').slice(0, 6); this.setState({ code: v, authErr: '' }); if (v.length === 6) setTimeout(() => this.verifyCode(), 60); },
-      sendCode: () => this.sendCode(), verify: () => this.verifyCode(), otherEmail: () => this.setState({ codeSent: false, code: '', authErr: '' }),
+      code: s.code, onCode: (e) => { const v = e.target.value.replace(/[^0-9]/g, '').slice(0, 8); this.setState({ code: v, authErr: '' }); clearTimeout(this._otpT); if (v.length === 8) this._otpT = setTimeout(() => this.verifyCode(), 60); else if (v.length === 6) this._otpT = setTimeout(() => { if ((this.state.code || '').length === 6) this.verifyCode(); }, 1200); },
+      sendCode: () => this.sendCode(), verify: () => this.verifyCode(), otherEmail: () => this.setState({ codeSent: false, code: '', authErr: '', noAcct: false }), noAcct: !!s.noAcct,
       authErr: s.authErr, hasAuthErr: !!s.authErr, authBusy: s.authBusy, authIdle: !s.authBusy, signedIn: !!this._db, signOut: () => this.signOut(), acctEmail: s.prof.email,
       firstName: ((s.prof.name || '').split(' ')[0]) || 'there', profName: s.prof.name || 'Saved in Your info', initial: ((s.prof.name || 'C').charAt(0) || 'C').toUpperCase(), joinedOn: s.joinedOn,
       rootCls: ((s.theme === 'dark' || (s.theme === 'system' && typeof matchMedia !== 'undefined' && matchMedia('(prefers-color-scheme: dark)').matches)) ? 'dk ' : '') + 'z-' + s.scale,
