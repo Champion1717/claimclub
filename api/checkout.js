@@ -48,7 +48,7 @@ module.exports = async (req, res) => {
     const p = PLANS[plan];
     line = process.env[p.env]
       ? { price: process.env[p.env], quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: '75% off your first billing period, then renews at the full price until you cancel.' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: 'Intro price for your first billing period, then renews at the full price until you cancel.' } } };
   }
 
   try {
