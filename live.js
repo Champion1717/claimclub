@@ -177,6 +177,33 @@
     history.replaceState(null,'',location.pathname);
     verify(c,kind,sid,true);
   }
+  /* ---------- Test link (Nov 15): claimclub.io/claim?test=<TEST_FLOW_KEY> ----------
+     Skips payment so the whole flow can be tested on production. The server checks the key (/api/config?test=);
+     a wrong key changes nothing. After the email code, the account gets a 'test' membership through
+     /api/membership (also key-checked) instead of linking a Stripe purchase. A green label shows it is on. */
+  var TK=null;
+  try{TK=sessionStorage.getItem('cc_test')||null}catch(e){}
+  var tkQ=q.get('test');
+  if(tkQ&&tkQ!==TK){
+    fetch('/api/config?test='+encodeURIComponent(tkQ)).then(function(r){return r.json()}).then(function(j){
+      if(j&&j.testKey){TK=tkQ;try{sessionStorage.setItem('cc_test',tkQ)}catch(e){}testBadge()}
+      else{try{sessionStorage.removeItem('cc_test')}catch(e){}TK=null;console.warn('[test link] key not accepted')}
+    }).catch(function(){});
+  }
+  function testBadge(){
+    if(!TK||document.getElementById('ccTestBadge'))return;
+    var d=document.createElement('div');d.id='ccTestBadge';
+    d.style.cssText='position:fixed;left:50%;top:8px;transform:translateX(-50%);z-index:99990;padding:5px 12px;border-radius:99px;background:#3DDC97;color:#0F3B2E;font:800 11.5px Manrope,system-ui,sans-serif;letter-spacing:.4px;box-shadow:0 6px 16px rgba(10,15,13,.18);pointer-events:none';
+    d.textContent='TEST MODE · payment skipped';
+    (document.body||document.documentElement).appendChild(d);
+  }
+  if(TK){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',testBadge);else testBadge()}
+  function fakePay(c,kind){
+    try{sessionStorage.setItem('cc_test_kind',kind);sessionStorage.setItem('cc_test_plan',c.state.plan||'1m')}catch(e){}
+    c.setState({buying:kind,payState:'busy',step:idx(c,'checkout')});
+    setTimeout(function(){c.setState({payState:'done',paid:kind});c.saveForApp();if(c.finishPay)c.finishPay(kind)},900);
+  }
+
   /* ---------- Email code in the claim flow (Nov 15) ----------
      The flow's "Confirm your email" step calls window.ccAuth. It signs the person in with Supabase's email
      code, using the same saved sign-in the dashboard reads, so the dashboard opens without another login.
@@ -202,7 +229,9 @@
       return sb().then(function(c){return c.auth.verifyOtp({email:email,token:code,type:'email'})}).then(function(r){
         if(r.error||!r.data||!r.data.session)return {ok:false};
         // attach the purchase they just made to the new account (membership row), quietly
-        return fetch('/api/membership',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+r.data.session.access_token},body:JSON.stringify({action:'link'})}).catch(function(){}).then(function(){return {ok:true}});
+        var body={action:'link'};
+        if(TK){var tk='fee',tp='1m';try{tk=sessionStorage.getItem('cc_test_kind')||'fee';tp=sessionStorage.getItem('cc_test_plan')||'1m'}catch(e){}body={action:'test',key:TK,kind:tk,plan:tp}}
+        return fetch('/api/membership',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+r.data.session.access_token},body:JSON.stringify(body)}).catch(function(){}).then(function(){return {ok:true}});
       });
     }
   };
@@ -227,8 +256,8 @@
     if(STRIPE){
       if(!started){started=true;if(q.get('sid')||q.get('canceled'))resume(c)}
       var info=v.sheetInfo||{};
-      v.payFee=function(){sheet(c,'fee',info)};
-      v.subscribe=function(){sheet(c,'member',info)};
+      v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
+      v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }

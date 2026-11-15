@@ -2,6 +2,12 @@
 // Requires the member's access token. Memberships can only be changed through here (never directly from the browser).
 const Stripe = require('stripe');
 const { db, userFrom, readJson, renewsAt, send } = require('./_db');
+const crypto = require('crypto');
+function testKeyOk(k) {
+  const want = String(process.env.TEST_FLOW_KEY || '');
+  if (want.length < 16 || typeof k !== 'string' || k.length !== want.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(k), Buffer.from(want));
+}
 const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7499, months: 3 }, '6m': { amount: 11999, months: 6 } };
 
 module.exports = async (req, res) => {
@@ -29,7 +35,9 @@ module.exports = async (req, res) => {
     }
     if (b.action === 'test') {
       // Only while the built-in test checkout is in use (ALLOW_TEST_MEMBERSHIP=1). Turn this off when Stripe goes live.
-      if (process.env.ALLOW_TEST_MEMBERSHIP !== '1') return send(res, 403, { error: 'Test memberships are off' });
+      // Test flow link (Nov 15): claimclub.io/claim?test=<TEST_FLOW_KEY> skips payment; the key must match the
+      // TEST_FLOW_KEY env var (Henry sets it in Vercel, at least 16 characters). ALLOW_TEST_MEMBERSHIP stays unset.
+      if (process.env.ALLOW_TEST_MEMBERSHIP !== '1' && !testKeyOk(b.key)) return send(res, 403, { error: 'Test memberships are off' });
       if (cur && cur.status !== 'test') return send(res, 200, { membership: cur });
       const kind = b.kind === 'member' ? 'member' : 'fee', plan = PRICE[b.plan] ? b.plan : '1m';
       const row = { user_id: user.id, kind, plan: kind === 'member' ? plan : null, status: 'test', renews_at: kind === 'member' ? renewsAt(plan) : null };
