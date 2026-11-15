@@ -102,7 +102,7 @@
     var prevOv=document.body.style.overflow;if(!desk)document.body.style.overflow='hidden';
     requestAnimationFrame(function(){requestAnimationFrame(function(){root.classList.add('ccp-open')})});
     var closers=[],gone=false,closed=false;
-    function remove(){if(gone)return;gone=true;window.removeEventListener('resize',place);document.removeEventListener('keydown',key);root.classList.remove('ccp-open');if(openNow===api)openNow=null;setTimeout(function(){root.remove();document.body.style.overflow=prevOv},240)}
+    function remove(){if(gone)return;gone=true;try{c.setState({payOpen:false})}catch(e){}window.removeEventListener('resize',place);document.removeEventListener('keydown',key);root.classList.remove('ccp-open');if(openNow===api)openNow=null;setTimeout(function(){root.remove();document.body.style.overflow=prevOv},240)}
     function close(){closed=true;closers.forEach(function(f){try{f()}catch(e){}});remove()}
     function key(e){if(e.key==='Escape')close()}
     window.addEventListener('resize',place);document.addEventListener('keydown',key);
@@ -116,7 +116,7 @@
   function sheet(c,kind,info){
     if(openNow)return;
     try{sessionStorage.setItem(KEY,JSON.stringify(c.state))}catch(e){}
-    c.setState({buying:kind});
+    c.setState({buying:kind,payOpen:true});
     var sh=openNow=shell(c,kind,info);
     var fallback=function(e){
       if(sh.isClosed())return;

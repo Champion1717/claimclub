@@ -467,13 +467,30 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
 
   <!-- FILING FEE -->
   <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
-    <div class="enter scroll plcol" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 24px 0 16px; display: flex; flex-direction: column; gap: 16px; justify-content: safe center; text-align: left">
-      <h1 style="margin: 0; font-size: 30px; line-height: 1.12; font-weight: 800; letter-spacing: -0.9px">{{ feeH2 }}</h1>
-      <div style="margin-top: -6px; font-size: 15px; line-height: 1.5; font-weight: 600; color: #5B6862">{{ feeSub2 }}</div>
-      <button onClick="{{ unlock }}" style="height: 56px; width: 100%; flex: none; border-radius: 999px; background: #3DDC97; color: #0F3B2E; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 24px rgba(61,220,151,.35)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F3B2E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ feeCta }}</button>
-      <span style="margin-top: -6px; font-size: 12px; text-align: center; color: #5B6862">{{ feeOnce }}</span>
-      <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 16px; background: #E9F6EF; color: #0A0F0D; text-align: left"><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><b style="font-size: 14px">{{ joinUp }}</b><span style="font-size: 12.5px; color: #5B6862; font-weight: 600; line-height: 1.4">{{ joinSub }}</span></span><span style="flex: none; font-size: 13.5px; font-weight: 800; color: #12805C; display: flex; align-items: center; gap: 4px">{{ switchW }}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#12805C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span></button>
-      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><a href="https://claimclub.io/terms" target="_blank" rel="noopener" style="color: inherit">{{ L.termsW }}</a><a href="https://claimclub.io/privacy" target="_blank" rel="noopener" style="color: inherit">{{ L.privacyW }}</a></div>
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.feeH }}</h1><div style="font-size: 15px; line-height: 1.5; color: #5B6862">{{ L.feeSub }}</div></div>
+      <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 14px 30px rgba(10,15,13,.06)">
+        <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #5B6862">{{ L.feeHead }}</span><span style="font-size: 12px; font-weight: 800; color: #5B6862">{{ billCount }}</span></div>
+        <div class="scroll" style="max-height: 132px; overflow-y: auto; display: flex; flex-direction: column">
+          <sc-for list="{{ billItems }}" as="b" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #DDE5E0">
+              <sc-if value="{{ b.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ b.logo }}" alt="" style="width: 28px; height: 28px; flex: none; border-radius: 7px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 3px; box-sizing: border-box"></sc-if>
+              <sc-if value="{{ b.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ b.tileStyle }}; width: 28px; height: 28px; flex: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px">{{ b.initial }}</div></sc-if>
+              <span style="flex-grow: 1; min-width: 0; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ b.title }}</span>
+              <span style="font-size: 12px; font-weight: 700; color: #5B6862">{{ b.amt }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$49.99</span></div>
+        <div style="font-size: 11.5px; line-height: 1.5; color: #5B6862">{{ L.feeTerms }}</div>
+      </div>
+      <button onClick="{{ unlock }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
+      <button onClick="{{ unlock }}" style="{{ primary }}; flex: none">{{ L.payBtn }}</button>
+      <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.orW }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
+      <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 8px 10px 8px 22px; border-radius: 999px; background: #0F3B2E; color: #FFFFFF; text-align: left">
+        <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 800">{{ L.memPromoH }}</span><span style="font-size: 12px; opacity: .8">{{ L.memPromoP2 }}</span></span>
+        <span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 92px; height: 48px; padding: 0 12px; border-radius: 999px; background: #3DDC97; color: #0F3B2E; line-height: 1"><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px">$7.99</span><span style="font-size: 10.5px; font-weight: 800">{{ L.firstMo }}</span></span>
+      </button>
     </div>
   </sc-if>
 
@@ -1099,7 +1116,7 @@ class Component extends DCLogic {
       inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0 && qTotal > 1,
       quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
       setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
-      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout'].includes(name)),
+      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'plans', 'checkout'].includes(name)) && !(name === 'pay' && s.payOpen),
       qLabel: qNum + ' ' + L.of + ' ' + qTotal, qFull: L.qWord + ' ' + qNum + ' ' + L.of + ' ' + qTotal, segs, q, states,
       segGrid: 'flex-grow:1;display:grid;grid-template-columns:repeat(' + qTotal + ',minmax(0,1fr));gap:4px',
       i2h: L.i2a + qTotal + L.i2b,
@@ -1170,7 +1187,7 @@ class Component extends DCLogic {
           rcHead: es ? 'TU RECIBO' : 'YOUR RECEIPT', rcHeadD: es ? 'TU RECIBO DE RECLAMOS' : 'YOUR CLAIMS RECEIPT', rcEarn: es ? 'Ganancias esperadas' : 'Expected earnings',
           rcFrom: es ? 'De ' + plural(n, 'acuerdo', 'acuerdos', 'acuerdo', 'acuerdos') + ' para los que calificas. Te pagan directo.' : 'From ' + (n === 1 ? '1 settlement' : n + ' settlements') + ' you qualify for. Paid straight to you.',
           rcShare: es ? 'Tu parte de cada pago' : 'Your share of every payout', pickPlanH: es ? 'Elige tu plan' : 'Pick your plan',
-          asideReceipt: ['pay', 'plans', 'checkout'].includes(name), notReceipt: !['pay', 'plans', 'checkout'].includes(name),
+          asideReceipt: ['plans', 'checkout'].includes(name) || (name === 'pay' && !!s.payOpen), notReceipt: !(['plans', 'checkout'].includes(name) || (name === 'pay' && !!s.payOpen)),
           // what the payment sheet in live.js shows
           sheetInfo: { total: noFigure ? '' : this.money(total), count: claimsW, es, fee: '$49.99', feeSub: es ? 'Tarifa de presentación · única, sin suscripción' : 'Filing fee · one time, no subscription', mem: p.first, memSub: es ? 'Membresía · ' + thenW.toLowerCase() : 'Membership · ' + thenW.toLowerCase() },
         };
