@@ -77,6 +77,14 @@ button:focus-visible{outline:3px solid #3DDC97;outline-offset:2px}
 .findBtns{width:100%;flex-direction:column}.findBtns button{justify-content:center}
 .note{left:12px !important;right:12px !important;bottom:78px !important;width:auto !important}
 </style>
+<style id="cc-hover">/* Simple hover effect for every button on the site */
+@media (hover:hover){
+button:not(:disabled),[role=button],a[href][style*="border-radius"]:not(.lift):not([class*="card"]),a.cta,a.btn,.btn{transition:transform .15s ease,filter .15s ease,box-shadow .15s ease}
+button:not(:disabled):hover,[role=button]:hover,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):hover,a.cta:hover,a.btn:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 6px 16px rgba(10,15,13,.14)}
+button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):active,a.cta:active,a.btn:active,.btn:active{transform:translateY(0) scale(.98);filter:brightness(.97);box-shadow:none}
+}
+@media (prefers-reduced-motion: reduce){button,[role=button],a[href]{transition:none !important}}
+</style>
 <style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
 <div class="{{ rootCls }}" style="position: relative; width: 100%; height: 100vh; min-height: 640px; box-sizing: border-box; background: var(--bg-F3F6F4,#F3F6F4); color: var(--fg-0A0F0D,#0A0F0D); font-family: Manrope, sans-serif; display: flex; flex-direction: column; overflow: hidden">
   <header style="flex: none; display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-FFFFFF,#FFFFFF); border-bottom: 1px solid var(--ln-E3EAE6,#E3EAE6)"><div style="display: flex; align-items: center; gap: 7px"><svg width="24" height="24" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0A0F0D" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0A0F0D" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0A0F0D" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0A0F0D" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0A0F0D" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#12805C" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 17px; font-weight: 800; letter-spacing: -0.4px">claim<span style="font-weight: 500">club</span><span style="font-size: .72em; font-weight: 600; color: var(--fg-12805C,#12805C); margin-left: -0.06em">.io</span></span></div><span style="width: 32px; height: 32px; border-radius: 50%; background: var(--bg-0F3B2E,#0F3B2E); color: var(--fg-FFFFFF,#FFFFFF); font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center">{{ initial }}</span></header>
