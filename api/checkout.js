@@ -1,4 +1,8 @@
-// POST /api/checkout  -> { url }  Creates a Stripe Checkout Session.
+// POST /api/checkout  -> { url } or { clientSecret, publishableKey }  Creates a Stripe Checkout Session.
+// With { ui: 'elements' } (Nov 15 2026) it makes a session for the in-page payment sheet in live.js
+// (Apple Pay, Google Pay and the card form drawn on claimclub.io). That needs STRIPE_PUBLISHABLE_KEY
+// in Vercel, from the same mode as STRIPE_SECRET_KEY; without it, or if Stripe refuses, it returns
+// the hosted page URL like before.
 const Stripe = require('stripe');
 
 // Full renewal price per billing period, and the first-period charge (75% off, rounded to the cent).
@@ -16,6 +20,17 @@ async function introCoupon(stripe, plan) {
     const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: 'Intro price, first billing period' });
     return c.id;
   }
+}
+
+// Stripe.js for the sheet is loaded from js.stripe.com/endive/, so the session is made with that API version.
+const ELEMENTS_API = '2026-10-28.endive';
+function publishableKey() {
+  const k = process.env.STRIPE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '';
+  const m = k.match(/^pk_(live|test)_/);
+  if (!m) return null;
+  const secretLive = /^(sk|rk)_live_/.test(process.env.STRIPE_SECRET_KEY || '');
+  if ((m[1] === 'live') !== secretLive) { console.warn('[checkout] STRIPE_PUBLISHABLE_KEY and STRIPE_SECRET_KEY are from different modes'); return null; }
+  return k;
 }
 
 function readJson(req) {
@@ -52,18 +67,30 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const extra = kind === 'member' ? { discounts: [{ coupon: await introCoupon(stripe, plan) }], subscription_data: { metadata: { plan } } } : { allow_promotion_codes: true };
-    const session = await stripe.checkout.sessions.create({
+    const discount = kind === 'member' ? { discounts: [{ coupon: await introCoupon(stripe, plan) }], subscription_data: { metadata: { plan } } } : {};
+    const base = {
       mode: kind === 'fee' ? 'payment' : 'subscription',
       line_items: [line],
       customer_email: email,
-      locale: b.lang === 'es' ? 'es' : 'auto',
-      ...extra,
+      ...discount,
       metadata: { kind, plan: kind === 'member' ? plan : '', ids },
-      success_url: origin + back + '?paid=' + kind + '&sid={CHECKOUT_SESSION_ID}',
+    };
+    const done = origin + back + '?paid=' + kind + '&sid={CHECKOUT_SESSION_ID}';
+    res.setHeader('Content-Type', 'application/json');
+    const pk = b.ui === 'elements' ? publishableKey() : null;
+    if (pk) {
+      try {
+        const s = await stripe.checkout.sessions.create({ ...base, ui_mode: 'elements', return_url: done }, { apiVersion: ELEMENTS_API });
+        if (s.client_secret) return res.end(JSON.stringify({ clientSecret: s.client_secret, publishableKey: pk }));
+      } catch (e) { console.error('[checkout] in-page session failed, using the hosted page', e.message); }
+    }
+    const session = await stripe.checkout.sessions.create({
+      ...base,
+      ...(kind === 'fee' ? { allow_promotion_codes: true } : {}),
+      locale: b.lang === 'es' ? 'es' : 'auto',
+      success_url: done,
       cancel_url: origin + back + '?canceled=1',
     });
-    res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ url: session.url }));
   } catch (e) {
     res.statusCode = 400;
