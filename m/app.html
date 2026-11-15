@@ -448,7 +448,14 @@ class Component extends DCLogic {
       this._cfg = cfg; this.setState({ bankOn: !!cfg.bankConnect });
       this._sb = window.supabase.createClient(cfg.supabaseUrl, cfg.supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true } });
       return this._sb.auth.getSession().then(({ data }) => {
-        if (data && data.session) return this.afterLogin(data.session);
+        if (data && data.session) return this._sb.auth.getUser().then(({ data: u, error }) => {
+          // A saved sign-in can outlive its account (deleted user) or belong to someone else than the person who just did the claim flow.
+          let ss = null; try { ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
+          const fe = (((ss || {}).p || {}).email || '').toLowerCase(), se = ((u && u.user && u.user.email) || '').toLowerCase();
+          const gone = error && error.status && error.status < 500, other = !!(ss && ss.ids && ss.ids.length && fe && se && fe !== se && ss.linkedTo !== fe);
+          if (gone || other) return this._sb.auth.signOut({ scope: 'local' }).catch(() => {}).then(() => this.setState({ authState: 'signin', loginEmail: fe || se }));
+          return this.afterLogin(data.session);
+        });
         let em = ''; try { em = (new URLSearchParams(location.search).get('email') || new URLSearchParams(location.search).get('login')) || ((JSON.parse(localStorage.getItem('claimclub_session') || 'null') || {}).p || {}).email || ''; } catch (e) {}
         this.setState({ authState: 'signin', loginEmail: em });
       });
@@ -505,12 +512,17 @@ class Component extends DCLogic {
       if (local.bank && !(prof && prof.bank_connected)) patch.bank_connected = true;
       if (signed.length && !(prof && prof.authorization_signed_at)) patch.authorization_signed_at = new Date().toISOString();
       if (Object.keys(patch).length) { const { data: p2 } = await sb.from('profiles').update(patch).eq('id', uid).select().maybeSingle(); if (p2) prof = p2; }
-      if ((!link.membership) && this._cfg.testMode && local.paid) await this.api('test', { kind: local.paid, plan: local.plan });
+      if ((!link.membership) && this._cfg.testMode && local.paid) { const t = await this.api('test', { kind: local.paid, plan: local.plan }); if (t && t.membership) this._newMem = t.membership; }
+      try { local.linkedTo = email.toLowerCase(); localStorage.setItem('claimclub_session', JSON.stringify(local)); } catch (e) {}
     }
-    const { data: mem } = await sb.from('memberships').select('*').eq('user_id', uid).maybeSingle();
+    let { data: mem } = await sb.from('memberships').select('*').eq('user_id', uid).maybeSingle();
+    if (!mem) mem = this._newMem || link.membership || null;
     this._uid = uid;
     this.applyAccount(prof || { email }, rows, mem);
-    this.loadPlaid().then(() => this.resumeOAuth());
+    this.loadPlaid().then(() => { this.resumeOAuth();
+      // "Connect bank account" in the claim flow: open Plaid as soon as the account is ready.
+      let want = false; try { want = localStorage.getItem('claimclub_connect') === '1'; localStorage.removeItem('claimclub_connect'); } catch (e) {}
+      if (want && (this.state.pl || {}).enabled) this.connectCard(); });
     try { const { data: rq } = await sb.from('refund_requests').select('*').eq('user_id', uid); if (rq) this.setState({ rq: rq.slice().sort((x, y) => String(y.created_at).localeCompare(String(x.created_at))) }); } catch (e) {}
   }
   applyAccount(P, rows, mem) {
@@ -724,7 +736,7 @@ class Component extends DCLogic {
         const v = [t(a.street), t(a.unit), t(a.city), t(a.st) + ' ' + t(a.zip)].filter(Boolean).join(', ');
         this.setState({ prof: Object.assign({}, P, { past: P.past.concat([v]) }), pa: {}, pastErr: '', acct: Object.assign({}, s.acct, { past: 1 }) }); },
       noPast: () => this.setState({ acct: Object.assign({}, s.acct, { past: 1 }) }), pastDone: !!s.acct.past && !P.past.length,
-      bankFeature: !!s.bankOn, bankOn: !!s.acct.bank, bankOff: !s.acct.bank, connect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }), payDef: 'Direct deposit' }), disconnect: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 0 }), payDef: s.payDef === 'Direct deposit' ? 'Check' : s.payDef }),
+      bankFeature: !!s.bankOn, bankOn: !!s.acct.bank, bankOff: !s.acct.bank, connect: () => { if ((s.pl || {}).enabled) { this.setState({ payDef: 'Direct deposit' }); this.connectCard(); return; } this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }), payDef: 'Direct deposit' }); }, disconnect: () => { const its = (s.pl || {}).items || []; if (its.length) { Promise.all(its.map(it => this.papi('remove', { item_id: it.item_id }).catch(() => null))).then(() => this.loadPlaid()); } this.setState({ acct: Object.assign({}, s.acct, { bank: 0 }), payDef: s.payDef === 'Direct deposit' ? 'Check' : s.payDef }); },
       pays, payNeedsBank: s.payDef === 'Direct deposit' && !s.acct.bank, payNowLabel: payNow.o, payNowDetail: payNow.detail, tBank: bt, tPast: pt,
       cardPersonal: ring('dob'), cardAddr: ring('past'), cardPay: ring('bank'), cardPlain: ring('') };
   }
@@ -799,7 +811,7 @@ class Component extends DCLogic {
         dots: [1, 2, 3].map(i => ({ st: 'flex:1;height:5px;border-radius:99px;background:' + (i <= step ? '#12805C' : 'var(--bg-E3EAE6,#E3EAE6)') })),
         qs, anyNo, fields, est: F.est(f), summary: F.sum(f) || '',
         pay: (s.bankOn ? ['Direct deposit', 'PayPal', 'Check'] : ['PayPal', 'Venmo', 'Zelle', 'Check']).map(o => ({ o, st: chip(pm === o), tap: () => this.setForm('pay', o) })), needBank,
-        connectBank: () => this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }) }),
+        connectBank: () => { if ((s.pl || {}).enabled) { this.connectCard(); return; } this.setState({ acct: Object.assign({}, s.acct, { bank: 1 }) }); },
         sign: !!f.sign, signTap: () => this.setForm('sign', !f.sign), signBox: 'width:22px;height:22px;flex:none;border-radius:7px;display:flex;align-items:center;justify-content:center;' + (f.sign ? 'background:var(--bg-12805C,#12805C)' : 'box-shadow:inset 0 0 0 2px var(--ln-C9D3CD,#C9D3CD);background:var(--bg-FFFFFF,#FFFFFF)'),
         hasBack: step > 1, back: () => this.setState({ sheet: { id: sh.id, step: step - 1 } }),
         nextLabel: step === 3 ? 'Submit claim' : 'Continue',
@@ -918,9 +930,9 @@ class Component extends DCLogic {
         const inst = (meta && meta.institution) || {};
         this.setState({ plBusy: 'sync' });
         this.papi('exchange', { public_token: pt, institution: { name: inst.name, institution_id: inst.institution_id } }).then(j => {
-          this.setState({ pl: j, plBusy: '', chF: '' });
+          this.setState({ pl: j, plBusy: '', chF: '', acct: Object.assign({}, this.state.acct, { bank: 1 }) });
           const f = (j.tx || []).filter(t => t.verdict === 'fight' && !t.user_choice).length;
-          this.toast((inst.name || 'Your card') + ' is connected', f ? f + (f === 1 ? ' charge looks' : ' charges look') + ' worth fighting.' : 'We are checking your charges. New ones show up here.');
+          this.toast((inst.name || 'Your bank') + ' is connected', !j.member ? 'We will tell you when a payout lands.' : f ? f + (f === 1 ? ' charge looks' : ' charges look') + ' worth fighting.' : 'We are checking your charges. New ones show up here.');
         }).catch(e => { this.setState({ plBusy: '' }); this.toast('Could not connect', e.message); });
       },
       onExit: () => { done(); this.setState({ plBusy: '' }); } });

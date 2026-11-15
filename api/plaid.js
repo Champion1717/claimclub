@@ -7,6 +7,11 @@ async function isMember(uid) {
   const { data } = await db().from('memberships').select('kind, status').eq('user_id', uid).maybeSingle();
   return !!data && data.kind === 'member' && ['active', 'cancelling', 'test'].includes(data.status);
 }
+// Anyone who paid (filing fee or membership) can connect a bank for payout alerts; reviewing charges and subscriptions is members only.
+async function hasPaid(uid) {
+  const { data } = await db().from('memberships').select('kind, status').eq('user_id', uid).maybeSingle();
+  return !!data && ['active', 'cancelling', 'test'].includes(data.status);
+}
 async function itemFor(uid, itemId) {
   const { data } = await db().from('plaid_items').select('*').eq('user_id', uid).eq('item_id', itemId).maybeSingle();
   return data;
@@ -21,10 +26,13 @@ module.exports = async (req, res) => {
     const admin = await P.isAdmin(user), on = P.configured() && (admin || await P.cardsOn());
     if (b.action === 'status') {
       if (!on) return send(res, 200, { enabled: false });
+      const paid = admin || await hasPaid(user.id);
+      if (!paid) return send(res, 200, { enabled: false });
       return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: admin || await isMember(user.id) }, await P.state(user.id)));
     }
     if (!on) return send(res, 403, { error: 'Card connections are not open yet' });
-    if (!admin && !(await isMember(user.id))) return send(res, 403, { error: 'Card connections are part of membership' });
+    if (!admin && !(await hasPaid(user.id))) return send(res, 403, { error: 'Connecting a bank comes with your filing fee or membership' });
+    if (['choose', 'sub_choice'].includes(b.action) && !admin && !(await isMember(user.id))) return send(res, 403, { error: 'Reviewing charges is part of membership' });
 
     if (b.action === 'link_token') {
       const body = { client_name: 'Claimclub', user: { client_user_id: user.id }, country_codes: ['US'], language: 'en',
@@ -49,13 +57,14 @@ module.exports = async (req, res) => {
         const rows = (a.accounts || []).map((x) => ({ account_id: x.account_id, item_id: ex.item_id, user_id: user.id, name: x.name, mask: x.mask, type: x.type, subtype: x.subtype }));
         if (rows.length) await sb.from('plaid_accounts').upsert(rows, { onConflict: 'account_id' });
       } catch (e) {}
+      try { await sb.from('profiles').update({ bank_connected: true }).eq('id', user.id); } catch (e) {}
       try { await P.syncItem(Object.assign({}, item, { cursor: null })); } catch (e) {}
-      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: true }, await P.state(user.id)));
+      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: admin || await isMember(user.id) }, await P.state(user.id)));
     }
     if (b.action === 'sync') {
       const { data: items } = await sb.from('plaid_items').select('*').eq('user_id', user.id);
       for (const it of items || []) { try { await P.syncItem(it); } catch (e) {} }
-      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: true }, await P.state(user.id)));
+      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: admin || await isMember(user.id) }, await P.state(user.id)));
     }
     if (b.action === 'choose') {
       if (!['fight', 'fine', 'unknown'].includes(b.choice)) return send(res, 400, { error: 'Pick fight, fine or unknown' });
@@ -95,7 +104,9 @@ module.exports = async (req, res) => {
       const it = await itemFor(user.id, b.item_id); if (!it) return send(res, 404, { error: 'Card not found' });
       try { await P.plaid('/item/remove', { access_token: P.open(it.access_token_enc) }, it.env); } catch (e) {}
       await sb.from('plaid_items').delete().eq('item_id', it.item_id);
-      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: true }, await P.state(user.id)));
+      const { count: left } = await sb.from('plaid_items').select('id', { count: 'exact', head: true }).eq('user_id', user.id);
+      if (!left) { try { await sb.from('profiles').update({ bank_connected: false }).eq('id', user.id); } catch (e) {} }
+      return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: admin || await isMember(user.id) }, await P.state(user.id)));
     }
     return send(res, 400, { error: 'Unknown action' });
   } catch (e) {

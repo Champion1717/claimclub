@@ -806,7 +806,7 @@ class Component extends DCLogic {
     // Bank connections are switched on and off in /admin > Settings. Off until the live config says otherwise.
     if (this.isLiveHost() && typeof fetch !== 'undefined') {
       if (this.state.bankOn) this.setState({ bankOn: false });
-      fetch('/api/config').then(r => r.json()).then(c => { if (c && c.bankConnect) this.setState({ bankOn: true }); }).catch(() => {});
+      fetch('/api/config').then(r => r.json()).then(c => { if (c && c.bankConnect) this.setState({ bankOn: true }); if (c && c.cardConnect) this.setState({ plaidOn: true }); }).catch(() => {});
     }
   }
   componentDidUpdate() {
@@ -1155,7 +1155,7 @@ class Component extends DCLogic {
       cardErrText: s.cardTried ? Object.values(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).join(' · ') : '',
       payCard: () => { const E = this.cardCheck(this.state.card, this.state.exp, this.state.cvc, this.state.czip, es); if (Object.keys(E).length) this.setState({ cardTried: true }); else this.payNow(); },
       payNow: () => this.payNow(),
-      connectBankAct: () => { this.setState({ bankDone: true }); clearTimeout(this._bk); this._bk = setTimeout(() => this.afterBank(), 1400); },
+      connectBankAct: () => { if (s.plaidOn) { try { localStorage.setItem('claimclub_connect', '1'); } catch (e) {} this.afterBank(); return; } this.setState({ bankDone: true }); clearTimeout(this._bk); this._bk = setTimeout(() => this.afterBank(), 1400); },
       skipBank: () => this.afterBank(), bankDone: s.bankDone, bankTodo: !s.bankDone,
       payoutLine: (() => { const m = settle.find(x => x.amt > 0) || ml[0]; return m ? (es ? 'Recibiste ' + this.money(m.amt || 50) + ' de tu reclamo de ' + m.co + '.' : 'You received ' + this.money(m.amt || 50) + ' from your ' + m.co + ' claim.') : ''; })(),
       memberCount: '148,000+',
