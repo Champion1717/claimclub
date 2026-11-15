@@ -2,7 +2,7 @@
 (function(){
   // Set STRIPE to true to send the filing fee and memberships to Stripe Checkout.
   // While false, the built-in test checkout page is used and no real charge is made.
-  var STRIPE=false;
+  var STRIPE=true;
   var KEY='cc_flow', q=new URLSearchParams(location.search), started=false;
   function idx(c,n){return c.steps().indexOf(n)}
   function go(c,kind){
