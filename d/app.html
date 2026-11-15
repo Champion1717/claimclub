@@ -345,6 +345,16 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 800">{{ note.head }}</span><span style="font-size: 13px; color: var(--fg-B9CCC2,#B9CCC2)">{{ note.sub }}</span></div>
     <button onClick="{{ closeNote }}" aria-label="Dismiss" style="width: 30px; height: 30px; flex: none; border-radius: 50%; background: rgba(255,255,255,.1); color: var(--fg-FFFFFF,#FFFFFF); display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></button>
   </div></sc-if>
+  <sc-if value="{{ tourOn }}" hint-placeholder-val="{{ false }}"><div style="position: fixed; inset: 0; z-index: 90">
+    <div aria-hidden="true" style="{{ tourHole }}"></div>
+    <div role="dialog" aria-modal="true" aria-label="Quick tour of Your claims" style="{{ tourCard }}">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px"><span style="font-size: 11.5px; font-weight: 800; letter-spacing: 1px; color: var(--fg-12805C,#12805C)">{{ tourN }}</span><button onClick="{{ tourSkip }}" style="font-size: 12.5px; font-weight: 800; color: var(--fg-5B6862,#5B6862); background: transparent; padding: 4px 2px">Skip tour</button></div>
+      <b style="font-size: 17px; letter-spacing: -0.3px; line-height: 1.25">{{ tourT }}</b>
+      <span style="font-size: 13.5px; color: var(--fg-43504A,#43504A); line-height: 1.5; font-weight: 600">{{ tourB }}</span>
+      <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px"><span style="display: flex; gap: 5px; flex: 1"><sc-for list="{{ tourDots }}" as="d" hint-placeholder-count="4"><span style="{{ d.st }}"></span></sc-for></span>
+      <sc-if value="{{ tourHasBack }}" hint-placeholder-val="{{ false }}"><button onClick="{{ tourBack }}" style="min-height: 38px; padding: 0 14px; border-radius: 99px; background: var(--bg-EEF2F0,#EEF2F0); color: var(--fg-0A0F0D,#0A0F0D); font-size: 13.5px; font-weight: 800">Back</button></sc-if>
+      <button data-tour-next onClick="{{ tourNext }}" style="min-height: 38px; padding: 0 18px; border-radius: 99px; background: var(--bg-0A0F0E,#0A0F0E); color: var(--fg-FFFFFE,#FFFFFE); font-size: 13.5px; font-weight: 800">{{ tourBtn }}</button></div>
+    </div></div></sc-if>
   <sc-if value="{{ needAuth }}" hint-placeholder-val="{{ false }}"><div class="authWrap" style="position: absolute; inset: 0; z-index: 70; background: var(--bg-F3F6F4,#F3F6F4); display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box">
     <sc-if value="{{ authChecking }}" hint-placeholder-val="{{ false }}"><div style="width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--ln-DDE5E0,#DDE5E0); border-top-color: #12805C; animation: spin .8s linear infinite"></div></sc-if>
     <sc-if value="{{ authForm }}" hint-placeholder-val="{{ true }}"><div class="cardin" style="width: 400px; max-width: 100%; background: var(--bg-FFFFFF,#FFFFFF); border-radius: 24px; box-shadow: 0 0 0 1px var(--ln-E3EAE6,#E3EAE6), 0 20px 60px rgba(10,15,13,.08); padding: 28px; display: flex; flex-direction: column; gap: 16px">
@@ -504,8 +514,10 @@ class Component extends DCLogic {
     this.applyAccount(prof || { email }, rows, mem);
     this.loadPlaid().then(() => { this.resumeOAuth();
       // "Connect bank account" in the claim flow: open Plaid as soon as the account is ready.
-      let want = false; try { want = localStorage.getItem('claimclub_connect') === '1'; localStorage.removeItem('claimclub_connect'); } catch (e) {}
-      if (want && (this.state.pl || {}).enabled) this.connectCard(); });
+      let want = false, tour = false; try { want = localStorage.getItem('claimclub_connect') === '1'; localStorage.removeItem('claimclub_connect'); tour = localStorage.getItem('claimclub_tour') === '1'; } catch (e) {}
+      // Fresh from the claim flow: land on Your claims with a quick tour (after Plaid, if they chose to connect a bank).
+      if (tour) this.go('dash');
+      if (want && (this.state.pl || {}).enabled) { this._tourPending = tour; this.connectCard(); } else if (tour) this.startTour(); });
     try { const { data: rq } = await sb.from('refund_requests').select('*').eq('user_id', uid); if (rq) this.setState({ rq: rq.slice().sort((x, y) => String(y.created_at).localeCompare(String(x.created_at))) }); } catch (e) {}
   }
   applyAccount(P, rows, mem) {
@@ -902,11 +914,11 @@ class Component extends DCLogic {
     if (this.state.plBusy) return;
     this.setState({ plBusy: itemId || 'new' });
     Promise.all([this.papi('link_token', itemId ? { item_id: itemId } : {}), this.plaidScript()]).then(([j]) => this.openLink(j.link_token, itemId))
-      .catch(e => { this.setState({ plBusy: '' }); this.toast('Could not open the bank window', e.message); });
+      .catch(e => { this.setState({ plBusy: '' }); this.toast('Could not open the bank window', e.message); if (this._tourPending) { this._tourPending = false; this.startTour(); } });
   }
   openLink(token, itemId, redirect) {
     try { sessionStorage.setItem('cc_plaid', JSON.stringify({ token, itemId: itemId || '' })); } catch (e) {}
-    const done = () => { try { sessionStorage.removeItem('cc_plaid'); } catch (e) {} };
+    const done = () => { try { sessionStorage.removeItem('cc_plaid'); } catch (e) {} if (this._tourPending) { this._tourPending = false; setTimeout(() => this.startTour(), 600); } };
     const h = window.Plaid.create({ token, receivedRedirectUri: redirect || undefined,
       onSuccess: (pt, meta) => { done();
         if (itemId) { this.setState({ plBusy: '' }); this.toast('Card reconnected', 'We will pick up new charges again.'); this.loadPlaid(true); return; }
@@ -956,6 +968,49 @@ class Component extends DCLogic {
     this.setState({ plBusy: 'rm' + it.item_id, plRm: '' });
     this.papi('remove', { item_id: it.item_id }).then(j => { this.setState({ pl: j, plBusy: '' }); this.toast(it.institution_name + ' removed', 'We deleted its charges and stopped watching it.'); })
       .catch(e => { this.setState({ plBusy: '' }); this.toast('Could not remove it', e.message); });
+  }
+  tourSteps() {
+    const vis = (sel) => Array.from(document.querySelectorAll(sel)).find(el => el.offsetParent !== null && el.getBoundingClientRect().height > 0);
+    const navFind = () => Array.from(document.querySelectorAll('button, a')).find(el => el.offsetParent !== null && /^(Find claims|Find)$/.test((el.innerText || '').trim()));
+    const all = [
+      { el: () => vis('section[aria-label="Ready to file"]'), t: 'Your claims are ready to file', b: 'These are the settlements you qualify for. Tap File on each one and we fill out the form and submit it for you. Most need no proof.' },
+      { el: () => vis('.setupRow'), t: 'Finish your account', b: 'A few details, like your date of birth, let us file every claim without asking you again. It takes about a minute.' },
+      { el: () => { const x = vis('[aria-label="Estimated payout timing"]'); return x && x.parentElement; }, t: 'Your money at a glance', b: 'Estimated is the most you could get if every claim pays in full. Expected payout is when settlements usually pay, often 2 to 6 months after the deadline.' },
+      { el: () => vis('section[aria-label="Tracking"]'), t: 'Follow every claim', b: 'Filed claims move here, from Filed to Paid. We email you whenever something changes, so there is nothing to check.' },
+      { el: navFind, t: 'Find more claims', b: 'New settlements open every week. Look here to see which ones fit you, then file them the same way.' }];
+    return all.filter(x => x.el());
+  }
+  startTour() {
+    try { localStorage.removeItem('claimclub_tour'); } catch (e) {}
+    this.go('dash');
+    setTimeout(() => { if (!this.tourSteps().length) return; this.setState({ tour: 0, tourRect: null }); clearInterval(this._tourI); this._tourI = setInterval(() => this.tourMeasure(), 120); }, 350);
+  }
+  tourMeasure() {
+    const s = this.state; if (s.tour == null || s.tour < 0) { clearInterval(this._tourI); return; }
+    const st = this.tourSteps()[s.tour], el = st && st.el(); if (!el) return;
+    if (this._tourScrolled !== s.tour) { this._tourScrolled = s.tour; try { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); } catch (e) {} }
+    const r = el.getBoundingClientRect(), k = [r.left, r.top, r.width, r.height].map(Math.round).join(',');
+    if (k !== s.tourRect) this.setState({ tourRect: k });
+  }
+  endTour() { clearInterval(this._tourI); this._tourScrolled = -1; this.setState({ tour: -1, tourRect: null }); }
+  tourVals() {
+    const s = this.state, on = s.tour != null && s.tour >= 0 && !!s.tourRect;
+    if (!on) return { tourOn: false, tourHole: '', tourCard: '', tourN: '', tourT: '', tourB: '', tourDots: [], tourBtn: '', tourHasBack: false, tourNext: () => {}, tourBack: () => {}, tourSkip: () => {} };
+    const steps = this.tourSteps(), n = steps.length, i = Math.min(s.tour, n - 1), st = steps[i] || {};
+    const [x, y, w, h] = s.tourRect.split(',').map(Number), pad = 8, W = window.innerWidth, H = window.innerHeight;
+    const cw = Math.min(360, W - 32), hx = x - pad, hy = y - pad, hw = w + pad * 2, hh = h + pad * 2;
+    let card = 'position:fixed;width:' + cw + 'px;box-sizing:border-box;padding:16px 18px;border-radius:20px;background:var(--bg-FFFFFF,#FFFFFF);box-shadow:0 24px 60px rgba(10,15,13,.28);display:flex;flex-direction:column;gap:6px;transition:top .25s,left .25s,bottom .25s;';
+    const left = Math.max(16, Math.min(hx, W - cw - 16)), bottomBar = W < 1100 ? 76 : 16;
+    if (hy + hh + 230 < H - bottomBar) card += 'left:' + left + 'px;top:' + (hy + hh + 12) + 'px';
+    else if (hy > 240) card += 'left:' + left + 'px;bottom:' + (H - hy + 12) + 'px';
+    else card += 'left:' + Math.round((W - cw) / 2) + 'px;bottom:' + bottomBar + 'px';
+    return { tourOn: true,
+      tourHole: 'position:fixed;left:' + hx + 'px;top:' + hy + 'px;width:' + hw + 'px;height:' + hh + 'px;border-radius:22px;box-shadow:0 0 0 9999px rgba(10,15,13,.55),0 0 0 3px var(--ln-3DDC97,#3DDC97);pointer-events:none;transition:all .25s cubic-bezier(.2,.7,.2,1)',
+      tourCard: card, tourN: 'QUICK TOUR · ' + (i + 1) + ' OF ' + n, tourT: st.t || '', tourB: st.b || '',
+      tourDots: steps.map((_, j) => ({ st: 'width:' + (j === i ? 18 : 6) + 'px;height:6px;border-radius:99px;transition:width .2s;background:' + (j === i ? '#12805C' : '#DDE5E0') })),
+      tourBtn: i === n - 1 ? 'Got it' : 'Next', tourHasBack: i > 0,
+      tourNext: () => { if (i >= n - 1) this.endTour(); else this.setState({ tour: i + 1 }); },
+      tourBack: () => this.setState({ tour: Math.max(0, i - 1) }), tourSkip: () => this.endTour() };
   }
   addCharge() {
     const s = this.state; if (s.rqBusy) return;
@@ -1166,7 +1221,7 @@ class Component extends DCLogic {
       ...['home', 'dash', 'all', 'refunds', 'subs', 'info', 'settings'].reduce((o, v) => { const on = s.view === v, K = v.charAt(0).toUpperCase() + v.slice(1);
         o['nav' + K] = 'width:100%;display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:12px;font-size:14.5px;font-weight:700;white-space:nowrap;text-align:left;' + (on ? 'background:var(--bg-EAF2EE,#EAF2EE);color:var(--fg-0F3B2E,#0F3B2E)' : 'background:transparent;color:var(--fg-43504A,#43504A)');
         o['m' + K] = 'flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10.5px;font-weight:800;white-space:nowrap;background:transparent;padding:0;color:' + (on ? 'var(--fg-0F3B2E,#0F3B2E)' : 'var(--fg-8A968F,#8A968F)'); return o; }, {}),
-      ...this.hubVals(all, ready, track),
+      ...this.hubVals(all, ready, track), ...this.tourVals(),
       ...this.setsVals(), ...this.infoVals(), ...this.mmVals(),
       needAuth: s.authState === 'signin' || s.authState === 'checking', authChecking: s.authState === 'checking', authForm: s.authState === 'signin',
       emailStep: !s.codeSent, codeStep: !!s.codeSent, loginEmail: s.loginEmail, onLoginEmail: (e) => this.setState({ loginEmail: e.target.value, authErr: '' }),

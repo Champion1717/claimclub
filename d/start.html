@@ -1257,6 +1257,7 @@ class Component extends DCLogic {
       const data = { ids: ml.map(m => m.id), signed: Object.keys(this.state.signed).filter(k => this.state.signed[k]), bank: !!this.state.bankDone, plan: this.state.paid === 'member' ? this.state.plan : '', paid: this.state.paid,
         p: { name: [p.first, p.middle, p.last].filter(Boolean).join(' '), email: this.state.email, phone: p.phone, street: [p.street, p.apt].filter(Boolean).join(', '), city: p.city, st: this.state.st && this.state.st !== 'Other' ? this.state.st : '', zip: p.zip, dob: p.dob } };
       localStorage.setItem('claimclub_session', JSON.stringify(data));
+      localStorage.setItem('claimclub_tour', '1');
     } catch (e) {}
   }
   validate(p, st, es) {
