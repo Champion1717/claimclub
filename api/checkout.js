@@ -13,7 +13,7 @@ const PLANS = {
 async function introCoupon(stripe, plan) {
   const p = PLANS[plan], id = 'cc_intro_v2_' + plan;
   try { return (await stripe.coupons.retrieve(id)).id; } catch (e) {
-    const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: 'Intro price for your first billing period' });
+    const c = await stripe.coupons.create({ id, amount_off: p.amount - p.first, currency: 'usd', duration: 'once', name: 'Intro price, first billing period' });
     return c.id;
   }
 }
