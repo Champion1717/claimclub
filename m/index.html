@@ -153,7 +153,7 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
           </div>
           <div class="shine" style="flex: 1.25; background: #3DDC97; color: #0F3B2E; border-radius: 22px; padding: 18px 20px; display: flex; flex-direction: column; gap: 4px; box-shadow: 0 20px 40px rgba(0,0,0,.25)">
             <span data-countup style="position: relative; z-index: 2; font-size: 44px; font-weight: 800; letter-spacing: -1.8px; line-height: 1; font-variant-numeric: tabular-nums">{{ statsTotal }}</span>
-            <span style="font-size: 14px; font-weight: 800">typical payout per claim</span><span title="Median per-person payout stated across 410 class action settlements, Open Class Actions data study, Aug 2026" style="font-size: 11px; font-weight: 700; opacity: .7">Median across 410 settlements</span>
+            <span style="font-size: 14px; font-weight: 800">average payout per person</span><span title="Estimate: about 3 broad settlements the typical adult qualifies for, times the $100 median per-claim payout across 410 settlements (Open Class Actions data study, Aug 2026)" style="font-size: 11px; font-weight: 700; opacity: .7">~3 matches × $100 per claim</span>
           </div>
         </div>
         <div class="floaty" style="background: #FFFFFF; color: #0A0F0D; border-radius: 26px; padding: 20px; box-shadow: 0 40px 80px rgba(0,0,0,.32); display: flex; flex-direction: column; gap: 4px">
@@ -491,7 +491,7 @@ class Component extends DCLogic {
     const orbit = orbitSrc.map((d, i) => { const ring = i < 6 ? 180 : 100, n = i < 6 ? 6 : orbitSrc.length - 6, k = i < 6 ? i : i - 6, ang = (k / n) * Math.PI * 2 + (i < 6 ? 0 : 0.5), sz = i < 6 ? 64 : 50;
       return { logo: this.logos()[d.id], co: d.co, style: 'position:absolute;left:' + Math.round(220 + ring * Math.cos(ang) - sz / 2) + 'px;top:' + Math.round(220 + ring * Math.sin(ang) - sz / 2) + 'px;width:' + sz + 'px;height:' + sz + 'px;border-radius:50%;object-fit:contain;background:#FFFFFF;padding:' + Math.round(sz * 0.18) + 'px;box-sizing:border-box;box-shadow:0 12px 30px rgba(0,0,0,.25)' }; });
     return {
-      visStats: vis === 'stats', statsN: allOpenAll.length, localCount, allCount: allOpenAll.length, statsTotal: '$100', // median per-person payout stated across 410 settlements (Open Class Actions data study, Aug 2026)
+      visStats: vis === 'stats', statsN: allOpenAll.length, localCount, allCount: allOpenAll.length, statsTotal: this.money(3 * 100), // expected matches per person (3) x median per-claim payout ($100, Open Class Actions data study, Aug 2026)
       statsTop: [['apple', 'iPhone 15 Pro or iPhone 16 buyers. $250M fund, no proof needed.'], ['googleplay', 'Anyone who bought apps or in-app items on Google Play, 2016 to 2023.'], ['visa', 'Anyone who paid an out-of-network ATM fee in the U.S.']].map(([id, note]) => { const d = all.find(x => x.id === id); if (!d) return null; const c = card(d); return { logo: c.logo, co: d.co, note, amt: (d.max || d.amt) > 0 ? 'Up to ' + this.money(d.max || d.amt) : 'Refund owed', days: c.daysLabel }; }).filter(Boolean),
       visStack: vis === 'stack', visTracker: vis === 'tracker', visOrbit: vis === 'orbit', visPhone: vis === 'phone', visCheck: vis === 'check', visNotifs: vis === 'notifs', visQuiz: vis === 'quiz', visGrid: vis === 'grid', visGauge: vis === 'gauge', orbit,
       slim: header === 'slim', full: header === 'full',
