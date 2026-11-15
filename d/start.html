@@ -201,6 +201,22 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
   <!-- QUESTION -->
   <sc-if value="{{ isQ }}" hint-placeholder-val="{{ false }}">
     <div class="scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 16px; display: flex; flex-direction: column; gap: 18px">
+      <sc-if value="{{ q.yn }}" hint-placeholder-val="{{ false }}">
+      <div class="enter qswipe" style="display: flex; flex-direction: column; gap: 20px; width: 100%; max-width: 560px; margin: 0 auto; touch-action: pan-y; will-change: transform">
+        <div style="display: flex; align-items: center; gap: 14px">
+          <sc-if value="{{ q.hasBrandLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ q.brandLogo }}" alt="{{ q.brand }} logo" draggable="false" style="width: 64px; height: 64px; flex: none; border-radius: 18px; object-fit: contain; background: #FFFFFF; padding: 11px; box-sizing: border-box; box-shadow: 0 6px 18px rgba(10,15,13,.08), inset 0 0 0 1px #DDE5E0"></sc-if>
+          <div style="display: flex; flex-direction: column; gap: 6px; min-width: 0"><b style="font-size: 15px; color: #43504A">{{ q.brand }}</b><div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-if value="{{ q.hasAmt }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 99px; background: #E9F6EF; color: #17603F; white-space: nowrap">{{ q.amt }}</span></sc-if><sc-if value="{{ q.hasProof }}" hint-placeholder-val="{{ true }}"><span style="font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 99px; background: #EAF2EE; color: #43504A; white-space: nowrap">{{ q.proof }}</span></sc-if></div></div>
+        </div>
+        <h1 style="margin: 0; font-size: 34px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ q.title }}</h1>
+        <div style="font-size: 15px; color: #5B6862; margin-top: -4px">{{ q.sub }}</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px">
+          <button onClick="{{ q.no }}" style="height: 68px; border-radius: 18px; background: #FFFFFF; box-shadow: 0 10px 24px rgba(10,15,13,.08), inset 0 0 0 1.5px #DDE5E0; color: #0A0F0D; font-size: 19px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px"><span style="color: #B8333A; display: flex"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></span>{{ q.noLabel }}</button>
+          <button onClick="{{ q.yes }}" style="height: 68px; border-radius: 18px; background: #3DDC97; color: #0F3B2E; font-size: 19px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 24px rgba(10,15,13,.12)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>{{ q.yesLabel }}</button>
+        </div>
+        <button onClick="{{ q.no }}" style="align-self: center; font-size: 13.5px; font-weight: 700; color: #6E7A73; background: transparent; padding: 4px 8px">{{ q.skipLabel }}</button>
+      </div>
+      </sc-if>
+      <sc-if value="{{ q.notYN }}" hint-placeholder-val="{{ true }}">
       <div class="enter" style="display: flex; flex-direction: column; gap: 14px">
         <sc-if value="{{ q.hasBrandLogo }}" hint-placeholder-val="{{ true }}"><div style="align-self: center; width: 112px; height: 112px; border-radius: 30px; background: #FFFFFF; box-shadow: 0 14px 34px rgba(10,15,13,.14), inset 0 0 0 1px #DDE5E0; display: flex; align-items: center; justify-content: center"><img src="{{ q.brandLogo }}" alt="{{ q.brand }} logo" style="width: 64px; height: 64px; object-fit: contain"></div></sc-if>
         <h1 style="margin: 0; font-size: 24px; line-height: 1.2; font-weight: 800; letter-spacing: -0.6px">{{ q.title }}</h1>
@@ -215,6 +231,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
           </button>
         </sc-for>
       </div>
+      </sc-if>
       </sc-if>
       <sc-if value="{{ q.isQuick }}" hint-placeholder-val="{{ false }}">
       <div style="{{ qTileGrid }}">
@@ -231,7 +248,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     <div style="padding: 10px 22px 26px">
       <sc-if value="{{ q.isQuick }}" hint-placeholder-val="{{ false }}"><button onClick="{{ quickCont }}" disabled="{{ quickContDisabled }}" style="{{ quickContStyle }}">{{ quickContLabel }}</button><button onClick="{{ browseAll }}" style="display: block; width: 100%; min-height: 40px; margin-top: 6px; background: transparent; color: #12805C; font-size: 14px; font-weight: 800; text-decoration: underline">{{ browseLabel }}</button></sc-if>
       <sc-if value="{{ q.notQuick }}" hint-placeholder-val="{{ false }}"><sc-if value="{{ q.multi }}" hint-placeholder-val="{{ false }}"><button onClick="{{ next }}" disabled="{{ nextDisabled }}" style="{{ nextStyle }}">{{ L.cont }}</button></sc-if></sc-if>
-      <sc-if value="{{ q.single }}" hint-placeholder-val="{{ true }}"><div style="text-align: center; font-size: 13px; font-weight: 600; color: #5B6862; padding: 16px 0">{{ L.tapAns }}</div></sc-if>
+      <sc-if value="{{ q.tapHint }}" hint-placeholder-val="{{ false }}"><div style="text-align: center; font-size: 13px; font-weight: 600; color: #5B6862; padding: 16px 0">{{ L.tapAns }}</div></sc-if>
     </div>
   </sc-if>
 
@@ -840,10 +857,36 @@ class Component extends DCLogic {
     }
   }
   componentDidUpdate() {
-    this.track();
+    this.track(); this.wireSwipe();
     if (this.stepName() === 'calc' && !this._calc) {
       this._calc = setTimeout(() => { this._calc = null; this.go(1); }, 2600);
     }
+  }
+  wireSwipe() {
+    try {
+      const roots = [document]; document.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) roots.push(el.shadowRoot); });
+      roots.forEach((root) => root.querySelectorAll('.qswipe[data-swipe]').forEach((el) => {
+        if (el._sw) return; el._sw = true;
+        let x0 = null, dx = 0, moved = false;
+        const set = (t, tr) => { el.style.transition = tr || 'none'; el.style.transform = t; };
+        el.addEventListener('pointerdown', (e) => { if (e.pointerType === 'mouse') return; x0 = e.clientX; dx = 0; moved = false; });
+        el.addEventListener('pointermove', (e) => { if (x0 === null) return; dx = e.clientX - x0; if (Math.abs(dx) > 8) { moved = true; set('translateX(' + dx + 'px) rotate(' + (dx / 30) + 'deg)'); } });
+        const up = () => {
+          if (x0 === null) return; x0 = null;
+          if (Math.abs(dx) > 90) {
+            const yes = dx > 0; set('translateX(' + (yes ? 480 : -480) + 'px) rotate(' + (yes ? 16 : -16) + 'deg)', 'transform .16s ease-in');
+            setTimeout(() => { set(''); this.answerYN(yes); }, 150);
+          } else set('', 'transform .2s ease');
+        };
+        el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+        el.addEventListener('click', (e) => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+      }));
+    } catch (e) {}
+  }
+  answerYN(yes) {
+    const n = this.stepName() || ''; if (!/^q\d+$/.test(n)) return;
+    const raw = this.quiz()[Number(n.slice(1))]; if (!raw || raw.multi) return;
+    const oi = yes ? 0 : 1, id = raw.opts[oi][0]; this.pick(raw, id, oi, this.data().find(x => x.id === id));
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
@@ -939,7 +982,14 @@ class Component extends DCLogic {
       q = {
         title: raw.title, sub: raw.sub, multi: !!raw.multi, single: !raw.multi, hasBrand: !!raw.brand, brand: raw.brand || '', catLabel: qc.label,
         brandLogo: raw.brand ? (this.logos()[raw.key] || '') : '', hasBrandLogo: !!(raw.brand && this.logos()[raw.key]),
-        brandStyle: S.brand(qc), isQuick: false, notQuick: true, gridStyle: 'display:grid;grid-template-columns:repeat(' + (raw.cols || 1) + ',minmax(0,1fr));gap:10px',
+        brandStyle: S.brand(qc), isQuick: false, notQuick: true,
+        ...(() => {
+          const yn = !raw.multi && raw.opts.length === 2 && raw.opts[1][0] === 'no', d0 = this.data().find(x => x.id === raw.key);
+          const prf = !d0 ? '' : d0.cat === 'arb' ? (es ? 'No garantizado' : 'Not guaranteed') : d0.proof === 'No proof' ? (es ? 'Sin comprobante' : 'No proof needed') : d0.proof === 'Automatic' ? (es ? 'A menudo automático' : 'Often automatic') : '';
+          const ans = (oi) => () => { const [id] = raw.opts[oi]; this.pick(raw, id, oi, this.data().find(x => x.id === id)); };
+          return { yn, notYN: !yn, tapHint: !raw.multi && !yn, amt: d0 ? amtOf(d0) : '', hasAmt: !!d0, proof: prf, hasProof: !!prf, yes: ans(0), no: ans(1),
+            yesLabel: es ? 'Sí' : 'Yes', noLabel: 'No', skipLabel: es ? '¿No estás seguro? Omitir' : 'Not sure? Skip', swipeHint: es ? 'Desliza a la derecha para Sí, a la izquierda para No' : 'Swipe right for Yes, left for No' };
+        })(), gridStyle: 'display:grid;grid-template-columns:repeat(' + (raw.cols || 1) + ',minmax(0,1fr));gap:10px',
         opts: raw.opts.map(([id, label], oi) => {
           const sel = raw.multi ? (cur || []).includes(id) : (cur === id && s['l_' + raw.key] === oi);
           const d = this.data().find(x => x.id === id);
