@@ -53,14 +53,14 @@ button{font-family:inherit;cursor:pointer;border:0}
 button:active{transform:translateY(1px)}
 @keyframes bumpA{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:none}}
 @keyframes bumpB{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:none}}
-@keyframes enter{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:none}}
+@keyframes enter{from{opacity:0;transform:translateX(12px)}to{opacity:1;transform:none}}
 @keyframes notif{from{opacity:0;translate:0 -18px}to{opacity:1;translate:0 0}}
 .notif{animation:notif .6s .3s ease both}
 @keyframes exitIn{from{opacity:0}to{opacity:1}}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes tick{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .bumpA{animation:bumpA .4s ease}.bumpB{animation:bumpB .4s ease}
-.enter{animation:enter .3s ease both}
+.enter{animation:enter .16s ease-out both}
 .spin{animation:spin 1s linear infinite}
 .t1{animation:tick .4s ease .2s both}.t2{animation:tick .4s ease .9s both}.t3{animation:tick .4s ease 1.6s both}
 .scroll::-webkit-scrollbar{display:none}
@@ -798,7 +798,7 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return (this.state.focus ? [] : ['intro1']).concat(this.quiz().map((q, i) => 'q' + i)).concat(['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
     return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
@@ -995,7 +995,7 @@ class Component extends DCLogic {
         pick: () => { const m = (this.state.a.more || []).slice(); const i = m.indexOf(d.id); if (i >= 0) m.splice(i, 1); else m.push(d.id); this.setState({ a: Object.assign({}, this.state.a, { more: m }), bump: this.state.bump + 1 }); } };
     }) })).filter(g => g.items.length);
     const pickedN = ml.length;
-    const toCalc = () => this.setState({ step: this.steps().indexOf('calc') });
+    const toCalc = () => this.setState({ step: this.steps().indexOf('reveal') });
     const others = allPool.filter(d => !more.includes(d.id));
     const moreN = others.length;
     const checkedN = Q.length + more.length;
@@ -1234,7 +1234,7 @@ class Component extends DCLogic {
     } else {
       this.setState({ a: Object.assign({}, a, { [raw.key]: id }), ['l_' + raw.key]: oi, bump: this.state.bump + (d && d.amt > 0 ? 1 : 0) });
       clearTimeout(this._t);
-      this._t = setTimeout(() => this.go(1), 380);
+      this._t = setTimeout(() => this.go(1), 0);
     }
   }
 
