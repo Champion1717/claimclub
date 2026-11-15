@@ -155,7 +155,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
   <section id="settlements" style="padding: 48px 0 80px">
     <div class="secIn" style="max-width: 1440px; margin: 0 auto; padding: 0 40px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px">
       <div class="rv" style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 16px">
-        <div style="display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 50px); font-weight: 800; letter-spacing: -0.04em; color: #0F3B2E">Get paid from settlements you're owed for</h2><div style="font-size: 16px; color: #43504A">{{ resultCount }} nationwide · plus {{ localCount }} local settlements for members</div></div>
+        <div style="display: flex; flex-direction: column; gap: 8px"><h2 style="margin: 0; font-size: clamp(32px, 3.6vw, 50px); font-weight: 800; letter-spacing: -0.04em; color: #0F3B2E">Get paid from settlements you're owed for</h2><div style="font-size: 16px; color: #43504A">{{ resultCount }} nationwide · plus {{ localCount }} more for members, including local ones</div></div>
         <div style="position: relative; flex: 0 1 360px">
           <label for="searchC" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Search settlements</label>
           <input id="searchC" type="search" placeholder="Search a company" value="{{ q }}" onChange="{{ onSearch }}" style="width: 100%; box-sizing: border-box; height: 50px; border-radius: 999px; border: 0; padding: 0 18px 0 46px; font-size: 15px; font-family: inherit; color: #0A0F0D; background: #F3F6F4; box-shadow: inset 0 0 0 1px #DDE5E0">
@@ -179,6 +179,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
           </div>
         </a>
       </sc-for>
+      <a href="/claim" class="lift" style="flex: 0 0 268px; scroll-snap-align: start; border-radius: 24px; overflow: hidden; text-decoration: none; background: radial-gradient(130% 100% at 15% 0%, #1F5A47 0%, #0F3B2E 55%, #0A2A20 100%); color: #FFFFFF; display: flex; flex-direction: column; justify-content: center; gap: 10px; padding: 26px 22px; box-sizing: border-box; position: relative"><span style="width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,.12); color: #3DDC97; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span><b style="font-size: 30px; letter-spacing: -0.8px; line-height: 1.05">{{ localCount }} more settlements</b><span style="font-size: 14px; line-height: 1.5; color: rgba(255,255,255,.78); font-weight: 600">Local settlements for places you have lived, plus smaller cases. Unlocked for members.</span><span style="margin-top: 8px; display: flex; align-items: center; justify-content: center; height: 46px; border-radius: 14px; background: #3DDC97; color: #0A0F0D; font-size: 15px; font-weight: 800">Check what I'm owed</span></a>
       <sc-if value="{{ empty }}" hint-placeholder-val="{{ false }}"><div style="flex: 0 0 320px; padding: 30px; color: #5B6862; font-weight: 600">No open settlements match that search.</div></sc-if>
     </div>
     <div class="sbar"><div class="strack" data-strack><div class="sthumb" data-sthumb></div></div><button class="sbtn" data-sprev aria-label="Scroll settlements left"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"></path></svg></button><button class="sbtn" data-snext aria-label="Scroll settlements right"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></button></div>
@@ -327,7 +328,8 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin();
     const allOpenAll = this.data().map(d => Object.assign({}, d, { days: this.daysLeft(d.dl) })).filter(d => d.days > 0);
-    const all = allOpenAll.filter(d => !d.st);
+    // Homepage shows nationwide settlements with a brand card (logo or name). Local ones and those with only a category icon are for members.
+    const ART = this.cardArt(), all = allOpenAll.filter(d => !d.st && ART[d.id] && ART[d.id].k !== 'c');
     const localCount = allOpenAll.length - all.length;
     const filters = [
       { id: 'all', label: 'All' }, { id: 'noproof', label: 'No proof needed' }, { id: 'soon', label: 'Closing soon' },

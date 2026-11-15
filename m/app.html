@@ -961,6 +961,11 @@ class Component extends DCLogic {
       pmName: s.prof.name || s.prof.email || 'Your account', pmShort: first || 'Account', pmPct: pct >= 100 ? 'Account complete' : 'Account ' + pct + '% complete', pmPctSt: 'font-size:12px;font-weight:700;color:' + fg(pct >= 100 ? '#12805C' : '#5B6862'),
       pmInfoTag: left ? left + ' left' : 'Complete', pmInfoSt: 'color:' + (left ? '#B07A12' : '#12805C'), pmMemTag: member ? (s.cancelled ? 'Ending' : 'Active') : 'Join', pmMemSt: 'color:' + (member ? '#12805C' : '#B07A12'),
       ring38: ringSt(38), ring44: ringSt(44),
+      ...(() => { const nx = ready.filter(r => r.days > 0).sort((a, b) => a.days - b.days)[0];
+        if (nx) return { sbKick: nx.days <= 7 ? 'CLOSING SOON' : 'NEXT DEADLINE', sbKickC: nx.days <= 7 ? '#B8333A' : '#12805C', sbIcon: D.clock, sbHead: nx.co + ' closes in ' + nx.days + (nx.days === 1 ? ' day' : ' days'),
+          sbSub: ready.length > 1 ? 'Plus ' + (ready.length - 1) + ' more ready to file.' : 'File it before the deadline.', sbBtn: 'File now', sbGo: () => this.go('dash') };
+        const open = this.sets().filter(d => this.daysTo(d.dl) > 0 && !d.st).length;
+        return { sbKick: 'FIND MORE', sbKickC: '#12805C', sbIcon: D.file, sbHead: open + ' open settlements', sbSub: 'We add new ones every week. See which ones fit you.', sbBtn: 'Find claims', sbGo: () => this.go('all') }; })(),
       join: () => this.join(), joinLabel: s.joinBusy ? 'Opening...' : 'Join for $7.99', joinLabelLong: s.joinBusy ? 'Opening checkout...' : 'Join for $7.99 your first month',
       feeHead: 'You paid the filing fee for ' + live.length + (live.length === 1 ? ' claim' : ' claims'),
       hStats: [
