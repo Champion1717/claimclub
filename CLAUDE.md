@@ -77,11 +77,11 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 - Privacy Policy and Authorization (effective Nov 14 2026) say we record date, time, IP address and browser for each signature; signed records carry agreement_version 2026-11-14.
 
 ## Nov 14 2026: settlement photos and How it works V2
-- Homepage settlement cards are photo cards (photo, logo badge, amount, "Claim now"). Order is "most common first": the `TOP` list plus a category/fund-size rank in `landing.js` renderVals.
-- Photos: `photos()` in `landing.js` maps each settlement id to an Unsplash photo id (free Unsplash license, served from images.unsplash.com with `auto=format`, sized srcset, lazy loaded). Picks came from Unsplash search; to change one, edit that id in `photos()`.
+- Homepage settlement cards show the company logo as the top image (no photos), then amount, days left and "Claim now". Order is "most common first": the `TOP` list plus a category/fund-size rank in `landing.js` renderVals.
+- Card top colour: `logoMeta()` in landing.js (generated from the logo files): 's' logos have their own solid brand background and fill the top; 't' logos sit on white or a light tint of their main colour; no logo shows the category icon on light green.
 - How it works section is the V2 design (dark band, three realistic iPhones). It is generated: edit `cc/concepts/how4.py` (`v2`, `iphone()`, `STEPS`), then run `python3 how_v2.py` in `cc/src` before `green.py`. Copy says payouts come when each settlement pays out (usually 2 to 6 months after the deadline), never "instant".
 - The flow's left phone (`obphone` in FlowC2D) uses the same titanium rim, side buttons and Dynamic Island look.
 - Homepage nav (logo, Log in, Get started) sits inside the top of the green hero tile (`header.tophdr`, first child of `.mesh` in LandingC2), not a separate sticky bar.
 - Logos (Nov 14): 64 more settlement logos in `cc/logos3/` (site icons via icon.horse or Wikidata logo files, resized to 128px), registered in `blobmap.json` and `logos()` in data.js. Settlements still without a logo show a Lucide category icon (`catIcon()` in landing.js) instead of a letter.
-- Hero tile is inset to the same left/right edges as the sections below (`.heroIn` wrapper: max-width 1280px, padding 0 4vw; tile radius 32px, 26px on mobile).
+- Hero tile is full width. Its content (nav and hero) and the settlements section share the same edges: max-width 1440px with 40px side padding (16px on mobile via `.secIn`).
 - How it works phones animate once when scrolled into view (`howAnim()` in landing.js adds `.play` per phone; `.hin` rows stagger in). The design canvas boards still loop.
