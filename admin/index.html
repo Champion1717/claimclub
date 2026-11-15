@@ -100,7 +100,7 @@ const fmtDay = (t) => t ? new Date(t).toLocaleDateString('en-US', { month: 'shor
 const setName = (id) => { const d = SETS[id]; return d ? (d.t.indexOf(d.c) === 0 ? d.t : d.c + ' ' + d.t) : id; };
 const pill = (s) => '<span class="pill p-' + esc(s) + '">' + esc((STATUSES.find((x) => x[0] === s) || [s, s])[1]) + '</span>';
 const ico = (d, s) => '<svg width="' + (s || 18) + '" height="' + (s || 18) + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + d + '"></path></svg>';
-const IC = { home: 'M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z', queue: 'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', funnel: 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z', cog: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', pen: 'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z', x: 'M18 6 6 18 M6 6l12 12' };
+const IC = { home: 'M3 3h7v9H3z M14 3h7v5h-7z M14 12h7v9h-7z M3 16h7v5H3z', queue: 'M9 11l3 3L22 4 M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11', users: 'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2 M9 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8z M22 21v-2a4 4 0 0 0-3-3.87 M16 3.13a4 4 0 0 1 0 7.75', funnel: 'M22 3H2l8 9.46V19l4 2v-8.54L22 3z', cog: 'M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z M12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6z', pen: 'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z', x: 'M18 6 6 18 M6 6l12 12', refund: 'M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8 M12 17.5v-11' };
 
 let sb = null, token = '', me = null, view = 'overview', state = { code: '', email: '', sent: false, err: '', busy: false };
 const cache = {};
@@ -153,16 +153,16 @@ async function start(session) {
 function shell() {
   $('#root').innerHTML = '<div class="app"><nav class="side" aria-label="Admin">'
     + '<div class="brand"><span>claim<span style="font-weight:500">club</span></span><small>ADMIN</small></div>'
-    + [['overview', 'Overview', IC.home], ['queue', 'Filing queue', IC.queue], ['members', 'Members', IC.users], ['funnel', 'Funnel', IC.funnel], ['settings', 'Settings', IC.cog]].map(([k, t, d]) => '<button class="nav" data-v="' + k + '">' + ico(d) + t + (k === 'queue' ? '<span class="ct" id="qct" hidden></span>' : '') + '</button>').join('')
+    + [['overview', 'Overview', IC.home], ['queue', 'Filing queue', IC.queue], ['refunds', 'Refunds', IC.refund], ['members', 'Members', IC.users], ['funnel', 'Funnel', IC.funnel], ['settings', 'Settings', IC.cog]].map(([k, t, d]) => '<button class="nav" data-v="' + k + '">' + ico(d) + t + (k === 'queue' ? '<span class="ct" id="qct" hidden></span>' : k === 'refunds' ? '<span class="ct" id="rct" hidden></span>' : '') + '</button>').join('')
     + '<div class="who">' + esc(me.email) + '<br><button id="out">Sign out</button></div></nav><main id="main"><div class="empty">Loading...</div></main></div><div id="layer"></div>';
   document.querySelectorAll('.nav').forEach((b) => { b.onclick = () => go(b.dataset.v); });
   $('#out').onclick = async () => { await sb.auth.signOut(); location.reload(); };
 }
 function go(v) {
-  view = ['overview', 'queue', 'members', 'funnel', 'settings'].includes(v) ? v : 'overview';
+  view = ['overview', 'queue', 'refunds', 'members', 'funnel', 'settings'].includes(v) ? v : 'overview';
   history.replaceState(null, '', '#' + view);
   document.querySelectorAll('.nav').forEach((b) => b.classList.toggle('on', b.dataset.v === view));
-  ({ overview, queue, members, funnel, settings })[view]();
+  ({ overview, queue, refunds, members, funnel, settings })[view]();
 }
 const main = (h) => { $('#main').innerHTML = h; };
 const fail = (e) => main('<div class="card err">' + esc(e.message || e) + '</div>');
@@ -186,6 +186,42 @@ async function overview() {
     + '</div><div class="row small muted" style="justify-content:space-between;margin-top:6px"><span>' + fmtDay(o.daily[0] && o.daily[0].day + 'T12:00:00') + '</span><span>Today</span></div></div>'
     + '<div class="card"><h2>Claims by status</h2>' + (statusRows ? '<table>' + statusRows + '</table>' : '<div class="empty">No claims yet</div>') + '</div></div>');
   const tq = $('#toQ'); if (tq) tq.onclick = (e) => { e.preventDefault(); go('queue'); };
+}
+
+// ---------- refund requests ----------
+const RST = [['requested', 'Requested'], ['replied', 'Company replied'], ['refunded', 'Refunded'], ['denied', 'Not refunded'], ['removed', 'Removed']];
+const rpill = (s) => '<span class="pill p-' + esc({ requested: 'requested', replied: 'review', refunded: 'paid', denied: 'denied', removed: 'removed' }[s] || s) + '">' + esc((RST.find((x) => x[0] === s) || [s, s])[1]) + '</span>';
+async function refunds() {
+  const head = '<h1>Refunds</h1><div class="sub">Charges members added on Claim a refund. Ask the company for the money back, then update the status. Members see it on their dashboard.</div>';
+  main(head + '<div class="empty">Loading...</div>');
+  let r; try { r = await api('refunds', { statuses: cache.rStatuses || ['requested', 'replied'] }); } catch (e) { return fail(e); }
+  const rc = $('#rct'); if (rc) { rc.hidden = !r.open; rc.textContent = r.open; }
+  const want = (cache.rStatuses || ['requested', 'replied']).join(',');
+  const filt = '<div class="seg" role="group" aria-label="Show">' + [[['requested', 'replied'], 'To do'], [['refunded'], 'Refunded'], [['denied', 'removed'], 'Closed']].map(([s, t]) => '<button data-s="' + s.join(',') + '" class="' + (s.join(',') === want ? 'on' : '') + '">' + t + '</button>').join('') + '</div>';
+  main(head + '<div style="margin-bottom:12px">' + filt + '</div><div class="card" style="padding:6px 6px 2px">'
+    + (r.refunds.length ? '<table><thead><tr><th>Member</th><th>Company</th><th>Amount</th><th>What happened</th><th>Status</th><th>Added</th></tr></thead><tbody>'
+      + r.refunds.map((x, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((x.profile && x.profile.name) || 'No name') + '</b><div class="small muted">' + esc(x.profile && x.profile.email) + '</div></td><td><b>' + esc(x.company) + '</b></td><td>' + (x.amount ? '$' + Number(x.amount).toFixed(2) : '<span class="muted">Not given</span>') + '</td><td class="small" style="max-width:320px">' + esc(x.what) + '</td><td>' + rpill(x.status) + '</td><td class="small muted">' + fmtDay(x.created_at) + '</td></tr>').join('') + '</tbody></table>'
+      : '<div class="empty">Nothing here. When a member adds a charge, it shows up in To do.</div>') + '</div>');
+  document.querySelectorAll('.seg button').forEach((b) => { b.onclick = () => { cache.rStatuses = b.dataset.s.split(','); refunds(); }; });
+  document.querySelectorAll('tr.click').forEach((tr) => { const open = () => refundPanel(r.refunds[+tr.dataset.i]); tr.onclick = open; tr.onkeydown = (e) => { if (e.key === 'Enter') open(); }; });
+}
+function refundPanel(x) {
+  const p = x.profile || {};
+  const kv = (k, v) => '<dt>' + k + '</dt><dd>' + (v ? esc(v) + copyBtn(v) : '<span class="muted">Not provided</span>') + '</dd>';
+  layer('<div class="drawer" id="dr"><div role="dialog" aria-modal="true" aria-label="Refund request">'
+    + '<div class="row" style="justify-content:space-between;margin-bottom:12px"><div><h1 style="font-size:20px">' + esc(x.company) + (x.amount ? ' · $' + Number(x.amount).toFixed(2) : '') + '</h1><div class="muted small">Added ' + fmtDay(x.created_at) + '</div></div><button class="btn soft" id="x" aria-label="Close">' + ico(IC.x, 14) + '</button></div>'
+    + '<div class="card"><h2>What happened</h2><div class="small" style="line-height:1.5">' + esc(x.what) + '</div></div>'
+    + '<div class="card"><h2>Member</h2><dl class="kv">' + kv('Name', p.name) + kv('Email', p.email) + kv('Phone', p.phone) + kv('Address', p.address) + '</dl></div>'
+    + '<div class="card"><h2>Update status</h2><label class="small muted" style="font-weight:800">Status<select id="rs" class="inp" style="margin-top:4px">' + RST.map(([k, t]) => '<option value="' + k + '"' + (k === x.status ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></label>'
+    + '<label class="small muted" style="font-weight:800;display:block;margin-top:10px">Note for staff<textarea id="rn" class="inp" style="margin-top:4px">' + esc(x.admin_note || '') + '</textarea></label>'
+    + '<div class="row" style="margin-top:12px"><button class="btn dark" id="rsave">Save</button><span id="msg" class="small" role="status"></span></div></div></div></div>');
+  $('#x').onclick = closeLayer; $('#dr').onclick = (e) => { if (e.target.id === 'dr') closeLayer(); };
+  wireCopy($('#dr'));
+  $('#rsave').onclick = async () => {
+    const msg = $('#msg'); msg.textContent = 'Saving...'; msg.className = 'small muted';
+    try { const r = await api('setRefund', { id: x.id, status: $('#rs').value, note: $('#rn').value }); Object.assign(x, r.refund); msg.className = 'small'; msg.style.color = '#17603F'; msg.textContent = 'Saved.'; if (view === 'refunds') refunds(); }
+    catch (e) { msg.className = 'err'; msg.textContent = e.message; }
+  };
 }
 
 // ---------- filing queue ----------

@@ -23,6 +23,25 @@ async function readSettings() {
 const count = async (q) => { const { count: n } = await q; return n || 0; };
 
 const actions = {
+
+  async refunds(b) {
+    const sb = db(), want = Array.isArray(b.statuses) && b.statuses.length ? b.statuses : ['requested', 'replied'];
+    const { data: rows, error } = await sb.from('refund_requests').select('*').in('status', want).order('created_at', { ascending: true }).limit(500);
+    if (error) throw error;
+    const ids = [...new Set((rows || []).map((r) => r.user_id))];
+    const { data: profs } = ids.length ? await sb.from('profiles').select('id, name, email, phone, address').in('id', ids) : { data: [] };
+    const P = {}; (profs || []).forEach((p) => { P[p.id] = p; });
+    const { count: open } = await sb.from('refund_requests').select('id', { count: 'exact', head: true }).in('status', ['requested', 'replied']);
+    return { refunds: (rows || []).map((r) => Object.assign({}, r, { profile: P[r.user_id] || null })), open: open || 0 };
+  },
+
+  async setRefund(b) {
+    const ok = ['requested', 'replied', 'refunded', 'denied', 'removed'];
+    if (!b.id || !ok.includes(b.status)) return { error: 'Pick a status' };
+    const { data, error } = await db().from('refund_requests').update({ status: b.status, admin_note: b.note ? String(b.note).slice(0, 500) : null }).eq('id', b.id).select().maybeSingle();
+    if (error) throw error;
+    return { refund: data };
+  },
   async me(b, user) { return { admin: true, email: user.email, settings: await readSettings() }; },
 
   async settings() { return { settings: await readSettings() }; },

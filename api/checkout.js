@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
   const plan = PLANS[b.plan] ? b.plan : '1m';
   const email = typeof b.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email) ? b.email : undefined;
   const ids = Array.isArray(b.ids) ? b.ids.filter((x) => typeof x === 'string').join(',').slice(0, 480) : '';
-  const back = '/claim';
+  const back = b.back === 'dashboard' ? '/dashboard' : '/claim';
   const origin = (req.headers['x-forwarded-proto'] || 'https') + '://' + req.headers.host;
 
   let line;
