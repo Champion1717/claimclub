@@ -41,7 +41,7 @@
     return v;
   };
   var leaving=false,prefetched=false;
-  function prefetchApp(){if(prefetched)return;prefetched=true;var l=document.createElement('link');l.rel='prefetch';l.href='app.html';document.head.appendChild(l)}
+  function prefetchApp(){if(prefetched)return;prefetched=true;var l=document.createElement('link');l.rel='prefetch';l.href='/dashboard';document.head.appendChild(l)}
   function cover(fadeIn){
     var d=document.createElement('div');d.id='ccCover';
     d.setAttribute('aria-hidden','true');
@@ -53,11 +53,11 @@
     if(leaving)return;leaving=true;
     try{sessionStorage.setItem('cc_enter','1')}catch(e){}
     var d=cover(true);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.opacity='1'})});
-    setTimeout(function(){location.href='app.html'},420);
+    setTimeout(function(){location.href='/dashboard'},420);
   }
   // Arriving on the dashboard from the flow: start covered, then fade the cover away once the page has painted.
-  if(/\/app\.html$/.test(location.pathname)){
+  if(/^\/(dashboard|login)(\/|$)|\/app\.html$/.test(location.pathname)){
     var came=false;try{came=sessionStorage.getItem('cc_enter')==='1';sessionStorage.removeItem('cc_enter')}catch(e){}
-    if(came){var go2=function(){var d=cover(false);setTimeout(function(){d.style.opacity='0';setTimeout(function(){d.remove()},420)},260)};if(document.body)go2();else document.addEventListener('DOMContentLoaded',go2)}
+    if(came){var go2=function(){var d=cover(false),t0=Date.now();var ready=function(){var a=document.querySelector('.authWrap');return document.querySelector('#root')&&document.querySelector('#root').children.length&&(!a||a.querySelector('.cardin'))};var wait=function(){if((ready()&&Date.now()-t0>260)||Date.now()-t0>8000){d.style.opacity='0';setTimeout(function(){d.remove()},420)}else setTimeout(wait,80)};wait()};if(document.body)go2();else document.addEventListener('DOMContentLoaded',go2)}
   }
 })();
