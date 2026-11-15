@@ -56,4 +56,20 @@ async function sendClaimEmail({ to, userId, status, title, ref, note, amount, me
   }
 }
 
-module.exports = { sendClaimEmail, COPY, html };
+// Any other member email (billing and the like). c = { subject, head, body (HTML), cta, ctaUrl }. Never throws.
+async function sendNotice({ to, userId, kind, c }) {
+  const log = { user_id: userId || null, to_email: to, kind, subject: c.subject };
+  if (!to) return { skipped: true };
+  if (!process.env.RESEND_API_KEY) { log.error = 'RESEND_API_KEY not set'; try { await db().from('email_log').insert(log); } catch (e) {} return { skipped: true, reason: 'RESEND_API_KEY not set' }; }
+  try {
+    const page = html(c).replace(SITE + '/login', c.ctaUrl || SITE + '/login').replace(/>Open your dashboard</, '>' + esc(c.cta || 'Open your dashboard') + '<');
+    const r = await fetch('https://api.resend.com/emails', { method: 'POST', headers: { Authorization: 'Bearer ' + process.env.RESEND_API_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ from: FROM(), to: [to], reply_to: process.env.EMAIL_REPLY_TO || 'support@mail.claimclub.io', subject: c.subject, html: page }) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.message || 'Resend error ' + r.status);
+    log.provider_id = j.id; try { await db().from('email_log').insert(log); } catch (e) {}
+    return { sent: true, id: j.id };
+  } catch (e) { log.error = String(e.message || e).slice(0, 300); try { await db().from('email_log').insert(log); } catch (x) {} return { sent: false, error: log.error }; }
+}
+
+module.exports = { sendClaimEmail, sendNotice, COPY, html };

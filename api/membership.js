@@ -1,4 +1,4 @@
-// POST /api/membership  { action: 'link' | 'test' | 'switch' | 'cancel' | 'resume', plan?, kind? }
+// POST /api/membership  { action: 'link' | 'test' | 'switch' | 'cancel' | 'resume' | 'portal', plan?, kind? }
 // Requires the member's access token. Memberships can only be changed through here (never directly from the browser).
 const Stripe = require('stripe');
 const { db, userFrom, readJson, renewsAt, send } = require('./_db');
@@ -37,6 +37,13 @@ module.exports = async (req, res) => {
       return send(res, 200, { membership: row });
     }
     if (!cur || cur.kind !== 'member') return send(res, 400, { error: 'No membership to change' });
+    if (b.action === 'portal') {
+      // Stripe's customer portal: update the card, see receipts. Set it up once in Stripe > Settings > Billing > Customer portal.
+      if (!stripe || !cur.stripe_customer) return send(res, 400, { error: 'Billing details open once your membership is paid through Stripe.' });
+      const host = req.headers['x-forwarded-host'] || req.headers.host || 'claimclub.io';
+      const ps = await stripe.billingPortal.sessions.create({ customer: cur.stripe_customer, return_url: 'https://' + host + '/dashboard/settings' });
+      return send(res, 200, { url: ps.url });
+    }
     if (b.action === 'switch') {
       if (!PRICE[b.plan] || b.plan === cur.plan) return send(res, 400, { error: 'Pick a different plan' });
       if (stripe && cur.stripe_subscription) {

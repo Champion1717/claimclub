@@ -149,6 +149,19 @@ const actions = {
     };
   },
 
+  // Proof files a member uploaded for one claim, as links that work for 10 minutes.
+  async files(b) {
+    const sb = db();
+    const { data: rows, error } = await sb.from('claim_files').select('*').eq('user_id', String(b.user_id || '')).eq('settlement_id', String(b.settlement_id || '')).order('created_at');
+    if (error) throw error;
+    const out = [];
+    for (const f of rows || []) {
+      const { data: u } = await sb.storage.from('claim-files').createSignedUrl(f.path, 600);
+      out.push({ id: f.id, name: f.name, size: f.size, mime: f.mime, created_at: f.created_at, url: u ? u.signedUrl : null });
+    }
+    return { files: out };
+  },
+
   async setStatus(b, user) {
     const sb = db(), id = parseInt(b.claim_id, 10), status = String(b.status || '');
     if (!id || !STATUSES.includes(status)) return { error: 'Pick a valid status' };
