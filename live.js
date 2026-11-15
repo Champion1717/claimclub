@@ -239,16 +239,32 @@
      in, purchase not linked yet, Plaid down) it falls back to opening Plaid in the dashboard like before. */
   function plaidJs(){return window.Plaid?Promise.resolve():new Promise(function(ok,no){var t=document.createElement('script');t.src='https://cdn.plaid.com/link/v2/stable/link-initialize.js';t.onload=ok;t.onerror=function(){no(new Error('Plaid did not load'))};document.head.appendChild(t)})}
   function papi(tok,action,extra){var b={action:action};for(var k in extra)b[k]=extra[k];return fetch('/api/plaid',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'plaid');return j})})}
+  // Calm backdrop behind Plaid Link: white wash plus a heavy blur, so the bank connection is the only thing on screen.
+  function plaidVeil(){
+    var d=document.getElementById('ccVeil');if(d)return d;
+    d=document.createElement('div');d.id='ccVeil';d.setAttribute('aria-hidden','true');
+    d.style.cssText='position:fixed;inset:0;z-index:2147483000;background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(18px) saturate(.6);backdrop-filter:blur(18px) saturate(.6);opacity:0;transition:opacity .22s ease';
+    document.body.appendChild(d);requestAnimationFrame(function(){d.style.opacity='1'});return d;
+  }
+  function dropVeil(){var d=document.getElementById('ccVeil');if(!d)return;d.style.opacity='0';setTimeout(function(){d.remove()},240)}
   window.ccPlaid=function(c){
-    var later=function(){try{localStorage.setItem('claimclub_connect','1')}catch(e){}c.afterBank()};
+    var later=function(){dropVeil();try{localStorage.setItem('claimclub_connect','1')}catch(e){}c.afterBank()};
     c.setState({bankBusy:true});
     token().then(function(tok){
       return Promise.all([papi(tok,'link_token',{}),plaidJs()]).then(function(r){
         var h=window.Plaid.create({token:r[0].link_token,
-          onSuccess:function(pt,meta){var inst=(meta&&meta.institution)||{};c.setState({bankDone:true});
-            papi(tok,'exchange',{public_token:pt,institution:{name:inst.name,institution_id:inst.institution_id}}).catch(function(){}).then(function(){c.state.bankDone=true;c.afterBank()})},
-          onExit:function(){c.setState({bankBusy:false})}});
-        h.open();
+          onSuccess:function(pt,meta){
+            // Show the loader the moment Plaid hands back, then save the connection behind it.
+            var inst=(meta&&meta.institution)||{};leaving=true;c.state.bankDone=true;
+            document.querySelectorAll('iframe[id^="plaid-link-iframe"]').forEach(function(x){x.style.visibility='hidden'});var cv=cover(false);cv.style.zIndex='2147483647';
+            try{sessionStorage.setItem('cc_enter','1')}catch(e){}
+            try{c.saveForApp()}catch(e){}
+            var done=false,fin=function(){if(done)return;done=true;location.href='/dashboard/claims'};
+            papi(tok,'exchange',{public_token:pt,institution:{name:inst.name,institution_id:inst.institution_id}}).catch(function(){try{localStorage.setItem('claimclub_connect','1')}catch(e){}}).then(fin);
+            setTimeout(fin,12000);
+          },
+          onExit:function(){dropVeil();c.setState({bankBusy:false})}});
+        plaidVeil();h.open();var n=0,lift=function(){var f=document.querySelectorAll('iframe[id^="plaid-link-iframe"]');f.forEach(function(x){x.style.zIndex='2147483647'});if(!f.length&&n++<40)setTimeout(lift,50)};lift();
       });
     }).catch(function(e){console.warn('[plaid in flow]',e&&e.message);later()});
   };
@@ -265,6 +281,7 @@
     if(!c.__ccExit){c.__ccExit=true;c.afterBank=function(){c.saveForApp();enterApp()}}
     if(c.stepName()==='dash'){enterApp()}
     if(c.stepName()==='perks'||c.stepName()==='bank'){prefetchApp()}
+    if(c.stepName()==='bank'&&c.state.plaidOn&&!window.__ccPlaidPre){window.__ccPlaidPre=true;plaidJs().catch(function(){})}
     return v;
   };
   var leaving=false,prefetched=false;
