@@ -4,9 +4,11 @@ const Stripe = require('stripe');
 const { db, userFrom, readJson, renewsAt, send } = require('./_db');
 const crypto = require('crypto');
 function testKeyOk(k) {
-  const want = String(process.env.TEST_FLOW_KEY || '');
-  if (want.length < 16 || typeof k !== 'string' || k.length !== want.length) return false;
-  return crypto.timingSafeEqual(Buffer.from(k), Buffer.from(want));
+  const want = String(process.env.TEST_FLOW_KEY || '').trim();
+  if (want.length < 16 || typeof k !== 'string') return false;
+  const same = (a) => a.length === want.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(want));
+  k = k.trim();
+  return same(k) || same(k.replace(/ /g, '+'));
 }
 const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7499, months: 3 }, '6m': { amount: 11999, months: 6 } };
 

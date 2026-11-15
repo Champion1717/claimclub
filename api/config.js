@@ -3,9 +3,13 @@
 const { URL_, PUBLIC_KEY, db } = require('./_db');
 const crypto = require('crypto');
 // ?test=<key> (Nov 15): says whether a claim-flow test link is valid (matches TEST_FLOW_KEY, 16+ characters). The key is never sent back.
+function same(a, b) { return a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
 function testOk(k) {
-  const want = String(process.env.TEST_FLOW_KEY || '');
-  return want.length >= 16 && typeof k === 'string' && k.length === want.length && crypto.timingSafeEqual(Buffer.from(k), Buffer.from(want));
+  const want = String(process.env.TEST_FLOW_KEY || '').trim();
+  if (want.length < 16 || typeof k !== 'string') return false;
+  k = k.trim();
+  // a "+" in the link arrives as a space after URL decoding
+  return same(k, want) || same(k.replace(/ /g, '+'), want);
 }
 module.exports = async (req, res) => {
   let bankConnect = false, cardConnect = false;
@@ -17,7 +21,7 @@ module.exports = async (req, res) => {
   let tq = null; try { tq = new URL(req.url, 'http://x').searchParams.get('test'); } catch (e) {}
   res.setHeader('Cache-Control', tq ? 'private, no-store' : 'public, max-age=30, s-maxage=30');
   res.end(JSON.stringify({
-    ...(tq ? { testKey: testOk(tq) } : {}),
+    ...(tq ? { testKey: testOk(tq), testConfigured: String(process.env.TEST_FLOW_KEY || '').trim().length >= 16 } : {}),
     supabaseUrl: URL_(),
     supabaseAnonKey: PUBLIC_KEY(),
     testMode: process.env.ALLOW_TEST_MEMBERSHIP === '1',
