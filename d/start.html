@@ -398,6 +398,20 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     <div style="padding: 10px 22px 24px"><sc-if value="{{ hasDetErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-bottom: 8px; padding: 10px 12px; border-radius: 12px; background: #FFF0F0; color: #A1262E; font-size: 13px; font-weight: 700">{{ detErrMsg }}</div></sc-if><button onClick="{{ detNext }}" disabled="{{ detDisabled }}" style="{{ detStyle }}">{{ L.cont }}</button></div>
   </sc-if>
 
+  <!-- EMAIL CODE (confirms the email and signs them in) -->
+  <sc-if value="{{ isVerify }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 20px 22px 26px; display: flex; flex-direction: column; gap: 14px">
+      <span style="width: 52px; height: 52px; border-radius: 16px; background: #E9F6EF; display: flex; align-items: center; justify-content: center"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#12805C" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span>
+      <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ codeH }}</h1>
+      <div style="margin-top: -6px; font-size: 15px; line-height: 1.5; color: #5B6862; overflow-wrap: anywhere">{{ codeP }}</div>
+      <input aria-label="6-digit code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" value="{{ code }}" onChange="{{ onCode }}" style="height: 64px; border-radius: 16px; border: 1.5px solid #DDE5E0; padding: 0 16px; font-size: 30px; font-weight: 800; letter-spacing: 12px; text-align: center; font-family: inherit; color: #0A0F0D">
+      <sc-if value="{{ hasCodeErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="padding: 10px 12px; border-radius: 12px; background: #FFF0F0; color: #A1262E; font-size: 13px; font-weight: 700">{{ codeErr }}</div></sc-if>
+      <button onClick="{{ codeGo }}" disabled="{{ codeDisabled }}" style="{{ codeStyle }}">{{ codeBtn }}</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 13px; font-weight: 600; color: #5B6862"><span>{{ wrongEmailW }}</span><button onClick="{{ resendCode }}" style="background: transparent; color: #12805C; font-size: 13.5px; font-weight: 800; padding: 6px 0; white-space: nowrap">{{ resendW }}</button></div>
+      <div style="display: flex; gap: 10px; align-items: center; font-size: 12px; font-weight: 600; color: #5B6862"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ codeHint }}</div>
+    </div>
+  </sc-if>
+
   <!-- CLAIM AUTHORIZATION -->
   <sc-if value="{{ isAuth }}" hint-placeholder-val="{{ false }}">
     <div style="flex-grow: 1; min-height: 0; display: flex; align-items: center; justify-content: center; gap: 44px; padding: 0 36px 14px">
@@ -507,7 +521,19 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     </div>
   </sc-if>
 
-  <!-- CHECKOUT -->
+  <!-- FEE RECEIPT (pay filing fee, opens the payment sheet) -->
+  <sc-if value="{{ isFeePay }}" hint-placeholder-val="{{ false }}">
+    <div class="enter scroll plcol" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 24px 0 16px; display: flex; flex-direction: column; gap: 16px; justify-content: safe center; text-align: left">
+      <h1 style="margin: 0; font-size: 30px; line-height: 1.12; font-weight: 800; letter-spacing: -0.9px">{{ feeH2 }}</h1>
+      <div style="margin-top: -6px; font-size: 15px; line-height: 1.5; font-weight: 600; color: #5B6862">{{ feeSub2 }}</div>
+      <button onClick="{{ payFee }}" style="height: 56px; width: 100%; flex: none; border-radius: 999px; background: #3DDC97; color: #0F3B2E; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 10px 24px rgba(61,220,151,.35)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0F3B2E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M5 11h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ feeCta }}</button>
+      <span style="margin-top: -6px; font-size: 12px; text-align: center; color: #5B6862">{{ feeOnce }}</span>
+      <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 14px; border-radius: 16px; background: #E9F6EF; color: #0A0F0D; text-align: left"><span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><b style="font-size: 14px">{{ joinUp }}</b><span style="font-size: 12.5px; color: #5B6862; font-weight: 600; line-height: 1.4">{{ joinSub }}</span></span><span style="flex: none; font-size: 13.5px; font-weight: 800; color: #12805C; display: flex; align-items: center; gap: 4px">{{ switchW }}<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#12805C" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"></path></svg></span></button>
+      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><a href="https://claimclub.io/terms" target="_blank" rel="noopener" style="color: inherit">{{ L.termsW }}</a><a href="https://claimclub.io/privacy" target="_blank" rel="noopener" style="color: inherit">{{ L.privacyW }}</a></div>
+    </div>
+  </sc-if>
+
+    <!-- CHECKOUT -->
   <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
     <sc-if value="{{ coIdle }}" hint-placeholder-val="{{ true }}">
       <div class="enter scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 14px">
@@ -749,8 +775,8 @@ class Component extends DCLogic {
       pk3a: ['Every open settlement,', 'Todos los acuerdos abiertos,'], pk3b: ['plus local scans near you', 'y búsquedas locales cerca de ti'],
       pk3p: ['Browse all {N} open settlements, and we scan for state and city settlements near you that most people never hear about.', 'Explora los {N} acuerdos abiertos y buscamos acuerdos estatales y locales cerca de ti que casi nadie conoce.'],
       nearYou: ['NEAR YOU', 'CERCA DE TI'],
-      newMatchT: ['New claim match', 'Nuevo reclamo para ti'], youHave: ['YOUR MEMBERSHIP INCLUDES', 'TU MEMBRESÍA INCLUYE'], nextW: ['Next', 'Siguiente'], skipW: ['Skip', 'Omitir'],
-      memberActive: ['Membership active', 'Membresía activa'],
+      newMatchT: ['New claim match', 'Nuevo reclamo para ti'], youHave: ['MEMBERSHIP INCLUDES', 'LA MEMBRESÍA INCLUYE'], nextW: ['Next', 'Siguiente'], skipW: ['Skip', 'Omitir'],
+      memberActive: ['With membership', 'Con la membresía'],
       coH: ['Checkout', 'Pago'], coOr: ['or pay with card', 'o paga con tarjeta'], coCard: ['Card number', 'Número de tarjeta'], coExp: ['MM / YY', 'MM / AA'], coCvc: ['CVC', 'CVC'], coZip: ['ZIP', 'C.P.'],
       coSecure: ['Payments are encrypted and processed by our payment partner. We never store your full card number.', 'Los pagos están cifrados y los procesa nuestro socio de pagos. Nunca guardamos el número completo de tu tarjeta.'],
       unlockK: ['MEMBERSHIP UNLOCKED', 'MEMBRESÍA DESBLOQUEADA'], unlockH: ['Welcome to the club', 'Bienvenido al club'], unlockP: ['Every claim you match, filed for you.', 'Cada reclamo que coincida contigo, presentado por ti.'],
@@ -891,8 +917,8 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'pay', 'plans', 'checkout', 'perks', 'details', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'pay', 'perks', 'details', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'pay', 'perks', 'plans', 'feepay', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'pay', 'perks', 'plans', 'feepay', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
@@ -900,9 +926,11 @@ class Component extends DCLogic {
     let n = this.state.step + d;
     if (d < 0 && S[n] === 'calc') n -= 1;
     if (S[n] === 'all' && !this.state.sawAll) n += d;
+    if (S[n] === 'verify' && this.state.verified) n += d;
     if (S[n] === 'auth' && noAuth) n += d;
     // Payment comes before details and signing (Nov 15): going back from details never re-enters payment.
-    if (d < 0 && this.state.paid && ['perks', 'checkout', 'plans', 'pay'].includes(S[n])) return;
+    if (d < 0 && this.state.paid && ['perks', 'checkout', 'plans', 'pay', 'feepay'].includes(S[n])) return;
+    if (d > 0 && S[n] === 'verify') this.sendCode();
     if (d > 0 && n >= S.length) { this.toBank(); return; }
     const extra = {};
     if (S[n] === 'auth') extra.ai = d < 0 ? Math.max(0, this.authList().length - 1) : 0;
@@ -910,6 +938,11 @@ class Component extends DCLogic {
   }
   back() {
     if (this.stepName() === 'auth' && this.state.ai > 0) { this.setState({ ai: this.state.ai - 1 }); return; }
+    const nm = this.stepName();
+    if (nm === 'perks') { if (this.state.pi > 0) this.setState({ pi: this.state.pi - 1 }); else this.setState({ step: this.steps().indexOf('pay') }); return; }
+    if (nm === 'plans') { this.setState({ pi: 2, step: this.steps().indexOf('perks') }); return; }
+    if (nm === 'feepay') { this.setState({ step: this.steps().indexOf('pay') }); return; }
+    if (nm === 'checkout' && !this.state.payState) { this.setState({ step: this.steps().indexOf(this.state.buying === 'member' ? 'plans' : 'feepay') }); return; }
     // On the very first step there is nothing to go back to in the flow: return to the homepage.
     if ((this.state.step || 0) === 0 && typeof location !== 'undefined' && /^https?:/.test(location.protocol)) { location.href = '/'; return; }
     this.go(-1);
@@ -1106,18 +1139,18 @@ class Component extends DCLogic {
     const allOpen = this.data().filter(d => this.daysLeft(d.dl) > 0 && !d.dir && !d.st);
     const allValue = this.money(Math.round(allOpen.reduce((t, d) => t + (d.max || d.amt || 0), 0)));
     const moreLabel = this.money(Math.round(others.filter(d => d.cat !== 'arb').reduce((t, d) => t + (d.max || d.amt || 0), 0)));
-    const showBack = qNum > 0 || ['auth', 'all', 'picked', 'pay', 'plans'].includes(name) || (name === 'details' && !s.paid) || (name === 'checkout' && !s.payState);
+    const showBack = qNum > 0 || ['auth', 'all', 'picked', 'pay', 'perks', 'plans', 'feepay', 'verify'].includes(name) || (name === 'details' && !s.paid) || (name === 'checkout' && !s.payState);
     return {
       L, isEn: !es, isEs: es,
       enStyle: this.langStyle(!es), esStyle: this.langStyle(es),
       setEn: () => this.setState({ lang: 'en' }), setEs: () => this.setState({ lang: 'es' }),
       isIntro1: name === 'intro1', isIntro2: name === 'intro2', isState: name === 'state', isQ: qIndex >= 0,
       isCalc: name === 'calc', isReveal: name === 'reveal', isEmail: name === 'email', isDetails: name === 'details', isAuth: name === 'auth', isAll: name === 'all', isPicked: name === 'picked', notAuth: name !== 'auth',
-      mainStyle: name === 'perks' || name === 'bank' ? 'width:100%;max-width:1680px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:32px 48px' : name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
+      mainStyle: name === 'perks' || name === 'bank' ? 'width:100%;max-width:1680px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:32px 48px' : name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isFeePay: name === 'feepay', isVerify: name === 'verify', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
       inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0 && qTotal > 1,
       quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
       setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
-      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'auth', 'plans', 'checkout'].includes(name)) && !(name === 'pay' && s.payOpen),
+      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth', 'plans', 'feepay', 'checkout'].includes(name)),
       qLabel: qNum + ' ' + L.of + ' ' + qTotal, qFull: L.qWord + ' ' + qNum + ' ' + L.of + ' ' + qTotal, segs, q, states,
       segGrid: 'flex-grow:1;display:grid;grid-template-columns:repeat(' + qTotal + ',minmax(0,1fr));gap:4px',
       i2h: L.i2a + qTotal + L.i2b,
@@ -1188,24 +1221,32 @@ class Component extends DCLogic {
           rcHead: es ? 'TU RECIBO' : 'YOUR RECEIPT', rcHeadD: es ? 'TU RECIBO DE RECLAMOS' : 'YOUR CLAIMS RECEIPT', rcEarn: es ? 'Ganancias esperadas' : 'Expected earnings',
           rcFrom: es ? 'De ' + plural(n, 'acuerdo', 'acuerdos', 'acuerdo', 'acuerdos') + ' para los que calificas. Te pagan directo.' : 'From ' + (n === 1 ? '1 settlement' : n + ' settlements') + ' you qualify for. Paid straight to you.',
           rcShare: es ? 'Tu parte de cada pago' : 'Your share of every payout', pickPlanH: es ? 'Elige tu plan' : 'Pick your plan',
-          asideReceipt: ['plans', 'checkout'].includes(name) || (name === 'pay' && !!s.payOpen), notReceipt: !(['plans', 'checkout'].includes(name) || (name === 'pay' && !!s.payOpen)),
+          asideReceipt: ['plans', 'feepay', 'checkout'].includes(name), notReceipt: !['plans', 'feepay', 'checkout'].includes(name),
           // what the payment sheet in live.js shows
           sheetInfo: { total: noFigure ? '' : this.money(total), count: claimsW, es, fee: '$49.99', feeSub: es ? 'Tarifa de presentación · única, sin suscripción' : 'Filing fee · one time, no subscription', mem: p.first, memSub: es ? 'Membresía · ' + thenW.toLowerCase() : 'Membership · ' + thenW.toLowerCase() },
         };
       })(),
       estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
       isPerk1: s.pi === 0, isPerk2: s.pi === 1, isPerk3: s.pi === 2,
-      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.toSign(); },
-      perkSkip: () => this.toBank(),
-      dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank') + (s.bankOn ? '' : ';display:none'),
+      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.setState({ step: this.steps().indexOf('plans') }); },
+      codeH: es ? 'Confirma tu correo' : 'Confirm your email', codeP: (es ? 'Enviamos un código de 6 dígitos a ' : 'We just sent a 6-digit code to ') + (s.email || ''), codeHint: es ? 'Así protegemos tu cuenta. Con esto entras directo a tu panel.' : 'This keeps your account safe and signs you in to your dashboard.',
+      code: s.code || '', codeErr: s.codeErr || '', hasCodeErr: !!s.codeErr, codeBusy: !!s.codeBusy, codeIdle: !s.codeBusy,
+      onCode: (e) => { const v = String(e && e.target ? e.target.value : e).replace(/[^0-9]/g, '').slice(0, 6); this.setState({ code: v, codeErr: '' }); if (v.length === 6) this.checkCode(v); },
+      codeGo: () => this.checkCode(), codeStyle: S.btn((s.code || '').length === 6 && !s.codeBusy), codeDisabled: (s.code || '').length < 6 || !!s.codeBusy,
+      codeBtn: s.codeBusy ? (es ? 'Revisando…' : 'Checking…') : (es ? 'Confirmar' : 'Confirm'),
+      resendCode: () => this.sendCode(true), resendW: s.resent ? (es ? 'Código nuevo enviado' : 'New code sent') : (es ? 'Enviar otro código' : 'Send a new code'),
+      wrongEmailW: es ? 'Revisa también spam o promociones.' : 'Check spam or promotions too.',
+      perkSkip: () => this.setState({ step: this.steps().indexOf('plans') }),
+      dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank') + (s.bankOn && name === 'bank' ? '' : ';display:none'),
       perkSt: (s.p && s.p.st) || s.st && s.st !== 'Other' && s.st || 'CA',
       perkLocal: (() => { const code = (s.p && s.p.st) || (s.st && s.st !== 'Other' ? s.st : 'CA'); let L2 = this.data().filter(d => d.st && d.st.split(',').includes(code) && this.daysLeft(d.dl) > 0); if (L2.length < 3) L2 = L2.concat(this.data().filter(d => d.st && !L2.includes(d) && this.daysLeft(d.dl) > 0)); return L2.slice(0, 4).map(d => ({ co: d.co, initial: d.co.replace(/[^A-Za-z]/g, '').slice(0, 1), tileStyle: S.tile(K[d.cat]), area: d.area || d.st, amt: (d.max || d.amt) > 0 ? (es ? 'Hasta ' : 'Up to ') + this.money(d.max || d.amt) : (es ? 'Varía' : 'Varies') })); })(),
       showDots: s.paid === 'member', perkMatches: ml.slice(0, 4).map(m => { const lg = this.logos()[m.id]; return { co: m.co, logo: lg || '', hasLogo: !!lg, noLogo: !lg, initial: m.co.slice(0, 1), tileStyle: S.tile(K[m.cat]), st: s.signed[m.id] ? (es ? 'Presentado' : 'Filed') : m.mode === 'site' ? (es ? 'Sitio oficial' : 'Official site') : (es ? 'Listo' : 'Ready'), amt: amtOf(m) }; }),
       newMatch: (() => { const d = allPool.find(x => !more.includes(x.id) && x.cat !== 'arb' && (x.max || x.amt) >= 50); return d ? { co: d.co, line: es ? 'Podrías calificar para ' + (d.title.startsWith(d.co) ? d.title : d.co + ' ' + d.title) + '. Toca para presentar.' : 'You may qualify for the ' + (d.title.startsWith(d.co) ? d.title : d.co + ' ' + d.title) + '. Tap to file.' } : { co: '', line: '' }; })(),
       perks: [['p1', 'M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9 M10.3 21a1.94 1.94 0 0 0 3.4 0'], ['p2', 'M12 20h9 M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z'], ['p3', 'M3 3v18h18 M7 14l4-4 4 4 5-5'], ['p4', 'M8 2v4 M16 2v4 M3 10h18 M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z'], ['p5', 'M12 2v20 M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6'], ['p6', 'M12 3v18 M5 7h14 M5 7l-3 7a4 4 0 0 0 6 0Z M19 7l-3 7a4 4 0 0 0 6 0Z']].map(([k, d]) => ({ title: L[k], body: L[k + 'd'], d })),
       signedLabel: es ? signedCount + ' autorizaciones firmadas, listas para enviar al activar tu membresía' : signedCount + (signedCount === 1 ? ' authorization signed' : ' authorizations signed') + ', ready to submit when your membership starts',
-      unlock: () => this.setState({ buying: 'fee', payState: '', step: this.steps().indexOf('checkout') }),
-      toPlans: () => this.setState({ step: this.steps().indexOf('plans') }),
+      unlock: () => this.setState({ step: this.steps().indexOf('feepay') }),
+      payFee: () => this.setState({ buying: 'fee', payState: '', step: this.steps().indexOf('checkout') }),
+      toPlans: () => this.setState({ pi: 0, step: this.steps().indexOf('perks') }),
       plans: [['1m', es ? '1 MES' : '1 MONTH', '$7.99', es ? 'primer mes' : 'first month', es ? 'Luego $29.99 cada mes' : 'Then $29.99 every month', 'Reg. $29.99', ''], ['3m', es ? '3 MESES' : '3 MONTHS', '$18.99', es ? 'primeros 3 meses' : 'first 3 months', es ? 'Luego $74.99 cada 3 meses ($24.99/mes)' : 'Then $74.99 every 3 months ($24.99/mo)', 'Reg. $74.99', es ? 'Ahorra 17%' : 'Save 17%'], ['6m', es ? '6 MESES' : '6 MONTHS', '$29.99', es ? 'primeros 6 meses' : 'first 6 months', es ? 'Luego $119.99 cada 6 meses ($19.99/mes)' : 'Then $119.99 every 6 months ($19.99/mo)', 'Reg. $119.99', es ? 'Ahorra 33%' : 'Save 33%']].map(([id, name, per, unit, billed, total, save]) => ({
         id, name, per, unit: ' ' + unit, billed, total, save, hasSave: !!save, best: id === '6m', notBest: id !== '6m', sel: s.plan === id,
         style: 'position:relative;display:flex;flex-direction:column;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:#FFFFFF;' + (s.plan === id ? 'box-shadow:inset 0 0 0 2px #0F3B2E,0 10px 24px rgba(10,15,13,.08)' : 'box-shadow:inset 0 0 0 1px #DDE5E0'),
@@ -1231,7 +1272,7 @@ class Component extends DCLogic {
       cardErrText: s.cardTried ? Object.values(this.cardCheck(s.card, s.exp, s.cvc, s.czip, es)).join(' · ') : '',
       payCard: () => { const E = this.cardCheck(this.state.card, this.state.exp, this.state.cvc, this.state.czip, es); if (Object.keys(E).length) this.setState({ cardTried: true }); else this.payNow(); },
       payNow: () => this.payNow(),
-      connectBankAct: () => { if (s.plaidOn) { try { localStorage.setItem('claimclub_connect', '1'); } catch (e) {} this.afterBank(); return; } this.setState({ bankDone: true }); clearTimeout(this._bk); this._bk = setTimeout(() => this.afterBank(), 1400); },
+      connectBankAct: () => { if (s.plaidOn) { if (typeof window !== 'undefined' && window.ccPlaid) { window.ccPlaid(this); return; } try { localStorage.setItem('claimclub_connect', '1'); } catch (e) {} this.afterBank(); return; } this.setState({ bankDone: true }); clearTimeout(this._bk); this._bk = setTimeout(() => this.afterBank(), 1400); },
       skipBank: () => this.afterBank(), bankDone: s.bankDone, bankTodo: !s.bankDone,
       payoutLine: (() => { const m = settle.find(x => x.amt > 0) || ml[0]; return m ? (es ? 'Recibiste ' + this.money(m.amt || 50) + ' de tu reclamo de ' + m.co + '.' : 'You received ' + this.money(m.amt || 50) + ' from your ' + m.co + ' claim.') : ''; })(),
       memberCount: '148,000+',
@@ -1263,7 +1304,7 @@ class Component extends DCLogic {
     if (kind !== 'member') { this._fin = setTimeout(() => this.toSign(), 1300); return; }
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._fin = setTimeout(() => this.setState({ unlock: 'in' }), 450);
-    this._fin2 = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('perks'), unlock: 'out' }), reduce ? 1600 : 3000);
+    this._fin2 = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('details'), unlock: 'out' }), reduce ? 1600 : 3000);
     this._fin3 = setTimeout(() => this.setState({ unlock: '' }), reduce ? 1900 : 3550);
   }
   confetti() {
@@ -1276,6 +1317,29 @@ class Component extends DCLogic {
       out.push({ st: '--x:' + x + 'px;--y:' + y + 'px;--r:' + ((i * 83) % 720 - 360) + 'deg;background:' + cols[i % cols.length] + ';width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:' + (i % 5 === 0 ? '50%' : '2px') + ';animation-delay:' + (0.62 + (i % 6) * 0.03).toFixed(2) + 's' });
     }
     return (this._conf = out);
+  }
+  // Email code (Nov 15): after details we confirm the email with a 6-digit code. On the live site live.js sets
+  // window.ccAuth (Supabase email OTP), which also signs them in, so the dashboard opens without another login.
+  // Design boards have no backend: any 6 digits pass there.
+  sendCode(again) {
+    const em = (this.state.email || '').trim().toLowerCase();
+    if (!em || (this.state.codeSentTo === em && !again)) return;
+    this.setState({ codeSentTo: em, codeErr: '', code: '', codeBusy: false, resent: !!again });
+    const A = typeof window !== 'undefined' && window.ccAuth;
+    if (!A) return;
+    A.send(em).then(r => { if (r && r.error) this.setState({ codeErr: /rate|seconds/i.test(r.error) ? this.tx('Too many codes sent. Wait a minute, then tap Send a new code.', 'Demasiados códigos. Espera un minuto y toca Enviar otro código.') : this.tx('We could not send the code. Tap Send a new code to try again.', 'No pudimos enviar el código. Toca Enviar otro código.') }); });
+  }
+  tx(en, es) { return this.state.lang === 'es' ? es : en; }
+  checkCode(v) {
+    const code = String(v == null ? this.state.code : v).replace(/[^0-9]/g, '').slice(0, 6);
+    if (code.length < 6 || this.state.codeBusy) return;
+    const A = typeof window !== 'undefined' && window.ccAuth;
+    const ok = () => { this.setState({ verified: true, codeBusy: false, codeErr: '' }); this.go(1); };
+    if (!A) { this.setState({ codeBusy: true }); setTimeout(ok, 500); return; }
+    this.setState({ codeBusy: true, codeErr: '' });
+    A.verify((this.state.email || '').trim().toLowerCase(), code).then(r => {
+      if (r && r.ok) ok(); else this.setState({ codeBusy: false, code: '', codeErr: this.tx('That code did not work. Check your email or send a new one.', 'Ese código no funcionó. Revisa tu correo o pide otro.') });
+    }).catch(() => this.setState({ codeBusy: false, codeErr: this.tx('Could not check the code. Check your connection and try again.', 'No pudimos revisar el código. Revisa tu conexión.') }));
   }
   // After payment: details (name, address) then the claim forms to sign.
   toSign() { this.setState({ pi: 0, step: this.steps().indexOf('details') }); }

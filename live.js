@@ -177,11 +177,57 @@
     history.replaceState(null,'',location.pathname);
     verify(c,kind,sid,true);
   }
+  /* ---------- Email code in the claim flow (Nov 15) ----------
+     The flow's "Confirm your email" step calls window.ccAuth. It signs the person in with Supabase's email
+     code, using the same saved sign-in the dashboard reads, so the dashboard opens without another login.
+     Right after, it links their Stripe purchase to the account (api/membership link) so Plaid can open. */
+  var SBJS='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js', sbP=null;
+  function sb(){
+    if(sbP)return sbP;
+    sbP=fetch('/api/config').then(function(r){return r.json()}).then(function(cfg){
+      if(!cfg.supabaseUrl||!cfg.supabaseAnonKey)throw new Error('no supabase');
+      var load=window.supabase?Promise.resolve():new Promise(function(ok,no){var t=document.createElement('script');t.src=SBJS;t.onload=ok;t.onerror=function(){no(new Error('Sign-in did not load'))};document.head.appendChild(t)});
+      return load.then(function(){return window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseAnonKey,{auth:{persistSession:true,autoRefreshToken:true}})});
+    });
+    sbP.catch(function(){sbP=null});
+    return sbP;
+  }
+  function token(){return sb().then(function(c){return c.auth.getSession()}).then(function(r){var s=r&&r.data&&r.data.session;if(!s)throw new Error('Not signed in');return s.access_token})}
+  window.ccAuth={
+    send:function(email){
+      return sb().then(function(c){return c.auth.signInWithOtp({email:email,options:{shouldCreateUser:true}})})
+        .then(function(r){return {error:r.error?r.error.message:''}}).catch(function(e){return {error:e.message||'failed'}});
+    },
+    verify:function(email,code){
+      return sb().then(function(c){return c.auth.verifyOtp({email:email,token:code,type:'email'})}).then(function(r){
+        if(r.error||!r.data||!r.data.session)return {ok:false};
+        // attach the purchase they just made to the new account (membership row), quietly
+        return fetch('/api/membership',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+r.data.session.access_token},body:JSON.stringify({action:'link'})}).catch(function(){}).then(function(){return {ok:true}});
+      });
+    }
+  };
+  /* Plaid in the claim flow: "Connect bank account" opens Plaid's window right here. If it cannot (not signed
+     in, purchase not linked yet, Plaid down) it falls back to opening Plaid in the dashboard like before. */
+  function plaidJs(){return window.Plaid?Promise.resolve():new Promise(function(ok,no){var t=document.createElement('script');t.src='https://cdn.plaid.com/link/v2/stable/link-initialize.js';t.onload=ok;t.onerror=function(){no(new Error('Plaid did not load'))};document.head.appendChild(t)})}
+  function papi(tok,action,extra){var b={action:action};for(var k in extra)b[k]=extra[k];return fetch('/api/plaid',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+tok},body:JSON.stringify(b)}).then(function(r){return r.json().then(function(j){if(!r.ok)throw new Error(j.error||'plaid');return j})})}
+  window.ccPlaid=function(c){
+    var later=function(){try{localStorage.setItem('claimclub_connect','1')}catch(e){}c.afterBank()};
+    c.setState({bankBusy:true});
+    token().then(function(tok){
+      return Promise.all([papi(tok,'link_token',{}),plaidJs()]).then(function(r){
+        var h=window.Plaid.create({token:r[0].link_token,
+          onSuccess:function(pt,meta){var inst=(meta&&meta.institution)||{};c.setState({bankDone:true});
+            papi(tok,'exchange',{public_token:pt,institution:{name:inst.name,institution_id:inst.institution_id}}).catch(function(){}).then(function(){c.state.bankDone=true;c.afterBank()})},
+          onExit:function(){c.setState({bankBusy:false})}});
+        h.open();
+      });
+    }).catch(function(e){console.warn('[plaid in flow]',e&&e.message);later()});
+  };
   window.ccLive=function(c,v){
     if(STRIPE){
       if(!started){started=true;if(q.get('sid')||q.get('canceled'))resume(c)}
       var info=v.sheetInfo||{};
-      v.unlock=function(){sheet(c,'fee',info)};
+      v.payFee=function(){sheet(c,'fee',info)};
       v.subscribe=function(){sheet(c,'member',info)};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
@@ -205,7 +251,7 @@
     if(leaving)return;leaving=true;
     try{sessionStorage.setItem('cc_enter','1')}catch(e){}
     var d=cover(true);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.opacity='1'})});
-    setTimeout(function(){location.href='/dashboard'},420);
+    setTimeout(function(){location.href='/dashboard/claims'},420);
   }
   // Arriving on the dashboard from the flow: start covered, then fade the cover away once the page has painted.
   if(/^\/(dashboard|login)(\/|$)|\/app\.html$/.test(location.pathname)){
