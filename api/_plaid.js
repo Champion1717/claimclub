@@ -6,12 +6,16 @@ const crypto = require('crypto');
 const { db } = require('./_db');
 
 const ENV = () => (process.env.PLAID_ENV || 'sandbox').toLowerCase();
-const BASE = () => process.env.PLAID_BASE_URL || ('https://' + (ENV() === 'production' ? 'production' : 'sandbox') + '.plaid.com');
-const configured = () => !!(process.env.PLAID_CLIENT_ID && process.env.PLAID_SECRET && process.env.PLAID_TOKEN_KEY);
+const norm = (e) => (String(e || '').toLowerCase() === 'production' ? 'production' : 'sandbox');
+const BASE = (env) => process.env.PLAID_BASE_URL || ('https://' + norm(env || ENV()) + '.plaid.com');
+// Each mode has its own secret: PLAID_SECRET_SANDBOX and PLAID_SECRET_PRODUCTION (PLAID_SECRET still works as a fallback).
+const SECRET = (env) => (norm(env || ENV()) === 'production' ? process.env.PLAID_SECRET_PRODUCTION : process.env.PLAID_SECRET_SANDBOX) || process.env.PLAID_SECRET;
+const configured = () => !!(process.env.PLAID_CLIENT_ID && SECRET() && process.env.PLAID_TOKEN_KEY);
 
-async function plaid(path, body) {
-  const r = await fetch(BASE() + path, { method: 'POST', headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(Object.assign({ client_id: process.env.PLAID_CLIENT_ID, secret: process.env.PLAID_SECRET }, body || {})) });
+// env: which Plaid mode to call. Saved connections pass their own env so sandbox ones keep working after the switch to production.
+async function plaid(path, body, env) {
+  const r = await fetch(BASE(env) + path, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(Object.assign({ client_id: process.env.PLAID_CLIENT_ID, secret: SECRET(env) }, body || {})) });
   const j = await r.json().catch(() => ({}));
   if (!r.ok || j.error_code) { const e = new Error(j.error_message || j.display_message || 'Plaid request failed'); e.code = j.error_code || 'HTTP_' + r.status; e.type = j.error_type; throw e; }
   return j;
@@ -82,7 +86,7 @@ async function syncItem(item) {
   let cursor = item.cursor || undefined, more = true, n = 0, guard = 0;
   try {
     while (more && guard++ < 20) {
-      const j = await plaid('/transactions/sync', { access_token: token, cursor, count: 500, options: { include_original_description: true } });
+      const j = await plaid('/transactions/sync', { access_token: token, cursor, count: 500, options: { include_original_description: true } }, item.env);
       const up = (j.added || []).concat(j.modified || []).map((t) => txRow(t, item));
       if (up.length) { const { error } = await sb.from('bank_transactions').upsert(up, { onConflict: 'transaction_id' }); if (error) throw error; }
       const gone = (j.removed || []).map((r) => r.transaction_id);
@@ -95,7 +99,7 @@ async function syncItem(item) {
   }
   // Recurring streams (needs the Recurring Transactions add-on; skipped quietly when not enabled yet).
   try {
-    const r = await plaid('/transactions/recurring/get', { access_token: token });
+    const r = await plaid('/transactions/recurring/get', { access_token: token }, item.env);
     const rows = (r.outflow_streams || []).filter((s) => !NOT_SUBS.includes((s.personal_finance_category || {}).primary)).map((s) => ({
       stream_id: s.stream_id, user_id: item.user_id, item_id: item.item_id, merchant: s.merchant_name || s.description, description: s.description,
       category: (s.personal_finance_category || {}).primary || null, frequency: s.frequency, first_date: s.first_date || null, last_date: s.last_date || null,
@@ -144,4 +148,4 @@ async function cardsOn() {
   try { const { data } = await db().from('app_settings').select('value').eq('key', 'card_connect').maybeSingle(); return !!data && data.value === true; } catch (e) { return false; }
 }
 
-module.exports = { plaid, seal, open, syncItem, rereview, state, review, isAdmin, cardsOn, configured, ENV };
+module.exports = { norm, plaid, seal, open, syncItem, rereview, state, review, isAdmin, cardsOn, configured, ENV };

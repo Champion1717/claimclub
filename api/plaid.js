@@ -32,7 +32,7 @@ module.exports = async (req, res) => {
       if (process.env.PLAID_REDIRECT_URI) body.redirect_uri = process.env.PLAID_REDIRECT_URI;
       if (b.item_id) { const it = await itemFor(user.id, b.item_id); if (!it) return send(res, 404, { error: 'Card not found' }); body.access_token = P.open(it.access_token_enc); }
       else { body.products = ['transactions']; body.transactions = { days_requested: 180 }; }
-      const j = await P.plaid('/link/token/create', body);
+      const j = await P.plaid('/link/token/create', body, b.item_id ? (await itemFor(user.id, b.item_id)).env : undefined);
       return send(res, 200, { link_token: j.link_token });
     }
     if (b.action === 'exchange') {
@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
     }
     if (b.action === 'remove') {
       const it = await itemFor(user.id, b.item_id); if (!it) return send(res, 404, { error: 'Card not found' });
-      try { await P.plaid('/item/remove', { access_token: P.open(it.access_token_enc) }); } catch (e) {}
+      try { await P.plaid('/item/remove', { access_token: P.open(it.access_token_enc) }, it.env); } catch (e) {}
       await sb.from('plaid_items').delete().eq('item_id', it.item_id);
       return send(res, 200, Object.assign({ enabled: true, env: P.ENV(), member: true }, await P.state(user.id)));
     }
