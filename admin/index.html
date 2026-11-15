@@ -200,7 +200,7 @@ async function refunds() {
   const filt = '<div class="seg" role="group" aria-label="Show">' + [[['requested', 'replied'], 'To do'], [['refunded'], 'Refunded'], [['denied', 'removed'], 'Closed']].map(([s, t]) => '<button data-s="' + s.join(',') + '" class="' + (s.join(',') === want ? 'on' : '') + '">' + t + '</button>').join('') + '</div>';
   main(head + '<div style="margin-bottom:12px">' + filt + '</div><div class="card" style="padding:6px 6px 2px">'
     + (r.refunds.length ? '<table><thead><tr><th>Member</th><th>Company</th><th>Amount</th><th>What happened</th><th>Status</th><th>Added</th></tr></thead><tbody>'
-      + r.refunds.map((x, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((x.profile && x.profile.name) || 'No name') + '</b><div class="small muted">' + esc(x.profile && x.profile.email) + '</div></td><td><b>' + esc(x.company) + '</b></td><td>' + (x.amount ? '$' + Number(x.amount).toFixed(2) : '<span class="muted">Not given</span>') + '</td><td class="small" style="max-width:320px">' + esc(x.what) + '</td><td>' + rpill(x.status) + '</td><td class="small muted">' + fmtDay(x.created_at) + '</td></tr>').join('') + '</tbody></table>'
+      + r.refunds.map((x, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((x.profile && x.profile.name) || 'No name') + '</b><div class="small muted">' + esc(x.profile && x.profile.email) + '</div></td><td><b>' + esc(x.company) + '</b>' + (x.kind === 'cancel' ? '<div class="small" style="color:#B07A12;font-weight:800">Cancel subscription</div>' : '') + '</td><td>' + (x.amount ? '$' + Number(x.amount).toFixed(2) : '<span class="muted">Not given</span>') + '</td><td class="small" style="max-width:320px">' + esc(x.what) + '</td><td>' + rpill(x.status) + '</td><td class="small muted">' + fmtDay(x.created_at) + '</td></tr>').join('') + '</tbody></table>'
       : '<div class="empty">Nothing here. When a member adds a charge, it shows up in To do.</div>') + '</div>');
   document.querySelectorAll('.seg button').forEach((b) => { b.onclick = () => { cache.rStatuses = b.dataset.s.split(','); refunds(); }; });
   document.querySelectorAll('tr.click').forEach((tr) => { const open = () => refundPanel(r.refunds[+tr.dataset.i]); tr.onclick = open; tr.onkeydown = (e) => { if (e.key === 'Enter') open(); }; });
@@ -363,6 +363,17 @@ async function settings() {
     + (meta ? '<div class="small muted" style="margin-top:8px">Last changed ' + fmtDate(meta.at) + ' by ' + esc(meta.by || '') + '</div>' : '') + '</div>'
     + '<button role="switch" aria-checked="' + on + '" aria-label="Bank connections" id="tgBank" style="flex:none;width:58px;height:32px;border-radius:99px;position:relative;transition:background .2s;background:' + (on ? '#12805C' : '#C9D3CD') + '"><span style="position:absolute;top:3px;left:' + (on ? '29px' : '3px') + ';width:26px;height:26px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(10,15,13,.25);transition:left .2s"></span></button></div>'
     + '<div class="row small" style="margin-top:10px"><span class="pill ' + (on ? 'p-approved' : 'p-ready') + '">' + (on ? 'On' : 'Off') + '</span><span id="smsg" class="muted" role="status"></span></div></div>');
+  const con = r.settings.card_connect === true, cmeta = r.settings.card_connect_meta;
+  $('#main').insertAdjacentHTML('beforeend', '<div class="card"><div class="row" style="justify-content:space-between;align-items:flex-start;gap:18px"><div><h2 style="margin-bottom:6px">Card connections (Plaid)</h2>'
+    + '<div class="small muted" style="line-height:1.55;max-width:560px">When on, members can connect a bank or card on Claim a refund and Subscription Manager. We review their charges, list their subscriptions and they can send them to the Refunds queue. Admins can always use it, even when off, for testing. Needs PLAID_CLIENT_ID, PLAID_SECRET, PLAID_ENV and PLAID_TOKEN_KEY in Vercel.</div>'
+    + (cmeta ? '<div class="small muted" style="margin-top:8px">Last changed ' + fmtDate(cmeta.at) + ' by ' + esc(cmeta.by || '') + '</div>' : '') + '</div>'
+    + '<button role="switch" aria-checked="' + con + '" aria-label="Card connections" id="tgCard" style="flex:none;width:58px;height:32px;border-radius:99px;position:relative;transition:background .2s;background:' + (con ? '#12805C' : '#C9D3CD') + '"><span style="position:absolute;top:3px;left:' + (con ? '29px' : '3px') + ';width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s"></span></button></div>'
+    + '<div class="row small" style="margin-top:10px"><span class="pill ' + (con ? 'p-approved' : 'p-ready') + '">' + (con ? 'On' : 'Off') + '</span><span id="cmsg" class="muted" role="status"></span></div></div>');
+  $('#tgCard').onclick = async () => {
+    $('#cmsg').textContent = 'Saving...';
+    try { const r2 = await api('setSetting', { key: 'card_connect', value: !con }); me.settings = r2.settings; settings(); }
+    catch (e) { $('#cmsg').textContent = e.message; $('#cmsg').className = 'err'; }
+  };
   $('#tgBank').onclick = async () => {
     $('#smsg').textContent = 'Saving...';
     try { const r2 = await api('setSetting', { key: 'bank_connect', value: !on }); me.settings = r2.settings; settings(); }

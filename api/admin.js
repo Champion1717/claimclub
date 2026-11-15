@@ -13,9 +13,9 @@ async function isAdmin(user) {
   return !!data;
 }
 // Feature switches shown in /admin > Settings. Each entry turns the posted value into what we store.
-const SETTINGS = { bank_connect: (v) => v === true };
+const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true };
 async function readSettings() {
-  const out = { bank_connect: false };
+  const out = { bank_connect: false, card_connect: false };
   const { data } = await db().from('app_settings').select('key, value, updated_by, updated_at');
   (data || []).forEach((r) => { out[r.key] = r.value; out[r.key + '_meta'] = { by: r.updated_by, at: r.updated_at }; });
   return out;
