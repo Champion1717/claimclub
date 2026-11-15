@@ -130,7 +130,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     <div style="min-width: 260px; display: flex; justify-content: flex-end; align-items: center; gap: 14px; font-size: 13px; font-weight: 600; color: #5B6862"><span>{{ L.notLaw }}</span><div role="group" aria-label="Language" style="display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 99px; background: #F3F6F4; box-shadow: inset 0 0 0 1px #E8EEEA"><button onClick="{{ setEn }}" aria-pressed="{{ isEn }}" style="{{ enStyle }}">EN</button><button onClick="{{ setEs }}" aria-pressed="{{ isEs }}" style="{{ esStyle }}">ES</button></div></div>
   </header>
   <div style="flex-grow: 1; min-height: 0; display: flex">
-    <sc-if value="{{ notAuth }}" hint-placeholder-val="{{ true }}"><aside class="mesh" style="flex: 0 0 400px; box-sizing: border-box; padding: 36px; color: #FFFFFF; display: flex; flex-direction: column; gap: 18px; min-height: 0">
+    <sc-if value="{{ showAside }}" hint-placeholder-val="{{ true }}"><aside class="mesh" style="flex: 0 0 400px; box-sizing: border-box; padding: 36px; color: #FFFFFF; display: flex; flex-direction: column; gap: 18px; min-height: 0">
       <sc-if value="{{ notReceipt }}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-direction: column; gap: 4px"><div style="font-size: 12px; font-weight: 700; letter-spacing: 1.4px; color: #C9D6CF">{{ L.estSoFar }}</div><div class="{{ bumpClass }}" style="font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1.05">{{ totalLabel }}</div><div style="font-size: 15px; font-weight: 600; color: #D7E3DC">{{ countMatched }}</div></div></sc-if>
       <sc-if value="{{ asideMatches }}" hint-placeholder-val="{{ true }}">
         <div style="flex-grow: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 8px">
@@ -480,30 +480,14 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
   </sc-if>
 
   <!-- FILING FEE -->
+  <!-- choice page, draft 2 -->
   <sc-if value="{{ isPay }}" hint-placeholder-val="{{ false }}">
-    <div class="enter scroll" style="flex-grow: 1; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 12px">
-      <div style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.feeH }}</h1><div style="font-size: 15px; line-height: 1.5; color: #5B6862">{{ L.feeSub }}</div></div>
-      <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 12px 16px; display: flex; flex-direction: column; gap: 8px; box-shadow: 0 14px 30px rgba(10,15,13,.06)">
-        <div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 11px; font-weight: 800; letter-spacing: 1.2px; color: #5B6862">{{ L.feeHead }}</span><span style="font-size: 12px; font-weight: 800; color: #5B6862">{{ billCount }}</span></div>
-        <div class="scroll" style="max-height: 132px; overflow-y: auto; display: flex; flex-direction: column">
-          <sc-for list="{{ billItems }}" as="b" hint-placeholder-count="3">
-            <div style="display: flex; align-items: center; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #DDE5E0">
-              <sc-if value="{{ b.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ b.logo }}" alt="" style="width: 28px; height: 28px; flex: none; border-radius: 7px; object-fit: contain; background: #FFFFFF; box-shadow: inset 0 0 0 1px #DDE5E0; padding: 3px; box-sizing: border-box"></sc-if>
-              <sc-if value="{{ b.noLogo }}" hint-placeholder-val="{{ false }}"><div style="{{ b.tileStyle }}; width: 28px; height: 28px; flex: none; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 12px">{{ b.initial }}</div></sc-if>
-              <span style="flex-grow: 1; min-width: 0; font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ b.title }}</span>
-              <span style="font-size: 12px; font-weight: 700; color: #5B6862">{{ b.amt }}</span>
-            </div>
-          </sc-for>
-        </div>
-        <div style="display: flex; justify-content: space-between; align-items: baseline; padding-top: 4px"><span style="font-size: 15px; font-weight: 800">{{ L.feeLine }} · {{ billCount }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">$49.99</span></div>
-        <div style="font-size: 11.5px; line-height: 1.5; color: #5B6862">{{ L.feeTerms }}</div>
-      </div>
-      <button onClick="{{ unlock }}" style="{{ primary }}; flex: none">{{ L.payBtn }}</button>
-      <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.orW }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
-      <button onClick="{{ toPlans }}" style="flex: none; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 64px; padding: 8px 10px 8px 22px; border-radius: 999px; background: #0F3B2E; color: #FFFFFF; text-align: left">
-        <span style="flex-grow: 1; display: flex; flex-direction: column; gap: 1px"><span style="font-size: 15px; font-weight: 800">{{ L.memPromoH }}</span><span style="font-size: 12px; opacity: .8">{{ L.memPromoP2 }}</span></span>
-        <span style="flex: none; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 92px; height: 48px; padding: 0 12px; border-radius: 999px; background: #3DDC97; color: #0F3B2E; line-height: 1"><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px">$7.99</span><span style="font-size: 10.5px; font-weight: 800">{{ L.firstMo }}</span></span>
-      </button>
+    <div class="enter" style="display: flex; flex-direction: column; gap: 16px; padding: 4px 0">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center"><h1 style="margin: 0; font-size: 34px; line-height: 1.12; font-weight: 800; letter-spacing: -1px">{{ chH }}</h1><span style="font-size: 16px; line-height: 1.5; font-weight: 600; color: #5B6862">{{ chSub }}</span></div>
+      <div style="flex: none; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 16px; background: #FFFFFF; box-shadow: inset 0 0 0 1.5px #DDE5E0; text-align: left"><span style="display: flex; padding-left: 7px; flex: none"><sc-for list="{{ chLogos }}" as="g" hint-placeholder-count="3"><span style="margin-left: -6px; padding: 3px; border-radius: 10px; background: #FFFFFF; box-shadow: 0 0 0 1.5px #DDE5E0, 0 0 0 3.5px #FFFFFF; display: flex"><sc-if value="{{ g.hasLogo }}" hint-placeholder-val="{{ true }}"><img src="{{ g.logo }}" alt="" style="width: 20px; height: 20px; border-radius: 8px; object-fit: contain; background: #FFFFFF"></sc-if><sc-if value="{{ g.noLogo }}" hint-placeholder-val="{{ false }}"><span style="{{ g.tileStyle }}; width: 20px; height: 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800">{{ g.initial }}</span></sc-if></span></sc-for></span><span style="flex: 1; min-width: 0; display: flex; flex-direction: column"><b style="font-size: 15px; color: #0A0F0D">{{ chReady }}</b><span style="font-size: 12.5px; font-weight: 600; color: #5B6862; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ chNames }}</span></span><span style="flex: none; display: flex; flex-direction: column; align-items: flex-end"><span style="font-size: 11px; font-weight: 700; color: #5B6862">{{ chUpTo }}</span><b style="font-size: 20px; letter-spacing: -0.5px; color: #12805C">{{ chTotal }}</b></span></div>
+      <div style="display: flex; gap: 16px; align-items: stretch"><div style="flex: 1.25; position: relative; border-radius: 22px; padding: 20px; margin-top: 12px; background: #FFFFFF; box-shadow: 0 0 0 2.5px #12805C, 0 16px 36px rgba(18,128,92,.16); display: flex; flex-direction: column; gap: 13px; text-align: left"><span style="position: absolute; top: -12px; left: 20px; padding: 4px 10px; border-radius: 99px; background: #12805C; color: #FFFFFF; font-size: 11.5px; font-weight: 800; letter-spacing: .4px">{{ chBest }}</span><span style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><b style="font-size: 20px; color: #0A0F0D">{{ chMem }}</b><span style="white-space: nowrap"><b style="font-size: 28px; letter-spacing: -0.8px; color: #0A0F0D">{{ chMemPrice }}</b><span style="font-size: 12px; font-weight: 700; color: #5B6862"> {{ chFirst }}</span></span></span><span style="font-size: 12.5px; font-weight: 700; color: #5B6862; margin-top: -9px">{{ chThen }}</span><sc-for list="{{ chPerksM }}" as="k" hint-placeholder-count="6"><div style="display: flex; align-items: flex-start; gap: 9px; font-size: 14px; font-weight: 700; line-height: 1.35; color: #0A0F0D"><span style="width: 18px; height: 18px; flex: none; margin-top: 1px; border-radius: 99px; background: #12805C; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span>{{ k.t }}</span></div></sc-for><span style="flex: 1"></span><button onClick="{{ joinGo }}" style="height: 52px; width: 100%; flex: none; border-radius: 99px; background: #3DDC97; color: #0F3B2E; font-size: 16px; font-weight: 800; box-shadow: 0 10px 24px rgba(61,220,151,.3)">{{ chJoin }}</button></div><div style="flex: 1; border-radius: 22px; padding: 20px; margin-top: 30px; background: #FFFFFF; box-shadow: inset 0 0 0 1.5px #DDE5E0; display: flex; flex-direction: column; gap: 13px; text-align: left"><span style="display: flex; justify-content: space-between; align-items: baseline"><b style="font-size: 18px; color: #0A0F0D">{{ chFee }}</b><b style="font-size: 24px; letter-spacing: -0.6px; color: #0A0F0D">$49.99</b></span><span style="font-size: 12.5px; font-weight: 700; color: #5B6862; margin-top: -9px">{{ chFeeSub }}</span><sc-for list="{{ chPerksF }}" as="k" hint-placeholder-count="6"><div style="display: flex; align-items: flex-start; gap: 9px; font-size: 14px; font-weight: 700; line-height: 1.35"><sc-if value="{{ k.on }}" hint-placeholder-val="{{ true }}"><span style="width: 18px; height: 18px; flex: none; margin-top: 1px; border-radius: 99px; background: #12805C; display: flex; align-items: center; justify-content: center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></span><span style="color: #0A0F0D">{{ k.t }}</span></sc-if><sc-if value="{{ k.off }}" hint-placeholder-val="{{ false }}"><span style="width: 18px; height: 18px; flex: none; margin-top: 1px; border-radius: 99px; background: #EEF1EF; display: flex; align-items: center; justify-content: center"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="#A0AAA5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18 M6 6l12 12"></path></svg></span><span style="color: #A0AAA5; text-decoration: line-through">{{ k.t }}</span></sc-if></div></sc-for><span style="flex: 1"></span><button onClick="{{ payFee }}" style="height: 52px; width: 100%; flex: none; border-radius: 99px; background: #FFFFFF; box-shadow: inset 0 0 0 1.5px #0A0F0D; color: #0A0F0D; font-size: 15px; font-weight: 800">{{ chFeeBtn }}</button></div></div>
+      <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12.5px; font-weight: 700; color: #5B6862"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#12805C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>{{ chKeep }}</div>
+      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><a href="https://claimclub.io/terms" target="_blank" rel="noopener" style="color: inherit">{{ L.termsW }}</a><a href="https://claimclub.io/privacy" target="_blank" rel="noopener" style="color: inherit">{{ L.privacyW }}</a></div>
     </div>
   </sc-if>
 
@@ -917,8 +901,8 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'pay', 'perks', 'plans', 'feepay', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'pay', 'perks', 'plans', 'feepay', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'pay', 'plans', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'pay', 'plans', 'checkout', 'details', 'verify', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
@@ -940,9 +924,9 @@ class Component extends DCLogic {
     if (this.stepName() === 'auth' && this.state.ai > 0) { this.setState({ ai: this.state.ai - 1 }); return; }
     const nm = this.stepName();
     if (nm === 'perks') { if (this.state.pi > 0) this.setState({ pi: this.state.pi - 1 }); else this.setState({ step: this.steps().indexOf('pay') }); return; }
-    if (nm === 'plans') { this.setState({ pi: 2, step: this.steps().indexOf('perks') }); return; }
+    if (nm === 'plans') { this.setState({ step: this.steps().indexOf('pay') }); return; }
     if (nm === 'feepay') { this.setState({ step: this.steps().indexOf('pay') }); return; }
-    if (nm === 'checkout' && !this.state.payState) { this.setState({ step: this.steps().indexOf(this.state.buying === 'member' ? 'plans' : 'feepay') }); return; }
+    if (nm === 'checkout' && !this.state.payState) { this.setState({ step: this.steps().indexOf(this.state.buying === 'member' ? 'plans' : 'pay') }); return; }
     // On the very first step there is nothing to go back to in the flow: return to the homepage.
     if ((this.state.step || 0) === 0 && typeof location !== 'undefined' && /^https?:/.test(location.protocol)) { location.href = '/'; return; }
     this.go(-1);
@@ -1145,8 +1129,8 @@ class Component extends DCLogic {
       enStyle: this.langStyle(!es), esStyle: this.langStyle(es),
       setEn: () => this.setState({ lang: 'en' }), setEs: () => this.setState({ lang: 'es' }),
       isIntro1: name === 'intro1', isIntro2: name === 'intro2', isState: name === 'state', isQ: qIndex >= 0,
-      isCalc: name === 'calc', isReveal: name === 'reveal', isEmail: name === 'email', isDetails: name === 'details', isAuth: name === 'auth', isAll: name === 'all', isPicked: name === 'picked', notAuth: name !== 'auth',
-      mainStyle: name === 'perks' || name === 'bank' ? 'width:100%;max-width:1680px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:32px 48px' : name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isFeePay: name === 'feepay', isVerify: name === 'verify', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
+      isCalc: name === 'calc', isReveal: name === 'reveal', isEmail: name === 'email', isDetails: name === 'details', isAuth: name === 'auth', isAll: name === 'all', isPicked: name === 'picked', notAuth: name !== 'auth', showAside: !['auth', 'pay'].includes(name),
+      mainStyle: name === 'pay' ? 'width:100%;max-width:800px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 20px;box-sizing:border-box' : name === 'perks' || name === 'bank' ? 'width:100%;max-width:1680px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:32px 48px' : name === 'auth' ? 'width:100%;display:flex;flex-direction:column;min-height:0;padding:14px 0 0' : 'width:100%;max-width:600px;display:flex;flex-direction:column;justify-content:center;min-height:0;padding:24px 0', isPay: name === 'pay', isFeePay: name === 'feepay', isVerify: name === 'verify', isPerks: name === 'perks', isPlans: name === 'plans', isCheckout: name === 'checkout', isBank: name === 'bank', isDash: name === 'dash',
       inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0 && qTotal > 1,
       quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
       setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
@@ -1236,6 +1220,33 @@ class Component extends DCLogic {
       codeBtn: s.codeBusy ? (es ? 'Revisando…' : 'Checking…') : (es ? 'Confirmar' : 'Confirm'),
       resendCode: () => this.sendCode(true), resendW: s.resent ? (es ? 'Código nuevo enviado' : 'New code sent') : (es ? 'Enviar otro código' : 'Send a new code'),
       wrongEmailW: es ? 'Revisa también spam o promociones.' : 'Check spam or promotions too.',
+      // Choice page (Nov 15, draft 2): membership first with its perks, filing fee second, short claims summary.
+      ...(() => {
+        const its = AL.length ? AL : ml, n = its.length || 1, p1 = this.planInfo('1m', es);
+        const lg = (m) => { const l = this.logos()[m.id]; return { logo: l || '', hasLogo: !!l, noLogo: !l, initial: m.co.slice(0, 1), tileStyle: S.tile(K[m.cat]) }; };
+        const names = (k) => its.length <= k ? its.map(m => m.co).join(', ') : its.slice(0, k).map(m => m.co).join(', ') + (es ? ' y ' : ' and ') + (its.length - k) + (es ? ' más' : ' more');
+        const nW = n === 1 ? (es ? 'tu reclamo' : 'your claim') : (es ? 'tus ' + n + ' reclamos' : 'your ' + n + ' claims');
+        const P = [[es ? 'Presenta ' + nW + ', sin tarifa' : 'Files ' + nW + ', no filing fee', es ? 'Presenta ' + nW : 'Files ' + nW, true],
+          [es ? 'Cada nuevo reclamo para ti, presentado por nosotros' : 'Every new claim you qualify for, filed for you', '', false],
+          [es ? 'Un aviso el día que abre un nuevo reclamo' : 'An alert the day a new claim opens', '', false],
+          [es ? 'Los ' + openAllN + ' acuerdos, y los locales cerca de ti' : 'All ' + openAllN + ' settlements, plus local ones near you', '', false],
+          [es ? 'Sigue cada reclamo en un solo panel' : 'Track every claim in one dashboard', '', true],
+          [es ? 'Refund Club: reclama cobros y cancela suscripciones' : 'Refund Club: fight bad charges, cancel subscriptions', '', false]];
+        return {
+          chH: es ? 'Presenta ' + nW : 'File ' + nW, chSub: noFigure ? (es ? 'Elige cómo los presentamos.' : 'Choose how we file them.') : (es ? 'Hasta ' + this.money(total) + ' te espera. Elige cómo lo presentamos.' : 'Up to ' + this.money(total) + ' is waiting. Choose how we file it.'),
+          chLogos: its.slice(0, 6).map(lg), chLogosM: its.slice(0, 3).map(lg), chReady: n + (es ? (n === 1 ? ' reclamo listo' : ' reclamos listos') : (n === 1 ? ' claim ready' : ' claims ready')),
+          chNames: names(3), chNamesM: names(2), chUpTo: noFigure ? '' : (es ? 'Hasta' : 'Up to'), chTotal: noFigure ? (es ? 'Varía' : 'Varies') : this.money(total),
+          chMem: es ? 'Membresía' : 'Membership', chBest: es ? 'MEJOR VALOR' : 'BEST VALUE', chMemPrice: p1.first, chFirst: es ? 'primer mes' : 'first month',
+          chThen: es ? 'Luego ' + p1.full + ' al mes. Cancela cuando quieras.' : 'Then ' + p1.full + ' a month. Cancel anytime.',
+          chFee: es ? 'Tarifa de presentación' : 'Filing fee', chFeeSub: es ? 'Un solo pago, solo ' + (n === 1 ? 'este reclamo' : 'estos ' + n + ' reclamos') + '.' : 'One time, just ' + (n === 1 ? 'this claim' : 'these ' + n + ' claims') + '.',
+          chFeeLeft: es ? 'Solo ' + (n === 1 ? 'este reclamo' : 'estos ' + n + ' reclamos') + '. Sin nuevos reclamos, avisos, todos los acuerdos ni Refund Club.' : 'Just ' + (n === 1 ? 'this claim' : 'these ' + n + ' claims') + '. No new claims, alerts, all settlements or Refund Club.',
+          chFeeOnce: es ? '$49.99 una vez' : '$49.99 once', chFeeBtn: es ? 'Pagar $49.99 una vez' : 'Pay $49.99 once',
+          chJoin: es ? 'Únete y presenta gratis' : 'Join and file free', chJoinM: (es ? 'Únete y presenta gratis · ' : 'Join and file free · ') + p1.first,
+          chKeep: es ? 'Te quedas con el 100% de cada pago, elijas lo que elijas' : 'You keep 100% of every payout either way',
+          chPerksM: P.map(([t]) => ({ t })), chPerksF: P.map(([t, tf, f]) => ({ t: f ? (tf || t) : t, on: f, off: !f })),
+          joinGo: () => this.setState({ step: this.steps().indexOf('plans') }),
+        };
+      })(),
       perkSkip: () => this.setState({ step: this.steps().indexOf('plans') }),
       dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank') + (s.bankOn && name === 'bank' ? '' : ';display:none'),
       perkSt: (s.p && s.p.st) || s.st && s.st !== 'Other' && s.st || 'CA',
@@ -1246,7 +1257,7 @@ class Component extends DCLogic {
       signedLabel: es ? signedCount + ' autorizaciones firmadas, listas para enviar al activar tu membresía' : signedCount + (signedCount === 1 ? ' authorization signed' : ' authorizations signed') + ', ready to submit when your membership starts',
       unlock: () => this.setState({ step: this.steps().indexOf('feepay') }),
       payFee: () => this.setState({ buying: 'fee', payState: '', step: this.steps().indexOf('checkout') }),
-      toPlans: () => this.setState({ pi: 0, step: this.steps().indexOf('perks') }),
+      toPlans: () => this.setState({ step: this.steps().indexOf('plans') }),
       plans: [['1m', es ? '1 MES' : '1 MONTH', '$7.99', es ? 'primer mes' : 'first month', es ? 'Luego $29.99 cada mes' : 'Then $29.99 every month', 'Reg. $29.99', ''], ['3m', es ? '3 MESES' : '3 MONTHS', '$18.99', es ? 'primeros 3 meses' : 'first 3 months', es ? 'Luego $74.99 cada 3 meses ($24.99/mes)' : 'Then $74.99 every 3 months ($24.99/mo)', 'Reg. $74.99', es ? 'Ahorra 17%' : 'Save 17%'], ['6m', es ? '6 MESES' : '6 MONTHS', '$29.99', es ? 'primeros 6 meses' : 'first 6 months', es ? 'Luego $119.99 cada 6 meses ($19.99/mes)' : 'Then $119.99 every 6 months ($19.99/mo)', 'Reg. $119.99', es ? 'Ahorra 33%' : 'Save 33%']].map(([id, name, per, unit, billed, total, save]) => ({
         id, name, per, unit: ' ' + unit, billed, total, save, hasSave: !!save, best: id === '6m', notBest: id !== '6m', sel: s.plan === id,
         style: 'position:relative;display:flex;flex-direction:column;width:100%;text-align:left;padding:0;border-radius:16px;overflow:hidden;background:#FFFFFF;' + (s.plan === id ? 'box-shadow:inset 0 0 0 2px #0F3B2E,0 10px 24px rgba(10,15,13,.08)' : 'box-shadow:inset 0 0 0 1px #DDE5E0'),
