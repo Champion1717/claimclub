@@ -136,7 +136,7 @@
   function run(c,kind,sh,stripe,secret){
     var T=sh.T,body=sh.q('.ccp-body'),or=sh.q('.ccp-or'),btn=sh.q('.ccp-pay'),err=sh.q('.ccp-err'),label=btn.querySelector('span').textContent;
     var checkout=stripe.initCheckoutElementsSdk({clientSecret:secret,elementsOptions:{appearance:APPEAR,fonts:[{cssSrc:'https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap'}]}});
-    var express=checkout.createExpressCheckoutElement({buttonHeight:50,buttonTheme:{applePay:'black',googlePay:'black'},buttonType:{applePay:'plain',googlePay:'plain'},layout:{maxColumns:1,overflow:'never'},paymentMethodOrder:['apple_pay','google_pay','link'],paymentMethods:{applePay:'always',googlePay:'always',link:'auto',paypal:'never',amazonPay:'never',klarna:'never'}});
+    var express=checkout.createExpressCheckoutElement({buttonHeight:54,buttonTheme:{applePay:'black',googlePay:'black'},buttonType:{applePay:'plain',googlePay:'plain'},layout:{maxColumns:1,overflow:'never'},paymentMethodOrder:['apple_pay','google_pay','link'],paymentMethods:{applePay:'always',googlePay:'always',link:'auto',paypal:'never',amazonPay:'never',klarna:'never'}});
     var card=checkout.createPaymentElement({layout:{type:'accordion',defaultCollapsed:false,radios:'never',spacedAccordionItems:false,visibleAccordionItemsCount:1},paymentMethodOrder:['card'],wallets:{applePay:'never',googlePay:'never',link:'never'}});
     var es=c.state.lang==='es';
     function showErr(m){err.textContent=m||'';err.hidden=!m}

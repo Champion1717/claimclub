@@ -667,7 +667,7 @@ class Component extends DCLogic {
       certNote: ['As printed on the official claim form', 'Tal como aparece en el formulario oficial'],
       consentTxt: ['I agree to sign electronically and have read the ', 'Acepto firmar electrónicamente y he leído el '], agreeLink: ['Claim Filing Authorization Agreement', 'Acuerdo de Autorización de Presentación de Reclamos'],
       eachNote: ['Each claim needs its own signature.', 'Cada reclamo necesita su propia firma.'],
-      authHelp: ['Read the form, check the box at the bottom, then tap the signature line to sign. We submit it after your filing fee is paid.', 'Lee el formulario, marca la casilla de abajo y toca la línea de firma para firmar. Lo enviamos después de pagar tu tarifa.'],
+      authHelp: ['Read the form, check the box at the bottom, then tap the signature line to sign. We submit it as soon as you sign.', 'Lee el formulario, marca la casilla de abajo y toca la línea de firma para firmar. Lo enviamos en cuanto firmes.'],
       payUpTo: ['You could be owed up to', 'Podrías recibir hasta'], fromW: ['from ', 'de '],
       member: ['Claimclub membership', 'Membresía Claimclub'], month: ['/ month', '/ mes'],
       unlockA: ['Unlock all ', 'Desbloquea los '], unlockB: [' by name', ' por nombre'],
@@ -740,6 +740,7 @@ class Component extends DCLogic {
       { key: 'netflix', brand: 'Netflix', cat: 'arb', title: ['Do you have a Netflix account?', '¿Tienes cuenta de Netflix?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('netflix') },
       { key: 'openai', brand: 'ChatGPT', cat: 'arb', title: ['Do you use ChatGPT?', '¿Usas ChatGPT?'], sub: ['A privacy claim filed through a partner law firm.', 'Un reclamo de privacidad presentado por un bufete asociado.'], opts: yn('openai') }
     ];
+    TOP.length = 7; // Nov 15: only the 7 most common offers, so people reach payment sooner (GoodRx, Netflix, ChatGPT dropped)
     const loc = (q) => Object.assign({}, q, { title: q.title[es ? 1 : 0], sub: q.sub[es ? 1 : 0], opts: q.opts.map(o => [o[0], es ? o[2] : o[1]]) });
     const fid = this.state.focus;
     if (this.quickMode() && fid) {
@@ -842,21 +843,22 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'details', 'auth', 'pay', 'plans', 'checkout', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'details', 'auth', 'pay', 'perks'].concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email', 'pay', 'plans', 'checkout', 'perks', 'details', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email', 'pay', 'perks', 'details', 'auth'].concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
     const S = this.steps(), noAuth = this.authList().length === 0;
-    this.setState(st => {
-      let n = st.step + d;
-      if (d < 0 && S[n] === 'calc') n -= 1;
-      if (S[n] === 'all' && !st.sawAll) n += d;
-      if (S[n] === 'auth' && noAuth) n += d;
-      const extra = {};
-      if (S[n] === 'auth') extra.ai = d < 0 ? Math.max(0, this.authList().length - 1) : 0;
-      return Object.assign({ step: Math.max(0, Math.min(S.length - 1, n)) }, extra);
-    });
+    let n = this.state.step + d;
+    if (d < 0 && S[n] === 'calc') n -= 1;
+    if (S[n] === 'all' && !this.state.sawAll) n += d;
+    if (S[n] === 'auth' && noAuth) n += d;
+    // Payment comes before details and signing (Nov 15): going back from details never re-enters payment.
+    if (d < 0 && this.state.paid && ['perks', 'checkout', 'plans', 'pay'].includes(S[n])) return;
+    if (d > 0 && n >= S.length) { this.toBank(); return; }
+    const extra = {};
+    if (S[n] === 'auth') extra.ai = d < 0 ? Math.max(0, this.authList().length - 1) : 0;
+    this.setState(Object.assign({ step: Math.max(0, Math.min(S.length - 1, n)) }, extra));
   }
   back() {
     if (this.stepName() === 'auth' && this.state.ai > 0) { this.setState({ ai: this.state.ai - 1 }); return; }
@@ -1056,7 +1058,7 @@ class Component extends DCLogic {
     const allOpen = this.data().filter(d => this.daysLeft(d.dl) > 0 && !d.dir && !d.st);
     const allValue = this.money(Math.round(allOpen.reduce((t, d) => t + (d.max || d.amt || 0), 0)));
     const moreLabel = this.money(Math.round(others.filter(d => d.cat !== 'arb').reduce((t, d) => t + (d.max || d.amt || 0), 0)));
-    const showBack = qNum > 0 || ['details', 'auth', 'all', 'picked', 'pay', 'plans'].includes(name) || (name === 'checkout' && !s.payState);
+    const showBack = qNum > 0 || ['auth', 'all', 'picked', 'pay', 'plans'].includes(name) || (name === 'details' && !s.paid) || (name === 'checkout' && !s.payState);
     return {
       L, isEn: !es, isEs: es,
       enStyle: this.langStyle(!es), esStyle: this.langStyle(es),
@@ -1145,7 +1147,7 @@ class Component extends DCLogic {
       })(),
       estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
       isPerk1: s.pi === 0, isPerk2: s.pi === 1, isPerk3: s.pi === 2,
-      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.toBank(); },
+      perkNext: () => { if (this.state.pi < 2) this.setState({ pi: this.state.pi + 1 }); else this.toSign(); },
       perkSkip: () => this.toBank(),
       dot1: this.dotStyle(s.pi === 0 && name === 'perks'), dot2: this.dotStyle(s.pi === 1 && name === 'perks'), dot3: this.dotStyle(s.pi === 2 && name === 'perks'), dot4: this.dotStyle(name === 'bank') + (s.bankOn ? '' : ';display:none'),
       perkSt: (s.p && s.p.st) || s.st && s.st !== 'Other' && s.st || 'CA',
@@ -1195,7 +1197,7 @@ class Component extends DCLogic {
       toggleSaConsent: () => this.setState({ saConsent: !this.state.saConsent }),
       saSigned: s.saSigned, saUnsigned: !s.saSigned, saSign: () => this.setState({ saSigned: true }),
       saDisabled: !(s.saConsent && s.saSigned), saStyle: S.btn(s.saConsent && s.saSigned),
-      saGo: () => { if (!(this.state.saConsent && this.state.saSigned)) return; this.recordSign(AL, 'bulk'); const sg = {}, cs = {}; AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; }); this.setState({ signed: sg, consent: cs, saOpen: false, step: this.steps().indexOf('pay') }); },
+      saGo: () => { if (!(this.state.saConsent && this.state.saSigned)) return; this.recordSign(AL, 'bulk'); const sg = {}, cs = {}; AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; }); this.setState({ signed: sg, consent: cs, saOpen: false, }); this.toBank(); },
       saGoLabel: (es ? 'Firmar los ' : 'Sign all ') + AL.length + (es ? ' formularios' : ' forms'),
       filedLabel: this.money(filedAmt),
       filedBar: 'height:100%;border-radius:99px;transition:width .4s ease;background:#218358;width:' + (total ? Math.round(filedAmt / total * 100) : 0) + '%',
@@ -1210,7 +1212,7 @@ class Component extends DCLogic {
   }
   finishPay(kind) {
     clearTimeout(this._fin); clearTimeout(this._fin2); clearTimeout(this._fin3);
-    if (kind !== 'member') { this._fin = setTimeout(() => { if (this.state.bankOn) this.setState({ pi: 0, step: this.steps().indexOf('bank') }); else this.afterBank(); }, 1300); return; }
+    if (kind !== 'member') { this._fin = setTimeout(() => this.toSign(), 1300); return; }
     const reduce = typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this._fin = setTimeout(() => this.setState({ unlock: 'in' }), 450);
     this._fin2 = setTimeout(() => this.setState({ pi: 0, step: this.steps().indexOf('perks'), unlock: 'out' }), reduce ? 1600 : 3000);
@@ -1227,6 +1229,8 @@ class Component extends DCLogic {
     }
     return (this._conf = out);
   }
+  // After payment: details (name, address) then the claim forms to sign.
+  toSign() { this.setState({ pi: 0, step: this.steps().indexOf('details') }); }
   toBank() { if (this.state.bankOn) this.setState({ step: this.steps().indexOf('bank') }); else this.afterBank(); }
   afterBank() { this.saveForApp(); this.setState({ exiting: true }); clearTimeout(this._ex); this._ex = setTimeout(() => { try { location.href = 'DashA.dc.html'; } catch (e) {} }, 700); }
   saveForApp() {
