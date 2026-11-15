@@ -81,3 +81,4 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 - Photos: `photos()` in `landing.js` maps each settlement id to an Unsplash photo id (free Unsplash license, served from images.unsplash.com with `auto=format`, sized srcset, lazy loaded). Picks came from Unsplash search; to change one, edit that id in `photos()`.
 - How it works section is the V2 design (dark band, three realistic iPhones). It is generated: edit `cc/concepts/how4.py` (`v2`, `iphone()`, `STEPS`), then run `python3 how_v2.py` in `cc/src` before `green.py`. Copy says payouts come when each settlement pays out (usually 2 to 6 months after the deadline), never "instant".
 - The flow's left phone (`obphone` in FlowC2D) uses the same titanium rim, side buttons and Dynamic Island look.
+- Homepage nav (logo, Log in, Get started) sits inside the top of the green hero tile (`header.tophdr`, first child of `.mesh` in LandingC2), not a separate sticky bar.

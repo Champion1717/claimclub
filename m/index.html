@@ -85,8 +85,10 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
 <style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
 <div class="screen" style="font-family: 'Manrope', sans-serif; color: #0A0F0D; background: #FFFFFF; height: 100vh; overflow-y: auto">
 
-  <header style="position: sticky; top: 0; z-index: 20; background: #0A0F0D">
-    <div style="max-width: 1280px; margin: 0 auto; padding: 14px 4vw; display: flex; align-items: center; justify-content: space-between; gap: 20px">
+  <!-- HERO -->
+  <section id="top" class="heroWrap" style="padding: 0"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; min-height: min(727px, calc(100vh - 190px)); display: flex; flex-direction: column">
+<header class="tophdr" style="position: relative; z-index: 5; background: transparent">
+    <div style="max-width: 1280px; margin: 0 auto; padding: 22px 4vw 0; box-sizing: border-box; width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 20px">
       <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none"><svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><path fill="#FFFFFF" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#FFFFFF" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#FFFFFF" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#FFFFFF" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#FFFFFF" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#3DDC97" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span style="font-size: 20px; font-weight: 800; letter-spacing: -0.6px; color: #FFFFFF">claim<span style="font-weight: 500">club</span><span style="font-size: 0.72em; font-weight: 600; color: #3DDC97; margin-left: -0.06em">.io</span></span></a>
       <sc-if value="{{ full }}" hint-placeholder-val="{{ false }}">
         <nav style="display: flex; flex-wrap: wrap; gap: 28px; font-size: 15px; font-weight: 600"><a href="#settlements" style="color: #D7E3DC; text-decoration: none">Settlements</a><a href="#how" style="color: #D7E3DC; text-decoration: none">How it works</a><a href="#pricing" style="color: #D7E3DC; text-decoration: none">Pricing</a><a href="#faq" style="color: #D7E3DC; text-decoration: none">FAQ</a></nav>
@@ -97,9 +99,7 @@ input,textarea,select{background-color:#FFFFFF;color:#0A0F0D}
       </div>
     </div>
   </header>
-
-  <!-- HERO -->
-  <section id="top" class="heroWrap" style="padding: 0"><div class="mesh" style="position: relative; color: #FFFFFF; overflow: hidden; min-height: min(660px, calc(100vh - 67px - 190px)); display: flex; flex-direction: column"><div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
+<div class="orb1" aria-hidden="true" style="position: absolute; width: 620px; height: 620px; right: -140px; top: -220px; border-radius: 50%; background: radial-gradient(circle, rgba(61,220,151,.38) 0%, rgba(61,220,151,0) 65%); pointer-events: none"></div><div class="orb2" aria-hidden="true" style="position: absolute; width: 560px; height: 560px; left: -180px; bottom: -200px; border-radius: 50%; background: radial-gradient(circle, rgba(18,128,92,.55) 0%, rgba(18,128,92,0) 65%); pointer-events: none"></div>
     <div class="herogrid" style="position: relative; flex-grow: 1; width: 100%; box-sizing: border-box; max-width: 1280px; margin: 0 auto; padding: 56px 4vw 48px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px 56px">
       <div class="herotext" style="flex: 1 1 460px; display: flex; flex-direction: column; gap: 24px">
         <h1 class="u1" style="margin: 0; font-size: clamp(36px, 4.2vw, 60px); line-height: 1.02; font-weight: 800; letter-spacing: -0.045em">Big companies settle lawsuits all the time. <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: #3DDC97">You could be owed a share.</span></h1>
