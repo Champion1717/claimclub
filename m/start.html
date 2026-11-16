@@ -820,8 +820,8 @@ class Component extends DCLogic {
     setTimeout(() => this.track(), 0);
     // Bank connections are switched on and off in /admin > Settings. Off until the live config says otherwise.
     if (this.isLiveHost() && typeof fetch !== 'undefined') {
-      if (this.state.bankOn) this.setState({ bankOn: false });
-      fetch('/api/config').then(r => r.json()).then(c => { if (c && c.bankConnect) this.setState({ bankOn: true }); if (c && c.cardConnect) this.setState({ plaidOn: true }); }).catch(() => {});
+      if (this.state.bankOn || this.state.mbOn !== false) this.setState({ bankOn: false, mbOn: false });
+      fetch('/api/config').then(r => r.json()).then(c => { if (c && c.bankConnect) this.setState({ bankOn: true }); if (c && c.cardConnect) this.setState({ plaidOn: true, mbOn: true }); }).catch(() => {});
     }
   }
   componentDidUpdate() {
@@ -1188,7 +1188,7 @@ class Component extends DCLogic {
           [es ? 'Un aviso el día que abre un nuevo reclamo' : 'An alert the day a new claim opens', '', false],
           [es ? 'Los ' + openAllN + ' acuerdos, y los locales cerca de ti' : 'All ' + openAllN + ' settlements, plus local ones near you', '', false],
           [es ? 'Sigue cada reclamo en un solo panel' : 'Track every claim in one dashboard', '', true],
-          [es ? 'Refund Club: reclama cobros y cancela suscripciones' : 'Refund Club: fight bad charges, cancel subscriptions', '', false]];
+          [es ? 'Refund Club: reclama cobros y cancela suscripciones' : 'Refund Club: fight bad charges, cancel subscriptions', '', false]].filter((p, i) => i < 5 || s.mbOn !== false);
         return {
           chH: es ? 'Presenta ' + nW : 'File ' + nW, chSub: noFigure ? (es ? 'Elige cómo los presentamos.' : 'Choose how we file them.') : (es ? 'Hasta ' + this.money(total) + ' te espera. Elige cómo lo presentamos.' : 'Up to ' + this.money(total) + ' is waiting. Choose how we file it.'),
           chLogos: its.slice(0, 6).map(lg), chLogosM: its.slice(0, 3).map(lg), chReady: n + (es ? (n === 1 ? ' reclamo listo' : ' reclamos listos') : (n === 1 ? ' claim ready' : ' claims ready')),
@@ -1196,7 +1196,7 @@ class Component extends DCLogic {
           chMem: es ? 'Membresía' : 'Membership', chBest: es ? 'MEJOR VALOR' : 'BEST VALUE', chMemPrice: p1.first, chFirst: es ? 'primer mes' : 'first month',
           chThen: es ? 'Luego ' + p1.full + ' al mes. Cancela cuando quieras.' : 'Then ' + p1.full + ' a month. Cancel anytime.',
           chFee: es ? 'Tarifa de presentación' : 'Filing fee', chFeeSub: es ? 'Un solo pago, solo ' + (n === 1 ? 'este reclamo' : 'estos ' + n + ' reclamos') + '.' : 'One time, just ' + (n === 1 ? 'this claim' : 'these ' + n + ' claims') + '.',
-          chFeeLeft: es ? 'Solo ' + (n === 1 ? 'este reclamo' : 'estos ' + n + ' reclamos') + '. Sin nuevos reclamos, avisos, todos los acuerdos ni Refund Club.' : 'Just ' + (n === 1 ? 'this claim' : 'these ' + n + ' claims') + '. No new claims, alerts, all settlements or Refund Club.',
+          chFeeLeft: es ? 'Solo ' + (n === 1 ? 'este reclamo' : 'estos ' + n + ' reclamos') + (s.mbOn !== false ? '. Sin nuevos reclamos, avisos, todos los acuerdos ni Refund Club.' : '. Sin nuevos reclamos, avisos ni todos los acuerdos.') : 'Just ' + (n === 1 ? 'this claim' : 'these ' + n + ' claims') + (s.mbOn !== false ? '. No new claims, alerts, all settlements or Refund Club.' : '. No new claims, alerts or all settlements.'),
           chFeeOnce: es ? '$49.99 una vez' : '$49.99 once', chFeeBtn: es ? 'Pagar $49.99 una vez' : 'Pay $49.99 once',
           chJoin: es ? 'Únete y presenta gratis' : 'Join and file free', chJoinM: (es ? 'Únete y presenta gratis · ' : 'Join and file free · ') + p1.first,
           chKeep: es ? 'Te quedas con el 100% de cada pago, elijas lo que elijas' : 'You keep 100% of every payout either way',
