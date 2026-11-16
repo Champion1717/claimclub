@@ -134,6 +134,17 @@
    ]
   },
   {
+   "source": "/legal/security.html",
+   "destination": "/security",
+   "permanent": true,
+   "missing": [
+    {
+     "type": "query",
+     "key": "v"
+    }
+   ]
+  },
+  {
    "source": "/about.html",
    "destination": "/about",
    "permanent": true,
@@ -355,6 +366,10 @@
    "destination": "/legal/authorization.html"
   },
   {
+   "source": "/security",
+   "destination": "/legal/security.html"
+  },
+  {
    "source": "/about",
    "destination": "/about.html"
   },
@@ -364,6 +379,27 @@
   }
  ],
  "headers": [
+  {
+   "source": "/(.*)",
+   "headers": [
+    {
+     "key": "X-Content-Type-Options",
+     "value": "nosniff"
+    },
+    {
+     "key": "Referrer-Policy",
+     "value": "strict-origin-when-cross-origin"
+    },
+    {
+     "key": "X-Frame-Options",
+     "value": "SAMEORIGIN"
+    },
+    {
+     "key": "Strict-Transport-Security",
+     "value": "max-age=63072000; includeSubDomains"
+    }
+   ]
+  },
   {
    "source": "/dashboard",
    "headers": [
