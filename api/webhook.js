@@ -24,10 +24,16 @@ module.exports = async (req, res) => {
   try { sb = require('./_db').db(); } catch (e) { console.log('No database configured; logging only.'); }
   const { renewsAt } = require('./_db');
   const { sendNotice } = require('./_email');
+  const { sendMetaEvent } = require('./_meta');
   try {
     if (event.type === 'checkout.session.completed') {
       const s = event.data.object, md = s.metadata || {}, email = (s.customer_details && s.customer_details.email) || s.customer_email || '';
-      console.log('PAID', s.id, email, md);
+      console.log('PAID', s.id, email, md.kind, md.plan, md.flow);
+      // Meta Purchase (server copy) = flow B trial started. Same event_id as the browser pixel, so Meta dedupes the two.
+      if (md.plan === '1y' && s.mode === 'subscription') {
+        await sendMetaEvent({ eventName: 'Purchase', eventId: s.id, eventTime: s.created, value: 2.00, extraCustom: { predicted_ltv: 49.00 },
+          email, phone: s.customer_details && s.customer_details.phone, meta: md });
+      }
       if (sb && email) {
         const row = { email, kind: md.kind || (s.mode === 'subscription' ? 'member' : 'fee'), plan: md.plan || null, amount_cents: s.amount_total, stripe_session: s.id, stripe_customer: s.customer || null, stripe_subscription: s.subscription || null, settlement_ids: (md.ids || '').split(',').filter(Boolean), flow: md.flow === 'b' ? 'b' : 'a' };
         const { data: prof } = await sb.from('profiles').select('id').ilike('email', email).maybeSingle();
@@ -47,6 +53,16 @@ module.exports = async (req, res) => {
         const { m } = await memberFor(sb, subId);
         if (m && m.status === 'past_due') { upd.status = sub.cancel_at_period_end ? 'cancelling' : 'active'; upd.payment_failed_at = null; }
         await sb.from('memberships').update(upd).eq('stripe_subscription', subId);
+      }
+      // Meta Subscribe = the first $49 charge after flow B's trial (server only). Year-2+ renewals are not sent.
+      if (subId && inv.billing_reason === 'subscription_cycle' && inv.amount_paid > 0) {
+        const sub = await stripe.subscriptions.retrieve(subId), smd = sub.metadata || {};
+        if (smd.plan === '1y' && smd.meta_subscribe_sent !== '1') {
+          const { m } = await memberFor(sb, subId);
+          await sendMetaEvent({ eventName: 'Subscribe', eventId: inv.id, eventTime: (inv.status_transitions && inv.status_transitions.paid_at) || Math.floor(Date.now() / 1000),
+            value: inv.amount_paid / 100, extraCustom: { predicted_ltv: 49.00 }, email: inv.customer_email, phone: inv.customer_phone, userId: m && m.user_id, meta: smd });
+          await stripe.subscriptions.update(subId, { metadata: { meta_subscribe_sent: '1' } });
+        }
       }
     } else if (event.type === 'invoice.payment_failed' && sb) {
       const inv = event.data.object, subId = subOf(inv);

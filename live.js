@@ -13,8 +13,23 @@
       .then(function(j){if(j.url)location.href=j.url;else throw new Error(j.error||'no url')})
       .catch(function(e){console.error(e);alert('Checkout is unavailable right now. Please try again.');c.setState({payState:'',step:idx(c,c.offerStep?c.offerStep(kind):(kind==='member'?'plans':'pay'))})});
   }
+  /* ---------- Meta events (Nov 16 2026), flow B trial only. Do not fire these anywhere else on the site. ----------
+     InitiateCheckout on "Start my trial" (browser), Purchase when the $2 trial checkout succeeds (browser here plus a server copy
+     from the Stripe webhook with the same event_id = Checkout Session ID). Subscribe (day 7, $49) is server only. */
+  function fbOk(){return typeof window.fbq==='function'}
+  function ck(n){var m=document.cookie.match(new RegExp('(?:^|; )'+n+'=([^;]*)'));return m?decodeURIComponent(m[1]):''}
+  function fbc(){var c=ck('_fbc');if(c)return c;var id=new URLSearchParams(location.search).get('fbclid');if(id){try{sessionStorage.setItem('cc_fbclid',id)}catch(e){}}else{try{id=sessionStorage.getItem('cc_fbclid')}catch(e){}}return id?'fb.1.'+Date.now()+'.'+id:''}
+  function uuid(){try{return crypto.randomUUID()}catch(e){return 'ic-'+Date.now()+'-'+Math.random().toString(36).slice(2)}}
+  function metaAttr(){return{fbp:ck('_fbp'),fbc:fbc(),gpc:navigator.globalPrivacyControl?1:0,source_url:location.href}}
+  function metaPurchase(c,kind,sid){
+    if(!sid||kind!=='member'||c.state.plan!=='1y'||!fbOk())return;
+    try{if(sessionStorage.getItem('st_'+sid))return;sessionStorage.setItem('st_'+sid,'1')}catch(e){}
+    fbq('track','Purchase',{value:2.00,currency:'USD',predicted_ltv:49.00},{eventID:sid});
+  }
+  try{var fq=new URLSearchParams(location.search).get('fbclid');if(fq)sessionStorage.setItem('cc_fbclid',fq)}catch(e){}
   function post(c,kind,extra){
     var b={kind:kind,plan:c.state.plan,flow:c.state.flow||'a',consent:c.state.flow==='b'?1:0,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname};
+    if(b.plan==='1y'&&kind==='member'){var a=metaAttr();for(var k0 in a)b[k0]=a[k0]}
     for(var k in extra)b[k]=extra[k];
     return fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json()});
   }
@@ -24,6 +39,7 @@
     if(inRender)Object.assign(c.state,busy);else c.setState(busy);
     fetch('/api/session?id='+encodeURIComponent(sid)).then(function(r){return r.json()}).then(function(j){
       if(!j.paid)throw new Error('not paid');
+      metaPurchase(c,kind,sid);
       c.setState({payState:'done',paid:kind});c.saveForApp();
       try{sessionStorage.removeItem(KEY)}catch(e){}
       if(c.finishPay)c.finishPay(kind);else setTimeout(function(){c.setState({pi:0,step:idx(c,kind==='member'?'perks':'bank')})},1300);
@@ -274,7 +290,7 @@
       var info=v.sheetInfo||{};
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
-      v.trGo=function(){v.subscribe()};
+      v.trGo=function(){if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:2.00,currency:'USD'},{eventID:uuid()});v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }

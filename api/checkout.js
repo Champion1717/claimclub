@@ -4,6 +4,7 @@
 // in Vercel, from the same mode as STRIPE_SECRET_KEY; without it, or if Stripe refuses, it returns
 // the hosted page URL like before.
 const Stripe = require('stripe');
+const { attribution } = require('./_meta');
 
 // Full renewal price per billing period, and the first-period charge (75% off, rounded to the cent).
 const FEE = 4999;
@@ -71,8 +72,10 @@ module.exports = async (req, res) => {
 
   try {
     const trial = kind === 'member' && PLANS[plan].trialDays;
+    // Meta Conversions API (flow B trial only): fbp/fbc/IP/browser saved on the session and the subscription, so the day-7 Subscribe can be matched.
+    const att = trial ? attribution(req, b) : {};
     const discount = kind !== 'member' ? {}
-      : trial ? { subscription_data: { trial_period_days: PLANS[plan].trialDays, metadata: { plan, flow } } }
+      : trial ? { subscription_data: { trial_period_days: PLANS[plan].trialDays, metadata: { plan, flow, ...att } } }
       : { discounts: [{ coupon: await introCoupon(stripe, plan) }], subscription_data: { metadata: { plan, flow } } };
     // The trial's $2 is a one-time line on the first invoice; the yearly price starts when the trial ends.
     const lines = trial ? [line, { quantity: 1, price_data: { currency: 'usd', unit_amount: PLANS[plan].first, product_data: { name: 'Claimclub 7-day trial', description: 'Then $49 a year from the end of your trial until you cancel.' } } }] : [line];
@@ -81,7 +84,7 @@ module.exports = async (req, res) => {
       line_items: lines,
       customer_email: email,
       ...discount,
-      metadata: { kind, plan: kind === 'member' ? plan : '', ids, flow, ...(trial ? { consent: b.consent ? 'trial-2026-11-16' : '' } : {}) },
+      metadata: { kind, plan: kind === 'member' ? plan : '', ids, flow, ...(trial ? { consent: b.consent ? 'trial-2026-11-16' : '', ...att } : {}) },
     };
     const done = origin + back + '?paid=' + kind + '&sid={CHECKOUT_SESSION_ID}';
     res.setHeader('Content-Type', 'application/json');
