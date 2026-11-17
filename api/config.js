@@ -26,6 +26,8 @@ module.exports = async (req, res) => {
     supabaseAnonKey: PUBLIC_KEY(),
     testMode: process.env.ALLOW_TEST_MEMBERSHIP === '1',
     bankConnect,
+    // Pricing test (Nov 16 2026): set CC_FLOW to a or b in Vercel to end the test and send everyone to that flow.
+    ...(/^[ab]$/.test(String(process.env.CC_FLOW || '').trim()) ? { flow: String(process.env.CC_FLOW).trim() } : {}),
     cardConnect: cardConnect && !!(process.env.PLAID_CLIENT_ID && process.env.PLAID_TOKEN_KEY)
   }));
 };

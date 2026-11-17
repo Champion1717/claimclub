@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   const sid = clip(b.sid, 64), step = clip(b.step, 40);
   if (!/^[a-z0-9-]{8,64}$/i.test(sid) || !/^[a-z0-9_]+$/i.test(step)) return send(res, 400, { error: 'Bad event' });
   try {
-    await db().from('flow_events').insert({ sid, step, step_index: Number.isFinite(+b.idx) ? Math.round(+b.idx) : null, device: clip(b.device, 4), lang: clip(b.lang, 5), offer: clip(b.offer, 60) || null });
+    await db().from('flow_events').insert({ sid, step, step_index: Number.isFinite(+b.idx) ? Math.round(+b.idx) : null, device: clip(b.device, 4), lang: clip(b.lang, 5), offer: clip(b.offer, 60) || null, flow: b.flow === 'b' ? 'b' : 'a' });
   } catch (e) {}
   return send(res, 200, { ok: true });
 };

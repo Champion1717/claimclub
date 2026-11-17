@@ -11,10 +11,10 @@
     c.setState({buying:kind,payState:'busy',step:idx(c,'checkout')});
     post(c,kind,{})
       .then(function(j){if(j.url)location.href=j.url;else throw new Error(j.error||'no url')})
-      .catch(function(e){console.error(e);alert('Checkout is unavailable right now. Please try again.');c.setState({payState:'',step:idx(c,kind==='member'?'plans':'pay')})});
+      .catch(function(e){console.error(e);alert('Checkout is unavailable right now. Please try again.');c.setState({payState:'',step:idx(c,c.offerStep?c.offerStep(kind):(kind==='member'?'plans':'pay'))})});
   }
   function post(c,kind,extra){
-    var b={kind:kind,plan:c.state.plan,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname};
+    var b={kind:kind,plan:c.state.plan,flow:c.state.flow||'a',consent:c.state.trAgree?1:0,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname};
     for(var k in extra)b[k]=extra[k];
     return fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json()});
   }
@@ -27,7 +27,7 @@
       c.setState({payState:'done',paid:kind});c.saveForApp();
       try{sessionStorage.removeItem(KEY)}catch(e){}
       if(c.finishPay)c.finishPay(kind);else setTimeout(function(){c.setState({pi:0,step:idx(c,kind==='member'?'perks':'bank')})},1300);
-    }).catch(function(){c.setState({payState:'',step:idx(c,kind==='member'?'plans':'pay')})});
+    }).catch(function(){c.setState({payState:'',step:idx(c,c.offerStep?c.offerStep(kind):(kind==='member'?'plans':'pay'))})});
   }
 
   /* ---------- In-page payment sheet (Nov 15 2026, canvas boards PayF1/PayF2) ----------
@@ -172,7 +172,7 @@
   function resume(c){
     var saved=null;try{saved=JSON.parse(sessionStorage.getItem(KEY)||'null')}catch(e){}
     if(saved){Object.assign(c.state,saved)}
-    if(q.get('canceled')){c.state.payState='';c.state.step=idx(c,c.state.buying==='member'?'plans':'pay');history.replaceState(null,'',location.pathname);return}
+    if(q.get('canceled')){c.state.payState='';c.state.step=idx(c,c.offerStep?c.offerStep(c.state.buying):(c.state.buying==='member'?'plans':'pay'));history.replaceState(null,'',location.pathname);return}
     var sid=q.get('sid'),kind=q.get('paid')==='member'?'member':'fee';
     history.replaceState(null,'',location.pathname);
     verify(c,kind,sid,true);
@@ -274,6 +274,7 @@
       var info=v.sheetInfo||{};
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
+      v.trGo=function(){if(!c.state.trAgree){c.setState({trNeed:true});return}v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }

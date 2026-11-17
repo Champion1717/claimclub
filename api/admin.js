@@ -84,9 +84,11 @@ const actions = {
 
   async funnel(b) {
     const days = Math.min(365, Math.max(1, parseInt(b.days, 10) || 30));
-    const { data, error } = await db().rpc('admin_funnel', { p_days: days });
+    const flow = b.flow === 'a' || b.flow === 'b' ? b.flow : null;
+    const [{ data, error }, { data: test, error: e2 }] = await Promise.all([db().rpc('admin_funnel', { p_days: days, p_flow: flow }), db().rpc('admin_offer_test', { p_days: days })]);
     if (error) throw error;
-    return { days, steps: data || [] };
+    if (e2) console.error('[admin] offer test', e2.message);
+    return { days, flow, steps: data || [], test: test || [] };
   },
 
   async users(b) {
