@@ -447,7 +447,7 @@ class Component extends DCLogic {
           // A saved sign-in can outlive its account (deleted user) or belong to someone else than the person who just did the claim flow.
           let ss = null; try { ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
           const fe = (((ss || {}).p || {}).email || '').toLowerCase(), se = ((u && u.user && u.user.email) || '').toLowerCase();
-          const gone = error && error.status && error.status < 500, other = !!(ss && ss.ids && ss.ids.length && fe && se && fe !== se && ss.linkedTo !== fe);
+          const gone = error && error.status && error.status < 500, other = !!(ss && ss.ids && ss.ids.length && fe && se && fe !== se && ss.linkedTo !== fe && ss.keepFor !== se);
           if (gone || other) return this._sb.auth.signOut({ scope: 'local' }).catch(() => {}).then(() => this.setState({ authState: 'signin', loginEmail: fe || se }));
           return this.afterLogin(data.session);
         });
@@ -493,6 +493,8 @@ class Component extends DCLogic {
     this._sb.auth.onAuthStateChange((ev, ses) => { if (ses) this._token = ses.access_token; });
     const sb = this._sb, uid = session.user.id, email = session.user.email;
     let local = null; try { local = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
+    // Signed in as someone other than the claim flow saved on this device: remember that choice so a refresh does not sign them out again.
+    if (local && local.p && local.p.email && local.p.email.toLowerCase() !== email.toLowerCase() && local.keepFor !== email.toLowerCase()) { try { local.keepFor = email.toLowerCase(); localStorage.setItem('claimclub_session', JSON.stringify(local)); } catch (e) {} }
     let [{ data: prof }, { data: rows }] = await Promise.all([sb.from('profiles').select('*').eq('id', uid).maybeSingle(), sb.from('claims').select('*').eq('user_id', uid)]);
     rows = rows || [];
     const link = await this.api('link');
