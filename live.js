@@ -268,6 +268,8 @@
     c.setState({bankBusy:true});
     token().then(function(tok){
       return Promise.all([papi(tok,'link_token',{}),plaidJs()]).then(function(r){
+        // Saved so an OAuth bank (Chase, Wells Fargo...) that sends the member back to /dashboard can finish there (resumeOAuth in the app).
+        try{sessionStorage.setItem('cc_plaid',JSON.stringify({token:r[0].link_token,itemId:''}))}catch(e){}
         var h=window.Plaid.create({token:r[0].link_token,
           onSuccess:function(pt,meta){
             // Show the loader the moment Plaid hands back, then save the connection behind it.

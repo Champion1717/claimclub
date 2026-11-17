@@ -212,3 +212,8 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 
 ## Flow B only (Nov 16 2026, night)
 - Henry: flow B ($2 for 7 days, then $49 a year) is the only flow for now. `pickFlow()` in flow.js returns 'b' on every host except localhost/127.0.0.1, so `?flow=a` and `CC_FLOW` no longer change anything on the live site. Flow A's code (choice page, plan page, fee) stays in place for local tests (`t_ab.py 390 a`). To bring the A/B test back, delete the early return at the top of `pickFlow()`.
+
+## Plaid production (Nov 17 2026)
+- Plaid approved for production. Henry set `PLAID_ENV=production`, `PLAID_SECRET_PRODUCTION` and `PLAID_REDIRECT_URI=https://www.claimclub.io/dashboard` (also in Plaid > API > Allowed redirect URIs). OAuth bank registration (Chase, Wells Fargo, BofA...) submitted Nov 17; some banks take 2 to 4 weeks.
+- live.js `ccPlaid` now saves `sessionStorage.cc_plaid` before opening Link, so an OAuth bank started in the claim flow's bank step finishes on /dashboard (`resumeOAuth()` in the app).
+- Legal pages (Nov 17): entity DBC Workshop LLC, 408 Andrew Ave, Encinitas, CA 92024, governing law California (`ENTITY`, `ADDR`, `STATE` in build_legal.py).
