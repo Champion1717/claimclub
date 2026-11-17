@@ -209,3 +209,6 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 - Nothing is sent for people whose browser sends Global Privacy Control (the pixel does not load and the server skips `gpc=1`). Privacy Policy section 4 discloses the Conversions API.
 - Env vars Henry sets in Vercel (never in the repo, zip or this file): `META_CAPI_TOKEN` (required for server events; without it nothing is sent), optional `META_TEST_CODE` (only while testing, remove after), `META_API_VERSION` (default v26.0), `META_PIXEL_ID` (default the site pixel). Stripe webhook needs `checkout.session.completed` and `invoice.paid` (already on) plus `customer.subscription.trial_will_end` for the reminder email.
 - Tests: `site/t_meta.js` (node; fake Stripe, Supabase and Graph API) and `site/t_ab.py [width] b` (prints the fbq calls).
+
+## Flow B only (Nov 16 2026, night)
+- Henry: flow B ($2 for 7 days, then $49 a year) is the only flow for now. `pickFlow()` in flow.js returns 'b' on every host except localhost/127.0.0.1, so `?flow=a` and `CC_FLOW` no longer change anything on the live site. Flow A's code (choice page, plan page, fee) stays in place for local tests (`t_ab.py 390 a`). To bring the A/B test back, delete the early return at the top of `pickFlow()`.

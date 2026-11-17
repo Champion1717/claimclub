@@ -998,7 +998,9 @@ class Component extends DCLogic {
   // Flow B's trial end date: 7 days from today.
   trialEnd(es) { const d = new Date(Date.now() + 7 * 864e5); try { return d.toLocaleDateString(es ? 'es-US' : 'en-US', { month: es ? 'long' : 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return d.toDateString(); } }
   // Each new visitor gets flow A or B at random (cookie cc_variant, one year). ?flow=a|b forces one; /api/config can force a winner (CC_FLOW).
+  // Nov 16 2026 (Henry): flow B is the only flow for now. Flow A stays in the code but only local tests can open it (?flow=a on localhost).
   pickFlow(forced) {
+    try { if (!/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) { document.cookie = 'cc_variant=b;path=/;max-age=31536000;samesite=lax'; return 'b'; } } catch (e) { return 'b'; }
     let f = forced === 'a' || forced === 'b' ? forced : '';
     try {
       const q = new URLSearchParams(location.search).get('flow');
