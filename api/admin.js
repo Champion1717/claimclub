@@ -2,8 +2,10 @@
 // The caller must be signed in (Bearer token) and listed in the admins table or in the ADMIN_EMAILS env var.
 const { db, userFrom, readJson, send } = require('./_db');
 const { sendClaimEmail } = require('./_email');
+const { getSpec, getSpecs } = require('./_spec');
 
-const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed'];
+const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed', 'auto', 'self'];
+const SPEC_KEYS = ['type', 'filer', 'form_url', 'admin', 'deadline', 'minutes', 'needs', 'why_self', 'gather', 'steps', 'form_map', 'va_notes', 'member_note'];
 const money = (c) => '$' + (Math.round(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 async function isAdmin(user) {
@@ -143,8 +145,11 @@ const actions = {
       sb.from('profiles').select('id, email, name, phone, dob, address, state, pay_default, payout_handles').in('id', ids),
       sb.from('authorizations').select('id, user_id, settlement_id, created_at').in('user_id', ids)
     ]) : [{ data: [] }, { data: [] }];
+    const sids = [...new Set((claims || []).map((c) => c.settlement_id))];
+    const specs = await getSpecs(sids);
     return {
       claims: (claims || []).map((c) => Object.assign({}, c, {
+        spec: specs[c.settlement_id] || null,
         profile: (profiles || []).find((p) => p.id === c.user_id) || null,
         authorization: (auths || []).find((a) => a.user_id === c.user_id && a.settlement_id === c.settlement_id) || null
       }))
@@ -162,6 +167,78 @@ const actions = {
       out.push({ id: f.id, name: f.name, size: f.size, mime: f.mime, created_at: f.created_at, url: u ? u.signedUrl : null });
     }
     return { files: out };
+  },
+
+  // ---------- filing specs and the case finder (Nov 18 2026) ----------
+  async spec(b) {
+    return { spec: await getSpec(String(b.id || '')) };
+  },
+
+  async saveSpec(b, user) {
+    const id = String(b.id || '').trim().slice(0, 80), x = b.spec || {};
+    if (!id || !['auto', 'we', 'self', 'closed'].includes(x.type)) return { error: 'Pick a filing type' };
+    const row = { id, updated_at: new Date().toISOString(), updated_by: user.email || 'staff', source: 'staff' };
+    SPEC_KEYS.forEach((k) => { if (x[k] !== undefined) row[k] = x[k] === '' ? null : x[k]; });
+    if (!row.filer) row.filer = x.type === 'self' ? 'member' : x.type === 'we' ? 'va' : 'none';
+    const { data, error } = await db().from('settlement_filing').upsert(row).select().maybeSingle();
+    if (error) throw error;
+    return { spec: data };
+  },
+
+  async cases(b) {
+    const sb = db(), status = ['new', 'approved', 'ignored'].includes(b.status) ? b.status : 'new';
+    let q = sb.from('case_candidates').select('*').eq('status', status).order('found_at', { ascending: false }).limit(300);
+    if (b.kind === 'new' || b.kind === 'change') q = q.eq('kind', b.kind);
+    const [{ data: rows, error }, { data: last }, { data: counts }] = await Promise.all([q, sb.from('app_settings').select('value').eq('key', 'finder_last').maybeSingle(), sb.from('case_candidates').select('kind').eq('status', 'new').limit(5000)]);
+    if (error) throw error;
+    const n = { new: 0, change: 0 }; (counts || []).forEach((r) => { n[r.kind] = (n[r.kind] || 0) + 1; });
+    return { cases: rows || [], last: last ? last.value : null, counts: n };
+  },
+
+  async runFinder() { return { last: await require('./find-cases').run() }; },
+
+  // Approve a new case (adds it to the catalog with its filing spec) or a change (hides a closed case, moves a deadline...), or ignore it.
+  async caseAction(b, user) {
+    const sb = db(), id = parseInt(b.id, 10) || 0, by = user.email || 'staff', now = new Date().toISOString();
+    const { data: c } = await sb.from('case_candidates').select('*').eq('id', id).maybeSingle();
+    if (!c) return { error: 'Case not found' };
+    if (b.op === 'ignore') {
+      await sb.from('case_candidates').update({ status: 'ignored', reviewed_by: by, reviewed_at: now }).eq('id', id);
+      return { ok: true };
+    }
+    if (b.op !== 'approve') return { error: 'Unknown action' };
+    if (c.kind === 'change') {
+      const sid = c.settlement_id, patch = (c.details && c.details.patch) || {};
+      if (!sid) return { error: 'This change has no settlement' };
+      const { data: ex } = await sb.from('catalog_extra').select('*').eq('id', sid).maybeSingle();
+      const row = { id: sid, data: Object.assign({}, (ex && ex.data) || {}, patch.data || {}), is_new: !!(ex && ex.is_new), hidden: patch.hidden != null ? !!patch.hidden : !!(ex && ex.hidden), updated_at: now, updated_by: by };
+      const { error } = await sb.from('catalog_extra').upsert(row);
+      if (error) throw error;
+      const cur = await getSpec(sid);
+      if (cur && ((patch.data && patch.data.dl) || patch.hidden)) {
+        const up = Object.assign({}, cur, { id: sid, updated_at: now, updated_by: by, source: 'staff' });
+        if (patch.data && patch.data.dl) up.deadline = patch.data.dl;
+        if (patch.hidden) { up.type = 'closed'; up.filer = 'none'; }
+        delete up.confidence;
+        await sb.from('settlement_filing').upsert(Object.fromEntries(['id', 'type', 'filer', 'form_url', 'admin', 'deadline', 'minutes', 'needs', 'why_self', 'gather', 'steps', 'form_map', 'va_notes', 'member_note', 'source', 'updated_at', 'updated_by'].filter((k) => up[k] !== undefined).map((k) => [k, up[k] === '' ? null : up[k]])));
+      }
+    } else {
+      const f = b.fields || {}, clean = (v, n) => String(v == null ? '' : v).trim().slice(0, n);
+      const sid = clean(f.id, 60).toLowerCase().replace(/[^a-z0-9_]+/g, '_').replace(/^_+|_+$/g, '');
+      const co = clean(f.co, 80), title = clean(f.title, 160);
+      if (!sid || !co || !title) return { error: 'Add an ID, company and title' };
+      const type = ['auto', 'we', 'self'].includes(f.type) ? f.type : 'we';
+      const dl = /^\d{4}-\d{2}-\d{2}$/.test(f.dl || '') ? f.dl : null;
+      const data = { id: sid, co, title, cat: clean(f.cat, 20) || 'products', pay: clean(f.pay, 80) || 'Varies', amt: parseFloat(f.amt) || 0, max: parseFloat(f.max) || 0,
+        proof: clean(f.proof, 40) || 'No proof', mode: type === 'auto' ? 'auto' : 'here', dl, who: clean(f.who, 300), fund: clean(f.fund, 40), st: clean(f.st, 40), area: clean(f.area, 60), url: clean(f.url || c.url, 600), added: now.slice(0, 10) };
+      const { error } = await sb.from('catalog_extra').upsert({ id: sid, data, is_new: true, hidden: false, updated_at: now, updated_by: by });
+      if (error) throw error;
+      const ex = await getSpec(sid);
+      if (!ex) await sb.from('settlement_filing').insert({ id: sid, type, filer: type === 'self' ? 'member' : type === 'we' ? 'va' : 'none', form_url: clean(f.form_url, 600) || null, deadline: dl, source: 'case finder', updated_by: by });
+      await sb.from('case_candidates').update({ settlement_id: sid }).eq('id', id);
+    }
+    await sb.from('case_candidates').update({ status: 'approved', reviewed_by: by, reviewed_at: now }).eq('id', id);
+    return { ok: true };
   },
 
   async setStatus(b, user) {

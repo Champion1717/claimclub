@@ -7,16 +7,22 @@
 //   attach  { settlement_id, path, name, size, mime } -> records a proof file the member uploaded to their folder
 //   detach  { id } -> removes a proof file while the claim is not filed yet
 //   reply   { settlement_id, note } -> answers "Action needed": saves the reply and sends the claim back to the queue
+//   start   { settlement_id } -> auto pay and you-file claims (type from settlement_filing): status 'auto' or 'self', no filing by us
+//   progress { settlement_id, progress } -> saves checklist ticks, the guide step and the confirmation number
+//   selfDone { settlement_id, conf } -> member filed it themselves: back to staff as 'requested' to verify and mark filed
+//   gotPaid { settlement_id, amount } -> member says the payout arrived (any status from auto onward)
 const crypto = require('crypto');
 const { db, userFrom, readJson, send } = require('./_db');
 const { sendClaimEmail } = require('./_email');
 const { ipOf } = require('./_limit');
+const { getSpec } = require('./_spec');
 
 const BUCKET = 'claim-files';
 const VERSION = '2026-11-14';
 const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
 const OPEN = ['ready', 'needs_info', 'removed'];   // a member can (re)file from these
-const UNFILED = ['ready', 'requested', 'needs_info'];
+const UNFILED = ['ready', 'requested', 'needs_info', 'self'];
+const PAYABLE = ['auto', 'self', 'requested', 'filed', 'review', 'approved'];
 
 function attest(co, cat, es) {
   if (cat === 'arb') return es
@@ -116,6 +122,53 @@ module.exports = async (req, res) => {
       await sb.storage.from(BUCKET).remove([f.path]);
       await sb.from('claim_files').delete().eq('id', f.id);
       return send(res, 200, { ok: true });
+    }
+
+    if (b.action === 'start') {
+      const spec = await getSpec(sid);
+      const type = spec && spec.type;
+      if (type !== 'auto' && type !== 'self') return send(res, 400, { error: 'This claim is filed by our team. Use File.' });
+      if (cur && !OPEN.includes(cur.status) && cur.status !== 'ready') return send(res, 200, { claim: cur, already: true });
+      const status = type === 'auto' ? 'auto' : 'self';
+      const { data: claim, error } = await sb.from('claims').upsert({ user_id: uid, settlement_id: sid, status, requested_at: new Date().toISOString(), source: (cur && cur.source) || 'added',
+        progress: (cur && cur.progress) || {} }, { onConflict: 'user_id,settlement_id' }).select().maybeSingle();
+      if (error) throw error;
+      return send(res, 200, { claim });
+    }
+
+    if (b.action === 'progress') {
+      if (!cur) return send(res, 404, { error: 'Claim not found' });
+      const p = b.progress && typeof b.progress === 'object' ? b.progress : {}, out = Object.assign({}, cur.progress || {});
+      if (p.checks && typeof p.checks === 'object') { out.checks = {}; Object.keys(p.checks).slice(0, 20).forEach((k) => { out.checks[clip(k, 10)] = !!p.checks[k]; }); }
+      if (p.step != null) out.step = Math.max(0, Math.min(60, parseInt(p.step, 10) || 0));
+      if (p.conf != null) out.conf = clip(p.conf, 120);
+      const { data: claim, error } = await sb.from('claims').update({ progress: out }).eq('id', cur.id).select().maybeSingle();
+      if (error) throw error;
+      return send(res, 200, { claim });
+    }
+
+    if (b.action === 'selfDone') {
+      if (!cur || !['self', 'needs_info'].includes(cur.status)) return send(res, 400, { error: 'Start this claim first' });
+      const conf = clip(b.conf, 120).trim();
+      const { count } = await sb.from('claim_files').select('id', { count: 'exact', head: true }).eq('user_id', uid).eq('settlement_id', sid);
+      if (!conf && !count) return send(res, 400, { error: 'Add a screenshot or type the confirmation number' });
+      const progress = Object.assign({}, cur.progress || {}, { conf: conf || (cur.progress || {}).conf || '', sent: new Date().toISOString() });
+      const { data: claim, error } = await sb.from('claims').update({ status: 'requested', progress, member_note: 'Filed it myself.' + (conf ? ' Confirmation: ' + conf : ' Screenshot attached.'), member_replied_at: new Date().toISOString() }).eq('id', cur.id).select().maybeSingle();
+      if (error) throw error;
+      const { data: ev } = await sb.from('claim_events').select('id').eq('claim_id', cur.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+      if (ev) await sb.from('claim_events').update({ note: 'Member filed it themselves' + (conf ? ', confirmation ' + conf : ''), actor: 'member' }).eq('id', ev.id);
+      return send(res, 200, { claim });
+    }
+
+    if (b.action === 'gotPaid') {
+      if (!cur || !PAYABLE.includes(cur.status)) return send(res, 400, { error: 'This claim is not waiting for a payout' });
+      const amt = Math.round(parseFloat(String(b.amount || '').replace(/[^0-9.]/g, '')) * 100);
+      if (!isFinite(amt) || amt <= 0 || amt > 10000000) return send(res, 400, { error: 'Enter the amount you got' });
+      const { data: claim, error } = await sb.from('claims').update({ status: 'paid', paid_amount_cents: amt, paid_at: new Date().toISOString(), paid_by_member: true }).eq('id', cur.id).select().maybeSingle();
+      if (error) throw error;
+      const { data: ev } = await sb.from('claim_events').select('id').eq('claim_id', cur.id).order('created_at', { ascending: false }).limit(1).maybeSingle();
+      if (ev) await sb.from('claim_events').update({ note: 'Member reported the payout: $' + (amt / 100).toFixed(2), actor: 'member' }).eq('id', ev.id);
+      return send(res, 200, { claim });
     }
 
     if (b.action === 'reply') {
