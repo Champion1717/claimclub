@@ -5,7 +5,7 @@ const { sendClaimEmail } = require('./_email');
 const { getSpec, getSpecs } = require('./_spec');
 
 const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed', 'auto', 'self'];
-const SPEC_KEYS = ['type', 'filer', 'form_url', 'admin', 'deadline', 'minutes', 'needs', 'why_self', 'gather', 'steps', 'form_map', 'va_notes', 'member_note'];
+const SPEC_KEYS = ['type', 'filer', 'form_url', 'admin', 'deadline', 'minutes', 'about', 'who', 'qualify', 'notice', 'needs', 'why_self', 'gather', 'steps', 'form_map', 'va_notes', 'member_note', 'start_note'];
 const money = (c) => '$' + (Math.round(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 async function isAdmin(user) {

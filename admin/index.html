@@ -282,8 +282,8 @@ function fileWork(c) {
   return h + '</div>';
 }
 function specModal(id, sp) {
-  const cur = Object.assign({ type: 'we', filer: 'va', form_url: '', admin: '', deadline: '', minutes: 0, needs: [], why_self: '', gather: [], steps: [], form_map: [], va_notes: '', member_note: '' }, sp || {});
-  const J = (v) => esc(JSON.stringify(v || [], null, 1));
+  const cur = Object.assign({ about: '', who: '', start_note: '', qualify: [], notice: { mode: 'none' }, type: 'we', filer: 'va', form_url: '', admin: '', deadline: '', minutes: 0, needs: [], why_self: '', gather: [], steps: [], form_map: [], va_notes: '', member_note: '' }, sp || {});
+  const J = (v) => esc(JSON.stringify(v == null ? [] : v, null, 1));
   layer('<div class="modal" id="spm"><div role="dialog" aria-modal="true" aria-label="Filing spec"><div class="row" style="justify-content:space-between;margin-bottom:12px"><h1 style="font-size:20px">Filing spec · ' + esc(setName(id)) + '</h1><button class="btn soft" id="spx">' + ico(IC.x, 14) + 'Close</button></div>'
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
     + '<label class="small muted" style="font-weight:800">Filing type<select id="sp_type" class="inp" style="margin-top:4px">' + [['we', 'We file it'], ['self', 'Member files it'], ['auto', 'Auto pay'], ['closed', 'Closed']].map(([k, t]) => '<option value="' + k + '"' + (cur.type === k ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></label>'
@@ -292,18 +292,21 @@ function specModal(id, sp) {
     + '<label class="small muted" style="font-weight:800">Administrator<input id="sp_admin" class="inp" style="margin-top:4px" value="' + esc(cur.admin || '') + '"></label>'
     + '<label class="small muted" style="font-weight:800">Deadline<input id="sp_deadline" type="date" class="inp" style="margin-top:4px" value="' + esc(cur.deadline || '') + '"></label>'
     + '<label class="small muted" style="font-weight:800">Minutes for the member (member files)<input id="sp_minutes" class="inp" inputmode="numeric" style="margin-top:4px" value="' + esc(cur.minutes || '') + '"></label>'
+    + '<label class="small muted" style="font-weight:800;grid-column:1/-1">What the case is about (shown to members)<textarea id="sp_about" class="inp" style="margin-top:4px">' + esc(cur.about || '') + '</textarea></label>'
+    + '<label class="small muted" style="font-weight:800;grid-column:1/-1">Who can get money<input id="sp_who" class="inp" style="margin-top:4px" value="' + esc(cur.who || '') + '"></label>'
+    + '<label class="small muted" style="font-weight:800;grid-column:1/-1">What happens next (shown above File)<input id="sp_start_note" class="inp" style="margin-top:4px" value="' + esc(cur.start_note || '') + '"></label>'
     + '<label class="small muted" style="font-weight:800;grid-column:1/-1">Note shown to the member<input id="sp_member_note" class="inp" style="margin-top:4px" value="' + esc(cur.member_note || '') + '"></label>'
     + '<label class="small muted" style="font-weight:800;grid-column:1/-1">Notes for the filer<textarea id="sp_va_notes" class="inp" style="margin-top:4px">' + esc(cur.va_notes || '') + '</textarea></label>'
     + '<label class="small muted" style="font-weight:800;grid-column:1/-1">Why the member files it<input id="sp_why_self" class="inp" style="margin-top:4px" value="' + esc(cur.why_self || '') + '"></label>'
-    + ['needs', 'form_map', 'steps', 'gather'].map((k) => '<label class="small muted" style="font-weight:800;grid-column:1/-1">' + ({ needs: 'What we ask the member (JSON list)', form_map: 'Claim form fields, in order (JSON list)', steps: 'Steps or checklist (JSON list)', gather: 'Have these ready (JSON list)' })[k] + '<textarea id="sp_' + k + '" class="inp" style="margin-top:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:110px">' + J(cur[k]) + '</textarea></label>').join('')
+    + ['qualify', 'notice', 'needs', 'form_map', 'steps', 'gather'].map((k) => '<label class="small muted" style="font-weight:800;grid-column:1/-1">' + ({ qualify: 'Qualify questions (JSON list of {q, help})', notice: 'Notice (JSON: mode, from, looks, fields, if_none)', needs: 'What we ask the member (JSON list)', form_map: 'Claim form fields, in order (JSON list)', steps: 'Steps or checklist (JSON list)', gather: 'Have these ready (JSON list)' })[k] + '<textarea id="sp_' + k + '" class="inp" style="margin-top:4px;font-family:ui-monospace,Menlo,monospace;font-size:12px;min-height:110px">' + J(cur[k]) + '</textarea></label>').join('')
     + '</div><div class="row" style="margin-top:14px"><button class="btn dark" id="spsave">Save spec</button><span id="spmsg" class="small" role="status"></span></div></div></div>');
   $('#spx').onclick = closeLayer;
   $('#spsave').onclick = async () => {
     const msg = $('#spmsg'), out = {};
     try {
-      ['type', 'filer', 'form_url', 'admin', 'deadline', 'member_note', 'va_notes', 'why_self'].forEach((k) => { out[k] = $('#sp_' + k).value.trim(); });
+      ['type', 'filer', 'form_url', 'admin', 'deadline', 'member_note', 'va_notes', 'why_self', 'about', 'who', 'start_note'].forEach((k) => { out[k] = $('#sp_' + k).value.trim(); });
       out.minutes = parseInt($('#sp_minutes').value, 10) || null;
-      ['needs', 'form_map', 'steps', 'gather'].forEach((k) => { const v = JSON.parse($('#sp_' + k).value || '[]'); if (!Array.isArray(v)) throw new Error(k + ' must be a list'); out[k] = v; });
+      ['qualify', 'needs', 'form_map', 'steps', 'gather'].forEach((k) => { const v = JSON.parse($('#sp_' + k).value || '[]'); if (!Array.isArray(v)) throw new Error(k + ' must be a list'); out[k] = v; }); out.notice = JSON.parse($('#sp_notice').value || '{}');
     } catch (e) { msg.className = 'err'; msg.textContent = 'Check the JSON: ' + e.message; return; }
     msg.className = 'small muted'; msg.textContent = 'Saving...';
     try { await api('saveSpec', { id, spec: out }); msg.className = 'small'; msg.style.color = '#17603F'; msg.textContent = 'Saved. Members see it within 5 minutes.'; } catch (e) { msg.className = 'err'; msg.textContent = e.message; }

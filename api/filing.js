@@ -4,7 +4,7 @@
 const { db, send } = require('./_db');
 const { getSpec, getSpecs } = require('./_spec');
 
-const PUBLIC = 'id, type, filer, form_url, admin, deadline, minutes, needs, why_self, gather, steps, member_note';
+const PUBLIC = 'id, type, filer, form_url, admin, deadline, minutes, about, who, qualify, notice, needs, why_self, gather, steps, member_note, start_note';
 
 module.exports = async (req, res) => {
   if (req.method !== 'GET') return send(res, 405, { error: 'GET only' });

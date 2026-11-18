@@ -63,3 +63,6 @@ create table if not exists public.case_candidates (
 create unique index if not exists case_candidates_url_key on public.case_candidates (url) where url is not null;
 create index if not exists case_candidates_status_idx on public.case_candidates (status, found_at desc);
 alter table public.case_candidates enable row level security;
+
+-- Migration filing_specs_plain (Nov 18 2026, later): plain-English case content per spec.
+alter table public.settlement_filing add column if not exists about text, add column if not exists who text, add column if not exists qualify jsonb, add column if not exists notice jsonb, add column if not exists start_note text;
