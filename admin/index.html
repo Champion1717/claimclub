@@ -44,6 +44,7 @@ tr.click{cursor:pointer}tr.click:hover td{background:#F6F8F7}
 .pill{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:99px;white-space:nowrap}
 .p-ready{background:#EEF2F0;color:#43504A}.p-requested{background:#0F3B2E;color:#FFFFFF}.p-needs_info{background:#FFF4DB;color:#8A5A00}.p-filed{background:#E8EEFB;color:#2C4FA8}.p-review{background:#FFF4DB;color:#8A5A00}.p-approved{background:#E9F6EF;color:#17603F}.p-paid{background:#12805C;color:#FFFFFF}.p-denied{background:#FDECEC;color:#B8333A}.p-removed{background:#EEF2F0;color:#8A968F}.p-auto{background:#E3F4FB;color:#0B5E86}.p-self{background:#F3EAFE;color:#6B2FB3}
 .t-bot{background:#EAF0FF;color:#2C4FA8}.t-va{background:#FFF3E0;color:#9A4A00}.t-member{background:#F3EAFE;color:#6B2FB3}.t-auto{background:#E3F4FB;color:#0B5E86}.t-closed{background:#FDECEC;color:#B8333A}
+.vaGrid{display:grid;grid-template-columns:minmax(260px,330px) minmax(0,1fr) minmax(260px,330px);gap:16px;align-items:start}.vaCol{min-width:0}.vaGrid>.vaCol:first-child .kv{grid-template-columns:1fr;gap:2px}.vaGrid>.vaCol:first-child .kv dd{margin-bottom:8px}.vaCol .card{margin-bottom:14px}.vaSteps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:13px}.vaSteps li span{display:block}@media (max-width:1200px){.vaGrid{grid-template-columns:1fr}.vaCol .card[style*=sticky]{position:static!important}}
 .fm td{padding:7px 8px}.fm tr.done td{opacity:.45}.fm .src{font-size:11px;color:#8A968F;font-weight:700}
 .muted{color:#5B6862}.small{font-size:12px}
 .btn{min-height:36px;padding:0 16px;border-radius:99px;font-weight:800;font-size:13px;display:inline-flex;align-items:center;gap:6px}
@@ -238,7 +239,8 @@ async function queue() {
       + r.claims.map((c, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((c.profile && c.profile.name) || 'No name') + '</b><div class="small muted">' + esc(c.profile && c.profile.email) + '</div></td><td>' + esc(setName(c.settlement_id)) + (SETS[c.settlement_id] && SETS[c.settlement_id].dl ? '<div class="small muted">Deadline ' + fmtDay(SETS[c.settlement_id].dl + 'T12:00:00') + '</div>' : '') + '</td><td>' + typeChip(c.spec, c) + '</td><td>' + pill(c.status) + (c.claim_ref ? '<div class="small muted">ID ' + esc(c.claim_ref) + '</div>' : '') + '</td><td class="small">' + fmtDate(c.requested_at || c.created_at) + '</td><td>' + (c.authorization ? '<span class="pill p-approved">Signed</span>' : '<span class="pill p-denied">Missing</span>') + '</td></tr>').join('') + '</tbody></table>'
       : '<div class="empty">Nothing here. When a member taps File, the claim shows up in To do.</div>') + '</div>');
   document.querySelectorAll('.seg button').forEach((b) => { b.onclick = () => { cache.qStatuses = b.dataset.s.split(','); queue(); }; });
-  document.querySelectorAll('tr.click').forEach((tr) => { const open = () => claimPanel(r.claims[+tr.dataset.i]); tr.onclick = open; tr.onkeydown = (e) => { if (e.key === 'Enter') open(); }; });
+  cache.qList = r.claims;
+  document.querySelectorAll('tr.click').forEach((tr) => { const open = () => claimPanel(r.claims[+tr.dataset.i], r.claims); tr.onclick = open; tr.onkeydown = (e) => { if (e.key === 'Enter') open(); }; });
 }
 
 
@@ -263,13 +265,13 @@ function fileWork(c) {
   const sp = c.spec;
   if (!sp) return '<div class="card"><h2>How to file</h2><div class="small muted">No filing spec for this settlement yet.</div><button class="btn soft" id="editSpec" style="margin-top:10px">' + ico(IC.pen, 14) + 'Add a filing spec</button></div>';
   const k = typeKey(sp), url = sp.form_url || '';
-  let h = '<div class="card" style="box-shadow:inset 0 0 0 2px #E3EAE6"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px"><h2 style="margin:0">File it ' + '<span class="pill t-' + k + '" style="vertical-align:middle;margin-left:6px">' + TYPE_LABEL[k] + '</span></h2><span class="row" style="gap:8px">'
-    + (url ? '<a class="btn dark" href="' + esc(url) + '" target="_blank" rel="noopener">' + ico(IC.ext, 14) + 'Open claim form</a>' : '') + '<button class="btn soft" id="editSpec">' + ico(IC.pen, 14) + 'Edit spec</button></span></div>'
+  let h = '<div class="card" style="box-shadow:inset 0 0 0 2px #E3EAE6"><div class="row" style="justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px"><h2 style="margin:0">Claim form ' + '<span class="pill t-' + k + '" style="vertical-align:middle;margin-left:6px">' + TYPE_LABEL[k] + '</span></h2><span class="row" style="gap:8px">'
+    + '<button class="btn soft" id="editSpec">' + ico(IC.pen, 14) + 'Edit spec</button></span></div>'
     + (sp.admin ? '<div class="small muted" style="margin-bottom:6px">Administrator: <b>' + esc(sp.admin) + '</b>' + (sp.deadline ? ' · deadline ' + fmtDay(sp.deadline + 'T12:00:00') : '') + '</div>' : '');
   if (sp.type === 'self') {
     const pr = c.progress || {};
     h += '<div class="stmt">The member files this one themselves with the step-by-step guide. ' + (pr.sent ? 'They sent their confirmation ' + fmtDate(pr.sent) + '. Check it below (Proof files), then set the status to Filed with the confirmation number as the claim ID.' : 'Guide step ' + (pr.step || 0) + ' of ' + ((sp.steps || []).length + 1) + '. Nothing to do until they send the confirmation.') + '</div>'
-      + (pr.conf ? '<dl class="kv"><dt>Confirmation number</dt><dd>' + esc(pr.conf) + copyBtn(pr.conf) + '</dd></dl>' : '') + (pr.sent ? '<button class="btn mint" id="markFiled" style="margin-top:10px">Confirm and mark filed</button>' : '');
+      + (pr.conf ? '<dl class="kv"><dt>Confirmation number</dt><dd>' + esc(pr.conf) + copyBtn(pr.conf) + '</dd></dl>' : '') + (pr.sent ? '<button class="btn soft" id="markFiled" style="margin-top:10px">Use their confirmation as the claim ID</button>' : '');
   } else if (sp.type === 'auto') {
     h += '<div class="stmt">Paid automatically. Nothing to file. The member tracks it and tells us when it arrives.</div>';
   } else {
@@ -361,42 +363,65 @@ function casePanel(c) {
 function copyBtn(v) { return v ? '<button class="copy" data-copy="' + esc(v) + '">Copy</button>' : ''; }
 function wireCopy(root) { (root || document).querySelectorAll('[data-copy]').forEach((b) => { b.onclick = (e) => { e.stopPropagation(); navigator.clipboard && navigator.clipboard.writeText(b.dataset.copy); b.textContent = 'Copied'; setTimeout(() => { b.textContent = 'Copy'; }, 1200); }; }); }
 
-async function claimPanel(c) {
-  const p = c.profile || {}, d = SETS[c.settlement_id] || {};
-  const handles = p.payout_handles || {}, payDest = p.pay_default + (handles[p.pay_default] ? ' · ' + handles[p.pay_default] : p.pay_default === 'Check' ? ' · mailed to address' : '');
-  const kv = (k, v, cp) => '<dt>' + k + '</dt><dd>' + (v ? esc(v) + (cp === false ? '' : copyBtn(v)) : '<span class="muted">Not provided</span>') + '</dd>';
-  layer('<div class="drawer" id="dr"><div role="dialog" aria-modal="true" aria-label="File claim">'
-    + '<div class="row" style="justify-content:space-between;margin-bottom:12px"><div><h1 style="font-size:20px">' + esc(setName(c.settlement_id)) + '</h1><div class="muted small">' + esc(d.p || '') + (d.dl ? ' · Deadline ' + fmtDay(d.dl + 'T12:00:00') : '') + '</div></div><button class="btn soft noprint" id="x">' + ico(IC.x, 14) + 'Close</button></div>'
-    + fileWork(c)
-    + '<div class="card"><h2>Member details to file with</h2><dl class="kv">' + kv('Legal name', p.name) + kv('Email', p.email) + kv('Phone', p.phone) + kv('Date of birth', p.dob) + kv('Address', p.address) + kv('Payout method', payDest) + '</dl></div>'
+async function claimPanel(c, list) {
+  list = list || cache.qList || [c];
+  const at = list.indexOf(c), next = at >= 0 && at < list.length - 1 ? list[at + 1] : null;
+  const p = c.profile || {}, d = SETS[c.settlement_id] || {}, sp = c.spec || {};
+  const handles = p.payout_handles || {}, payDest = (p.pay_default || '') + (handles[p.pay_default] ? ' · ' + handles[p.pay_default] : p.pay_default === 'Check' ? ' · mailed to address' : '');
+  const kv = (k, v) => '<dt>' + k + '</dt><dd>' + (v ? esc(v) + copyBtn(v) : '<span class="muted">Not provided</span>') + '</dd>';
+  const url = sp.form_url || d.u || '';
+  const steps = [['Open the claim form', url ? 'Opens in a new tab.' : 'No form link yet. Add it with Edit spec.'], ['Enter every field', 'Copy from the middle column. Tick as you go.'], ['Submit', 'Solve the CAPTCHA if there is one.'], ['Record it', 'Paste the claim ID below and mark it filed.']];
+  window.scrollTo(0, 0);
+  main('<div class="vaPage">'
+    + '<div class="row noprint" style="justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:14px"><div style="min-width:0"><button class="small muted" id="toQ" style="font-weight:800;padding:0">‹ Filing queue</button>'
+    + '<div class="row" style="gap:10px;flex-wrap:wrap;margin-top:4px"><h1 style="margin:0">' + esc(setName(c.settlement_id)) + '</h1>' + typeChip(c.spec) + pill(c.status) + '</div>'
+    + '<div class="sub" style="margin:4px 0 0">For <b>' + esc(p.name || p.email || 'member') + '</b> · requested ' + fmtDay(c.requested_at || c.created_at) + ((sp.deadline || d.dl) ? ' · claim deadline <b>' + fmtDay((sp.deadline || d.dl) + 'T12:00:00') + '</b>' : '') + (list.length > 1 && at >= 0 ? ' · ' + (at + 1) + ' of ' + list.length + ' in this list' : '') + '</div></div>'
+    + '<div class="row" style="gap:8px">' + (next ? '<button class="btn soft" id="nextC">Next claim ›</button>' : '') + '</div></div>'
+    + '<div class="vaGrid">'
+    // left: member
+    + '<div class="vaCol"><div class="card"><h2>Member</h2><dl class="kv">' + kv('Legal name', p.name) + kv('Email', p.email) + kv('Phone', p.phone) + kv('Date of birth', p.dob) + kv('Address', p.address) + kv('Past addresses', (p.past_addresses || []).join(' | ')) + kv('Payout', payDest) + '</dl></div>'
     + claimDetails(c)
-    + '<div class="card"><h2>Who qualifies</h2><div class="small" style="line-height:1.5">' + esc(d.w || '') + '</div><div class="small muted" style="margin-top:8px">Proof: ' + esc(d.pr || 'None') + '</div></div>'
-    + '<div class="card" id="authBox"><h2>Signed authorization</h2><div class="muted small">' + (c.authorization ? 'Loading...' : 'No signed authorization on file for this claim. Do not file until the member signs.') + '</div></div>'
-    + '<div class="card"><h2>Update status</h2><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
-    + '<label class="small muted" style="font-weight:800">Status<select id="st" class="inp" style="margin-top:4px">' + STATUSES.map(([k, t]) => '<option value="' + k + '"' + (k === c.status ? ' selected' : '') + '>' + t + '</option>').join('') + '</select></label>'
-    + '<label class="small muted" style="font-weight:800">Claim ID from administrator<input id="ref" class="inp" style="margin-top:4px" value="' + esc(c.claim_ref || '') + '" placeholder="e.g. ABC-123456"></label>'
-    + '<label class="small muted" style="font-weight:800;grid-column:1/-1">Note (sent to the member for Needs info or Denied)<textarea id="note" class="inp" style="margin-top:4px">' + esc(c.admin_note || '') + '</textarea></label>'
+    + '<div class="card" id="authBox"><h2>Signed authorization</h2><div class="muted small">' + (c.authorization ? 'Loading...' : 'No signed authorization on file. Do not file until the member signs.') + '</div></div>'
+    + '<div class="card"><h2>Who qualifies</h2><div class="small" style="line-height:1.5">' + esc(sp.who || d.w || '') + '</div></div></div>'
+    // middle: the claim form, in order
+    + '<div class="vaCol">' + fileWork(c) + '</div>'
+    // right: file it
+    + '<div class="vaCol"><div class="card" style="position:sticky;top:16px"><h2>File it</h2>'
+    + (url ? '<a class="btn dark" href="' + esc(url) + '" target="_blank" rel="noopener" style="width:100%;justify-content:center;min-height:44px;margin-bottom:12px">' + ico(IC.ext, 15) + 'Open claim form</a>' : '')
+    + '<ol class="vaSteps">' + steps.map(([t, h]) => '<li><b>' + t + '</b><span class="small muted">' + h + '</span></li>').join('') + '</ol>'
+    + '<label class="small muted" style="font-weight:800;display:block;margin-top:12px">Claim ID from the administrator<input id="ref" class="inp" style="margin-top:4px" value="' + esc(c.claim_ref || '') + '" placeholder="e.g. SAI-1234567"></label>'
+    + '<label class="small muted" style="font-weight:800;display:block;margin-top:10px">Note to the member (for Needs info or Denied)<textarea id="note" class="inp" style="margin-top:4px">' + esc(c.admin_note || '') + '</textarea></label>'
+    + '<div style="display:flex;flex-direction:column;gap:8px;margin-top:12px"><button class="btn mint" id="doFiled" style="justify-content:center;min-height:44px">Mark filed and email member</button><button class="btn soft" id="doNeeds" style="justify-content:center;min-height:40px">Needs info from member</button></div>'
+    + '<details style="margin-top:12px"><summary class="small" style="font-weight:800;cursor:pointer">Other status</summary><div style="display:grid;gap:8px;margin-top:8px">'
+    + '<select id="st" class="inp">' + STATUSES.map(([k, t]) => '<option value="' + k + '"' + (k === c.status ? ' selected' : '') + '>' + t + '</option>').join('') + '</select>'
     + '<label class="small muted" style="font-weight:800" id="amtL" hidden>Amount paid ($)<input id="amt" class="inp" inputmode="decimal" style="margin-top:4px" value="' + (c.paid_amount_cents ? (c.paid_amount_cents / 100).toFixed(2) : '') + '"></label>'
-    + '<label class="row small" style="grid-column:1/-1;font-weight:700"><input type="checkbox" id="notify" checked> Email the member about this change</label></div>'
-    + '<div class="row" style="margin-top:12px"><button class="btn dark" id="save">Save</button><span id="msg" class="small" role="status"></span></div></div>'
+    + '<button class="btn dark" id="save" style="justify-content:center">Save status</button></div></details>'
+    + '<label class="row small" style="font-weight:700;margin-top:10px"><input type="checkbox" id="notify" checked> Email the member about changes</label>'
+    + '<div id="msg" class="small" role="status" style="margin-top:8px"></div></div></div>'
     + '</div></div>');
   const st = $('#st'), showAmt = () => { $('#amtL').hidden = st.value !== 'paid'; }; st.onchange = showAmt; showAmt();
-  $('#dr').querySelectorAll('.fm input[type=checkbox]').forEach((x) => { x.onchange = () => { x.closest('tr').classList.toggle('done', x.checked); const n = $('#dr').querySelectorAll('.fm input:checked').length, t = $('#fmN'); if (t) t.textContent = n + ' of ' + $('#dr').querySelectorAll('.fm input[type=checkbox]').length + ' done'; }; });
+  const root = $('#main');
+  root.querySelectorAll('.fm input[type=checkbox]').forEach((x) => { x.onchange = () => { x.closest('tr').classList.toggle('done', x.checked); const n = root.querySelectorAll('.fm input:checked').length, t = $('#fmN'); if (t) t.textContent = n + ' of ' + root.querySelectorAll('.fm input[type=checkbox]').length + ' done'; }; });
   const es = $('#editSpec'); if (es) es.onclick = () => specModal(c.settlement_id, c.spec);
-  const mf = $('#markFiled'); if (mf) mf.onclick = () => { st.value = 'filed'; showAmt(); $('#ref').focus(); $('#ref').scrollIntoView({ block: 'center' }); };
-  $('#x').onclick = closeLayer; $('#dr').onclick = (e) => { if (e.target.id === 'dr') closeLayer(); };
-  wireCopy($('#dr'));
-  $('#save').onclick = async () => {
-    const msg = $('#msg'); msg.textContent = 'Saving...'; msg.className = 'small muted';
+  const mf = $('#markFiled'); if (mf) mf.onclick = () => { $('#ref').value = $('#ref').value || ((c.progress || {}).conf || ''); $('#ref').focus(); };
+  $('#toQ').onclick = () => queue();
+  const nx = $('#nextC'); if (nx) nx.onclick = () => claimPanel(next, list);
+  wireCopy(root);
+  const save = async (status) => {
+    const msg = $('#msg'); msg.className = 'small muted'; msg.textContent = 'Saving...';
+    if (status === 'needs_info' && !$('#note').value.trim()) { msg.className = 'err'; msg.textContent = 'Write what you need from the member in the note first.'; $('#note').focus(); return; }
     try {
       const amt = parseFloat(($('#amt').value || '').replace(/[^0-9.]/g, ''));
-      const r = await api('setStatus', { claim_id: c.id, status: st.value, claim_ref: $('#ref').value, note: $('#note').value, amount_cents: isFinite(amt) ? Math.round(amt * 100) : undefined, notify: $('#notify').checked, title: setName(c.settlement_id) });
+      const r = await api('setStatus', { claim_id: c.id, status, claim_ref: $('#ref').value, note: $('#note').value, amount_cents: isFinite(amt) ? Math.round(amt * 100) : undefined, notify: $('#notify').checked, title: setName(c.settlement_id) });
       Object.assign(c, r.claim);
       msg.className = 'small'; msg.style.color = '#17603F';
-      msg.textContent = 'Saved.' + (r.email && r.email.sent ? ' Email sent.' : r.email && r.email.reason ? ' Email not sent: ' + r.email.reason + '.' : r.email && r.email.error ? ' Email failed: ' + r.email.error : '');
-      if (view === 'queue') queue();
+      msg.textContent = 'Saved as ' + ((STATUSES.find((x) => x[0] === status) || [status, status])[1]) + '.' + (r.email && r.email.sent ? ' Email sent.' : r.email && r.email.reason ? ' Email not sent: ' + r.email.reason + '.' : r.email && r.email.error ? ' Email failed: ' + r.email.error : '') + (next ? ' Opening the next claim...' : '');
+      if (next && (status === 'filed' || status === 'needs_info')) setTimeout(() => claimPanel(next, list), 900);
     } catch (e) { msg.className = 'err'; msg.textContent = e.message; }
   };
+  $('#doFiled').onclick = () => { if (!$('#ref').value.trim() && !confirm('No claim ID entered. Mark filed anyway?')) return; save('filed'); };
+  $('#doNeeds').onclick = () => save('needs_info');
+  $('#save').onclick = () => save(st.value);
   try {
     const fr = await api('files', { user_id: c.user_id, settlement_id: c.settlement_id }), box = $('#filesBox');
     if (box) box.innerHTML = '<h2>Proof files</h2>' + (fr.files.length ? fr.files.map((f) => '<div class="row" style="justify-content:space-between;padding:6px 0;border-top:1px solid #EEF2F0"><span class="small"><b>' + esc(f.name) + '</b> <span class="muted">' + (f.size ? Math.max(1, Math.round(f.size / 1024)) + ' KB · ' : '') + fmtDate(f.created_at) + '</span></span>' + (f.url ? '<a class="btn soft" href="' + esc(f.url) + '" target="_blank" rel="noopener">Open</a>' : '') + '</div>').join('') + '<div class="small muted" style="margin-top:6px">Links work for 10 minutes. Reopen the claim for fresh ones.</div>' : '<div class="small muted">No files uploaded.</div>');
