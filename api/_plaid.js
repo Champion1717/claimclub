@@ -47,29 +47,40 @@ function txRow(t, item) {
 }
 
 // Charge review rules. Positive amounts are money out. Returns { verdict, reasons, back }.
-const FEE = /(overdraft|nsf|insufficient funds|late fee|late charge|returned item|service charge|maintenance fee|monthly fee|foreign transaction|atm fee|paper statement)/i;
+const FEE_NAME = /(\boverdraft\b|\bnsf\b|insufficient funds|late fee|late charge|returned item|maintenance fee|monthly service fee|service charge|\batm (fee|surcharge)|atm transaction fee|paper statement fee)/i;
+const FEE_KEEP = ['BANK_FEES_FOREIGN_TRANSACTION_FEES', 'BANK_FEES_INTEREST_CHARGE'];   // normal, disclosed fees banks rarely refund
+const NOT_PURCHASE = ['TRANSFER_IN', 'TRANSFER_OUT', 'LOAN_PAYMENTS', 'INCOME'];       // moving money, paying a card or loan, pay coming in
+const NO_DUPES = ['FOOD_AND_DRINK', 'TRANSPORTATION', 'BANK_FEES', 'GOVERNMENT_AND_NON_PROFIT'];  // buying the same thing twice is normal here
+const MOVE_NAME = /(\btransfer\b|\bpayment\b|\bdeposit\b|zelle|venmo|paypal|cash app|apple cash|\batm\b|withdrawal)/i;
 function review(rows, streams) {
   const out = {}, byKey = {};
   const label = (t) => (t.merchant_name || t.name || '').trim();
+  const isMove = (t) => NOT_PURCHASE.includes(t.category) || (!t.category && MOVE_NAME.test(t.name + ' ' + (t.descriptor || '')));
   rows.forEach((t) => { if (t.amount > 0 && !t.pending) { const k = label(t).toLowerCase() + '|' + t.amount; (byKey[k] = byKey[k] || []).push(t); } });
   const streamOf = {};
   (streams || []).forEach((s) => { const m = (s.merchant || s.description || '').toLowerCase(); if (m) streamOf[m] = s; });
   rows.forEach((t) => {
     if (t.amount <= 0) { out[t.transaction_id] = { verdict: 'ok', reasons: ['Money coming in.'], back: null }; return; }
-    const name = label(t), reasons = []; let verdict = 'ok', back = null;
-    // 1. Same company, same amount, within 2 days.
-    const twins = (byKey[name.toLowerCase() + '|' + t.amount] || []).filter((o) => o.transaction_id !== t.transaction_id && Math.abs(new Date(o.date) - new Date(t.date)) <= 2 * 864e5);
-    if (twins.length && !t.pending) { verdict = 'fight'; back = t.amount; reasons.push('Charged ' + (twins.length + 1) + ' times for $' + t.amount.toFixed(2) + ' within 2 days.', 'If you only bought this once, the extra charge should come back.'); }
-    // 2. Bank or card fees.
-    else if (FEE.test(t.name + ' ' + (t.descriptor || '')) || t.category === 'BANK_FEES') { verdict = 'fight'; back = t.amount; reasons.push('This looks like a ' + (/(overdraft|nsf|insufficient)/i.test(t.name) ? 'overdraft fee' : 'bank or card fee') + '.', 'Banks often refund fees when you ask, especially the first one.'); }
+    const name = label(t), reasons = [], text = t.name + ' ' + (t.descriptor || ''); let verdict = 'ok', back = null;
+    const isFee = t.category === 'BANK_FEES' ? !FEE_KEEP.includes(t.category_detail) : (!t.category || t.category === 'GENERAL_SERVICES') && FEE_NAME.test(text);
+    // 1. Bank or card fees that banks often refund (overdraft, NSF, late, ATM, monthly service).
+    if (isFee) { const od = /OVERDRAFT|INSUFFICIENT/.test(t.category_detail || '') || /(\boverdraft\b|\bnsf\b|insufficient funds)/i.test(text); verdict = 'fight'; back = t.amount; reasons.push('This looks like ' + (od ? 'an overdraft fee' : 'a bank fee') + '.', 'Banks often refund fees when you ask, especially the first one.'); }
+    // Transfers, card and loan payments, pay coming in: not purchases, nothing to get back.
+    else if (isMove(t)) reasons.push('A transfer or payment, not a purchase.');
+    else if (t.category === 'BANK_FEES') reasons.push('A standard fee your bank discloses up front. These are rarely refunded.');
     else {
+      // 2. Charged twice: same company, same amount, same or next day, $5 or more, exactly two of them.
+      const group = byKey[name.toLowerCase() + '|' + t.amount] || [];
+      const twins = group.filter((o) => o.transaction_id !== t.transaction_id && Math.abs(new Date(o.date) - new Date(t.date)) <= 864e5);
       const s = streamOf[name.toLowerCase()];
+      if (!t.pending && t.amount >= 5 && twins.length === 1 && !NO_DUPES.includes(t.category) && group.filter((o) => Math.abs(new Date(o.date) - new Date(t.date)) <= 7 * 864e5).length === 2) {
+        verdict = 'fight'; back = t.amount; reasons.push('Charged twice for $' + t.amount.toFixed(2) + ' on ' + (twins[0].date === t.date ? 'the same day' : 'back to back days') + '.', 'If you only bought this once, the extra charge should come back.'); }
       // 3. A subscription whose price went up.
-      if (s && s.average_amount && t.amount > Number(s.average_amount) * 1.1 + 0.5) { verdict = 'look'; reasons.push('Usually $' + Number(s.average_amount).toFixed(2) + ', this time $' + t.amount.toFixed(2) + '.', 'Price went up. Did you agree to the new price?'); }
+      else if (s && s.average_amount && t.amount > Number(s.average_amount) * 1.1 + 0.5) { verdict = 'look'; reasons.push('Usually $' + Number(s.average_amount).toFixed(2) + ', this time $' + t.amount.toFixed(2) + '.', 'Price went up. Did you agree to the new price?'); }
       // 4. A subscription that only just started.
       else if (s && (s.status === 'EARLY_DETECTION' || (s.first_date && Date.now() - new Date(s.first_date) < 40 * 864e5))) { verdict = 'look'; reasons.push('A new repeating charge that started ' + s.first_date + '.', 'Did you mean to sign up, or was it a free trial?'); }
       // 5. Bigger charges we cannot name.
-      else if (!t.merchant_name && t.amount >= 50 && !/transfer|payment|deposit|zelle|venmo|paypal/i.test(t.name)) { verdict = 'look'; reasons.push('We could not tell which company this is.', 'Do you recognize this charge?'); }
+      else if (!t.merchant_name && t.amount >= 50) { verdict = 'look'; reasons.push('We could not tell which company this is.', 'Do you recognize this charge?'); }
       else reasons.push('Looks like a normal purchase.');
     }
     out[t.transaction_id] = { verdict, reasons, back };
