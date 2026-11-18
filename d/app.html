@@ -1010,6 +1010,7 @@ class Component extends DCLogic {
     if (!this._token) return Promise.resolve();
     if (sync) this.setState({ plBusy: 'sync' });
     return this.papi(sync ? 'sync' : 'status').then(j => { this.setState({ pl: j, plBusy: '' });
+      if (j.enabled) this.plaidWarm();
       if (!sync && j.enabled && j.items && j.items.length && !this._plSynced) { this._plSynced = 1; this.loadPlaid(true); } })
       .catch(() => this.setState({ plBusy: '' }));
   }
@@ -1017,19 +1018,43 @@ class Component extends DCLogic {
     if (window.Plaid) return Promise.resolve();
     return new Promise((ok, no) => { const sc = document.createElement('script'); sc.src = 'https://cdn.plaid.com/link/v2/stable/link-initialize.js'; sc.onload = ok; sc.onerror = () => no(new Error('Could not load the secure bank window. Check your connection.')); document.head.appendChild(sc); });
   }
+  // Warm up Plaid before anyone taps: load its script and fetch a link token in the background, so Connect opens fast.
+  plaidWarm() {
+    if (this._ltWarm) return; this._ltWarm = 1;
+    this.plaidScript().catch(() => {});
+    this._lt = { at: Date.now(), p: this.papi('link_token', {}).catch(() => null) };
+  }
+  // Instant feedback on tap: white blurred wash with a spinner until Plaid's own window is on screen.
+  plVeil(on) {
+    let d = document.getElementById('ccPlVeil');
+    if (on === 'quiet') { if (d) Array.from(d.children).forEach(c => { c.style.transition = 'opacity .15s'; c.style.opacity = '0'; }); return; }
+    if (!on) { if (d) { clearTimeout(this._veilT); d.style.opacity = '0'; setTimeout(() => d && d.remove(), 220); } return; }
+    if (d) return;
+    if (!document.getElementById('ccPlVeilCss')) { const st = document.createElement('style'); st.id = 'ccPlVeilCss'; st.textContent = '@keyframes ccSpin{to{transform:rotate(360deg)}}#ccPlVeil .sp{width:34px;height:34px;border-radius:50%;border:3px solid rgba(15,59,46,.15);border-top-color:#12805C;animation:ccSpin .7s linear infinite}@media (prefers-reduced-motion:reduce){#ccPlVeil .sp{animation-duration:1.6s}}'; document.head.appendChild(st); }
+    d = document.createElement('div'); d.id = 'ccPlVeil'; d.setAttribute('role', 'status'); d.setAttribute('aria-live', 'polite');
+    d.style.cssText = 'position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(255,255,255,.82);-webkit-backdrop-filter:blur(18px) saturate(.6);backdrop-filter:blur(18px) saturate(.6);opacity:0;transition:opacity .16s ease;font:600 15px Manrope,system-ui,sans-serif;color:var(--fg-0F3B2E,#0F3B2E)';
+    d.innerHTML = '<div class="sp"></div><div>Opening secure connection</div>';
+    document.body.appendChild(d); requestAnimationFrame(() => { d.style.opacity = '1'; });
+    this._veilT = setTimeout(() => this.plVeil(false), 20000);
+  }
   connectCard(itemId) {
     const pl = this.state.pl || {};
     if (!pl.enabled) { this.toast('Card connections open soon', 'We will email you the day you can connect a card. Until then, add a charge yourself.'); return; }
     if (this.state.plBusy) return;
+    this.plVeil(true);
     this.setState({ plBusy: itemId || 'new' });
-    Promise.all([this.papi('link_token', itemId ? { item_id: itemId } : {}), this.plaidScript()]).then(([j]) => this.openLink(j.link_token, itemId))
-      .catch(e => { this.setState({ plBusy: '' }); this.toast('Could not open the bank window', e.message); if (this._tourPending) { this._tourPending = false; this.startTour(); } });
+    const fresh = () => this.papi('link_token', itemId ? { item_id: itemId } : {});
+    const warm = !itemId && this._lt && Date.now() - this._lt.at < 25 * 60 * 1000 ? this._lt.p.then(j => j && j.link_token ? j : fresh()) : fresh();
+    this._lt = null; this._ltWarm = 0;
+    Promise.all([warm, this.plaidScript()]).then(([j]) => this.openLink(j.link_token, itemId))
+      .catch(e => { this.plVeil(false); this.setState({ plBusy: '' }); this.toast('Could not open the bank window', e.message); if (this._tourPending) { this._tourPending = false; this.startTour(); } });
   }
   openLink(token, itemId, redirect) {
     try { sessionStorage.setItem('cc_plaid', JSON.stringify({ token, itemId: itemId || '' })); } catch (e) {}
     const done = () => { try { sessionStorage.removeItem('cc_plaid'); } catch (e) {} if (this._tourPending) { this._tourPending = false; setTimeout(() => this.startTour(), 600); } };
     const h = window.Plaid.create({ token, receivedRedirectUri: redirect || undefined,
-      onSuccess: (pt, meta) => { done();
+      onEvent: (ev) => { if (ev === 'OPEN' || ev === 'TRANSITION_VIEW') this.plVeil('quiet'); },
+      onSuccess: (pt, meta) => { done(); this.plVeil(false);
         if (itemId) { this.setState({ plBusy: '' }); this.toast('Card reconnected', 'We will pick up new charges again.'); this.loadPlaid(true); return; }
         const inst = (meta && meta.institution) || {};
         this.setState({ plBusy: 'sync' });
@@ -1039,7 +1064,7 @@ class Component extends DCLogic {
           this.toast((inst.name || 'Your bank') + ' is connected', !j.member ? 'We will tell you when a payout lands.' : f ? f + (f === 1 ? ' charge looks' : ' charges look') + ' worth fighting.' : 'We are checking your charges. New ones show up here.');
         }).catch(e => { this.setState({ plBusy: '' }); this.toast('Could not connect', e.message); });
       },
-      onExit: () => { done(); this.setState({ plBusy: '' }); } });
+      onExit: () => { done(); this.plVeil(false); this.setState({ plBusy: '' }); } });
     h.open();
   }
   resumeOAuth() {
@@ -1047,8 +1072,8 @@ class Component extends DCLogic {
     let saved = null; try { saved = JSON.parse(sessionStorage.getItem('cc_plaid') || 'null'); } catch (e) {}
     const url = location.href; try { history.replaceState(null, '', location.pathname); } catch (e) {}
     if (!saved || !saved.token) return;
-    this.setState({ plBusy: saved.itemId || 'new' });
-    this.plaidScript().then(() => this.openLink(saved.token, saved.itemId, url)).catch(() => this.setState({ plBusy: '' }));
+    this.plVeil(true); this.setState({ plBusy: saved.itemId || 'new' });
+    this.plaidScript().then(() => this.openLink(saved.token, saved.itemId, url)).catch(() => { this.plVeil(false); this.setState({ plBusy: '' }); });
   }
   chooseTx(t, choice) {
     if (this.state.plBusy) return;
