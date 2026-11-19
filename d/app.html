@@ -493,7 +493,7 @@ class Component extends DCLogic {
     if (typeof window !== 'undefined' && window.history) {
       this.applyPath(this.viewFromPath());
       addEventListener('popstate', () => this.applyPath(this.viewFromPath()));
-      addEventListener('keydown', (e) => { if (e.key !== 'Escape') return; if (this.state.pop) this.setState({ pop: '' }); else if (this.state.det) this.setState({ det: null }); else if (this.state.pm) this.setState({ pm: false }); });
+      addEventListener('keydown', (e) => { if (e.key === 'Enter' && this.state.authState === 'signin' && !this.state.authBusy && e.target && e.target.tagName === 'INPUT' && e.target.closest && e.target.closest('.authWrap')) { e.preventDefault(); if (this.state.codeSent) this.verifyCode(); else this.sendCode(); return; } if (e.key !== 'Escape') return; if (this.state.pop) this.setState({ pop: '' }); else if (this.state.det) this.setState({ det: null }); else if (this.state.pm) this.setState({ pm: false }); });
       setTimeout(() => { this.syncPath(true); this._pathReady = true; }, 0);
     }
     if (typeof window === 'undefined' || !window.supabase || typeof fetch === 'undefined') return;
@@ -509,10 +509,10 @@ class Component extends DCLogic {
           let ss = null; try { ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
           const fe = (((ss || {}).p || {}).email || '').toLowerCase(), se = ((u && u.user && u.user.email) || '').toLowerCase();
           const gone = error && error.status && error.status < 500, other = !!(ss && ss.ids && ss.ids.length && fe && se && fe !== se && ss.linkedTo !== fe && ss.keepFor !== se);
-          if (gone || other) return this._sb.auth.signOut({ scope: 'local' }).catch(() => {}).then(() => this.setState({ authState: 'signin', loginEmail: fe || se }));
+          if (gone || other) return this._sb.auth.signOut({ scope: 'local' }).catch(() => {}).then(() => this.setState({ authState: 'signin', loginEmail: '' }));
           return this.afterLogin(data.session);
         });
-        let em = ''; try { em = (new URLSearchParams(location.search).get('email') || new URLSearchParams(location.search).get('login')) || ((JSON.parse(localStorage.getItem('claimclub_session') || 'null') || {}).p || {}).email || ''; } catch (e) {}
+        let em = ''; try { em = (new URLSearchParams(location.search).get('email') || new URLSearchParams(location.search).get('login')) || ''; } catch (e) {}
         this.setState({ authState: 'signin', loginEmail: em });
       });
     }).catch(() => this.setState({ authState: 'off' }));
