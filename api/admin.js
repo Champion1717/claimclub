@@ -2,7 +2,7 @@
 // The caller must be signed in (Bearer token) and listed in the admins table or in the ADMIN_EMAILS env var.
 const { db, userFrom, readJson, send } = require('./_db');
 const { sendClaimEmail, sendNotice, COPY } = require('./_email');
-const { bot, botKeyOk, profileFor, botSettings, PROFILES } = require('./_bot');
+const { bot, botKeyOk, profileFor, botSettings, PROFILES, captchaFor, scansFor } = require('./_bot');
 const { getSpec, getSpecs } = require('./_spec');
 
 const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed', 'auto', 'self'];
@@ -152,9 +152,10 @@ const actions = {
     const cids = (claims || []).map((c) => c.id);
     const { data: runs } = cids.length ? await sb.from('bot_runs').select('id, claim_id, status, mode, error, confirmation, started_at').in('claim_id', cids).order('started_at', { ascending: false }) : { data: [] };
     const RUN = {}; (runs || []).forEach((r) => { if (!RUN[r.claim_id]) RUN[r.claim_id] = r; });
+    const SCAN = await scansFor(sids);
     return {
       claims: (claims || []).map((c) => Object.assign({}, c, {
-        spec: specs[c.settlement_id] || null, bot: RUN[c.id] || null, botProfile: profileFor(specs[c.settlement_id]),
+        spec: specs[c.settlement_id] || null, bot: RUN[c.id] || null, botProfile: profileFor(specs[c.settlement_id]), captcha: captchaFor(SCAN[c.settlement_id], c.answers),
         profile: (profiles || []).find((p) => p.id === c.user_id) || null,
         authorization: (auths || []).find((a) => a.user_id === c.user_id && a.settlement_id === c.settlement_id) || null
       }))
@@ -302,7 +303,7 @@ module.exports = async (req, res) => {
   if (req.headers['x-bot-key']) {
     if (!botKeyOk(req)) return send(res, 401, { error: 'Bad bot key' });
     const bb = await readJson(req);
-    const fns = { botNext: (x) => bot.botNext(x), botShot: (x) => bot.botShot(x), botDone: (x) => bot.botDone(x, (y, u) => actions.setStatus(y, u)) };
+    const fns = { botNext: (x) => bot.botNext(x), botScanList: (x) => bot.botScanList(x), botScanSave: (x) => bot.botScanSave(x), botShot: (x) => bot.botShot(x), botDone: (x) => bot.botDone(x, (y, u) => actions.setStatus(y, u)) };
     if (!fns[bb.action]) return send(res, 400, { error: 'Unknown bot action' });
     try { return send(res, 200, await fns[bb.action](bb)); } catch (e) { return send(res, 500, { error: e.message || 'Server error' }); }
   }

@@ -20,11 +20,12 @@ const admin = require(API + 'admin.js');
 
 fake.T.claims = [
   { id: 1, user_id: 'u1', settlement_id: 'amazon', status: 'requested', requested_at: '2026-11-19T10:00:00Z', answers: { n_notice_id: 'ABC123', n_conf_code: '9999', q_0: 'yes' }, payout_method: 'PayPal' },
-  { id: 2, user_id: 'u1', settlement_id: 'boxed', status: 'requested', requested_at: '2026-11-19T11:00:00Z', answers: {} }];
+  { id: 2, user_id: 'u1', settlement_id: 'boxed', status: 'requested', requested_at: '2026-11-19T11:00:00Z', answers: {} },
+  { id: 3, user_id: 'u1', settlement_id: 'amazon', status: 'requested', requested_at: '2026-11-19T12:00:00Z', answers: { q_0: 'yes' } }];
 fake.T.profiles = [{ id: 'u1', name: 'Maria Lopez', email: 'maria@example.com', phone: '(206) 555-0199', address: '88 Pine St, Apt 4B, Seattle, WA 98101', state: 'WA', pay_default: 'PayPal', payout_handles: { PayPal: 'maria@example.com' }, email_receipts: true }];
 fake.T.authorizations = [{ user_id: 'u1', settlement_id: 'amazon', signer_name: 'Maria Lopez', created_at: '2026-11-19T09:00:00Z' }];
 fake.T.app_settings = [{ key: 'filing_bot', value: { mode: 'dry', profiles: ['angeion'] } }];
-fake.T.bot_runs = []; fake.T.claim_events = []; fake.T.email_log = [];
+fake.T.form_scans = []; fake.T.bot_runs = []; fake.T.claim_events = []; fake.T.email_log = [];
 
 const page = (title, body) => '<!doctype html><html><head><title>' + title + '</title></head><body style="font-family:sans-serif">' + body + '</body></html>';
 const STATES = '<option value="">Select a state</option><option value="CA">California</option><option value="OR">Oregon</option><option value="WA">Washington</option>';
@@ -32,7 +33,7 @@ let submitted = null;
 const site = http.createServer((req, res) => {
   const u = new URL(req.url, 'http://x'), q = Object.fromEntries(u.searchParams);
   const send = (h) => { res.writeHead(200, { 'Content-Type': 'text/html' }); res.end(h); };
-  if (u.pathname === '/angeion/') return send(page('Amazon Return Policy Litigation', '<nav><a href="/">Home</a> <a href="/angeion/">Submit a Claim</a></nav><h1>Amazon Return Policy Litigation</h1><p>Deadline Dec 1.</p><a href="/angeion/">Submit a Claim</a><p>Do you have a Notice ID and Confirmation Code?</p><button type="button" onclick="window.ans=\'y\'">Yes</button><button type="button" onclick="window.ans=\'n\'">No</button><button type="button" onclick="if(window.ans===\'y\')location.href=\'/angeion/submit-claim\';else if(window.ans===\'n\')location.href=\'/angeion/claim\'">Continue</button><a href="/docs/Claim_Form.pdf">Claim Form</a>'));
+  if (u.pathname === '/angeion/') return send(page('Amazon Return Policy Litigation', '<nav><a href="/">Home</a> <a href="/angeion/">Submit a Claim</a></nav><h1>Amazon Return Policy Litigation</h1><p>Deadline Dec 1.</p><a href="/angeion/">Submit a Claim</a><p>Do you have a Notice ID and Confirmation Code?</p><button type="button" onclick="window.ans=\'y\'">Yes</button><button type="button" onclick="window.ans=\'n\'">No</button><button type="button" onclick="if(window.ans===\'y\')location.href=\'/angeion/submit-claim\';else if(window.ans===\'n\')location.href=\'/angeion/nonotice\'">Continue</button><a href="/docs/Claim_Form.pdf">Claim Form</a>'));
   if (u.pathname === '/angeion/submit-claim') return send(page('Login', (q.err ? '<div role="alert">ID or code is wrong</div>' : '') + '<form action="/angeion/check"><label for="i">ID</label><input id="i" name="demographics.zero_zero_id" required><label for="c">Confirmation Code</label><input id="c" type="password" name="demographics.confirmation_code" required><button type="submit">Login</button></form>'));
   if (u.pathname === '/angeion/check') { res.writeHead(302, { Location: q['demographics.zero_zero_id'] === 'ABC123' && q['demographics.confirmation_code'] === '9999' ? '/angeion/claim' : '/angeion/submit-claim?err=1' }); return res.end(); }
   if (u.pathname === '/angeion/claim') return send(page('Claim form', '<form action="/angeion/claim2"><h2>Your information</h2>'
@@ -50,6 +51,7 @@ const site = http.createServer((req, res) => {
     + '<label for="sg">Signature *</label><input id="sg" name="sig" required><label for="dt">Date</label><input id="dt" name="date">'
     + '<button type="submit">Submit Claim</button></form>'));
   if (u.pathname === '/angeion/done') { submitted = Object.assign(JSON.parse(decodeURIComponent(q.p1)), q); delete submitted.p1; return send(page('Thanks', '<h1>Thank you</h1><p>Your claim has been received. Your Confirmation Number is AMZ-77812.</p>')); }
+  if (u.pathname === '/angeion/nonotice') return send(page('No notice', '<form><label for="n">Full name *</label><input id="n" name="n" required><iframe src="/fake/recaptcha/api2/anchor?k=1" width="304" height="78" title="reCAPTCHA"></iframe><button type="submit">Next</button></form>'));
   if (u.pathname === '/captcha/') return send(page('Captcha form', '<form><label for="n">Full name *</label><input id="n" name="n" required><iframe src="/fake/recaptcha/api2/anchor?k=1" width="304" height="78" title="reCAPTCHA"></iframe><button type="submit">Submit</button></form>'));
   send(page('Fake', 'ok'));
 });
@@ -75,6 +77,14 @@ function worker() {
   // Run the worker in another process (async so this server keeps answering).
   const runW = () => new Promise((resolve) => { const { spawn } = require('child_process'); const p = spawn('node', [path.join(__dirname, '..', 'worker.js'), '--once'], { env: Object.assign({}, process.env, { CC_API: 'http://localhost:8798', BOT_KEY: KEY, BOT_EXEC: process.env.BOT_EXEC || '/usr/bin/google-chrome', BOT_NAME: 'test' }) });
     p.stdout.on('data', (d) => process.stdout.write(String(d).replace(/^/gm, '    | '))); p.stderr.on('data', (d) => process.stdout.write(String(d))); p.on('close', resolve); });
+  console.log('0. nothing scanned yet: the bot takes nothing'); await runW(); assert.strictEqual(fake.T.bot_runs.length, 0);
+  console.log('0b. CAPTCHA scan');
+  await new Promise((resolve) => { const { spawn } = require('child_process'); const p = spawn('node', [path.join(__dirname, '..', 'scan.js'), '--all'], { env: Object.assign({}, process.env, { CC_API: 'http://localhost:8798' }) });
+    p.stdout.on('data', (d) => process.stdout.write(String(d).replace(/^/gm, '    | '))); p.stderr.on('data', (d) => process.stdout.write(String(d))); p.on('close', resolve); });
+  const sc = Object.fromEntries(fake.T.form_scans.map((x) => [x.settlement_id, x]));
+  assert.strictEqual(sc.amazon.gate, true); assert.strictEqual(sc.amazon.captcha_notice, false); assert.strictEqual(sc.amazon.captcha_no_notice, true); assert.strictEqual(sc.boxed.captcha, true);
+  const q = await staff('queue', {}); const cap = Object.fromEntries((q.claims || []).map((c) => [c.id, c.captcha]));
+  console.log('queue captcha flags', JSON.stringify(cap)); assert.strictEqual(cap[1], false); assert.strictEqual(cap[2], true); assert.strictEqual(cap[3], true);
   console.log('1. practice fill'); await runW();
   let r1 = fake.T.bot_runs[0];
   console.log('run 1:', r1.status, r1.error || '', 'shots', r1.shots.length, 'claim', fake.T.claims[0].status);
@@ -89,10 +99,8 @@ function worker() {
   assert.strictEqual(submitted.first, 'Maria'); assert.strictEqual(submitted.last, 'Lopez'); assert.strictEqual(submitted.a1, '88 Pine St'); assert.strictEqual(submitted.a2, 'Apt 4B'); assert.strictEqual(submitted.city, 'Seattle');
   assert.strictEqual(submitted.state, 'WA'); assert.strictEqual(submitted.zip, '98101'); assert.strictEqual(submitted.email2, 'maria@example.com'); assert.strictEqual(submitted.pay, 'pp'); assert.strictEqual(submitted.ppemail, 'maria@example.com');
   assert.strictEqual(submitted.q1, 'y'); assert.strictEqual(submitted.att, 'on'); assert.strictEqual(submitted.sig, 'Maria Lopez');
-  console.log('3. CAPTCHA form goes to staff'); await runW();
-  const r3 = fake.T.bot_runs.find((r) => r.claim_id === 2);
-  console.log('run 3:', r3.status, r3.error); assert.strictEqual(r3.status, 'needs_va'); assert.strictEqual(fake.T.claims[1].status, 'requested');
-  console.log('4. nothing left'); await runW(); assert.strictEqual(fake.T.bot_runs.length, 3);
+  console.log('3. CAPTCHA claims are never handed to the bot'); await runW();
+  assert.ok(!fake.T.bot_runs.some((r) => r.claim_id === 2 || r.claim_id === 3)); assert.strictEqual(fake.T.bot_runs.length, 2);
   console.log('5. mode off'); fake.T.app_settings[0].value = { mode: 'off', profiles: ['angeion'] };
   const off = await fetch('http://localhost:8798/', { method: 'POST', headers: { 'x-bot-key': KEY, 'Content-Type': 'application/json' }, body: '{"action":"botNext"}' }).then((x) => x.json()); assert.strictEqual(off.job, null);
   console.log('ALL BOT TESTS PASSED'); site.close(); api.close(); process.exit(0);

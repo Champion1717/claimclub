@@ -35,6 +35,23 @@ let CAT = {}; try { (require('./_catalog.json') || []).forEach((c) => { CAT[c.id
 const titleOf = (id) => CAT[id] || id;
 const isPdf = (u) => /\.pdf(\?|$)/i.test(u || '');
 
+// CAPTCHA scans (bot/scan.js). A claim whose path through the form shows a CAPTCHA is filed by a VA, never the bot.
+function hasNotice(answers) {
+  const A = answers || {};
+  return Object.keys(A).some((k) => k.indexOf('n_') === 0 && k !== 'n_got' && /(id|notice|login|claim|unique|number|ref)/.test(k) && !/(pin|code|pass)/.test(k) && typeof A[k] === 'string' && A[k].trim());
+}
+function captchaFor(scan, answers) {
+  if (!scan) return null;
+  if (scan.captcha_start) return true;
+  if (scan.gate) { const v = hasNotice(answers) ? scan.captcha_notice : scan.captcha_no_notice; return v == null ? !!scan.captcha : !!v; }
+  return !!scan.captcha;
+}
+async function scansFor(ids) {
+  if (!ids.length) return {};
+  const { data } = await db().from('form_scans').select('*').in('settlement_id', ids);
+  const out = {}; (data || []).forEach((r) => { out[r.settlement_id] = r; }); return out;
+}
+
 // Everything the bot needs to fill one claim form.
 async function jobFor(run, claim, spec) {
   const sb = db();
@@ -75,12 +92,14 @@ const bot = {
     const { data: claims } = await sb.from('claims').select('*').eq('status', 'requested').order('requested_at', { ascending: true, nullsFirst: false }).limit(60);
     if (!claims || !claims.length) return { job: null, mode: set.mode };
     const specs = await getSpecs([...new Set(claims.map((c) => c.settlement_id))]);
+    const scans = await scansFor(Object.keys(specs));
     const { data: tried } = await sb.from('bot_runs').select('claim_id').in('claim_id', claims.map((c) => c.id)).neq('status', 'cancelled');
     const done = new Set((tried || []).map((r) => r.claim_id));
     for (const c of claims) {
       const sp = specs[c.settlement_id];
       if (!sp || sp.type !== 'we' || !sp.form_url || isPdf(sp.form_url) || done.has(c.id)) continue;
       if (sp.bot === false) continue;
+      if (captchaFor(scans[c.settlement_id], c.answers) !== false) continue; // unscanned or CAPTCHA: VA files it
       const prof = profileFor(sp);
       if (!set.profiles.includes(prof)) continue;
       const { data: run, error } = await sb.from('bot_runs').insert({ claim_id: c.id, settlement_id: c.settlement_id, profile: prof, mode: set.mode, status: 'running', worker }).select().single();
@@ -88,6 +107,36 @@ const bot = {
       return { job: await jobFor(run, c, sp) };
     }
     return { job: null, mode: set.mode };
+  },
+
+  // Every web claim form to check for a CAPTCHA (scanned in the last `days` days are skipped unless all).
+  async botScanList(b) {
+    const { BASE } = require('./_spec');
+    const days = Math.max(0, parseInt(b.days, 10) || 7);
+    const { data: rows } = await db().from('settlement_filing').select('id');
+    const ids = [...new Set(Object.keys(BASE).concat((rows || []).map((r) => r.id)))];
+    const specs = await getSpecs(ids), scans = await scansFor(ids), cut = Date.now() - days * 864e5;
+    const out = [];
+    Object.values(specs).forEach((sp) => {
+      if (!sp || sp.type !== 'we' || !sp.form_url || isPdf(sp.form_url) || !/^https?:/i.test(sp.form_url)) return;
+      const sc = scans[sp.id];
+      if (!b.all && sc && new Date(sc.scanned_at).getTime() > cut && sc.form_url === sp.form_url) return;
+      if (b.only && b.only !== sp.id) return;
+      out.push({ id: sp.id, form_url: sp.form_url, admin: sp.admin || '', title: titleOf(sp.id) });
+    });
+    return { forms: out };
+  },
+  async botScanSave(b) {
+    const r = b.result || {}, id = String(r.id || '').slice(0, 80);
+    if (!id) return { error: 'id needed' };
+    const bool = (v) => (v == null ? null : !!v);
+    const row = { settlement_id: id, form_url: String(r.form_url || '').slice(0, 600), scanned_at: new Date().toISOString(), worker: String(b.worker || 'bot').slice(0, 60),
+      gate: !!r.gate, captcha_start: bool(r.captcha_start), captcha_notice: bool(r.captcha_notice), captcha_no_notice: bool(r.captcha_no_notice),
+      captcha: !!(r.captcha_start || r.captcha_notice || r.captcha_no_notice), kinds: Array.isArray(r.kinds) ? r.kinds.slice(0, 10).map(String) : [],
+      note: r.note ? String(r.note).slice(0, 500) : null, error: r.error ? String(r.error).slice(0, 500) : null };
+    const { error } = await db().from('form_scans').upsert(row, { onConflict: 'settlement_id' });
+    if (error) throw error;
+    return { ok: true };
   },
 
   // A private upload link for one screenshot.
@@ -158,4 +207,4 @@ const bot = {
   }
 };
 
-module.exports = { bot, botKeyOk, profileFor, botSettings, PROFILES };
+module.exports = { bot, botKeyOk, profileFor, botSettings, PROFILES, captchaFor, scansFor };

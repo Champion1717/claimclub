@@ -41,3 +41,15 @@ Options: `BOT_NAME` (shown in /admin), `BOT_IDLE_MS` (wait when nothing is queue
 `node bot/test/run.js` runs the real /api/admin code on an in-memory database against a fake Angeion-style
 form (practice fill, approve, real submit with confirmation and member email) and a fake CAPTCHA form.
 It needs the unpacked site source at /tmp/site (see CLAUDE.md, Rebuild steps).
+
+## CAPTCHA scan
+
+The bot only files claims whose claim form was scanned and showed no CAPTCHA on the member's path. Everything else stays with a VA.
+
+```bash
+BOT_KEY='...' node scan.js            # forms not scanned in the last 7 days
+BOT_KEY='...' node scan.js --all      # every form again
+BOT_KEY='...' node scan.js --only realpage --show
+```
+
+Forms that first ask "Do you have a Notice ID?" are checked down both paths, so a member with a notice ID can still go to the bot when only the no-notice path has a CAPTCHA. Results are saved in the `form_scans` table and shown as "CAPTCHA · VA files" in the Filing queue.

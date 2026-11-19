@@ -200,4 +200,4 @@ async function runClaim(page, job, shot, log) {
   return { status: 'needs_va', error: 'The form had more pages than expected.' };
 }
 
-module.exports = { runClaim, readFields, pickOption, CONF };
+module.exports = { runClaim, readFields, pickOption, buttons, CONF, NEXT, START_LINK };
