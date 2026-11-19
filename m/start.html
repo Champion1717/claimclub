@@ -1,8 +1,8 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Claimclub · Check what you are owed</title>
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="description" content="Answer a few quick yes or no questions to see which class action settlements you could claim money from. Free to check, no account needed."><link rel="canonical" href="https://www.claimclub.io/claim"><meta property="og:type" content="website"><meta property="og:site_name" content="Claimclub"><meta property="og:title" content="Claimclub · Check what you are owed"><meta property="og:description" content="Answer a few quick yes or no questions to see which class action settlements you could claim money from. Free to check, no account needed."><meta property="og:url" content="https://www.claimclub.io/claim"><meta property="og:image" content="https://www.claimclub.io/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Claimclub · Check what you are owed"><meta name="twitter:description" content="Answer a few quick yes or no questions to see which class action settlements you could claim money from. Free to check, no account needed."><meta name="twitter:image" content="https://www.claimclub.io/og.png">
-<script>(function(){function c(){if(!(innerWidth>=820))return;document.cookie='cc_site=d;path=/;max-age=31536000;samesite=lax';var k='ccsw_cc_site';if(document.cookie.indexOf('cc_site=d')<0||sessionStorage.getItem(k)==='d'){location.replace('/d/start.html?v=1'+location.search.replace(/^\?/,'&')+location.hash);return}try{sessionStorage.setItem(k,'d')}catch(e){}location.reload()}try{if(sessionStorage.getItem('ccsw_cc_site')==='m')sessionStorage.removeItem('ccsw_cc_site')}catch(e){}c();})()</script><!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, and on claim-flow links that name a settlement) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)){
+<script>(function(){function c(){if(!(innerWidth>=820))return;document.cookie='cc_site=d;path=/;max-age=31536000;samesite=lax';var k='ccsw_cc_site';if(document.cookie.indexOf('cc_site=d')<0||sessionStorage.getItem(k)==='d'){location.replace('/d/start.html?v=1'+location.search.replace(/^\?/,'&')+(/^\/claim\/([\w-]+)/i.test(location.pathname)?'&claim='+RegExp.$1:'')+location.hash);return}try{sessionStorage.setItem(k,'d')}catch(e){}location.reload()}try{if(sessionStorage.getItem('ccsw_cc_site')==='m')sessionStorage.removeItem('ccsw_cc_site')}catch(e){}c();})()</script><!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, on ?offer= links, and on /claim/<id> links for health settlements) -->
+<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -19,7 +19,7 @@ src="https://www.facebook.com/tr?id=888237691005202&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <!-- Google Ads tag (AW-18562196705; same skip rules as the Meta Pixel) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)){
+<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
 (function(d){var t=d.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=AW-18562196705';d.head.appendChild(t)})(document);
 window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
 gtag('js',new Date());gtag('config','AW-18562196705');
@@ -656,6 +656,11 @@ class Component extends DCLogic {
     try { if (!fid && typeof location !== 'undefined' && location.search) fid = new URLSearchParams(location.search).get('offer'); } catch (e) {}
     const fd = fid && this.data().find(d => d.id === fid && this.daysLeft(d.dl) > 0);
     this.state.focus = fd ? fd.id : null; this.state.focusMore = false;
+    // Ad landing links (Nov 19): /claim/<settlement id> runs the normal flow with that settlement asked first.
+    let lid = null;
+    try { if (typeof location !== 'undefined') { const m = location.pathname.match(/^\/claim\/([\w-]+)\/?$/i); lid = (m && m[1]) || new URLSearchParams(location.search).get('claim'); } } catch (e) {}
+    const ld = !fd && lid && this.data().find(d => d.id === String(lid).toLowerCase() && !d.st && this.daysLeft(d.dl) > 0);
+    this.state.lead = ld ? ld.id : null;
   }
   dict() {
     return {
@@ -785,6 +790,12 @@ class Component extends DCLogic {
       const fq = TOP.find(q => q.key === fid) || { key: fid, brand: d.co, cat: d.cat, title: ['Does the ' + d.co + ' settlement apply to you?', '¿Te aplica el acuerdo de ' + d.co + '?'], sub: ['Eligible: ' + d.who + '.', 'Pueden reclamar: ' + d.who + '.'], opts: yn(fid) };
       this._moreN = TOP.filter(q => q.key !== fid).length;
       return [fq].concat(this.state.focusMore ? TOP.filter(q => q.key !== fid) : []).map(loc);
+    }
+    const lid = this.state.lead;
+    if (this.quickMode() && lid) {
+      const d = this.data().find(x => x.id === lid);
+      const lq = TOP.find(q => q.key === lid) || { key: lid, brand: d.co, cat: d.cat, title: ['Does the ' + d.co + ' settlement apply to you?', '¿Te aplica el acuerdo de ' + d.co + '?'], sub: ['Eligible: ' + d.who + '.', 'Pueden reclamar: ' + d.who + '.'], opts: yn(lid) };
+      return [lq].concat(TOP.filter(q => q.key !== lid)).map(loc);
     }
     if (this.quickMode()) return TOP.map(loc);
     const Q = [
@@ -952,7 +963,7 @@ class Component extends DCLogic {
     if (!name || name === this._lastTracked || !this.isLiveHost() || typeof fetch === 'undefined') return;
     this._lastTracked = name;
     let sid = ''; try { sid = sessionStorage.getItem('cc_sid') || ''; if (!sid) { sid = Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10); sessionStorage.setItem('cc_sid', sid); } } catch (e) { return; }
-    const body = JSON.stringify({ sid, step: name, idx: this.state.step, device: typeof innerWidth !== 'undefined' && innerWidth < 820 ? 'm' : 'd', lang: this.state.lang, offer: this.state.focus || '', flow: this.state.flow || 'a' });
+    const body = JSON.stringify({ sid, step: name, idx: this.state.step, device: typeof innerWidth !== 'undefined' && innerWidth < 820 ? 'm' : 'd', lang: this.state.lang, offer: this.state.focus || this.state.lead || '', flow: this.state.flow || 'a' });
     try { fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); } catch (e) {}
   }
   // Pricing test (Nov 16 2026): which page a payment came from, so live.js can return to it.

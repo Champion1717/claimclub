@@ -243,6 +243,43 @@
    "destination": "/d/start.html"
   },
   {
+   "source": "/claim/:id",
+   "has": [
+    {
+     "type": "cookie",
+     "key": "cc_site",
+     "value": "m"
+    }
+   ],
+   "destination": "/m/start.html"
+  },
+  {
+   "source": "/claim/:id",
+   "has": [
+    {
+     "type": "cookie",
+     "key": "cc_site",
+     "value": "d"
+    }
+   ],
+   "destination": "/d/start.html"
+  },
+  {
+   "source": "/claim/:id",
+   "has": [
+    {
+     "type": "header",
+     "key": "user-agent",
+     "value": ".*(iPhone|iPod|Android.*Mobile|Windows Phone|BlackBerry).*"
+    }
+   ],
+   "destination": "/m/start.html"
+  },
+  {
+   "source": "/claim/:id",
+   "destination": "/d/start.html"
+  },
+  {
    "source": "/dashboard",
    "has": [
     {
@@ -483,6 +520,15 @@
   },
   {
    "source": "/claim",
+   "headers": [
+    {
+     "key": "Vary",
+     "value": "User-Agent, Cookie"
+    }
+   ]
+  },
+  {
+   "source": "/claim/(.*)",
    "headers": [
     {
      "key": "Vary",

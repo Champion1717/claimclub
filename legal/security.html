@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Information Security Policy · Claimclub</title><meta name="description" content="How Claimclub protects member data, including bank data received through Plaid."><link rel="canonical" href="https://www.claimclub.io/security"><meta property="og:type" content="website"><meta property="og:site_name" content="Claimclub"><meta property="og:title" content="Information Security Policy · Claimclub"><meta property="og:description" content="How Claimclub protects member data, including bank data received through Plaid."><meta property="og:url" content="https://www.claimclub.io/security"><meta property="og:image" content="https://www.claimclub.io/og.png"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, and on claim-flow links that name a settlement) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)){
+<!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, on ?offer= links, and on /claim/<id> links for health settlements) -->
+<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(__HEALTH__)\/?$/i.test(location.pathname)){
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -18,7 +18,7 @@ src="https://www.facebook.com/tr?id=888237691005202&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <!-- Google Ads tag (AW-18562196705; same skip rules as the Meta Pixel) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)){
+<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(__HEALTH__)\/?$/i.test(location.pathname)){
 (function(d){var t=d.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=AW-18562196705';d.head.appendChild(t)})(document);
 window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
 gtag('js',new Date());gtag('config','AW-18562196705');
