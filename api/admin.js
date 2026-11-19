@@ -1,7 +1,8 @@
 // POST /api/admin  { action, ... }  Staff-only API behind /admin.
 // The caller must be signed in (Bearer token) and listed in the admins table or in the ADMIN_EMAILS env var.
 const { db, userFrom, readJson, send } = require('./_db');
-const { sendClaimEmail } = require('./_email');
+const { sendClaimEmail, sendNotice, COPY } = require('./_email');
+const { bot, botKeyOk, profileFor, botSettings, PROFILES } = require('./_bot');
 const { getSpec, getSpecs } = require('./_spec');
 
 const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed', 'auto', 'self'];
@@ -15,9 +16,10 @@ async function isAdmin(user) {
   return !!data;
 }
 // Feature switches shown in /admin > Settings. Each entry turns the posted value into what we store.
-const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true };
+const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true,
+  filing_bot: (v) => ({ mode: ['off', 'dry', 'submit'].includes(v && v.mode) ? v.mode : 'off', profiles: Array.isArray(v && v.profiles) ? v.profiles.filter((x) => PROFILES.includes(x)) : [] }) };
 async function readSettings() {
-  const out = { bank_connect: false, card_connect: false };
+  const out = { bank_connect: false, card_connect: false, filing_bot: { mode: 'off', profiles: [] } };
   const { data } = await db().from('app_settings').select('key, value, updated_by, updated_at');
   (data || []).forEach((r) => { out[r.key] = r.value; out[r.key + '_meta'] = { by: r.updated_by, at: r.updated_at }; });
   return out;
@@ -147,9 +149,12 @@ const actions = {
     ]) : [{ data: [] }, { data: [] }];
     const sids = [...new Set((claims || []).map((c) => c.settlement_id))];
     const specs = await getSpecs(sids);
+    const cids = (claims || []).map((c) => c.id);
+    const { data: runs } = cids.length ? await sb.from('bot_runs').select('id, claim_id, status, mode, error, confirmation, started_at').in('claim_id', cids).order('started_at', { ascending: false }) : { data: [] };
+    const RUN = {}; (runs || []).forEach((r) => { if (!RUN[r.claim_id]) RUN[r.claim_id] = r; });
     return {
       claims: (claims || []).map((c) => Object.assign({}, c, {
-        spec: specs[c.settlement_id] || null,
+        spec: specs[c.settlement_id] || null, bot: RUN[c.id] || null, botProfile: profileFor(specs[c.settlement_id]),
         profile: (profiles || []).find((p) => p.id === c.user_id) || null,
         authorization: (auths || []).find((a) => a.user_id === c.user_id && a.settlement_id === c.settlement_id) || null
       }))
@@ -241,6 +246,29 @@ const actions = {
     return { ok: true };
   },
 
+  botRuns: (b) => bot.botRuns(b),
+  botApprove: (b, user) => bot.botApprove(b, user),
+  botToStaff: (b, user) => bot.botToStaff(b, user),
+  botRetry: (b) => bot.botRetry(b),
+  botStats: () => bot.botStats(),
+
+  // Sends a sample email to the signed-in staff member, to check that email works.
+  async testEmail(b, user) {
+    const r = await sendNotice({ to: user.email, userId: null, kind: 'test', c: { subject: 'Claimclub test email', head: 'Email works', body: '<p>This is a test from /admin. If you can read it, member emails are going out.</p>', cta: 'Open the admin', ctaUrl: 'https://www.claimclub.io/admin' } });
+    return { email: r, to: user.email };
+  },
+  // Sends the email for a claim's current status again (for example after fixing the email setup).
+  async resendEmail(b) {
+    const sb = db(), id = parseInt(b.claim_id, 10);
+    const { data: c } = await sb.from('claims').select('*').eq('id', id).maybeSingle();
+    if (!c) return { error: 'Claim not found' };
+    if (!COPY[c.status]) return { error: 'There is no member email for this status' };
+    const { data: prof } = await sb.from('profiles').select('email, pay_default').eq('id', c.user_id).maybeSingle();
+    if (!prof || !prof.email) return { error: 'This member has no email' };
+    const email = await sendClaimEmail({ to: prof.email, userId: c.user_id, status: c.status, title: b.title || c.settlement_id, ref: c.claim_ref, note: c.admin_note, amount: c.paid_amount_cents ? money(c.paid_amount_cents) : '', method: c.payout_method || prof.pay_default });
+    return { email };
+  },
+
   async setStatus(b, user) {
     const sb = db(), id = parseInt(b.claim_id, 10), status = String(b.status || '');
     if (!id || !STATUSES.includes(status)) return { error: 'Pick a valid status' };
@@ -270,6 +298,14 @@ const actions = {
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   if (req.method !== 'POST') return send(res, 405, { error: 'Method not allowed' });
+  // The filing bot signs its calls with BOT_KEY instead of a staff sign-in, and may only use its own three actions.
+  if (req.headers['x-bot-key']) {
+    if (!botKeyOk(req)) return send(res, 401, { error: 'Bad bot key' });
+    const bb = await readJson(req);
+    const fns = { botNext: (x) => bot.botNext(x), botShot: (x) => bot.botShot(x), botDone: (x) => bot.botDone(x, (y, u) => actions.setStatus(y, u)) };
+    if (!fns[bb.action]) return send(res, 400, { error: 'Unknown bot action' });
+    try { return send(res, 200, await fns[bb.action](bb)); } catch (e) { return send(res, 500, { error: e.message || 'Server error' }); }
+  }
   let user;
   try { user = await userFrom(req); } catch (e) { return send(res, 500, { error: e.message }); }
   if (!user) return send(res, 401, { error: 'Sign in first' });

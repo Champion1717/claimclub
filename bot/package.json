@@ -1,0 +1,15 @@
+{
+  "name": "claimclub-filing-bot",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fills official settlement claim forms for Claimclub members. Runs outside Vercel.",
+  "main": "worker.js",
+  "scripts": {
+    "start": "node worker.js",
+    "once": "node worker.js --once --show",
+    "test": "node test/run.js"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0"
+  }
+}

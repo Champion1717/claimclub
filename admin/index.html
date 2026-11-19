@@ -236,7 +236,7 @@ async function queue() {
   const filt = '<div class="seg" role="group" aria-label="Show">' + [[['requested', 'needs_info'], 'To do'], [['self', 'auto'], 'Member filing or auto pay'], [['filed', 'review'], 'Filed'], [['approved', 'paid'], 'Approved and paid']].map(([s, t]) => '<button data-s="' + s.join(',') + '" class="' + (s.join() === want.join() ? 'on' : '') + '">' + t + '</button>').join('') + '</div>';
   main('<h1>Filing queue</h1><div class="sub">Claims members asked us to file. Oldest first. Open one to see everything you need to file it.</div><div style="margin-bottom:12px">' + filt + '</div><div class="card" style="padding:6px 6px 2px">'
     + (r.claims.length ? '<table><thead><tr><th>Member</th><th>Settlement</th><th>Filed by</th><th>Status</th><th>Requested</th><th>Signed</th></tr></thead><tbody>'
-      + r.claims.map((c, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((c.profile && c.profile.name) || 'No name') + '</b><div class="small muted">' + esc(c.profile && c.profile.email) + '</div></td><td>' + esc(setName(c.settlement_id)) + (SETS[c.settlement_id] && SETS[c.settlement_id].dl ? '<div class="small muted">Deadline ' + fmtDay(SETS[c.settlement_id].dl + 'T12:00:00') + '</div>' : '') + '</td><td>' + typeChip(c.spec, c) + '</td><td>' + pill(c.status) + (c.claim_ref ? '<div class="small muted">ID ' + esc(c.claim_ref) + '</div>' : '') + '</td><td class="small">' + fmtDate(c.requested_at || c.created_at) + '</td><td>' + (c.authorization ? '<span class="pill p-approved">Signed</span>' : '<span class="pill p-denied">Missing</span>') + '</td></tr>').join('') + '</tbody></table>'
+      + r.claims.map((c, i) => '<tr class="click" data-i="' + i + '" tabindex="0"><td><b>' + esc((c.profile && c.profile.name) || 'No name') + '</b><div class="small muted">' + esc(c.profile && c.profile.email) + '</div></td><td>' + esc(setName(c.settlement_id)) + (SETS[c.settlement_id] && SETS[c.settlement_id].dl ? '<div class="small muted">Deadline ' + fmtDay(SETS[c.settlement_id].dl + 'T12:00:00') + '</div>' : '') + '</td><td>' + typeChip(c.spec, c) + botChip(c.bot) + '</td><td>' + pill(c.status) + (c.claim_ref ? '<div class="small muted">ID ' + esc(c.claim_ref) + '</div>' : '') + '</td><td class="small">' + fmtDate(c.requested_at || c.created_at) + '</td><td>' + (c.authorization ? '<span class="pill p-approved">Signed</span>' : '<span class="pill p-denied">Missing</span>') + '</td></tr>').join('') + '</tbody></table>'
       : '<div class="empty">Nothing here. When a member taps File, the claim shows up in To do.</div>') + '</div>');
   document.querySelectorAll('.seg button').forEach((b) => { b.onclick = () => { cache.qStatuses = b.dataset.s.split(','); queue(); }; });
   cache.qList = r.claims;
@@ -384,7 +384,7 @@ async function claimPanel(c, list) {
     + '<div class="card" id="authBox"><h2>Signed authorization</h2><div class="muted small">' + (c.authorization ? 'Loading...' : 'No signed authorization on file. Do not file until the member signs.') + '</div></div>'
     + '<div class="card"><h2>Who qualifies</h2><div class="small" style="line-height:1.5">' + esc(sp.who || d.w || '') + '</div></div></div>'
     // middle: the claim form, in order
-    + '<div class="vaCol">' + fileWork(c) + '</div>'
+    + '<div class="vaCol"><div id="botBox"></div>' + fileWork(c) + '</div>'
     // right: file it
     + '<div class="vaCol"><div class="card" style="position:sticky;top:16px"><h2>File it</h2>'
     + (url ? '<a class="btn dark" href="' + esc(url) + '" target="_blank" rel="noopener" style="width:100%;justify-content:center;min-height:44px;margin-bottom:12px">' + ico(IC.ext, 15) + 'Open claim form</a>' : '')
@@ -406,6 +406,7 @@ async function claimPanel(c, list) {
   const mf = $('#markFiled'); if (mf) mf.onclick = () => { $('#ref').value = $('#ref').value || ((c.progress || {}).conf || ''); $('#ref').focus(); };
   $('#toQ').onclick = () => queue();
   const nx = $('#nextC'); if (nx) nx.onclick = () => claimPanel(next, list);
+  botBox(c, list);
   wireCopy(root);
   const save = async (status) => {
     const msg = $('#msg'); msg.className = 'small muted'; msg.textContent = 'Saving...';
@@ -415,8 +416,12 @@ async function claimPanel(c, list) {
       const r = await api('setStatus', { claim_id: c.id, status, claim_ref: $('#ref').value, note: $('#note').value, amount_cents: isFinite(amt) ? Math.round(amt * 100) : undefined, notify: $('#notify').checked, title: setName(c.settlement_id) });
       Object.assign(c, r.claim);
       msg.className = 'small'; msg.style.color = '#17603F';
-      msg.textContent = 'Saved as ' + ((STATUSES.find((x) => x[0] === status) || [status, status])[1]) + '.' + (r.email && r.email.sent ? ' Email sent.' : r.email && r.email.reason ? ' Email not sent: ' + r.email.reason + '.' : r.email && r.email.error ? ' Email failed: ' + r.email.error : '') + (next ? ' Opening the next claim...' : '');
-      if (next && (status === 'filed' || status === 'needs_info')) setTimeout(() => claimPanel(next, list), 900);
+      const mailBad = r.email && (r.email.error || r.email.reason) && $('#notify').checked;
+      msg.textContent = 'Saved as ' + ((STATUSES.find((x) => x[0] === status) || [status, status])[1]) + '.' + (r.email && r.email.sent ? ' Email sent.' : '') + (next && !mailBad ? ' Opening the next claim...' : '');
+      if (mailBad) {
+        msg.insertAdjacentHTML('beforeend', '<div class="err" style="margin-top:8px;line-height:1.45"><b>The member was not emailed.</b> ' + esc(r.email.error || r.email.reason) + '<br><button class="btn soft" id="reMail" style="margin-top:8px">Try the email again</button></div>');
+        $('#reMail').onclick = async () => { const b = $('#reMail'); b.textContent = 'Sending...'; try { const x = await api('resendEmail', { claim_id: c.id, title: setName(c.settlement_id) }); b.outerHTML = x.email && x.email.sent ? '<span style="color:#17603F;font-weight:800">Email sent.</span>' : '<span>Still failing: ' + esc((x.email && (x.email.error || x.email.reason)) || x.error || '') + '</span>'; } catch (e) { b.textContent = e.message; } };
+      } else if (next && (status === 'filed' || status === 'needs_info')) setTimeout(() => claimPanel(next, list), 900);
     } catch (e) { msg.className = 'err'; msg.textContent = e.message; }
   };
   $('#doFiled').onclick = () => { if (!$('#ref').value.trim() && !confirm('No claim ID entered. Mark filed anyway?')) return; save('filed'); };
@@ -535,6 +540,29 @@ async function funnel() {
 }
 
 // ---------- settings ----------
+// ---------- filing bot (Nov 19 2026) ----------
+const BOT_LABEL = { running: 'Bot working', filled: 'Bot filled, check it', approved: 'Approved, bot will submit', submitted: 'Bot filed', needs_va: 'Bot needs you', failed: 'Bot failed', cancelled: 'Bot retry' };
+const BOT_TONE = { running: 'p-requested', filled: 'p-review', approved: 'p-review', submitted: 'p-approved', needs_va: 'p-needs_info', failed: 'p-needs_info', cancelled: 'p-ready' };
+function botChip(r) { return r ? '<div style="margin-top:4px"><span class="pill ' + (BOT_TONE[r.status] || 'p-ready') + '">' + esc(BOT_LABEL[r.status] || r.status) + '</span></div>' : ''; }
+async function botBox(c, list) {
+  const box = $('#botBox'); if (!box) return;
+  let r; try { r = await api('botRuns', { claim_id: c.id }); } catch (e) { box.innerHTML = ''; return; }
+  const runs = r.runs || []; if (!runs.length) { box.innerHTML = ''; return; }
+  const x = runs[0], shots = x.shotUrls || [];
+  const head = { filled: 'The bot filled the form and stopped before Submit. Check every screenshot, then approve and the bot submits it.', approved: 'Approved. The bot submits it on its next pass (usually within 2 minutes).', running: 'The bot is filling this claim right now.', submitted: 'The bot submitted this claim' + (x.confirmation ? ' (confirmation ' + x.confirmation + ')' : '') + '.', needs_va: 'The bot handed this claim to you. File it by hand below.', failed: 'The bot hit an error. File it by hand below, or try the bot again.', cancelled: 'This run was replaced by a newer one.' }[x.status] || '';
+  box.innerHTML = '<div class="card" style="box-shadow:inset 0 0 0 2px ' + (x.status === 'filled' ? '#E0A526' : x.status === 'submitted' ? '#12805C' : '#E3EAE6') + '"><div class="row" style="justify-content:space-between;gap:8px;flex-wrap:wrap"><h2 style="margin:0">Filing bot</h2><span class="pill ' + (BOT_TONE[x.status] || 'p-ready') + '">' + esc(BOT_LABEL[x.status] || x.status) + '</span></div>'
+    + '<div class="small" style="margin:8px 0;line-height:1.5">' + esc(head) + (x.error ? '<div class="err" style="margin-top:6px">' + esc(x.error) + '</div>' : '') + '</div>'
+    + '<div class="small muted">' + (x.mode === 'submit' ? 'Real submit' : 'Practice fill') + ' · ' + fmtDate(x.started_at) + (x.worker ? ' · ' + esc(x.worker) : '') + (x.approved_by ? ' · approved by ' + esc(x.approved_by) : '') + '</div>'
+    + (shots.length ? '<div class="row" style="gap:8px;flex-wrap:wrap;margin-top:10px">' + shots.map((u, i) => '<a href="' + esc(u) + '" target="_blank" rel="noopener" title="Screenshot ' + (i + 1) + '" style="display:block;width:96px;height:72px;border-radius:8px;overflow:hidden;box-shadow:inset 0 0 0 1px #E3EAE6;background:#F3F6F4"><img src="' + esc(u) + '" alt="Screenshot ' + (i + 1) + '" style="width:100%;height:100%;object-fit:cover;object-position:top"></a>').join('') + '</div>' : '')
+    + (x.log && x.log.length ? '<details style="margin-top:10px"><summary class="small" style="font-weight:800;cursor:pointer">What the bot did (' + x.log.length + ' steps)</summary><pre class="small" style="white-space:pre-wrap;margin:8px 0 0;max-height:260px;overflow:auto;background:#F3F6F4;padding:10px;border-radius:10px">' + esc(x.log.join('\n')) + '</pre></details>' : '')
+    + '<div class="row" style="gap:8px;margin-top:12px;flex-wrap:wrap">'
+    + (x.status === 'filled' ? '<button class="btn mint" id="botOk">Approve and submit</button><button class="btn soft" id="botNo">I will file it by hand</button>' : '')
+    + (x.status === 'needs_va' || x.status === 'failed' ? '<button class="btn soft" id="botAgain">Let the bot try again</button>' : '')
+    + '</div><div id="botMsg" class="small" role="status" style="margin-top:6px"></div></div>';
+  const act = async (id, action, done) => { const b = $(id); if (!b) return; b.onclick = async () => { $('#botMsg').textContent = 'Saving...'; try { const y = await api(action, { run_id: x.id }); if (y.error) throw new Error(y.error); $('#botMsg').textContent = done; botBox(c, list); } catch (e) { $('#botMsg').className = 'err'; $('#botMsg').textContent = e.message; } }; };
+  act('#botOk', 'botApprove', 'Approved. The bot submits it next.'); act('#botNo', 'botToStaff', 'Sent to you.'); act('#botAgain', 'botRetry', 'The bot will try again.');
+}
+
 async function settings() {
   main('<h1>Settings</h1><div class="sub">Switches that change what members see. Changes go live within a minute.</div><div class="empty">Loading...</div>');
   let r; try { r = await api('settings'); } catch (e) { return fail(e); }
@@ -552,6 +580,18 @@ async function settings() {
     + (cmeta ? '<div class="small muted" style="margin-top:8px">Last changed ' + fmtDate(cmeta.at) + ' by ' + esc(cmeta.by || '') + '</div>' : '') + '</div>'
     + '<button role="switch" aria-checked="' + con + '" aria-label="Card connections" id="tgCard" style="flex:none;width:58px;height:32px;border-radius:99px;position:relative;transition:background .2s;background:' + (con ? '#12805C' : '#C9D3CD') + '"><span style="position:absolute;top:3px;left:' + (con ? '29px' : '3px') + ';width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s"></span></button></div>'
     + '<div class="row small" style="margin-top:10px"><span class="pill ' + (con ? 'p-approved' : 'p-ready') + '">' + (con ? 'On' : 'Off') + '</span><span id="cmsg" class="muted" role="status"></span></div></div>');
+  const fb = r.settings.filing_bot || { mode: 'off', profiles: [] }, fbm = r.settings.filing_bot_meta;
+  const ADMINS = [['angeion', 'Angeion (21 cases)'], ['simpluris', 'Simpluris (58)'], ['kroll', 'Kroll (31)'], ['eisner', 'EisnerAmper (9)'], ['verita', 'Verita (8)'], ['epiq', 'Epiq (7)'], ['cpt', 'CPT (7)'], ['jnd', 'JND (4)'], ['atticus', 'Atticus (4)'], ['generic', 'Everyone else']];
+  $('#main').insertAdjacentHTML('beforeend', '<div class="card"><h2 style="margin-bottom:6px">Filing bot</h2>'
+    + '<div class="small muted" style="line-height:1.55;max-width:640px">The bot runs on our own computer (see bot/README.md in the repo) and picks up claims members asked us to file. Practice fills the form and stops before Submit so you can check the screenshots and approve each one. Submit automatically files without asking. Forms with a CAPTCHA, missing answers or anything unexpected always come back to you.</div>'
+    + '<div class="seg" role="group" aria-label="Bot mode" style="margin-top:12px">' + [['off', 'Off'], ['dry', 'Practice (I approve each one)'], ['submit', 'Submit automatically']].map(([k, t]) => '<button data-m="' + k + '" class="' + (fb.mode === k ? 'on' : '') + '">' + t + '</button>').join('') + '</div>'
+    + '<div class="small" style="font-weight:800;margin:14px 0 6px">Administrators the bot handles</div><div class="row" style="gap:6px 16px;flex-wrap:wrap">' + ADMINS.map(([k, t]) => '<label class="row small" style="font-weight:700;gap:6px"><input type="checkbox" class="fbp" value="' + k + '"' + (fb.profiles.includes(k) ? ' checked' : '') + '>' + t + '</label>').join('') + '</div>'
+    + (fbm ? '<div class="small muted" style="margin-top:8px">Last changed ' + fmtDate(fbm.at) + ' by ' + esc(fbm.by || '') + '</div>' : '') + '<div id="fbmsg" class="small muted" role="status" style="margin-top:6px"></div></div>'
+    + '<div class="card"><h2 style="margin-bottom:6px">Member emails</h2><div class="small muted" style="line-height:1.55;max-width:640px">Status emails go out through Resend from updates@mail.claimclub.io. Send yourself a test to check they work.</div><button class="btn soft" id="testMail" style="margin-top:10px">Send me a test email</button><div id="tmsg" class="small" role="status" style="margin-top:8px"></div></div>');
+  const saveFb = async (patch) => { $('#fbmsg').textContent = 'Saving...'; try { const v = Object.assign({ mode: fb.mode, profiles: [...document.querySelectorAll('.fbp:checked')].map((x) => x.value) }, patch); const r2 = await api('setSetting', { key: 'filing_bot', value: v }); me.settings = r2.settings; settings(); } catch (e) { $('#fbmsg').className = 'err'; $('#fbmsg').textContent = e.message; } };
+  document.querySelectorAll('[data-m]').forEach((b) => { b.onclick = () => { if (b.dataset.m === 'submit' && !confirm('The bot will submit claims without asking you first. Turn this on only for administrators whose practice fills you have checked. Continue?')) return; saveFb({ mode: b.dataset.m }); }; });
+  document.querySelectorAll('.fbp').forEach((x) => { x.onchange = () => saveFb({}); });
+  $('#testMail').onclick = async () => { const m = $('#tmsg'); m.className = 'small muted'; m.textContent = 'Sending...'; try { const x = await api('testEmail', {}); if (x.email && x.email.sent) { m.className = 'small'; m.style.color = '#17603F'; m.textContent = 'Sent to ' + x.to + '. Check your inbox.'; } else { m.className = 'err'; m.textContent = 'Not sent: ' + ((x.email && (x.email.error || x.email.reason)) || 'unknown error'); } } catch (e) { m.className = 'err'; m.textContent = e.message; } };
   $('#tgCard').onclick = async () => {
     $('#cmsg').textContent = 'Saving...';
     try { const r2 = await api('setSetting', { key: 'card_connect', value: !con }); me.settings = r2.settings; settings(); }
