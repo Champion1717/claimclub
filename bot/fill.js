@@ -49,6 +49,13 @@ async function buttons(page) {
     const out = [];
     document.querySelectorAll('button, input[type=submit], input[type=button], a, [role=button]').forEach((el, i) => {
       if (!vis(el) || el.disabled) return;
+      // Skip site menus and footers, links back to this same page, and PDF downloads: none of them move a claim form on.
+      if (el.closest('nav, header, footer, [role=navigation]')) return;
+      if (el.tagName === 'A') {
+        const h = el.getAttribute('href') || '';
+        if (/\.pdf(\?|$)/i.test(h)) return;
+        try { const u = new URL(h, location.href); if (h && h[0] !== '#' && u.origin + u.pathname === location.origin + location.pathname) return; } catch (e) {}
+      }
       const t = String(el.innerText || el.value || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
       if (!t || t.length > 60) return;
       el.setAttribute('data-ccbtn', String(i));
@@ -128,7 +135,7 @@ const CONF = /(confirmation|claim|reference|submission|tracking)\s*(number|no\.?
 // Runs one claim from the start page to the end (or to the final Submit in practice mode).
 async function runClaim(page, job, shot, log) {
   const V = values(job), dry = job.mode !== 'submit';
-  let lastUrl = '', samePage = 0;
+  let lastUrl = '', samePage = 0; const chosen = new Set();
   await page.goto(job.spec.form_url, { waitUntil: 'domcontentloaded', timeout: 45000 });
   for (let step = 0; step < 14; step++) {
     await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
@@ -137,7 +144,25 @@ async function runClaim(page, job, shot, log) {
     const missing = await fillPage(page, job, V, log);
     await shot('page ' + (step + 1));
     if (missing.length) return { status: 'needs_va', error: 'Could not fill: ' + missing.slice(0, 6).map((m) => '"' + m.slice(0, 70) + '"').join(', ') };
-    const btns = await buttons(page);
+    let btns = await buttons(page);
+    // Yes / No choice buttons (Angeion asks "Do you have a Notice ID and Confirmation Code?" this way).
+    const yes = btns.find((b) => /^yes$/i.test(b.t) && b.tag !== 'a'), no = btns.find((b) => /^no$/i.test(b.t) && b.tag !== 'a');
+    if (yes && no) {
+      const q = await page.evaluate((k) => { const el = document.querySelector('[data-ccbtn="' + k + '"]'); let n = el; for (let i = 0; i < 6 && n; i++) { n = n.parentElement; const t = n && n.innerText || ''; if (/\?/.test(t)) return t.split('\n').find((l) => /\?/.test(l)) || t; } return ''; }, yes.k);
+      const pageKey = page.url() + '|' + q;
+      if (!chosen.has(pageKey)) {
+      let want = null;
+      if (/notice|confirmation code|unique id|claim id|login id/i.test(q)) want = !!(V.noticeId && (V.noticePin || !/confirmation code|pin/i.test(q)));
+      else { const qa = qualifyMatch(q, job); if (qa != null) want = qa; }
+      if (want == null) { await shot('question'); return { status: 'needs_va', error: 'The form asks a yes/no question the bot cannot answer: "' + q.slice(0, 120) + '"' }; }
+      log('Answering "' + q.slice(0, 80) + '": ' + (want ? 'Yes' : 'No'));
+      await page.locator('[data-ccbtn="' + (want ? yes : no).k + '"]').first().click();
+      await page.waitForTimeout(500);
+      chosen.add(pageKey);
+      step--; continue; // fill anything the answer revealed, then move on
+      }
+      btns = btns.filter((b) => b.k !== yes.k && b.k !== no.k);
+    }
     const fin = btns.find((b) => FINAL.test(b.t) && b.tag !== 'a');
     const nxt = btns.find((b) => NEXT.test(b.t) && !FINAL.test(b.t));
     const fields = await readFields(page);
