@@ -5,7 +5,7 @@
 // optional META_PIXEL_ID (defaults to the site pixel), META_API_VERSION (default v26.0), META_TEST_CODE (only while testing).
 // Without a token nothing is sent. Nothing is sent for people whose browser sent Global Privacy Control (gpc=1 in metadata).
 const crypto = require('crypto');
-const PIXEL = '1486613173392815';
+const PIXEL = '888237691005202';
 const sha = (v) => (v ? crypto.createHash('sha256').update(String(v).trim().toLowerCase()).digest('hex') : undefined);
 const clip = (v, n) => String(v || '').slice(0, n);
 
