@@ -15,13 +15,7 @@ async function isAdmin(user) {
   return !!data;
 }
 // Feature switches shown in /admin > Settings. Each entry turns the posted value into what we store.
-const kwPlan = (v) => {
-  v = v && typeof v === 'object' ? v : {};
-  const id = String(v.customer_id || '').replace(/\D/g, '');
-  const map = (o, lo, hi) => { const out = {}; Object.keys(o && typeof o === 'object' ? o : {}).slice(0, 500).forEach((k) => { const n = Number(o[k]); if (k.length <= 200 && n >= lo && n <= hi) out[k] = Math.round(n); }); return out; };
-  return { customer_id: id.length === 10 ? id.replace(/^(\d{3})(\d{3})(\d{4})$/, '$1-$2-$3') : '', off: (Array.isArray(v.off) ? v.off : []).filter((x) => typeof x === 'string' && x.length <= 200).slice(0, 500), bids: map(v.bids, 1, 5000), budgets: map(v.budgets, 1, 1000) };
-};
-const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true, kw_plan: kwPlan };
+const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true };
 async function readSettings() {
   const out = { bank_connect: false, card_connect: false };
   const { data } = await db().from('app_settings').select('key, value, updated_by, updated_at');
