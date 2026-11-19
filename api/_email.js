@@ -1,8 +1,8 @@
 // Member emails through Resend (https://resend.com). Needs RESEND_API_KEY in Vercel.
-// Sender domain mail.claimclub.io is verified in Resend. Change FROM with the EMAIL_FROM env var.
+// Sender domain claimclub.io is the one verified in Resend (Nov 19 2026: mail.claimclub.io is not, which broke every email). Change FROM with the EMAIL_FROM env var.
 const { db } = require('./_db');
 
-const FROM = () => process.env.EMAIL_FROM || 'Claimclub <updates@mail.claimclub.io>';
+const FROM = () => process.env.EMAIL_FROM || 'Claimclub <updates@claimclub.io>';
 const SITE = 'https://claimclub.io';
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
