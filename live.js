@@ -26,6 +26,12 @@
     try{if(sessionStorage.getItem('st_'+sid))return;sessionStorage.setItem('st_'+sid,'1')}catch(e){}
     fbq('track','Purchase',{value:2.00,currency:'USD',predicted_ltv:49.00},{eventID:sid});
   }
+  // Google Ads conversion "ClaimClub - Trial started ($2)": once per Checkout Session, flow B trial only.
+  function adsPurchase(c,kind,sid){
+    if(!sid||kind!=='member'||c.state.plan!=='1y'||typeof window.gtag!=='function')return;
+    try{if(sessionStorage.getItem('gt_'+sid))return;sessionStorage.setItem('gt_'+sid,'1')}catch(e){}
+    gtag('event','conversion',{send_to:'AW-18562196705/m4kHCID10LsdEOHJkpNF',value:2.0,currency:'USD',transaction_id:sid});
+  }
   try{var fq=new URLSearchParams(location.search).get('fbclid');if(fq)sessionStorage.setItem('cc_fbclid',fq)}catch(e){}
   function post(c,kind,extra){
     var b={kind:kind,plan:c.state.plan,flow:c.state.flow||'a',consent:c.state.flow==='b'?1:0,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname};
@@ -40,6 +46,7 @@
     fetch('/api/session?id='+encodeURIComponent(sid)).then(function(r){return r.json()}).then(function(j){
       if(!j.paid)throw new Error('not paid');
       metaPurchase(c,kind,sid);
+      adsPurchase(c,kind,sid);
       c.setState({payState:'done',paid:kind});c.saveForApp();
       try{sessionStorage.removeItem(KEY)}catch(e){}
       if(c.finishPay)c.finishPay(kind);else setTimeout(function(){c.setState({pi:0,step:idx(c,kind==='member'?'perks':'bank')})},1300);

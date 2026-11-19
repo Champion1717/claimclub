@@ -248,3 +248,6 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 
 ## Google Search ads (Nov 19 2026)
 - Henry did not want keyword bidding in /admin (a Keyword Bidding section existed for one commit and was removed). The keyword plan lives in Claude: campaigns are built in the Lunis Google Ads account (445-999-8672) through the AdKit connector, as drafts he approves.
+- Google Ads account 445-999-8672 (shared with Lunis; tag AW-18562196705). Conversion action "ClaimClub - Trial started ($2)" (id 7909685888, label m4kHCID10LsdEOHJkpNF, count one, value $2). `site/pixel.html` also loads the Google Ads tag (same skip rules as the Meta Pixel: GPC and `?offer=` links); `adsPurchase()` in live.js fires the conversion once per Checkout Session for the flow B trial (transaction_id = session id), next to `metaPurchase()`. Privacy Policy section 4 discloses it.
+- Campaigns (all Search, US presence, Google Search only, AI Max off, Maximize clicks with a CPC cap, created paused Nov 19): ClaimClub - Competitors (24521704267, $25/day, cap $2.00), ClaimClub - Settlement claims (24521704276, $25/day, cap $2.50), ClaimClub - Quick money (test) (24515454938, $10/day, cap $1.00). Keyword list source: /home/claude/kwplan/kw_plan.py style data (Ahrefs US, Nov 19). The old paused "claim money test" campaign was removed.
+
