@@ -145,6 +145,17 @@
    ]
   },
   {
+   "source": "/legal/delete-account.html",
+   "destination": "/delete-account",
+   "permanent": true,
+   "missing": [
+    {
+     "type": "query",
+     "key": "v"
+    }
+   ]
+  },
+  {
    "source": "/about.html",
    "destination": "/about",
    "permanent": true,
@@ -391,6 +402,10 @@
    "destination": "/d/app.html"
   },
   {
+   "source": "/delete-account",
+   "destination": "/legal/delete-account.html"
+  },
+  {
    "source": "/terms",
    "destination": "/legal/terms.html"
   },
@@ -506,6 +521,41 @@
     {
      "key": "X-Robots-Tag",
      "value": "noindex, nofollow"
+    }
+   ]
+  },
+  {
+   "source": "/sw.js",
+   "headers": [
+    {
+     "key": "Cache-Control",
+     "value": "no-cache"
+    },
+    {
+     "key": "Service-Worker-Allowed",
+     "value": "/"
+    }
+   ]
+  },
+  {
+   "source": "/manifest.webmanifest",
+   "headers": [
+    {
+     "key": "Content-Type",
+     "value": "application/manifest+json"
+    }
+   ]
+  },
+  {
+   "source": "/.well-known/assetlinks.json",
+   "headers": [
+    {
+     "key": "Content-Type",
+     "value": "application/json"
+    },
+    {
+     "key": "Access-Control-Allow-Origin",
+     "value": "*"
     }
    ]
   },

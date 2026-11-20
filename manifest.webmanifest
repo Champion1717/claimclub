@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "Claimclub",
+  "short_name": "Claimclub",
+  "description": "Find class action settlements you could be owed money from. Claimclub files your claims and every payout goes straight to you.",
+  "start_url": "/?utm_source=app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "lang": "en-US",
+  "categories": ["finance", "lifestyle"],
+  "icons": [
+    {"src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/icon-512m.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
