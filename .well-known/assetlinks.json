@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "io.claimclub.app",
+        "sha256_cert_fingerprints": ["7C:64:A6:06:AC:21:0C:37:A3:15:00:01:25:64:1C:A1:A3:62:32:8D:95:E2:DE:88:CF:17:DB:8F:C5:4C:E3:B9"]
+      }
+    }]
