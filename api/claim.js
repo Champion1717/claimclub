@@ -71,6 +71,13 @@ module.exports = async (req, res) => {
 
     if (b.action === 'file') {
       if (cur && !OPEN.includes(cur.status)) return send(res, 200, { claim: cur, already: true });
+      // A settlement whose form requires the notice codes (Claim Number, PIN, Notice ID...) cannot be filed without them.
+      const fspec = await getSpec(sid).catch(() => null), fnt = fspec && fspec.notice;
+      if (fnt && fnt.mode === 'required' && Array.isArray(fnt.fields) && fnt.fields.length) {
+        const fa = Object.assign({}, (cur && cur.answers) || {}, cleanAnswers(b.answers));
+        const missing = fnt.fields.filter((x) => String(fa['n_' + x.k] || '').trim().length < 2).map((x) => x.label);
+        if (missing.length) return send(res, 400, { error: 'This claim form needs the ' + missing.join(' and ') + ' from your settlement notice.', needNotice: true, missing });
+      }
       const signed = await signedIds(uid, email);
       let signedNow = false;
       if (!signed[sid]) {
