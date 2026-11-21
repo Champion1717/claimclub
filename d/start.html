@@ -545,27 +545,11 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     <!-- CHECKOUT -->
   <sc-if value="{{ isCheckout }}" hint-placeholder-val="{{ false }}">
     <sc-if value="{{ coIdle }}" hint-placeholder-val="{{ true }}">
-      <div class="enter scroll" style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 14px 22px 10px; display: flex; flex-direction: column; gap: 14px">
-        <h1 style="margin: 0; font-size: 26px; line-height: 1.15; font-weight: 800; letter-spacing: -0.8px">{{ L.coH }}</h1>
-        <div style="background: #FFFFFF; border: 1px solid #DDE5E0; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px"><span style="font-size: 15px; font-weight: 800">{{ coItem }}</span><span style="font-size: 15px; font-weight: 800">{{ coPrice }}</span></div>
-          <div style="font-size: 12.5px; line-height: 1.45; color: #5B6862">{{ coSub }}</div>
-          <div style="display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid #E8EEEA; padding-top: 8px; margin-top: 2px"><span style="font-size: 14px; font-weight: 700; color: #43504A">{{ L.dueToday2 }}</span><span style="font-size: 24px; font-weight: 800; letter-spacing: -0.6px; color: #0F3B2E">{{ coPrice }}</span></div>
-        </div>
-        <button onClick="{{ payNow }}" style="height: 50px; flex: none; border-radius: 999px; background: #000000; color: #FFFFFF; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#FFFFFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"></path></svg>{{ L.applePay }}</button>
-        <div style="display: flex; align-items: center; gap: 10px; color: #9AA8A0; font-size: 12px; font-weight: 700"><span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span>{{ L.coOr }}<span style="flex-grow: 1; height: 1px; background: #DDE5E0"></span></div>
-        <div class="fgroup" style="border: 1.5px solid #DDE5E0; border-radius: 14px; overflow: hidden; background: #FFFFFF">
-          <input inputmode="numeric" autocomplete="cc-number" placeholder="{{ L.coCard }}" aria-label="{{ L.coCard }}" value="{{ card }}" onChange="{{ setCard }}" style="display: block; width: 100%; box-sizing: border-box; height: 50px; border: 0; border-bottom: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
-          <div style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr)">
-            <input inputmode="numeric" autocomplete="cc-exp" placeholder="{{ L.coExp }}" aria-label="{{ L.coExp }}" value="{{ exp }}" onChange="{{ setExp }}" style="min-width: 0; height: 50px; border: 0; border-right: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
-            <input inputmode="numeric" autocomplete="cc-csc" placeholder="{{ L.coCvc }}" aria-label="{{ L.coCvc }}" value="{{ cvc }}" onChange="{{ setCvc }}" style="min-width: 0; height: 50px; border: 0; border-right: 1px solid #E8EEEA; padding: 0 14px; font-size: 16px; font-family: inherit">
-            <input inputmode="numeric" autocomplete="postal-code" placeholder="{{ L.coZip }}" aria-label="{{ L.coZip }}" value="{{ czip }}" onChange="{{ setCzip }}" style="min-width: 0; height: 50px; border: 0; padding: 0 14px; font-size: 16px; font-family: inherit">
-          </div>
-        </div>
-        <sc-if value="{{ hasCardErr }}" hint-placeholder-val="{{ false }}"><div role="alert" style="margin-top: -6px; font-size: 12.5px; font-weight: 700; color: #C8323B">{{ cardErrText }}</div></sc-if>
-        <div style="display: flex; gap: 8px; align-items: flex-start; font-size: 12px; line-height: 1.45; color: #5B6862"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>{{ L.coSecure }}</div>
+      <!-- Payment details are only ever entered in Stripe's secure form (live.js). No card fields on our pages. -->
+      <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 30px">
+        <div style="width: 56px; height: 56px; border-radius: 50%; border: 5px solid #E8EEEA; border-top-color: #12805C; animation: spin .9s linear infinite"></div>
+        <div style="font-size: 18px; font-weight: 800">{{ L.coBusyT }}</div>
       </div>
-      <div style="flex: none; padding: 8px 22px 22px"><button onClick="{{ payCard }}" disabled="{{ payCardDisabled }}" style="{{ payCardStyle }}">{{ coPayLabel }}</button></div>
     </sc-if>
     <sc-if value="{{ coBusy }}" hint-placeholder-val="{{ false }}">
       <div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; text-align: center; padding: 30px">
@@ -790,7 +774,7 @@ class Component extends DCLogic {
       nearYou: ['NEAR YOU', 'CERCA DE TI'],
       newMatchT: ['New claim match', 'Nuevo reclamo para ti'], youHave: ['MEMBERSHIP INCLUDES', 'LA MEMBRESÍA INCLUYE'], nextW: ['Next', 'Siguiente'], skipW: ['Skip', 'Omitir'],
       memberActive: ['With membership', 'Con la membresía'],
-      coH: ['Checkout', 'Pago'], coOr: ['or pay with card', 'o paga con tarjeta'], coCard: ['Card number', 'Número de tarjeta'], coExp: ['MM / YY', 'MM / AA'], coCvc: ['CVC', 'CVC'], coZip: ['ZIP', 'C.P.'],
+      coH: ['Checkout', 'Pago'], coOr: ['or pay with card', 'o paga con tarjeta'],  coZip: ['ZIP', 'C.P.'],
       coSecure: ['Payments are encrypted and processed by our payment partner. We never store your full card number.', 'Los pagos están cifrados y los procesa nuestro socio de pagos. Nunca guardamos el número completo de tu tarjeta.'],
       unlockK: ['MEMBERSHIP UNLOCKED', 'MEMBRESÍA DESBLOQUEADA'], unlockH: ['Welcome to the club', 'Bienvenido al club'], unlockP: ['Every claim you match, filed for you.', 'Cada reclamo que coincida contigo, presentado por ti.'],
       coBusyT: ['Processing payment', 'Procesando el pago'], coDoneT: ['Payment received', 'Pago recibido'], coDoneP: ['Thanks! One more quick step.', '¡Gracias! Un paso más.'], dueToday2: ['Due today', 'A pagar hoy'],
