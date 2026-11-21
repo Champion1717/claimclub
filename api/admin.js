@@ -16,10 +16,13 @@ async function isAdmin(user) {
   return !!data;
 }
 // Feature switches shown in /admin > Settings. Each entry turns the posted value into what we store.
+const { OFFERS, DEFAULT_ON, FLOWS, SOURCES } = require('./_offers');
 const SETTINGS = { bank_connect: (v) => v === true, card_connect: (v) => v === true,
+  // Offer test (Nov 21 2026): which offers new visitors can get. At least one stays on.
+  offer_test: (v) => { const o = {}; FLOWS.forEach((k) => { o[k] = !!(v && v[k] === true); }); if (!FLOWS.some((k) => o[k])) o.b = true; return o; },
   filing_bot: (v) => ({ mode: ['off', 'dry', 'submit'].includes(v && v.mode) ? v.mode : 'off', profiles: Array.isArray(v && v.profiles) ? v.profiles.filter((x) => PROFILES.includes(x)) : [] }) };
 async function readSettings() {
-  const out = { bank_connect: false, card_connect: false, filing_bot: { mode: 'off', profiles: [] } };
+  const out = { bank_connect: false, card_connect: false, filing_bot: { mode: 'off', profiles: [] }, offer_test: Object.assign({}, DEFAULT_ON) };
   const { data } = await db().from('app_settings').select('key, value, updated_by, updated_at');
   (data || []).forEach((r) => { out[r.key] = r.value; out[r.key + '_meta'] = { by: r.updated_by, at: r.updated_at }; });
   return out;
@@ -86,13 +89,20 @@ const actions = {
     };
   },
 
+  // Funnel (Nov 21 2026): date range (Pacific days, from..to inclusive), offer, traffic source and device type.
+  // Returns the step funnel plus rows for each offer, source, device and day (admin_report in db/offer_test.sql).
   async funnel(b) {
-    const days = Math.min(365, Math.max(1, parseInt(b.days, 10) || 30));
-    const flow = b.flow === 'a' || b.flow === 'b' ? b.flow : null;
-    const [{ data, error }, { data: test, error: e2 }] = await Promise.all([db().rpc('admin_funnel', { p_days: days, p_flow: flow }), db().rpc('admin_offer_test', { p_days: days })]);
+    const okDay = (d) => typeof d === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(d);
+    const pac = (d) => { const x = new Date(d + 'T12:00:00Z'); const off = new Date(x.toLocaleString('en-US', { timeZone: 'America/Los_Angeles' })) - new Date(x.toLocaleString('en-US', { timeZone: 'UTC' })); return new Date(Date.parse(d + 'T00:00:00Z') - off); };
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+    const to = okDay(b.to) ? b.to : today, from = okDay(b.from) ? b.from : new Date(Date.parse(to) - 29 * 864e5).toISOString().slice(0, 10);
+    const end = new Date(pac(to).getTime() + 864e5);
+    const flow = FLOWS.includes(b.flow) ? b.flow : null, source = SOURCES.concat(['unknown']).includes(b.source) ? b.source : null;
+    const dtype = ['iphone', 'android', 'tablet', 'mac', 'windows', 'other', 'unknown'].includes(b.dtype) ? b.dtype : null;
+    const { data, error } = await db().rpc('admin_report', { p_from: pac(from).toISOString(), p_to: end.toISOString(), p_flow: flow, p_source: source, p_dtype: dtype });
     if (error) throw error;
-    if (e2) console.error('[admin] offer test', e2.message);
-    return { days, flow, steps: data || [], test: test || [] };
+    const offers = {}; FLOWS.forEach((k) => { offers[k] = OFFERS[k].name; });
+    return { from, to, flow, source, dtype, steps: (data && data.steps) || [], rows: (data && data.rows) || [], offers, on: (await readSettings()).offer_test };
   },
 
   async users(b) {

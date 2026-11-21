@@ -13,7 +13,7 @@
       .then(function(j){if(j.url)location.href=j.url;else throw new Error(j.error||'no url')})
       .catch(function(e){console.error(e);alert('Checkout is unavailable right now. Please try again.');c.setState({payState:'',step:idx(c,c.offerStep?c.offerStep(kind):(kind==='member'?'plans':'pay'))})});
   }
-  /* ---------- Meta events (Nov 16 2026), flow B trial only. Do not fire these anywhere else on the site. ----------
+  /* ---------- Meta events (Nov 16 2026, offers b/c/d since Nov 21), trial offers only. Do not fire these anywhere else on the site. ----------
      InitiateCheckout on "Start my trial" (browser), Purchase when the $2 trial checkout succeeds (browser here plus a server copy
      from the Stripe webhook with the same event_id = Checkout Session ID). Subscribe (day 7, $49) is server only. */
   function fbOk(){return typeof window.fbq==='function'}
@@ -21,21 +21,26 @@
   function fbc(){var c=ck('_fbc');if(c)return c;var id=new URLSearchParams(location.search).get('fbclid');if(id){try{sessionStorage.setItem('cc_fbclid',id)}catch(e){}}else{try{id=sessionStorage.getItem('cc_fbclid')}catch(e){}}return id?'fb.1.'+Date.now()+'.'+id:''}
   function uuid(){try{return crypto.randomUUID()}catch(e){return 'ic-'+Date.now()+'-'+Math.random().toString(36).slice(2)}}
   function metaAttr(){return{fbp:ck('_fbp'),fbc:fbc(),gpc:navigator.globalPrivacyControl?1:0,source_url:location.href}}
+  // Offer test (Nov 21 2026): trial plans are 1y (offers b, c) and 1w (offer d). Value = what is charged today ($2 or $0).
+  function trialPlan(c){return c.state.plan==='1y'||c.state.plan==='1w'}
+  function todayN(c){var o=c.offer?c.offer():null;return o?o.todayN:2}
+  function ltvN(c){return c.state.plan==='1w'?39.92:49.99}
   function metaPurchase(c,kind,sid){
-    if(!sid||kind!=='member'||c.state.plan!=='1y'||!fbOk())return;
+    if(!sid||kind!=='member'||!trialPlan(c)||!fbOk())return;
     try{if(sessionStorage.getItem('st_'+sid))return;sessionStorage.setItem('st_'+sid,'1')}catch(e){}
-    fbq('track','Purchase',{value:2.00,currency:'USD',predicted_ltv:49.00},{eventID:sid});
+    fbq('track','Purchase',{value:todayN(c),currency:'USD',predicted_ltv:ltvN(c)},{eventID:sid});
   }
   // Google Ads conversion "ClaimClub - Trial started ($2)": once per Checkout Session, flow B trial only.
   function adsPurchase(c,kind,sid){
-    if(!sid||kind!=='member'||c.state.plan!=='1y'||typeof window.gtag!=='function')return;
+    if(!sid||kind!=='member'||!trialPlan(c)||typeof window.gtag!=='function')return;
     try{if(sessionStorage.getItem('gt_'+sid))return;sessionStorage.setItem('gt_'+sid,'1')}catch(e){}
-    gtag('event','conversion',{send_to:'AW-18562196705/m4kHCID10LsdEOHJkpNF',value:2.0,currency:'USD',transaction_id:sid});
+    gtag('event','conversion',{send_to:'AW-18562196705/m4kHCID10LsdEOHJkpNF',value:todayN(c),currency:'USD',transaction_id:sid});
   }
   try{var fq=new URLSearchParams(location.search).get('fbclid');if(fq)sessionStorage.setItem('cc_fbclid',fq)}catch(e){}
   function post(c,kind,extra){
-    var b={kind:kind,plan:c.state.plan,flow:c.state.flow||'a',consent:c.state.flow==='b'?1:0,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname};
-    if(b.plan==='1y'&&kind==='member'){var a=metaAttr();for(var k0 in a)b[k0]=a[k0]}
+    var sid='';try{sid=sessionStorage.getItem('cc_sid')||''}catch(e){}
+    var b={kind:kind,plan:c.state.plan,flow:c.state.flow||'a',consent:trialPlan(c)?1:0,email:c.state.email,lang:c.state.lang,ids:c.matched().map(function(m){return m.id}),path:location.pathname,sid:sid};
+    if(trialPlan(c)&&kind==='member'){var a=metaAttr();for(var k0 in a)b[k0]=a[k0]}
     for(var k in extra)b[k]=extra[k];
     return fetch('/api/checkout',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)}).then(function(r){return r.json()});
   }
@@ -106,7 +111,7 @@
     css();
     var es=info.es, mem=kind==='member', price=mem?info.mem:info.fee, sub=mem?info.memSub:info.feeSub;
     var main=document.querySelector('.deskmain'), desk=!!main;
-    var T={pay:(es?'Pagar ':'Pay ')+price,or:es?'o paga con tarjeta':'or pay with card',load:es?'Cargando pago seguro':'Loading secure payment',
+    var T={pay:mem&&info.payT?info.payT:(es?'Pagar ':'Pay ')+price,or:es?'o paga con tarjeta':'or pay with card',load:es?'Cargando pago seguro':'Loading secure payment',
       sec:es?'Pagos cifrados y procesados por Stripe. Nunca vemos el número de tu tarjeta.':'Payments are encrypted and processed by Stripe. We never see your card number.',
       earn:es?'Ganancias esperadas':'Expected earnings',keep:es?'Te quedas con el 100%':'You keep 100%',today:es?' hoy':' today',back:mem?(es?'Volver a los planes':'Back to plans'):(es?'Volver':'Back'),
       mail:es?'Recibo a ':'Receipt to ',kick:es?'PAGO EXPRÉS':'EXPRESS CHECKOUT',close:es?'Cerrar':'Close'};
@@ -136,7 +141,14 @@
   }
   var APPEAR={theme:'stripe',variables:{colorPrimary:'#12805C',colorBackground:'#FFFFFF',colorText:'#0A0F0D',colorTextSecondary:'#5B6862',colorDanger:'#C8323B',fontFamily:'Manrope, system-ui, sans-serif',fontSizeBase:'16px',borderRadius:'12px',spacingUnit:'4px'},
     rules:{'.Input':{border:'1.5px solid #DDE5E0',boxShadow:'none',padding:'13px 14px'},'.Input:focus':{border:'1.5px solid #12805C',boxShadow:'0 0 0 1px #12805C'},'.Label':{color:'#43504A',fontSize:'13px',fontWeight:'700'}}};
+  // Funnel (Nov 21 2026): record that the payment sheet was opened, as its own step ("sheet"), so the funnel shows
+  // whether people drop on the offer page or in the card form. Same session id and fields as flow.js track().
+  function trackSheet(c){
+    try{var sid=sessionStorage.getItem('cc_sid');if(!sid||!/claimclub\.io$|vercel\.app$|^localhost$/.test(location.hostname))return;
+      fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({sid:sid,step:'sheet',idx:c.state.step,device:innerWidth<820?'m':'d',lang:c.state.lang,offer:c.state.focus||c.state.lead||'',flow:c.state.flow||'a',source:sessionStorage.getItem('cc_src')||'other'})}).catch(function(){})}catch(e){}
+  }
   function sheet(c,kind,info){
+    trackSheet(c);
     if(openNow)return;
     try{sessionStorage.setItem(KEY,JSON.stringify(c.state))}catch(e){}
     c.setState({buying:kind,payOpen:true});
@@ -299,7 +311,7 @@
       var info=v.sheetInfo||{};
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
-      v.trGo=function(){if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:2.00,currency:'USD'},{eventID:uuid()});v.subscribe()};
+      v.trGo=function(){if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }

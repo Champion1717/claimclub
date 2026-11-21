@@ -106,11 +106,34 @@ async function run() {
   return last;
 }
 
+// Offer d (Nov 21 2026): the weekly plan's 3-day trial. Stripe's trial_will_end arrives at signup for trials this short,
+// so this daily cron sends the reminder instead: once, for weekly trials ending in the next 36 hours.
+async function weeklyReminders() {
+  const { sendNotice } = require('./_email');
+  const sb = db(), now = Date.now(), soon = new Date(now + 36 * 3600e3).toISOString();
+  const { data: ms } = await sb.from('memberships').select('user_id, trial_ends_at, started_at').eq('plan', '1w').eq('status', 'active').gt('trial_ends_at', new Date(now).toISOString()).lte('trial_ends_at', soon);
+  let sent = 0;
+  for (const m of ms || []) {
+    const { data: done } = await sb.from('email_log').select('id').eq('user_id', m.user_id).eq('kind', 'trial_ending').gte('created_at', m.started_at || new Date(now - 7 * 864e5).toISOString()).limit(1);
+    if (done && done.length) continue;
+    const { data: prof } = await sb.from('profiles').select('email').eq('id', m.user_id).maybeSingle();
+    if (!prof || !prof.email) continue;
+    const day = new Date(m.trial_ends_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' });
+    await sendNotice({ to: prof.email, userId: m.user_id, kind: 'trial_ending', c: {
+      subject: 'Your Claimclub free trial ends ' + day, head: 'Your free trial ends soon',
+      body: 'Thanks for trying Claimclub. Your free trial ends on ' + day + '. On that day your membership starts at $4.99 a week, and we keep filing every claim you qualify for.<br><br>Want to stop? Cancel anytime before then in your dashboard (Settings, then Manage membership) and you will not be charged. Claims we already filed keep moving either way.',
+      cta: 'Open my dashboard', ctaUrl: 'https://claimclub.io/dashboard/settings' } });
+    sent++;
+  }
+  return sent;
+}
+
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   const secret = process.env.CRON_SECRET, auth = req.headers.authorization || '', ua = String(req.headers['user-agent'] || '');
   const ok = secret ? auth === 'Bearer ' + secret : /vercel-cron/i.test(ua);
   if (!ok) return send(res, 401, { error: 'Not allowed' });
-  try { return send(res, 200, await run()); } catch (e) { return send(res, 500, { error: e.message }); }
+  let reminders = 0; try { reminders = await weeklyReminders(); } catch (e) { console.error('[cron] trial reminders', e.message); }
+  try { return send(res, 200, Object.assign(await run(), { reminders })); } catch (e) { return send(res, 500, { error: e.message }); }
 };
 module.exports.run = run;

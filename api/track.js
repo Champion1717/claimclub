@@ -1,7 +1,9 @@
-// POST /api/track  { sid, step, idx, device, lang, offer }
+// POST /api/track  { sid, step, idx, device, lang, offer, flow, source }
+// source (meta | google_ads | organic | other) comes from the browser; device type comes from the user agent.
 // Records that an anonymous visitor reached a step of the claim flow, for the admin funnel.
 const { db, readJson, send } = require('./_db');
 const { limited, ipOf } = require('./_limit');
+const { isFlow, deviceType, SOURCES } = require('./_offers');
 const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -11,7 +13,8 @@ module.exports = async (req, res) => {
   const sid = clip(b.sid, 64), step = clip(b.step, 40);
   if (!/^[a-z0-9-]{8,64}$/i.test(sid) || !/^[a-z0-9_]+$/i.test(step)) return send(res, 400, { error: 'Bad event' });
   try {
-    await db().from('flow_events').insert({ sid, step, step_index: Number.isFinite(+b.idx) ? Math.round(+b.idx) : null, device: clip(b.device, 4), lang: clip(b.lang, 5), offer: clip(b.offer, 60) || null, flow: b.flow === 'b' ? 'b' : 'a' });
+    await db().from('flow_events').insert({ sid, step, step_index: Number.isFinite(+b.idx) ? Math.round(+b.idx) : null, device: clip(b.device, 4), lang: clip(b.lang, 5), offer: clip(b.offer, 60) || null, flow: isFlow(b.flow) ? b.flow : 'a',
+      source: SOURCES.includes(b.source) ? b.source : null, dtype: deviceType(req.headers['user-agent']) });
   } catch (e) {}
   return send(res, 200, { ok: true });
 };

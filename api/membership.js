@@ -3,6 +3,7 @@
 const Stripe = require('stripe');
 const { db, userFrom, readJson, renewsAt, send } = require('./_db');
 const crypto = require('crypto');
+const { flowFor, trialEndFor } = require('./_offers');
 function testKeyOk(k) {
   const want = String(process.env.TEST_FLOW_KEY || '').trim();
   if (want.length < 16 || typeof k !== 'string') return false;
@@ -11,9 +12,8 @@ function testKeyOk(k) {
   return same(k) || same(k.replace(/ /g, '+'));
 }
 const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7499, months: 3 }, '6m': { amount: 11999, months: 6 } };
-// Flow B's yearly plan (pricing test, Nov 16 2026). Not offered as a switch target.
-const TEST_PLANS = Object.assign({ '1y': { amount: 4900, months: 12 } }, PRICE);
-const trialEnd = (from) => new Date(new Date(from || Date.now()).getTime() + 7 * 864e5).toISOString();
+// Offer test trial plans (Nov 21 2026): 1y (offers b, c) and 1w (offer d). Not offered as switch targets.
+const TEST_PLANS = Object.assign({ '1y': { amount: 4999, months: 12 }, '1w': { amount: 499 } }, PRICE);
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'Method not allowed' });
@@ -31,8 +31,8 @@ module.exports = async (req, res) => {
       if (p) {
         if (!p.user_id) await sb.from('purchases').update({ user_id: user.id }).eq('id', p.id);
         if (!cur || cur.status === 'test' || cur.status === 'ended') {
-          const tr = p.kind === 'member' && p.plan === '1y' ? trialEnd(p.created_at) : null;
-          const row = { user_id: user.id, kind: p.kind, plan: p.kind === 'member' ? p.plan : null, status: 'active', flow: p.flow || 'a', trial_ends_at: tr, renews_at: p.kind === 'member' ? (tr || renewsAt(p.plan, p.created_at)) : null, stripe_customer: p.stripe_customer, stripe_subscription: p.stripe_subscription, started_at: p.created_at };
+          const tr = p.kind === 'member' ? trialEndFor(p.plan, p.created_at) : null;
+          const row = { user_id: user.id, kind: p.kind, plan: p.kind === 'member' ? p.plan : null, status: 'active', flow: flowFor(p.flow, p.plan), trial_ends_at: tr, renews_at: p.kind === 'member' ? (tr || renewsAt(p.plan, p.created_at)) : null, stripe_customer: p.stripe_customer, stripe_subscription: p.stripe_subscription, started_at: p.created_at };
           await sb.from('memberships').upsert(row);
           return send(res, 200, { membership: row, settlement_ids: p.settlement_ids });
         }
@@ -46,8 +46,8 @@ module.exports = async (req, res) => {
       if (process.env.ALLOW_TEST_MEMBERSHIP !== '1' && !testKeyOk(b.key)) return send(res, 403, { error: 'Test memberships are off' });
       if (cur && cur.status !== 'test') return send(res, 200, { membership: cur });
       const kind = b.kind === 'member' ? 'member' : 'fee', plan = TEST_PLANS[b.plan] ? b.plan : '1m';
-      const tr = kind === 'member' && plan === '1y' ? trialEnd() : null;
-      const row = { user_id: user.id, kind, plan: kind === 'member' ? plan : null, status: 'test', flow: b.flow === 'b' || plan === '1y' ? 'b' : 'a', trial_ends_at: tr, renews_at: kind === 'member' ? (tr || renewsAt(plan)) : null };
+      const tr = kind === 'member' ? trialEndFor(plan) : null;
+      const row = { user_id: user.id, kind, plan: kind === 'member' ? plan : null, status: 'test', flow: kind === 'member' && tr ? flowFor(b.flow, plan) : 'a', trial_ends_at: tr, renews_at: kind === 'member' ? (tr || renewsAt(plan)) : null };
       await sb.from('memberships').upsert(row);
       return send(res, 200, { membership: row });
     }
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
     }
     if (b.action === 'switch') {
       if (!PRICE[b.plan] || b.plan === cur.plan) return send(res, 400, { error: 'Pick a different plan' });
-      if (cur.plan === '1y') return send(res, 400, { error: 'The yearly plan cannot be switched' });
+      if (cur.plan === '1y' || cur.plan === '1w') return send(res, 400, { error: 'This plan cannot be switched' });
       if (stripe && cur.stripe_subscription) {
         // Change the price from the next renewal on. No charge or proration today.
         const sub = await stripe.subscriptions.retrieve(cur.stripe_subscription);

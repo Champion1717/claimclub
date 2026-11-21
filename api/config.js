@@ -2,6 +2,7 @@
 // Feature switches (set in /admin > Settings) come from the app_settings table.
 const { URL_, PUBLIC_KEY, db } = require('./_db');
 const crypto = require('crypto');
+const { offersOn } = require('./_offers');
 // ?test=<key> (Nov 15): says whether a claim-flow test link is valid (matches TEST_FLOW_KEY, 16+ characters). The key is never sent back.
 function same(a, b) { return a.length === b.length && crypto.timingSafeEqual(Buffer.from(a), Buffer.from(b)); }
 function testOk(k) {
@@ -12,10 +13,10 @@ function testOk(k) {
   return same(k, want) || same(k.replace(/ /g, '+'), want);
 }
 module.exports = async (req, res) => {
-  let bankConnect = false, cardConnect = false;
+  let bankConnect = false, cardConnect = false, offerVal = null;
   try {
-    const { data } = await db().from('app_settings').select('key, value').in('key', ['bank_connect', 'card_connect']);
-    (data || []).forEach((r) => { if (r.key === 'bank_connect') bankConnect = r.value === true; if (r.key === 'card_connect') cardConnect = r.value === true; });
+    const { data } = await db().from('app_settings').select('key, value').in('key', ['bank_connect', 'card_connect', 'offer_test']);
+    (data || []).forEach((r) => { if (r.key === 'bank_connect') bankConnect = r.value === true; if (r.key === 'card_connect') cardConnect = r.value === true; if (r.key === 'offer_test') offerVal = r.value; });
   } catch (e) {}
   res.setHeader('Content-Type', 'application/json');
   let tq = null; try { tq = new URL(req.url, 'http://x').searchParams.get('test'); } catch (e) {}
@@ -26,8 +27,8 @@ module.exports = async (req, res) => {
     supabaseAnonKey: PUBLIC_KEY(),
     testMode: process.env.ALLOW_TEST_MEMBERSHIP === '1',
     bankConnect,
-    // Pricing test (Nov 16 2026): set CC_FLOW to a or b in Vercel to end the test and send everyone to that flow.
-    ...(/^[ab]$/.test(String(process.env.CC_FLOW || '').trim()) ? { flow: String(process.env.CC_FLOW).trim() } : {}),
+    // Offer test (Nov 21 2026): the offers switched on in /admin > Settings > Offer test. New visitors get one at random.
+    offers: offersOn(offerVal),
     cardConnect: cardConnect && !!(process.env.PLAID_CLIENT_ID && process.env.PLAID_TOKEN_KEY)
   }));
 };

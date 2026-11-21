@@ -5,6 +5,7 @@
 // the hosted page URL like before.
 const Stripe = require('stripe');
 const { attribution } = require('./_meta');
+const { OFFERS, flowFor } = require('./_offers');
 
 // Full renewal price per billing period, and the first-period charge (75% off, rounded to the cent).
 const FEE = 4999;
@@ -12,9 +13,12 @@ const PLANS = {
   '1m': { amount: 2999, first: 799, months: 1, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_1M' },
   '3m': { amount: 7499, first: 1899, months: 3, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_3M' },
   '6m': { amount: 11999, first: 2999, months: 6, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_6M' },
-  // Pricing test, flow B (Nov 16 2026): $2 today for a 7-day trial, then $49 a year. No intro coupon.
-  '1y': { amount: 4900, first: 200, months: 12, trialDays: 7, name: 'Claimclub membership (1 year)', env: 'STRIPE_PRICE_1Y' },
+  // Offer test (Nov 21 2026). Trial plans, no intro coupon. What is charged today depends on the offer (OFFERS[flow].first):
+  // offer b $2, offers c and d $0. 1y = offers b and c ($49.99 a year after a 7-day trial), 1w = offer d ($4.99 a week after a 3-day trial).
+  '1y': { amount: 4999, months: 12, interval: 'year', trialDays: 7, name: 'Claimclub membership (1 year)', env: 'STRIPE_PRICE_1Y' },
+  '1w': { amount: 499, interval: 'week', trialDays: 3, name: 'Claimclub membership (weekly)', env: 'STRIPE_PRICE_1W' },
 };
+const TRIAL_FLOWS = { '1y': ['b', 'c'], '1w': ['d'] };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {
@@ -52,7 +56,10 @@ module.exports = async (req, res) => {
   const b = await readJson(req);
   const kind = b.kind === 'member' ? 'member' : 'fee';
   const plan = PLANS[b.plan] ? b.plan : '1m';
-  const flow = b.flow === 'b' || plan === '1y' ? 'b' : 'a';
+  let flow = kind === 'member' ? flowFor(b.flow, plan) : flowFor(b.flow, '');
+  if (kind === 'member' && TRIAL_FLOWS[plan] && !TRIAL_FLOWS[plan].includes(flow)) flow = TRIAL_FLOWS[plan][0];
+  if (kind === 'member' && !TRIAL_FLOWS[plan] && flow !== 'a') flow = 'a';
+  const sid = typeof b.sid === 'string' && /^[a-z0-9-]{8,64}$/i.test(b.sid) ? b.sid : '';
   const email = typeof b.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email) ? b.email : undefined;
   const ids = Array.isArray(b.ids) ? b.ids.filter((x) => typeof x === 'string').join(',').slice(0, 480) : '';
   const back = b.back === 'dashboard' ? '/dashboard' : '/claim';
@@ -67,7 +74,7 @@ module.exports = async (req, res) => {
     const p = PLANS[plan];
     line = process.env[p.env]
       ? { price: process.env[p.env], quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: p.months === 12 ? { interval: 'year' } : { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: 'Intro price for your first billing period, then renews at the full price until you cancel.' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: p.interval ? { interval: p.interval } : { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: p.trialDays ? 'Renews at this price after your free or $2 trial until you cancel.' : 'Intro price for your first billing period, then renews at the full price until you cancel.' } } };
   }
 
   try {
@@ -75,16 +82,17 @@ module.exports = async (req, res) => {
     // Meta Conversions API (flow B trial only): fbp/fbc/IP/browser saved on the session and the subscription, so the day-7 Subscribe can be matched.
     const att = trial ? attribution(req, b) : {};
     const discount = kind !== 'member' ? {}
-      : trial ? { subscription_data: { trial_period_days: PLANS[plan].trialDays, metadata: { plan, flow, ...att } } }
+      : trial ? { subscription_data: { trial_period_days: PLANS[plan].trialDays, metadata: { plan, flow, sid, ...att } } }
       : { discounts: [{ coupon: await introCoupon(stripe, plan) }], subscription_data: { metadata: { plan, flow } } };
-    // The trial's $2 is a one-time line on the first invoice; the yearly price starts when the trial ends.
-    const lines = trial ? [line, { quantity: 1, price_data: { currency: 'usd', unit_amount: PLANS[plan].first, product_data: { name: 'Claimclub 7-day trial', description: 'Then $49 a year from the end of your trial until you cancel.' } } }] : [line];
+    // Offer b's $2 is a one-time line on the first invoice; the plan price starts when the trial ends. Free trials (c, d) charge nothing today.
+    const first = trial ? (OFFERS[flow] && OFFERS[flow].first) || 0 : 0;
+    const lines = trial && first > 0 ? [line, { quantity: 1, price_data: { currency: 'usd', unit_amount: first, product_data: { name: 'Claimclub ' + PLANS[plan].trialDays + '-day trial', description: 'Then $' + (PLANS[plan].amount / 100).toFixed(2) + ' a ' + PLANS[plan].interval + ' from the end of your trial until you cancel.' } } }] : [line];
     const base = {
       mode: kind === 'fee' ? 'payment' : 'subscription',
       line_items: lines,
       customer_email: email,
       ...discount,
-      metadata: { kind, plan: kind === 'member' ? plan : '', ids, flow, ...(trial ? { consent: b.consent ? 'trial-2026-11-16' : '', ...att } : {}) },
+      metadata: { kind, plan: kind === 'member' ? plan : '', ids, flow, sid, ...(trial ? { consent: b.consent ? 'trial-2026-11-21' : '', ...att } : {}) },
     };
     const done = origin + back + '?paid=' + kind + '&sid={CHECKOUT_SESSION_ID}';
     res.setHeader('Content-Type', 'application/json');
