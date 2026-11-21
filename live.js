@@ -98,6 +98,7 @@
 '.ccp-kick{font-size:12px;font-weight:800;letter-spacing:1px;color:#8A968F}'+
 '.ccp-pay{height:54px;width:100%;border:0;border-radius:99px;background:#3DDC97;color:#0F3B2E;font:800 16px Manrope,system-ui,sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 10px 24px rgba(61,220,151,.35)}.ccp-pay:disabled{opacity:.6;cursor:default}'+
 '.ccp-err{font-size:13.5px;font-weight:700;color:#C8323B;line-height:1.45}'+
+'.ccp-agree{display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:12.5px;line-height:1.45;color:#43504A;font-weight:600;text-align:left}.ccp-agree input{width:20px;height:20px;flex:none;margin:1px 0 0;accent-color:#12805C;cursor:pointer}.ccp-agree a{color:#12805C;text-decoration:underline}.ccp-demo{padding:16px;border-radius:12px;background:#F3F6F4;border:1.5px dashed #C9D3CD;font-size:13.5px;font-weight:700;color:#5B6862;text-align:center;line-height:1.45}'+
 '.ccp-sec{margin:0;display:flex;align-items:center;justify-content:center;gap:6px;font-size:11.5px;color:#8A968F;font-weight:700;text-align:center}'+
 '.ccp-mail{display:flex;align-items:center;gap:8px;font-size:13px;color:#5B6862;font-weight:600}.ccp-mail b{color:#0A0F0D}'+
 '.ccp-d{background:#FBFAFE;overflow-y:auto;opacity:0;transform:translateY(8px);transition:opacity .2s ease,transform .24s cubic-bezier(.2,.7,.2,1)}.ccp-d.ccp-open{opacity:1;transform:none}'+
@@ -121,7 +122,7 @@
     var strip=info.total?'<div class="ccp-strip"><span class="l"><span>'+esc(T.earn)+'</span><b>'+(es?'Hasta ':'Up to ')+esc(info.total)+'</b></span><span class="r"><span>'+ic('check',14,'#12805C',2.8)+esc(T.keep)+'</span><span>'+esc(info.count)+' · '+esc(price)+esc(T.today)+'</span></span></div>':'';
     var body='<div class="ccp-body loading"><div class="ccp-load" aria-live="polite"><span class="ccp-spin"></span>'+esc(T.load)+'</div>'+(desk?'<span class="ccp-kick">'+esc(T.kick)+'</span>':'')+'<div class="ccp-x2"></div><div class="ccp-or" hidden><span>'+esc(T.or)+'</span></div><div class="ccp-card"></div>'+
       (desk&&c.state.email?'<div class="ccp-mail">'+ic('mail',14,'#5B6862')+esc(T.mail)+'<b>'+esc(c.state.email)+'</b></div>':'')+
-      '<div class="ccp-err" role="alert" hidden></div><button type="button" class="ccp-pay">'+ic('lock',16,'#0F3B2E',2.4)+'<span>'+esc(T.pay)+'</span></button><p class="ccp-sec">'+ic('shield',13,'#8A968F')+esc(T.sec)+'</p></div>';
+      (info.agree?'<label class="ccp-agree"><input type="checkbox" class="ccp-ag"><span>'+esc(info.agreeTxt||'')+'<a href="/authorization" target="_blank" rel="noopener">'+esc(info.agreeLink||'')+'</a>.</span></label>':'')+'<div class="ccp-err" role="alert" hidden></div><button type="button" class="ccp-pay">'+ic('lock',16,'#0F3B2E',2.4)+'<span>'+esc(T.pay)+'</span></button><p class="ccp-sec">'+ic('shield',13,'#8A968F')+esc(T.sec)+'</p></div>';
     root.innerHTML=desk
       ?'<div class="ccp-panel"><button type="button" class="ccp-backl">'+ic('back',16,'#5B6862',2.4)+esc(T.back)+'</button><h2 class="ccp-h1">'+esc(T.pay)+'</h2><span class="ccp-sub">'+esc(sub)+'</span>'+body+'</div>'
       :'<div class="ccp-bd"></div><div class="ccp-panel"><span class="ccp-handle"></span><div class="ccp-head"><span><b>'+esc(T.pay)+'</b><span class="ccp-sub">'+esc(sub)+'</span></span><button type="button" class="ccp-x" aria-label="'+esc(T.close)+'">'+ic('x',16,'#0A0F0D')+'</button></div>'+strip+body+'</div>';
@@ -135,7 +136,12 @@
     function key(e){if(e.key==='Escape')close()}
     window.addEventListener('resize',place);document.addEventListener('keydown',key);
     [].forEach.call(root.querySelectorAll('.ccp-x,.ccp-bd,.ccp-backl'),function(b){b.addEventListener('click',close)});
-    var api={root:root,T:T,q:function(s){return root.querySelector(s)},remove:remove,close:close,isClosed:function(){return closed},onClose:function(f){if(closed)f();else closers.push(f)}};
+    // Offer G (Nov 21): the I agree box sits on the payment sheet. Paying needs it ticked; ticking records the blanket authorization.
+    function gate(){if(!info.agree)return true;var b=root.querySelector('.ccp-ag'),e=root.querySelector('.ccp-err');
+      if(!b||!b.checked){if(e){e.textContent=info.agreeErr||'Tick the box to continue.';e.hidden=false}return false}
+      if(!c.state.agreeSigned){c.state.agreeAll=true;try{if(c.agreeSign)c.agreeSign()}catch(x){}c.state.agreeSigned=true}return true}
+    var ag=root.querySelector('.ccp-ag');if(ag)ag.addEventListener('change',function(){var e=root.querySelector('.ccp-err');if(ag.checked&&e)e.hidden=true});
+    var api={gate:gate,root:root,T:T,q:function(s){return root.querySelector(s)},remove:remove,close:close,isClosed:function(){return closed},onClose:function(f){if(closed)f();else closers.push(f)}};
     var first=root.querySelector('.ccp-x,.ccp-backl');if(first)setTimeout(function(){try{first.focus({preventScroll:true})}catch(e){}},60);
     return api;
   }
@@ -147,7 +153,32 @@
     try{var sid=sessionStorage.getItem('cc_sid');if(!sid||!/claimclub\.io$|vercel\.app$|^localhost$/.test(location.hostname))return;
       fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({sid:sid,step:'sheet',idx:c.state.step,device:innerWidth<820?'m':'d',lang:c.state.lang,offer:c.state.focus||c.state.lead||'',flow:c.state.flow||'a',source:sessionStorage.getItem('cc_src')||'other'})}).catch(function(){})}catch(e){}
   }
+  /* ---------- Demo mode (Nov 21 2026): /claim?demo=1 ----------
+     Same pages and payment sheet, but nothing is charged, saved or tracked and no account is made.
+     The card form is a grey placeholder (we never put card fields on our own pages). */
+  var DEMO=false;try{var dq=q.get('demo');if(dq==='0')sessionStorage.removeItem('cc_demo');else if(dq)sessionStorage.setItem('cc_demo','1');DEMO=sessionStorage.getItem('cc_demo')==='1'}catch(e){}
+  window.__ccDemo=DEMO;
+  function demoBadge(){
+    if(!DEMO||document.getElementById('ccDemoBadge'))return;
+    var d=document.createElement('div');d.id='ccDemoBadge';
+    d.style.cssText='position:fixed;left:50%;top:6px;transform:translateX(-50%);z-index:2147483600;pointer-events:none;display:flex;align-items:center;gap:8px;padding:4px 4px 4px 12px;white-space:nowrap;border-radius:99px;background:#0F3B2E;color:#FFFFFF;font:800 11px Manrope,system-ui,sans-serif;box-shadow:0 6px 16px rgba(10,15,13,.25)';
+    d.innerHTML='<span>'+(innerWidth<500?'DEMO':'DEMO · nothing saved or charged')+'</span><a href="/admin" onclick="try{sessionStorage.removeItem(\'cc_demo\')}catch(e){}" style="pointer-events:auto;padding:3px 9px;border-radius:99px;background:#3DDC97;color:#0F3B2E;text-decoration:none">Exit</a>';
+    if(/^\/(dashboard|login)(\/|$)|\/app\.html$/.test(location.pathname)&&innerWidth>=1100){d.style.top='auto';d.style.bottom='14px';d.style.left='14px';d.style.transform='none'}
+    (document.body||document.documentElement).appendChild(d);
+  }
+  if(DEMO){if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',demoBadge);else demoBadge()}
+  function demoSheet(c,kind,info){
+    if(openNow)return;
+    c.setState({buying:kind,payOpen:true});
+    var sh=openNow=shell(c,kind,info),btn=sh.q('.ccp-pay');
+    sh.q('.ccp-x2').innerHTML='';sh.q('.ccp-card').innerHTML='<div class="ccp-demo">Demo: Apple Pay, Google Pay and the Stripe card form show here. Tap the button to continue without paying.</div>';
+    var l=sh.q('.ccp-load');if(l)l.remove();sh.q('.ccp-body').classList.remove('loading');
+    btn.addEventListener('click',function(){if(!sh.gate())return;sh.remove();
+      c.setState({buying:kind,payState:'busy',step:idx(c,'checkout')});
+      setTimeout(function(){c.setState({payState:'done',paid:kind});c.saveForApp();if(c.finishPay)c.finishPay(kind)},900)});
+  }
   function sheet(c,kind,info){
+    if(DEMO)return demoSheet(c,kind,info);
     trackSheet(c);
     if(openNow)return;
     try{sessionStorage.setItem(KEY,JSON.stringify(c.state))}catch(e){}
@@ -181,6 +212,7 @@
     card.on('ready',reveal);
     var actionsP=checkout.loadActions();
     function paid(res){var sid=(res.session&&res.session.id)||secret.split('_secret_')[0];sh.remove();verify(c,kind,sid)}
+    express.on('click',function(event){if(!sh.gate())return;event.resolve()});
     express.on('confirm',function(event){
       showErr(null);
       actionsP.then(function(r){
@@ -191,7 +223,7 @@
       });
     });
     btn.addEventListener('click',function(){
-      if(btn.disabled)return;showErr(null);btn.disabled=true;btn.querySelector('span').textContent=es?'Procesando…':'Processing…';
+      if(btn.disabled)return;if(!sh.gate())return;showErr(null);btn.disabled=true;btn.querySelector('span').textContent=es?'Procesando…':'Processing…';
       var reset=function(m){btn.disabled=false;btn.querySelector('span').textContent=label;showErr(m)};
       actionsP.then(function(r){
         if(r.type!=='success'){reset(es?'No se pudo iniciar el pago. Cierra esto e inténtalo de nuevo.':'Payment could not start. Close this and try again.');return}
@@ -271,6 +303,7 @@
       });
     }
   };
+  if(DEMO)window.ccAuth={send:function(){return Promise.resolve({})},verify:function(){return new Promise(function(ok){setTimeout(function(){ok({ok:true})},500)})}};
   /* Plaid in the claim flow: "Connect bank account" opens Plaid's window right here. If it cannot (not signed
      in, purchase not linked yet, Plaid down) it falls back to opening Plaid in the dashboard like before. */
   function plaidJs(){return window.Plaid?Promise.resolve():new Promise(function(ok,no){var t=document.createElement('script');t.src='https://cdn.plaid.com/link/v2/stable/link-initialize.js';t.onload=ok;t.onerror=function(){no(new Error('Plaid did not load'))};document.head.appendChild(t)})}
@@ -284,7 +317,8 @@
   }
   function dropVeil(){var d=document.getElementById('ccVeil');if(!d)return;d.style.opacity='0';setTimeout(function(){d.remove()},240)}
   window.ccPlaid=function(c){
-    var later=function(){dropVeil();try{localStorage.setItem('claimclub_connect','1')}catch(e){}c.afterBank()};
+    if(DEMO){c.afterBank();return}
+    var later=function(){dropVeil();try{localStorage.setItem((window.__ccDemo ? 'claimclub_demo_connect' : 'claimclub_connect'),'1')}catch(e){}c.afterBank()};
     c.setState({bankBusy:true});
     token().then(function(tok){
       return Promise.all([papi(tok,'link_token',{}),plaidJs()]).then(function(r){
@@ -298,7 +332,7 @@
             try{sessionStorage.setItem('cc_enter','1')}catch(e){}
             try{c.saveForApp()}catch(e){}
             var done=false,fin=function(){if(done)return;done=true;location.href='/dashboard/claims'};
-            papi(tok,'exchange',{public_token:pt,institution:{name:inst.name,institution_id:inst.institution_id}}).catch(function(){try{localStorage.setItem('claimclub_connect','1')}catch(e){}}).then(fin);
+            papi(tok,'exchange',{public_token:pt,institution:{name:inst.name,institution_id:inst.institution_id}}).catch(function(){try{localStorage.setItem((window.__ccDemo ? 'claimclub_demo_connect' : 'claimclub_connect'),'1')}catch(e){}}).then(fin);
             setTimeout(fin,12000);
           },
           onExit:function(){dropVeil();c.setState({bankBusy:false})}});
@@ -307,14 +341,14 @@
     }).catch(function(e){console.warn('[plaid in flow]',e&&e.message);later()});
   };
   window.ccLive=function(c,v){
-    if(STRIPE){
-      if(!started){started=true;if(q.get('sid')||q.get('canceled'))resume(c)}
+    if(STRIPE||DEMO){
+      if(!started&&!DEMO){started=true;if(q.get('sid')||q.get('canceled'))resume(c)}
       var info=v.sheetInfo||{};
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
-      v.trGo=function(){if(c.agreeSign&&!c.agreeSign())return;if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
+      v.trGo=function(){if(c.agreeSign&&!c.agreeSign())return;if(fbOk()&&!TK&&!DEMO)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
       // Offer G (Nov 21): Standard is free (no sheet); Fast and Priority open the payment sheet, charged today.
-      v.tgGo=function(){if(c.state.tier==='std'){c.tierGo();return}if(c.agreeSign&&!c.agreeSign())return;try{sessionStorage.removeItem('cc_std')}catch(e){}if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
+      v.tgGo=function(){if(c.state.tier==='std'){c.tierGo();return}if(TK){c.state.agreeAll=true;if(c.agreeSign)c.agreeSign()}try{sessionStorage.removeItem('cc_std')}catch(e){}if(fbOk()&&!TK&&!DEMO)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }
@@ -338,7 +372,7 @@
     if(leaving)return;leaving=true;
     try{sessionStorage.setItem('cc_enter','1')}catch(e){}
     var d=cover(true);requestAnimationFrame(function(){requestAnimationFrame(function(){d.style.opacity='1'})});
-    setTimeout(function(){location.href='/dashboard/claims'},420);
+    setTimeout(function(){location.href='/dashboard/claims'+(DEMO?'?demo=1':'')},420);
   }
   // Arriving on the dashboard from the flow: start covered, then fade the cover away once the page has painted.
   if(/^\/(dashboard|login)(\/|$)|\/app\.html$/.test(location.pathname)){

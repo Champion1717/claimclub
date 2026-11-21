@@ -515,6 +515,22 @@ function fRange(k) {
   const t = new Date(), today = pdDay(t), back = (n) => pdDay(new Date(t.getTime() - n * 864e5));
   return ({ today: [today, today], yesterday: [back(1), back(1)], d7: [back(6), today], d30: [back(29), today], d90: [back(89), today] })[k] || null;
 }
+// Demo links (Nov 21 2026): every path through the live offer (F) and the plans offer (G), plus sample dashboards.
+// ?demo=1 accepts any email and details, fakes payment and the email code, saves and tracks nothing, and makes no account.
+function demoCard() {
+  const L = [
+    ['Offer F · Free 3 days, then $19.99/mo', [['Phone', '/m/start.html?v=1&demo=1&flow=f'], ['Desktop', '/d/start.html?v=1&demo=1&flow=f']]],
+    ['Offer G · Standard (free)', [['Phone', '/m/start.html?v=1&demo=1&flow=g&tier=std'], ['Desktop', '/d/start.html?v=1&demo=1&flow=g&tier=std']]],
+    ['Offer G · Fast ($15/mo)', [['Phone', '/m/start.html?v=1&demo=1&flow=g&tier=fast'], ['Desktop', '/d/start.html?v=1&demo=1&flow=g&tier=fast']]],
+    ['Offer G · Priority ($30/mo)', [['Phone', '/m/start.html?v=1&demo=1&flow=g&tier=pri'], ['Desktop', '/d/start.html?v=1&demo=1&flow=g&tier=pri']]],
+  ];
+  const D = [['Offer F member', '1mt'], ['Standard', 'std'], ['Fast', 'fast'], ['Priority', 'pri']];
+  const btn = (t, u) => '<a href="' + u + '" target="_blank" rel="noopener" class="pill p-ready" style="text-decoration:none;font-weight:800">' + t + '</a>';
+  return '<div class="card" style="margin-bottom:14px"><h2>Demo links</h2><div class="small muted" style="margin-bottom:10px">Walk through each flow without paying. Type anything on the email, details and code pages. Nothing is saved or charged, no account is made and nothing reaches the funnel or ad pixels.</div>'
+    + '<table><tbody>' + L.map(([t, ls]) => '<tr><td><b>' + t + '</b></td><td style="text-align:right;display:flex;gap:8px;justify-content:flex-end">' + ls.map(([a, u]) => btn(a, u)).join('') + '</td></tr>').join('')
+    + '<tr><td><b>Dashboard only</b><div class="small muted">Sample member with 6 claims</div></td><td style="text-align:right;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">' + D.map(([t, k]) => btn(t, '/dashboard?demo=' + k)).join('') + '</td></tr>'
+    + '</tbody></table></div>';
+}
 async function funnel() {
   const F = cache.fun || (cache.fun = { range: 'd7', from: '', to: '', flow: '', source: '', dtype: '' });
   const rg = F.range === 'custom' ? [F.from, F.to] : fRange(F.range);
@@ -566,7 +582,7 @@ async function funnel() {
     return '<tr><td><b>' + esc(STEP_LABEL[x.step] || ('Question ' + (parseInt(x.step.slice(1), 10) + 1))) + '</b></td><td style="width:45%"><div class="bar"><span style="width:' + Math.round(v / top * 100) + '%"></span></div></td><td style="text-align:right;font-weight:800">' + v + '</td><td style="text-align:right" class="small ' + (drop > .3 ? 'err' : 'muted') + '">' + (drop ? '-' + Math.round(drop * 100) + '%' : '') + '</td><td style="text-align:right" class="small muted">' + Math.round(v / top * 100) + '% of start</td></tr>'; }).join('');
   const funnelCard = '<div class="card" style="margin-bottom:14px"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Steps</h2>' + (worst ? '<span class="small"><b>Biggest drop:</b> ' + esc(STEP_LABEL[worst.step] || worst.step) + ' (' + Math.round(worst.drop * 100) + '% left before it)</span>' : '') + '</div>'
     + (rows ? '<table><thead><tr><th>Step</th><th></th><th style="text-align:right">Visitors</th><th style="text-align:right">Drop</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' : '<div class="empty">No visits in this range.</div>') + '</div>';
-  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does. Source and device are recorded from Nov 21 2026.</div>' + controls + comp
+  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does. Source and device are recorded from Nov 21 2026.</div>' + demoCard() + controls + comp
     + bd('By source', SR, (k) => SRC_LABEL[k] || k, ['meta', 'google_ads', 'organic', 'other', 'unknown'])
     + bd('By device', DV, (k) => DEV_LABEL[k] || k, ['iphone', 'android', 'tablet', 'mac', 'windows', 'other', 'unknown'])
     + funnelCard + bd('By day', DY, dayLabel, days));

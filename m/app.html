@@ -2,7 +2,7 @@
 <link rel="icon" href="/favicon.svg" type="image/svg+xml"><link rel="icon" href="/favicon.ico" sizes="32x32"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><script>(function(){try{if(sessionStorage.getItem("cc_src"))return;var q=new URLSearchParams(location.search),u=(q.get("utm_source")||"").toLowerCase(),m=(q.get("utm_medium")||"").toLowerCase(),h="";try{h=document.referrer?new URL(document.referrer).hostname:""}catch(e){}var s="other";if(q.get("fbclid")||/^(meta|facebook|fb|instagram|ig)$/.test(u)||/(^|\.)(facebook|instagram)\.com$/.test(h))s="meta";else if(q.get("gclid")||q.get("gbraid")||q.get("wbraid")||(u==="google"&&/cpc|paid|ads/.test(m)))s="google_ads";else if(/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave)\./.test(h)&&!/mail\./.test(h))s="organic";sessionStorage.setItem("cc_src",s)}catch(e){}})()</script><link rel="manifest" href="/manifest.webmanifest"><meta name="theme-color" content="#FFFFFF"><script>if("serviceWorker" in navigator)addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})</script>
 <meta name="robots" content="noindex, nofollow">
 <script>(function(){function c(){if(!(innerWidth>=1100))return;document.cookie='cc_app=d;path=/;max-age=31536000;samesite=lax';var k='ccsw_cc_app';if(document.cookie.indexOf('cc_app=d')<0||sessionStorage.getItem(k)==='d'){location.replace('/d/app.html?v=1'+location.search.replace(/^\?/,'&')+(/^\/claim\/([\w-]+)/i.test(location.pathname)?'&claim='+RegExp.$1:'')+location.hash);return}try{sessionStorage.setItem(k,'d')}catch(e){}location.reload()}try{if(sessionStorage.getItem('ccsw_cc_app')==='m')sessionStorage.removeItem('ccsw_cc_app')}catch(e){}c();var t;addEventListener('resize',function(){clearTimeout(t);t=setTimeout(c,250)});})()</script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script><!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, on ?offer= links, and on /claim/<id> links for health settlements) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
+<script>if(!navigator.globalPrivacyControl&&!/[?&]demo=/.test(location.search)&&!(function(){try{return sessionStorage.getItem('cc_demo')==='1'}catch(e){return false}})()&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -19,7 +19,7 @@ src="https://www.facebook.com/tr?id=888237691005202&ev=PageView&noscript=1"
 /></noscript>
 <!-- End Meta Pixel Code -->
 <!-- Google Ads tag (AW-18562196705; same skip rules as the Meta Pixel) -->
-<script>if(!navigator.globalPrivacyControl&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
+<script>if(!navigator.globalPrivacyControl&&!/[?&]demo=/.test(location.search)&&!(function(){try{return sessionStorage.getItem('cc_demo')==='1'}catch(e){return false}})()&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
 (function(d){var t=d.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=AW-18562196705';d.head.appendChild(t)})(document);
 window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
 gtag('js',new Date());gtag('config','AW-18562196705');
@@ -375,13 +375,19 @@ class Component extends DCLogic {
     this.state = { st: { apple: 'ready', cvs: 'ready', googleplay: 'ready', amazon: 'ready', tyson: 'ready', goodrx: 'review', realpage: 'filed', netflix: 'filed', kroger: 'approved', squatch: 'paid' }, busy: '', note: null, just: '', seq: 48210, focus: 0, view: 'all', acct: { email: 1, auth: 1, name: 1 }, info: '', ans: {}, sheet: null, form: {}, view: 'dash', scale: 'm', theme: 'light', prof: { name: 'Henry Sidwell', email: 'henry@example.com', phone: '', dob: '', addr: '1234 Market St, Apt 5, San Francisco, CA 94103', past: [] }, edit: '', draft: '', err: '', pastDraft: '', bankOn: true, payDef: 'Check', payH: {}, payEdit: '', payDraft: '', payErr: '', det: '', q: '', cat: 'all', scope: 'all', sort: 'pop', openS: '', shown: 20, added: [], hl: '', bankAsk: false, mbOn: true };
     this.state.mm = ''; this.state.mmPick = ''; this.state.cancelled = false; this.state.plan = '1m'; this.state.joinedOn = 'Nov 12, 2026';
     this.state.authState = 'off'; this.state.noAcct = false; this.state.loginEmail = ''; this.state.code = ''; this.state.codeSent = false; this.state.authErr = ''; this.state.authBusy = false; this.state.renewsAt = '';
+    // Demo mode (Nov 21 2026): ?demo=1 (after the demo claim flow) or ?demo=<plan> (std, fast, pri, 1mt, fee) for a sample member.
+    // No sign-in, nothing saved to the account; progress lives in claimclub_demo_* keys on this device.
+    try { const qd = new URLSearchParams(location.search).get('demo'); if (qd === '0') sessionStorage.removeItem('cc_demo'); else if (qd) sessionStorage.setItem('cc_demo', '1'); window.__ccDemo = sessionStorage.getItem('cc_demo') === '1';
+      if (qd && ['std', 'fast', 'pri', '1mt', 'fee'].indexOf(qd) >= 0) { const ids = ['apple', 'visa', 'googleplay', 'realpage', 'amazon', 'cvs'];
+        localStorage.setItem('claimclub_demo_session', JSON.stringify({ ids, signed: ids, plan: qd === 'fee' ? '' : qd, paid: qd === 'fee' ? 'fee' : qd === 'std' ? 'std' : 'member', flow: ['std', 'fast', 'pri'].indexOf(qd) >= 0 ? 'g' : qd === '1mt' ? 'f' : 'a',
+          p: { name: 'Alex Rivera', email: 'demo@claimclub.io', phone: '5125550142', street: '12 Oak St', city: 'Austin', st: 'TX', zip: '78701' } })); localStorage.removeItem('claimclub_demo_app'); } } catch (e) {}
     this.loadLive();
     try { const pr = JSON.parse(localStorage.getItem('claimclub_prefs') || 'null'); if (pr && pr.loc && pr.loc.st) { this.state.myState = pr.loc.st; this.state.myCity = pr.loc.city || ''; this.state.locSet = true; } } catch (e) {}
   }
   loadLive() {
     let ss = null, saved = null, prefs = null;
-    try { ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
-    try { saved = JSON.parse(localStorage.getItem('claimclub_app') || 'null'); } catch (e) {}
+    try { ss = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session')) || 'null'); } catch (e) {}
+    try { saved = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_app' : 'claimclub_app')) || 'null'); } catch (e) {}
     try { prefs = JSON.parse(localStorage.getItem('claimclub_prefs') || 'null'); } catch (e) {}
     if (prefs) { if (prefs.theme) this.state.theme = prefs.theme; if (prefs.scale) this.state.scale = prefs.scale; }
     if (!ss || !ss.ids || !ss.ids.length) return;
@@ -527,7 +533,7 @@ class Component extends DCLogic {
       setTimeout(() => { this.syncPath(true); this._pathReady = true; }, 0);
     }
     if (typeof fetch !== 'undefined' && typeof window !== 'undefined') fetch('/api/filing?standard=1').then(r => r.json()).then(j => { if (j && Array.isArray(j.ids)) this.setState({ stdIds: j.ids }); }).catch(() => {});
-    if (typeof window === 'undefined' || !window.supabase || typeof fetch === 'undefined') return;
+    if (typeof window === 'undefined' || !window.supabase || typeof fetch === 'undefined' || window.__ccDemo) return;
     fetch('/api/filing?catalog=1').then(r => r.json()).then(j => { if (j && j.extra && j.extra.length) { this._extra = j.extra; this.setState({ catV: Date.now() }); } }).catch(() => {});
     this.setState({ authState: 'checking' });
     fetch('/api/config').then(r => r.json()).then(cfg => {
@@ -537,7 +543,7 @@ class Component extends DCLogic {
       return this._sb.auth.getSession().then(({ data }) => {
         if (data && data.session) return this._sb.auth.getUser().then(({ data: u, error }) => {
           // A saved sign-in can outlive its account (deleted user) or belong to someone else than the person who just did the claim flow.
-          let ss = null; try { ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
+          let ss = null; try { ss = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session')) || 'null'); } catch (e) {}
           const fe = (((ss || {}).p || {}).email || '').toLowerCase(), se = ((u && u.user && u.user.email) || '').toLowerCase();
           const gone = error && error.status && error.status < 500, other = !!(ss && ss.ids && ss.ids.length && fe && se && fe !== se && ss.linkedTo !== fe && ss.keepFor !== se);
           if (gone || other) return this._sb.auth.signOut({ scope: 'local' }).catch(() => {}).then(() => this.setState({ authState: 'signin', loginEmail: '' }));
@@ -552,7 +558,7 @@ class Component extends DCLogic {
     const email = (this.state.loginEmail || '').trim().toLowerCase();
     if (!/^[^@ ]+@[^@ ]+[.][^@ ]+$/.test(email)) { this.setState({ authErr: 'Enter the email you used to sign up' }); return; }
     this.setState({ authBusy: true, authErr: '', noAcct: false });
-    let fresh = false; try { const ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); fresh = !!(ss && ss.ids && ss.ids.length && ((ss.p || {}).email || '').toLowerCase() === email); } catch (e) {}
+    let fresh = false; try { const ss = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session')) || 'null'); fresh = !!(ss && ss.ids && ss.ids.length && ((ss.p || {}).email || '').toLowerCase() === email); } catch (e) {}
     const go = () => this._sb.auth.signInWithOtp({ email, options: { shouldCreateUser: true } }).then(({ error }) => {
       this.setState({ authBusy: false, codeSent: !error, code: '', authErr: error ? (/rate/i.test(error.message) ? 'Too many codes sent. Wait a minute and try again.' : error.message) : '' });
     });
@@ -584,9 +590,9 @@ class Component extends DCLogic {
     this._token = session.access_token;
     this._sb.auth.onAuthStateChange((ev, ses) => { if (ses) this._token = ses.access_token; });
     const sb = this._sb, uid = session.user.id, email = session.user.email;
-    let local = null; try { local = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); } catch (e) {}
+    let local = null; try { local = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session')) || 'null'); } catch (e) {}
     // Signed in as someone other than the claim flow saved on this device: remember that choice so a refresh does not sign them out again.
-    if (local && local.p && local.p.email && local.p.email.toLowerCase() !== email.toLowerCase() && local.keepFor !== email.toLowerCase()) { try { local.keepFor = email.toLowerCase(); localStorage.setItem('claimclub_session', JSON.stringify(local)); } catch (e) {} }
+    if (local && local.p && local.p.email && local.p.email.toLowerCase() !== email.toLowerCase() && local.keepFor !== email.toLowerCase()) { try { local.keepFor = email.toLowerCase(); localStorage.setItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session'), JSON.stringify(local)); } catch (e) {} }
     let [{ data: prof }, { data: rows }] = await Promise.all([sb.from('profiles').select('*').eq('id', uid).maybeSingle(), sb.from('claims').select('*').eq('user_id', uid)]);
     rows = rows || [];
     const link = await this.api('link');
@@ -602,7 +608,7 @@ class Component extends DCLogic {
       if (signed.length && !(prof && prof.authorization_signed_at)) patch.authorization_signed_at = new Date().toISOString();
       if (Object.keys(patch).length) { const { data: p2 } = await sb.from('profiles').update(patch).eq('id', uid).select().maybeSingle(); if (p2) prof = p2; }
       if ((!link.membership) && this._cfg.testMode && local.paid) { const t = await this.api('test', { kind: local.paid, plan: local.plan }); if (t && t.membership) this._newMem = t.membership; }
-      try { local.linkedTo = email.toLowerCase(); localStorage.setItem('claimclub_session', JSON.stringify(local)); } catch (e) {}
+      try { local.linkedTo = email.toLowerCase(); localStorage.setItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session'), JSON.stringify(local)); } catch (e) {}
     }
     let { data: mem } = await sb.from('memberships').select('*').eq('user_id', uid).maybeSingle();
     if (!mem) mem = this._newMem || link.membership || null;
@@ -611,7 +617,7 @@ class Component extends DCLogic {
     this.capi('state').then(j => this.setState({ signed: j.signed || {}, cfiles: j.files || [] })).catch(() => {});
     this.loadPlaid().then(() => { this.resumeOAuth();
       // "Connect bank account" in the claim flow: open Plaid as soon as the account is ready.
-      let want = false, tour = false; try { want = localStorage.getItem('claimclub_connect') === '1'; localStorage.removeItem('claimclub_connect'); tour = localStorage.getItem('claimclub_tour') === '1'; } catch (e) {}
+      let want = false, tour = false; try { want = localStorage.getItem((window.__ccDemo ? 'claimclub_demo_connect' : 'claimclub_connect')) === '1'; localStorage.removeItem((window.__ccDemo ? 'claimclub_demo_connect' : 'claimclub_connect')); tour = localStorage.getItem((window.__ccDemo ? 'claimclub_demo_tour' : 'claimclub_tour')) === '1'; } catch (e) {}
       // Fresh from the claim flow: land on Your claims with a quick tour (after Plaid, if they chose to connect a bank).
       if (tour) this.go('dash');
       if (want && (this.state.pl || {}).enabled) { this._tourPending = tour; this.connectCard(); } else if (tour) this.startTour(); });
@@ -649,7 +655,7 @@ class Component extends DCLogic {
       if (ups.length) sb.from('claims').upsert(ups, { onConflict: 'user_id,settlement_id' }).then(() => {});
     });
   }
-  signOut() { this._signedIn = false; if (this._sb) this._sb.auth.signOut().then(() => { try { localStorage.removeItem('claimclub_app'); } catch (e) {} location.reload(); }); }
+  signOut() { this._signedIn = false; if (this._sb) this._sb.auth.signOut().then(() => { try { localStorage.removeItem((window.__ccDemo ? 'claimclub_demo_app' : 'claimclub_app')); } catch (e) {} location.reload(); }); }
   componentDidUpdate() {
     if (this.state.view !== this._lastView) { const first = this._lastView === undefined; this._lastView = this.state.view;
       if (!first) try { if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.querySelectorAll('.zwrap').forEach(el => { if (el.offsetParent !== null) el.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 180, easing: 'cubic-bezier(.2,.7,.2,1)' }); }); } catch (e) {} }
@@ -658,8 +664,8 @@ class Component extends DCLogic {
     const s = this.state;
     try { localStorage.setItem('claimclub_prefs', JSON.stringify({ theme: s.theme, scale: s.scale, loc: s.locSet ? { st: s.myState, city: s.myCity || '' } : undefined })); } catch (e) {}
     if (!this._live || this._db) return;
-    try { const ss = JSON.parse(localStorage.getItem('claimclub_session') || 'null'); if (!ss) return;
-      localStorage.setItem('claimclub_app', JSON.stringify({ sig: ss.ids.join(','), st: s.st, added: s.added, prof: s.prof, acct: s.acct, payDef: s.payDef, payH: s.payH, ans: s.ans, cancelled: s.cancelled, plan: s.plan, seq: s.seq, mmPending: s.mmPending, rq: s.rq })); } catch (e) {}
+    try { const ss = JSON.parse(localStorage.getItem((window.__ccDemo ? 'claimclub_demo_session' : 'claimclub_session')) || 'null'); if (!ss) return;
+      localStorage.setItem((window.__ccDemo ? 'claimclub_demo_app' : 'claimclub_app'), JSON.stringify({ sig: ss.ids.join(','), st: s.st, added: s.added, prof: s.prof, acct: s.acct, payDef: s.payDef, payH: s.payH, ans: s.ans, cancelled: s.cancelled, plan: s.plan, seq: s.seq, mmPending: s.mmPending, rq: s.rq })); } catch (e) {}
   }
   claims() {
     if (this._live) return this._mine.concat(this.extras().filter(x => (this.state.ans || {})[x.id] === 'yes' && !this._mine.some(m => m.id === x.id)), (this.state.added || []).filter(x => !this._mine.some(m => m.id === x.id)));
@@ -1299,7 +1305,7 @@ class Component extends DCLogic {
     return all.filter(x => x.el());
   }
   startTour() {
-    try { localStorage.removeItem('claimclub_tour'); } catch (e) {}
+    try { localStorage.removeItem((window.__ccDemo ? 'claimclub_demo_tour' : 'claimclub_tour')); } catch (e) {}
     this.go('dash');
     setTimeout(() => { if (!this.tourSteps().length) return; this.setState({ tour: 0, tourRect: null }); clearInterval(this._tourI); this._tourI = setInterval(() => this.tourMeasure(), 120); }, 350);
   }
