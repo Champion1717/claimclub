@@ -926,7 +926,7 @@ class Component extends DCLogic {
         this.toast(ok ? 'You are on Priority' : 'Could not upgrade', ok ? 'We file your claims within 24 hours. Local claims are unlocked.' : ((j && j.error) || 'Try again in a minute.')); });
       return;
     }
-    if (this._db && cfg.testMode) {
+    if (false && this._db && cfg.testMode) {
       this.setState({ joinBusy: true, pm: false });
       this.api('test', { kind: 'member', plan: to }).then(j => { const m = j && j.membership, ok = m && m.plan === to;
         this.setState({ joinBusy: false, plan: ok ? to : this.state.plan, hasMem: true }); this.toast(ok ? 'You are on ' + name : 'Could not upgrade', ok ? 'Every claim in your plan is unlocked.' : 'Try again in a minute.'); });
