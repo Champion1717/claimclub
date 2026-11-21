@@ -24,7 +24,7 @@
   // Offer test (Nov 21 2026): trial plans are 1y (offers b, c) and 1w (offer d). Value = what is charged today ($2 or $0).
   function trialPlan(c){return c.state.plan==='1y'||c.state.plan==='1w'}
   function todayN(c){var o=c.offer?c.offer():null;return o?o.todayN:2}
-  function ltvN(c){return c.state.plan==='1w'?39.92:49.99}
+  function ltvN(c){if(c.state.plan==='1w')return 39.92;var o=c.offer?c.offer():null;return o&&o.plan==='1y'&&o.fullN?o.fullN:49.99}
   function metaPurchase(c,kind,sid){
     if(!sid||kind!=='member'||!trialPlan(c)||!fbOk())return;
     try{if(sessionStorage.getItem('st_'+sid))return;sessionStorage.setItem('st_'+sid,'1')}catch(e){}

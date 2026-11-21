@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
       if (p) {
         if (!p.user_id) await sb.from('purchases').update({ user_id: user.id }).eq('id', p.id);
         if (!cur || cur.status === 'test' || cur.status === 'ended') {
-          const tr = p.kind === 'member' ? trialEndFor(p.plan, p.created_at) : null;
+          const tr = p.kind === 'member' ? trialEndFor(p.plan, p.created_at, p.flow) : null;
           const row = { user_id: user.id, kind: p.kind, plan: p.kind === 'member' ? p.plan : null, status: 'active', flow: flowFor(p.flow, p.plan), trial_ends_at: tr, renews_at: p.kind === 'member' ? (tr || renewsAt(p.plan, p.created_at)) : null, stripe_customer: p.stripe_customer, stripe_subscription: p.stripe_subscription, started_at: p.created_at };
           await sb.from('memberships').upsert(row);
           return send(res, 200, { membership: row, settlement_ids: p.settlement_ids });
@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
       if (process.env.ALLOW_TEST_MEMBERSHIP !== '1' && !testKeyOk(b.key)) return send(res, 403, { error: 'Test memberships are off' });
       if (cur && cur.status !== 'test') return send(res, 200, { membership: cur });
       const kind = b.kind === 'member' ? 'member' : 'fee', plan = TEST_PLANS[b.plan] ? b.plan : '1m';
-      const tr = kind === 'member' ? trialEndFor(plan) : null;
+      const tr = kind === 'member' ? trialEndFor(plan, null, flowFor(b.flow, plan)) : null;
       const row = { user_id: user.id, kind, plan: kind === 'member' ? plan : null, status: 'test', flow: kind === 'member' && tr ? flowFor(b.flow, plan) : 'a', trial_ends_at: tr, renews_at: kind === 'member' ? (tr || renewsAt(plan)) : null };
       await sb.from('memberships').upsert(row);
       return send(res, 200, { membership: row });

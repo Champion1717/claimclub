@@ -1005,22 +1005,23 @@ class Component extends DCLogic {
       b: { plan: '1y', days: 7, today: '$2', todayN: 2, full: '$49.99', fullN: 49.99, unit: 'year', unitEs: 'año', month: '$4.17' },
       c: { plan: '1y', days: 7, today: '$0', todayN: 0, full: '$49.99', fullN: 49.99, unit: 'year', unitEs: 'año', month: '$4.17' },
       d: { plan: '1w', days: 3, today: '$0', todayN: 0, full: '$4.99', fullN: 4.99, unit: 'week', unitEs: 'semana' },
+      e: { plan: '1y', days: 3, today: '$0', todayN: 0, full: '$49', fullN: 49, unit: 'year', unitEs: 'año', month: '$4.08' },
     };
   }
-  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd'; }
+  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e'; }
   offer() { return this.offers()[this.state.flow] || this.offers().b; }
   // Trial end date for the current offer: 7 days (offers b, c) or 3 days (offer d) from today.
   trialEnd(es) { const d = new Date(Date.now() + this.offer().days * 864e5); try { return d.toLocaleDateString(es ? 'es-US' : 'en-US', { month: es ? 'long' : 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return d.toDateString(); } }
   // New visitors get one of the switched-on offers at random, kept for a year in the cc_offer cookie.
   // A cookie for an offer that has since been switched off is replaced. ?flow=a|b|c|d forces one (for testing).
   pickFlow(on, final, cur) {
-    const ALL = ['a', 'b', 'c', 'd'];
-    on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['b', 'c', 'd'];
+    const ALL = ['a', 'b', 'c', 'd', 'e'];
+    on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['e'];
     let f = '';
     try {
       const q = new URLSearchParams(location.search).get('flow');
       if (ALL.includes(q)) f = q;
-      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcd])\b/);
+      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcde])\b/);
       if (!f && m && on.includes(m[1])) f = m[1];
       if (!f && on.includes(cur)) f = cur;
       if (!f) { const r = new Uint8Array(1); crypto.getRandomValues(r); f = on[r[0] % on.length]; }
@@ -1031,7 +1032,7 @@ class Component extends DCLogic {
   setFlow(f) { if (f === this.state.flow) return; this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w'].includes(this.state.plan) ? '1m' : this.state.plan }); }
   planInfo(id, es) {
     const O = this.offer();
-    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: '$49.99', every: es ? 'cada año' : 'every year' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
+    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
   }
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin(), Q = this.quiz(), name = this.stepName();
@@ -1317,7 +1318,7 @@ class Component extends DCLogic {
               trFirst: es ? 'tus primeros ' + d + ' días' : 'for your first ' + d + ' days',
               trThen: thenL,
               trT1: es ? 'Hoy' : 'Today', trT1p: free ? (es ? '$0 hoy. Empezamos a presentar tus reclamos.' : '$0 today. We start filing your claims.') : (es ? 'Pagas ' + O.today + '. Empezamos a presentar tus reclamos.' : 'Pay ' + O.today + '. We start filing your claims.'),
-              trT2: es ? 'Día ' + (wk ? 2 : 4) : 'Day ' + (wk ? 2 : 4), trT2p: es ? 'Te enviamos un recordatorio.' : 'We email you a reminder.',
+              trT2: es ? 'Día ' + (d <= 3 ? 2 : 4) : 'Day ' + (d <= 3 ? 2 : 4), trT2p: es ? 'Te enviamos un recordatorio.' : 'We email you a reminder.',
               trT3: es ? 'Día ' + d : 'Day ' + d, trT3p: wk ? (es ? O.full + ', luego cada semana hasta que canceles.' : O.full + ', then every week until you cancel.') : (es ? O.full + ' por el año, salvo que canceles.' : O.full + ' for the year, unless you cancel.'),
               trCta: free ? (es ? 'Empezar mi prueba gratis de ' + d + ' días' : 'Start my free ' + d + '-day trial') : (es ? 'Empezar mi prueba de ' + d + ' días · ' + O.today : 'Start my ' + d + '-day trial · ' + O.today),
               trCtaM: free ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : (es ? 'Empezar mi prueba · ' + O.today : 'Start my trial · ' + O.today),

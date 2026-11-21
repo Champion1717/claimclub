@@ -720,8 +720,8 @@ class Component extends DCLogic {
     const s = this.state, P = { '1m': { name: '1 month', per: '$29.99/mo', bill: '$29.99 every month', price: '$29.99', first: '$7.99' }, '3m': { name: '3 months', per: '$25.00/mo', bill: '$74.99 every 3 months', price: '$74.99', first: '$18.99', tag: 'Save 17%' }, '6m': { name: '6 months', per: '$20.00/mo', bill: '$119.99 every 6 months', price: '$119.99', first: '$29.99', tag: 'Save 33%' } };
     // Offer test trial plans (Nov 21 2026), not switch options: 1y = $49.99 a year after a 7-day trial ($2 for offer b, free for offer c),
     // 1w = $4.99 a week after a free 3-day trial (offer d).
-    const free = s.memFlow === 'c' || s.plan === '1w';
-    const Y = { '1y': { name: '1 year', per: '$4.17/mo', bill: '$49.99 a year', price: '$49.99', first: free ? '$0' : '$2', trialW: (free ? 'Free ' : '') + '7-day trial', billW: free ? 'Free 7-day trial' : '7-day trial, 96% off' },
+    const free = s.memFlow === 'c' || s.memFlow === 'e' || s.plan === '1w', e49 = s.memFlow === 'e';
+    const Y = { '1y': e49 ? { name: '1 year', per: '$4.08/mo', bill: '$49 a year', price: '$49', first: '$0', trialW: 'Free 3-day trial', billW: 'Free 3-day trial' } : { name: '1 year', per: '$4.17/mo', bill: '$49.99 a year', price: '$49.99', first: free ? '$0' : '$2', trialW: (free ? 'Free ' : '') + '7-day trial', billW: free ? 'Free 7-day trial' : '7-day trial, 96% off' },
       '1w': { name: 'weekly', per: '$4.99/week', bill: '$4.99 a week', price: '$4.99', first: '$0', trialW: 'Free 3-day trial', billW: 'Free 3-day trial' } };
     const yearly = !!Y[s.plan], trial = yearly && !!s.trialEnds;
     const member = !!s.plan, cur = P[s.plan] || Y[s.plan] || P['1m'], pick = s.mmPick || (P[s.plan] ? s.plan : '6m');
@@ -732,7 +732,7 @@ class Component extends DCLogic {
       planHead: member ? 'Membership' : 'Filing fee', planBadge: member ? (s.cancelled ? '· Ends ' + renew : trial ? '· Trial' : '· Active') : '· Paid',
       planLine: member ? (trial ? cur.trialW + ' · then ' + cur.bill : cur.name.charAt(0).toUpperCase() + cur.name.slice(1) + ' · ' + cur.per) : 'One-time · $49.99',
       mmOpen: !!s.mm, mmHome: s.mm === 'home', mmCancel: s.mm === 'cancel', mmDone: s.mm === 'done', isMember: member, mbMember: s.mbOn !== false && member, notMember: !member,
-      mmStatus: s.cancelled ? (trial ? 'Your trial ends ' + renew + '. You will not be charged again.' : 'Ends ' + renew + '. You keep everything until then.') : trial ? 'Your trial ends ' + renew + '. Then ' + cur.bill + (s.plan === '1y' ? ' ($4.17 a month)' : '') + ' unless you cancel before then.' : (s.mmPending ? 'Switching to ' + P[s.mmPending].name + ' on ' + renew + '.' : 'Renews ' + renew + ' at ' + cur.bill + '.'),
+      mmStatus: s.cancelled ? (trial ? 'Your trial ends ' + renew + '. You will not be charged again.' : 'Ends ' + renew + '. You keep everything until then.') : trial ? 'Your trial ends ' + renew + '. Then ' + cur.bill + (s.plan === '1y' ? ' (' + (e49 ? '$4.08' : '$4.17') + ' a month)' : '') + ' unless you cancel before then.' : (s.mmPending ? 'Switching to ' + P[s.mmPending].name + ' on ' + renew + '.' : 'Renews ' + renew + ' at ' + cur.bill + '.'),
       mmPlans: yearly ? [] : Object.keys(P).map(k => ({ name: P[k].name, per: P[k].per, bill: P[k].bill, tag: P[k].tag || '', hasTag: !!P[k].tag, cur: k === s.plan, st: row(pick === k), dot: dot(pick === k), tap: () => this.setState({ mmPick: k }) })),
       mmCanSwitch: member && !yearly && pick !== s.plan && !s.cancelled, mmShowPlans: !yearly, mmSwitchLabel: 'Switch to ' + P[pick].name,
       mmPortal: () => this.openPortal(), mmPortalLabel: s.portalBusy ? 'Opening billing...' : 'Update card and see receipts',

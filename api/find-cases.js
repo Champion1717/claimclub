@@ -111,7 +111,7 @@ async function run() {
 async function weeklyReminders() {
   const { sendNotice } = require('./_email');
   const sb = db(), now = Date.now(), soon = new Date(now + 36 * 3600e3).toISOString();
-  const { data: ms } = await sb.from('memberships').select('user_id, trial_ends_at, started_at').eq('plan', '1w').eq('status', 'active').gt('trial_ends_at', new Date(now).toISOString()).lte('trial_ends_at', soon);
+  const { data: ms } = await sb.from('memberships').select('user_id, plan, flow, trial_ends_at, started_at').or('plan.eq.1w,flow.eq.e').eq('status', 'active').gt('trial_ends_at', new Date(now).toISOString()).lte('trial_ends_at', soon);
   let sent = 0;
   for (const m of ms || []) {
     const { data: done } = await sb.from('email_log').select('id').eq('user_id', m.user_id).eq('kind', 'trial_ending').gte('created_at', m.started_at || new Date(now - 7 * 864e5).toISOString()).limit(1);
@@ -121,7 +121,7 @@ async function weeklyReminders() {
     const day = new Date(m.trial_ends_at).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'America/Los_Angeles' });
     await sendNotice({ to: prof.email, userId: m.user_id, kind: 'trial_ending', c: {
       subject: 'Your Claimclub free trial ends ' + day, head: 'Your free trial ends soon',
-      body: 'Thanks for trying Claimclub. Your free trial ends on ' + day + '. On that day your membership starts at $4.99 a week, and we keep filing every claim you qualify for.<br><br>Want to stop? Cancel anytime before then in your dashboard (Settings, then Manage membership) and you will not be charged. Claims we already filed keep moving either way.',
+      body: 'Thanks for trying Claimclub. Your free trial ends on ' + day + '. On that day your membership starts at ' + (m.plan === '1w' ? '$4.99 a week' : '$49 for the year ($4.08 a month)') + ', and we keep filing every claim you qualify for.<br><br>Want to stop? Cancel anytime before then in your dashboard (Settings, then Manage membership) and you will not be charged. Claims we already filed keep moving either way.',
       cta: 'Open my dashboard', ctaUrl: 'https://claimclub.io/dashboard/settings' } });
     sent++;
   }

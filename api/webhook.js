@@ -25,8 +25,8 @@ module.exports = async (req, res) => {
   const { renewsAt } = require('./_db');
   const { sendNotice } = require('./_email');
   const { sendMetaEvent } = require('./_meta');
-  const { flowFor, trialEndFor, TRIAL_DAYS } = require('./_offers');
-  const LTV = { '1y': 49.99, '1w': 4.99 * 8 };
+  const { flowFor, trialEndFor, renewFor, TRIAL_DAYS } = require('./_offers');
+  const LTV = (plan, flow) => (plan === '1w' ? 4.99 * 8 : renewFor(plan, flow));
   try {
     if (event.type === 'checkout.session.completed') {
       const s = event.data.object, md = s.metadata || {}, email = (s.customer_details && s.customer_details.email) || s.customer_email || '';
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
       // Meta Purchase (server copy) = a trial started (offers b, c, d). Value is what was charged today ($2 or $0).
       // Same event_id as the browser pixel, so Meta dedupes the two.
       if (TRIAL_DAYS[md.plan] && s.mode === 'subscription') {
-        await sendMetaEvent({ eventName: 'Purchase', eventId: s.id, eventTime: s.created, value: (s.amount_total || 0) / 100, extraCustom: { predicted_ltv: LTV[md.plan] },
+        await sendMetaEvent({ eventName: 'Purchase', eventId: s.id, eventTime: s.created, value: (s.amount_total || 0) / 100, extraCustom: { predicted_ltv: LTV(md.plan, md.flow) },
           email, phone: s.customer_details && s.customer_details.phone, meta: md });
       }
       if (sb && email) {
@@ -43,7 +43,7 @@ module.exports = async (req, res) => {
         if (prof) row.user_id = prof.id;
         await sb.from('purchases').upsert(row, { onConflict: 'stripe_session' });
         // Trial plans: 1y (offers b, c) ends after 7 days, 1w (offer d) after 3. The first full charge is at the end.
-        const trialEnd = row.kind === 'member' ? trialEndFor(row.plan) : null;
+        const trialEnd = row.kind === 'member' ? trialEndFor(row.plan, null, row.flow) : null;
         if (prof) await sb.from('memberships').upsert({ user_id: prof.id, kind: row.kind, plan: row.kind === 'member' ? row.plan : null, status: 'active', flow: row.flow, trial_ends_at: trialEnd, renews_at: row.kind === 'member' ? (trialEnd || renewsAt(row.plan)) : null, stripe_customer: row.stripe_customer, stripe_subscription: row.stripe_subscription });
       }
     } else if (event.type === 'invoice.paid' && sb) {
@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
         if (TRIAL_DAYS[smd.plan] && smd.meta_subscribe_sent !== '1') {
           const { m } = await memberFor(sb, subId);
           await sendMetaEvent({ eventName: 'Subscribe', eventId: inv.id, eventTime: (inv.status_transitions && inv.status_transitions.paid_at) || Math.floor(Date.now() / 1000),
-            value: inv.amount_paid / 100, extraCustom: { predicted_ltv: LTV[smd.plan] }, email: inv.customer_email, phone: inv.customer_phone, userId: m && m.user_id, meta: smd });
+            value: inv.amount_paid / 100, extraCustom: { predicted_ltv: LTV(smd.plan, smd.flow) }, email: inv.customer_email, phone: inv.customer_phone, userId: m && m.user_id, meta: smd });
           await stripe.subscriptions.update(subId, { metadata: { meta_subscribe_sent: '1' } });
         }
       }
@@ -93,7 +93,8 @@ module.exports = async (req, res) => {
       // The weekly plan's 3-day trial gets its reminder from the daily cron instead (api/find-cases.js), since Stripe sends this at signup.
       const sub = event.data.object, plan = sub.metadata && sub.metadata.plan;
       const { m, email } = await memberFor(sb, sub.id);
-      if (plan !== '1w' && m && email && m.status === 'active' && !sub.cancel_at_period_end) {
+      const short = plan === '1w' || (m && m.flow === 'e') || (sub.metadata && sub.metadata.flow === 'e');
+      if (!short && m && email && m.status === 'active' && !sub.cancel_at_period_end) {
         const end = new Date((sub.trial_end || 0) * 1000), day = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Los_Angeles' });
         await sendNotice({ to: email, userId: m.user_id, kind: 'trial_ending', c: {
           subject: 'Your Claimclub trial ends ' + day, head: 'Your trial ends in 3 days',
