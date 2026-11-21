@@ -122,13 +122,14 @@ input:-webkit-autofill{-webkit-box-shadow:0 0 0 40px #FFFFFF inset;-webkit-text-
 .rcFade{animation:rcFade .5s ease both}@keyframes rcFade{from{opacity:0}to{opacity:1}}
 @media (prefers-reduced-motion:reduce){.rcPrint,.rcFade{animation:none}}
 </style>
-<style id="cc-hover">/* Simple hover effect for every button on the site */
+<style id="cc-hover">/* Simple hover effect for every button on the site. No shadow on hover (it drew a square box around text buttons). */
 @media (hover:hover){
-button:not(:disabled),[role=button],a[href][style*="border-radius"]:not(.lift):not([class*="card"]),a.cta,a.btn,.btn{transition:transform .15s ease,filter .15s ease,box-shadow .15s ease}
-button:not(:disabled):hover,[role=button]:hover,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):hover,a.cta:hover,a.btn:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 6px 16px rgba(10,15,13,.14)}
-button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):active,a.cta:active,a.btn:active,.btn:active{transform:translateY(0) scale(.98);filter:brightness(.97);box-shadow:none}
+button:not(:disabled),[role=button],a[href][style*="border-radius"]:not(.lift):not([class*="card"]),a.cta,a.btn,.btn{transition:transform .15s ease,filter .15s ease,opacity .15s ease}
+button:not(:disabled):hover,[role=button]:hover,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):hover,a.cta:hover,a.btn:hover,.btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
+button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"]:not(.lift):not([class*="card"]):active,a.cta:active,a.btn:active,.btn:active{transform:translateY(0) scale(.98);filter:brightness(.97)}
+button:is([style*="background: transparent"],[style*="background:transparent"],[style*="background: none"],[style*="background:none"]):not(:disabled):hover{transform:none;filter:none;opacity:.72}
+button[aria-expanded]:not(:disabled):hover,button[aria-expanded]:not(:disabled):active{transform:none;filter:none;opacity:1}
 }
-@media (hover:hover){button[style*="background: transparent"]:not(:disabled):hover,button[style*="background:transparent"]:not(:disabled):hover{transform:none;filter:none;box-shadow:none;opacity:.72}button[style*="background: transparent"]:not(:disabled):active,button[style*="background:transparent"]:not(:disabled):active{transform:scale(.98);box-shadow:none}}
 @media (prefers-reduced-motion: reduce){button,[role=button],a[href]{transition:none !important}}
 </style>
 <style>html,body{margin:0}sc-if,sc-for{display:contents}</style></head><body><template id="tpl">
