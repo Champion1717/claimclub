@@ -312,3 +312,4 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 - Reminder: Stripe's trial_will_end arrives at signup for a 3-day trial, so offer e (like the weekly plan) is reminded by the daily cron (`weeklyReminders()` in api/find-cases.js, `plan.eq.1w,flow.eq.e`), not the webhook.
 - flow.js `offers().e`; trial timeline reminder says Day 2 for 3-day trials. Member app shows "$49 a year", "Free 3-day trial" when `memFlow` is e. Terms fee table lists it. Migration `offer_e` (file `db/offer_e.sql`) allows flow 'e'. Funnel and admin list offer E.
 - Test: `site/t_ab.py [width] e`.
+- Phone iterations of plans 2 monthly (Nov 21 2026, canvas only): `cc/concepts/tierGm.py` builds OfferG2mPhones (x 5760, y 8400): A mini table (3 plan columns, tap a column to pick, sticky button), B three open cards each with its own button, C three rows with key-difference chips and a sticky button. All three plans visible without tabs.
