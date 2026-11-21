@@ -737,7 +737,7 @@ class Component extends DCLogic {
       coBusyT: ['Processing payment', 'Procesando el pago'], coDoneT: ['Payment received', 'Pago recibido'], coDoneP: ['Thanks! One more quick step.', '¡Gracias! Un paso más.'], dueToday2: ['Due today', 'A pagar hoy'],
       saBtn: ['Sign all forms at once', 'Firmar todos a la vez'], saH: ['Sign all your claim forms', 'Firma todos tus formularios'],
       saP: ['Your details are already on every form. One signature applies to each form listed below, and each one is filed under your name.', 'Tus datos ya están en cada formulario. Una firma se aplica a cada formulario de la lista, y cada uno se presenta a tu nombre.'],
-      agreeAllTxt: ['I confirm under penalty of perjury that my answers and details are true and correct, and I authorize Claimclub to sign and submit claim forms in my name for the settlements I qualify for, as described in the ', 'Confirmo bajo pena de perjurio que mis respuestas y datos son verdaderos y correctos, y autorizo a Claimclub a firmar y presentar formularios de reclamo a mi nombre para los acuerdos que me correspondan, según el '],
+      agreeAllTxt: ['My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the ', 'Mis respuestas son verdaderas y acepto que Claimclub llene y presente mis reclamos por mí, según el '],
       agreeErr: ['Tick the box to continue.', 'Marca la casilla para continuar.'],
       saConsent: ['I have reviewed these forms, the statements in each are true, and I agree to sign each one electronically under the ', 'Revisé estos formularios, las declaraciones de cada uno son verdaderas y acepto firmar cada uno electrónicamente según el '],
       cancelW: ['Cancel', 'Cancelar'],
@@ -936,7 +936,7 @@ class Component extends DCLogic {
     const details = { name, first: p.first || '', middle: p.middle || '', last: p.last || '', street: p.street || '', apt: p.apt || '', city: p.city || '', state: s.st && s.st !== 'Other' ? s.st : '', zip: p.zip || '', phone: p.phone || '', dob: p.dob || '', email: s.email || '' };
     return list.map(m => { const a = this.answerOf(m.id);
       return { settlement_id: m.id, settlement_title: m.title.startsWith(m.co) ? m.title : m.co + ' ' + m.title, signer_name: name, signature_text: name, details, answers: a.q ? [{ q: a.q, a: a.a }] : [],
-        statements: { attestation: this.attestText(m, es), perjury: m.cat === 'arb' ? '' : this.certText(es), consent: method === 'blanket' ? this.txt('agreeAllTxt') + this.txt('agreeLink') + '.' : method === 'bulk' ? this.txt('saConsent') + this.txt('agreeLink') : this.txt('consentTxt') + this.txt('agreeLink'), agreement_url: 'https://claimclub.io/authorization' },
+        statements: { attestation: this.attestText(m, es), perjury: m.cat === 'arb' || method === 'blanket' ? '' : this.certText(es), consent: method === 'blanket' ? this.txt('agreeAllTxt') + this.txt('agreeLink') + '.' : method === 'bulk' ? this.txt('saConsent') + this.txt('agreeLink') : this.txt('consentTxt') + this.txt('agreeLink'), agreement_url: 'https://claimclub.io/authorization' },
         agreement_version: method === 'blanket' ? '2026-11-21' : '2026-11-14', client_signed_at: now }; });
   }
   txt(k) { const v = (this.dict && this.dict()[k]) || null; return v ? v[this.state.lang === 'es' ? 1 : 0] : ''; }
