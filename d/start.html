@@ -709,7 +709,7 @@ class Component extends DCLogic {
     super(props);
     // Demo mode (Nov 21 2026): /claim?demo=1 (kept for the tab in sessionStorage cc_demo; ?demo=0 ends it). Nothing is checked,
     // saved, signed, tracked or charged, and no account is made. live.js swaps payment, the email code and Plaid for fakes.
-    try { if (typeof location !== 'undefined') { const qd = new URLSearchParams(location.search).get('demo'); if (qd === '0') sessionStorage.removeItem('cc_demo'); else if (qd) sessionStorage.setItem('cc_demo', '1'); window.__ccDemo = sessionStorage.getItem('cc_demo') === '1'; } } catch (e) {}
+    try { if (typeof location !== 'undefined') { const qd = new URLSearchParams(location.search).get('demo'); if (qd === '0') sessionStorage.removeItem('cc_demo'); else if (qd) { sessionStorage.setItem('cc_demo', '1'); ['session', 'app', 'tour', 'connect'].forEach(k => localStorage.removeItem('claimclub_demo_' + k)); sessionStorage.removeItem('cc_std'); } window.__ccDemo = sessionStorage.getItem('cc_demo') === '1'; } } catch (e) {}
     this.state = { flow: 'a', bankOn: true, step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, agreeAll: false, agreeErr: false, tier: 'fast', stdIds: null, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
       p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } };
     let fid = props && props.offer;
