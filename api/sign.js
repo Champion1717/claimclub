@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
     const row = {
       email, settlement_id: clip(r.settlement_id, 80), settlement_title: clip(r.settlement_title, 300),
       signer_name: clip(r.signer_name, 200), signature_text: clip(r.signature_text || r.signer_name, 200),
-      method: b.method === 'bulk' ? 'bulk' : 'single',
+      method: ['bulk', 'blanket'].includes(b.method) ? b.method : 'single',
       details: r.details && typeof r.details === 'object' ? r.details : {},
       answers: Array.isArray(r.answers) ? r.answers.slice(0, 20) : [],
       statements: r.statements && typeof r.statements === 'object' ? r.statements : {},

@@ -311,7 +311,7 @@
       var info=v.sheetInfo||{};
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
-      v.trGo=function(){if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
+      v.trGo=function(){if(c.agreeSign&&!c.agreeSign())return;if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }
