@@ -961,22 +961,23 @@ class Component extends DCLogic {
       c: { plan: '1y', days: 7, today: '$0', todayN: 0, full: '$49.99', fullN: 49.99, unit: 'year', unitEs: 'año', month: '$4.17' },
       d: { plan: '1w', days: 3, today: '$0', todayN: 0, full: '$4.99', fullN: 4.99, unit: 'week', unitEs: 'semana' },
       e: { plan: '1y', days: 3, today: '$0', todayN: 0, full: '$49', fullN: 49, unit: 'year', unitEs: 'año', month: '$4.08' },
+      f: { plan: '1mt', days: 3, today: '$0', todayN: 0, full: '$19.99', fullN: 19.99, unit: 'month', unitEs: 'mes' },
     };
   }
-  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e'; }
+  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e' || f === 'f'; }
   offer() { return this.offers()[this.state.flow] || this.offers().b; }
   // Trial end date for the current offer: 7 days (offers b, c) or 3 days (offer d) from today.
   trialEnd(es) { const d = new Date(Date.now() + this.offer().days * 864e5); try { return d.toLocaleDateString(es ? 'es-US' : 'en-US', { month: es ? 'long' : 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return d.toDateString(); } }
   // New visitors get one of the switched-on offers at random, kept for a year in the cc_offer cookie.
   // A cookie for an offer that has since been switched off is replaced. ?flow=a|b|c|d forces one (for testing).
   pickFlow(on, final, cur) {
-    const ALL = ['a', 'b', 'c', 'd', 'e'];
-    on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['e'];
+    const ALL = ['a', 'b', 'c', 'd', 'e', 'f'];
+    on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['f'];
     let f = '';
     try {
       const q = new URLSearchParams(location.search).get('flow');
       if (ALL.includes(q)) f = q;
-      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcde])\b/);
+      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdef])\b/);
       if (!f && m && on.includes(m[1])) f = m[1];
       if (!f && on.includes(cur)) f = cur;
       if (!f) { const r = new Uint8Array(1); crypto.getRandomValues(r); f = on[r[0] % on.length]; }
@@ -984,10 +985,10 @@ class Component extends DCLogic {
     } catch (e) { f = f || on[0]; }
     return f;
   }
-  setFlow(f) { if (f === this.state.flow) return; this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w'].includes(this.state.plan) ? '1m' : this.state.plan }); }
+  setFlow(f) { if (f === this.state.flow) return; this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w', '1mt'].includes(this.state.plan) ? '1m' : this.state.plan }); }
   planInfo(id, es) {
     const O = this.offer();
-    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
+    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1mt': { first: '$0', full: '$19.99', every: es ? 'cada mes' : 'every month' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
   }
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin(), Q = this.quiz(), name = this.stepName();
@@ -1196,7 +1197,7 @@ class Component extends DCLogic {
       billCount: plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
       // Pay page receipt (Nov 15): claims with payouts, expected earnings, today's fee, and that the member keeps 100%.
       ...(() => {
-        const its = (signedCount ? AL.filter(m => s.signed[m.id]) : AL), n = its.length || 1, mem = name === 'plans' || this.isTrialFlow(), p = this.planInfo(s.plan, es), tEnd = this.trialEnd(es), O = this.offer(), trialP = this.isTrialFlow() && (s.plan === '1y' || s.plan === '1w');
+        const its = (signedCount ? AL.filter(m => s.signed[m.id]) : AL), n = its.length || 1, mem = name === 'plans' || this.isTrialFlow(), p = this.planInfo(s.plan, es), tEnd = this.trialEnd(es), O = this.offer(), trialP = this.isTrialFlow() && (s.plan === '1y' || s.plan === '1w' || s.plan === '1mt');
         const firstW = trialP ? (O.todayN ? (es ? 'prueba de ' + O.days + ' días' : O.days + '-day trial') : (es ? 'prueba gratis de ' + O.days + ' días' : 'free ' + O.days + '-day trial')) : { '1m': es ? 'primer mes' : 'first month', '3m': es ? 'primeros 3 meses' : 'first 3 months', '6m': es ? 'primeros 6 meses' : 'first 6 months' }[s.plan] || (es ? 'primer mes' : 'first month');
         const thenW = trialP ? (es ? 'Luego ' + O.full + ' por ' + O.unitEs + ' desde el ' + tEnd : 'Then ' + O.full + ' a ' + O.unit + ' from ' + tEnd) : es ? 'Luego ' + p.full + ' ' + p.every : 'Then ' + p.full + ' ' + ({ '1m': 'a month', '3m': 'every 3 months', '6m': 'every 6 months' }[s.plan] || 'a month');
         const claimsW = plural(n, 'claim', 'claims', 'reclamo', 'reclamos');
@@ -1220,7 +1221,7 @@ class Component extends DCLogic {
           // what the payment sheet in live.js shows
           sheetInfo: { total: noFigure ? '' : this.money(total), count: claimsW, es, fee: '$49.99', feeSub: es ? 'Tarifa de presentación · única, sin suscripción' : 'Filing fee · one time, no subscription', mem: p.first, memSub: trialP ? (es ? (O.todayN ? 'Prueba de ' : 'Prueba gratis de ') + O.days + ' días · luego ' + O.full + ' por ' + O.unitEs : (O.todayN ? '' : 'Free ') + O.days + '-day trial · then ' + O.full + ' a ' + O.unit) : es ? 'Membresía · ' + thenW.toLowerCase() : 'Membership · ' + thenW.toLowerCase(),
             // Free trials: the sheet button says Start my free trial instead of Pay $0.
-            payT: trialP && !O.todayN ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : '', todayN: trialP ? O.todayN : null, ltv: trialP ? (O.plan === '1w' ? 39.92 : O.fullN) : null},
+            payT: trialP && !O.todayN ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : '', todayN: trialP ? O.todayN : null, ltv: trialP ? (O.plan === '1w' ? 39.92 : O.plan === '1mt' ? 59.97 : O.fullN) : null},
         };
       })(),
       estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
@@ -1260,7 +1261,7 @@ class Component extends DCLogic {
           joinGo: () => this.setState({ step: this.steps().indexOf('plans') }),
           // Trial page (offer test, Nov 21 2026): offer b ($2 for 7 days), c (free for 7 days) or d (free for 3 days, then weekly).
           ...(() => {
-            const O = this.offer(), free = !O.todayN, d = O.days, tE = this.trialEnd(es), wk = O.unit === 'week';
+            const O = this.offer(), free = !O.todayN, d = O.days, tE = this.trialEnd(es), wk = O.unit !== 'year', mo = O.unit === 'month';
             const per = es ? O.full + ' por ' + O.unitEs : O.full + ' a ' + O.unit;
             const thenL = wk ? (es ? 'Luego ' + per + '. Cancela cuando quieras.' : 'Then ' + per + '. Cancel anytime.') : (es ? 'Luego ' + per + ', solo ' + O.month + ' al mes. Cancela cuando quieras.' : 'Then ' + per + ', just ' + O.month + ' a month. Cancel anytime.');
             return {
@@ -1269,12 +1270,12 @@ class Component extends DCLogic {
               trSub: free ? (es ? 'Prueba la membresía gratis ' + d + ' días. Empezamos a presentar hoy.' : 'Try membership free for ' + d + ' days. We start filing today.') : (es ? 'Prueba la membresía ' + d + ' días. Empezamos a presentar hoy.' : 'Try membership for ' + d + ' days. We start filing today.'),
               trKick: es ? 'MEMBRESÍA CLAIMCLUB' : 'CLAIMCLUB MEMBERSHIP',
               trOff: free ? (es ? d + ' DÍAS GRATIS' : d + ' DAYS FREE') : (es ? '96% MENOS HOY' : '96% OFF TODAY'),
-              trBig: free ? (es ? 'Gratis' : 'Free') : O.today, trWas: O.full + (wk ? (es ? '/sem' : '/wk') : ''),
+              trBig: free ? (es ? 'Gratis' : 'Free') : O.today, trWas: O.full + (mo ? (es ? '/mes' : '/mo') : wk ? (es ? '/sem' : '/wk') : ''),
               trFirst: es ? 'tus primeros ' + d + ' días' : 'for your first ' + d + ' days',
               trThen: thenL,
               trT1: es ? 'Hoy' : 'Today', trT1p: free ? (es ? '$0 hoy. Empezamos a presentar tus reclamos.' : '$0 today. We start filing your claims.') : (es ? 'Pagas ' + O.today + '. Empezamos a presentar tus reclamos.' : 'Pay ' + O.today + '. We start filing your claims.'),
               trT2: es ? 'Día ' + (d <= 3 ? 2 : 4) : 'Day ' + (d <= 3 ? 2 : 4), trT2p: es ? 'Te enviamos un recordatorio.' : 'We email you a reminder.',
-              trT3: es ? 'Día ' + d : 'Day ' + d, trT3p: wk ? (es ? O.full + ', luego cada semana hasta que canceles.' : O.full + ', then every week until you cancel.') : (es ? O.full + ' por el año, salvo que canceles.' : O.full + ' for the year, unless you cancel.'),
+              trT3: es ? 'Día ' + d : 'Day ' + d, trT3p: wk ? (es ? O.full + (mo ? ', luego cada mes hasta que canceles.' : ', luego cada semana hasta que canceles.') : O.full + (mo ? ', then every month until you cancel.' : ', then every week until you cancel.')) : (es ? O.full + ' por el año, salvo que canceles.' : O.full + ' for the year, unless you cancel.'),
               trCta: free ? (es ? 'Empezar mi prueba gratis de ' + d + ' días' : 'Start my free ' + d + '-day trial') : (es ? 'Empezar mi prueba de ' + d + ' días · ' + O.today : 'Start my ' + d + '-day trial · ' + O.today),
               trCtaM: free ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : (es ? 'Empezar mi prueba · ' + O.today : 'Start my trial · ' + O.today),
               trGo: () => { this.setState({ buying: 'member', payState: '', step: this.steps().indexOf('checkout') }); },

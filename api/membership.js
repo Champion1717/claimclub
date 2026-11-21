@@ -13,7 +13,7 @@ function testKeyOk(k) {
 }
 const PRICE = { '1m': { amount: 2999, months: 1 }, '3m': { amount: 7499, months: 3 }, '6m': { amount: 11999, months: 6 } };
 // Offer test trial plans (Nov 21 2026): 1y (offers b, c) and 1w (offer d). Not offered as switch targets.
-const TEST_PLANS = Object.assign({ '1y': { amount: 4999, months: 12 }, '1w': { amount: 499 } }, PRICE);
+const TEST_PLANS = Object.assign({ '1y': { amount: 4999, months: 12 }, '1w': { amount: 499 }, '1mt': { amount: 1999, months: 1 } }, PRICE);
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 405, { error: 'Method not allowed' });
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
     }
     if (b.action === 'switch') {
       if (!PRICE[b.plan] || b.plan === cur.plan) return send(res, 400, { error: 'Pick a different plan' });
-      if (cur.plan === '1y' || cur.plan === '1w') return send(res, 400, { error: 'This plan cannot be switched' });
+      if (cur.plan === '1y' || cur.plan === '1w' || cur.plan === '1mt') return send(res, 400, { error: 'This plan cannot be switched' });
       if (stripe && cur.stripe_subscription) {
         // Change the price from the next renewal on. No charge or proration today.
         const sub = await stripe.subscriptions.retrieve(cur.stripe_subscription);

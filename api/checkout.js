@@ -17,8 +17,10 @@ const PLANS = {
   // offer b $2, offers c and d $0. 1y = offers b and c ($49.99 a year after a 7-day trial), 1w = offer d ($4.99 a week after a 3-day trial).
   '1y': { amount: 4999, months: 12, interval: 'year', trialDays: 7, name: 'Claimclub membership (1 year)', env: 'STRIPE_PRICE_1Y' },
   '1w': { amount: 499, interval: 'week', trialDays: 3, name: 'Claimclub membership (weekly)', env: 'STRIPE_PRICE_1W' },
+  // Offer f (Nov 21 2026): $19.99 a month after a free 3-day trial.
+  '1mt': { amount: 1999, months: 1, interval: 'month', trialDays: 3, name: 'Claimclub membership (monthly)', env: 'STRIPE_PRICE_1MT' },
 };
-const TRIAL_FLOWS = { '1y': ['b', 'c', 'e'], '1w': ['d'] };
+const TRIAL_FLOWS = { '1y': ['b', 'c', 'e'], '1w': ['d'], '1mt': ['f'] };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {
