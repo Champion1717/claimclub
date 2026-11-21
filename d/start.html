@@ -520,6 +520,32 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
     </div>
   </sc-if>
 
+  <!-- offer G tiers page -->
+  <sc-if value="{{ isTiers }}" hint-placeholder-val="{{ false }}">
+    <div class="enter" style="display: flex; flex-direction: column; gap: 12px; padding: 4px 0; max-width: 560px; width: 100%; margin: 0 auto">
+      <div style="display: flex; flex-direction: column; gap: 10px"><h1 style="margin: 0; font-size: 30px; line-height: 1.12; font-weight: 800; letter-spacing: -1px; text-align: center">{{ tgH }}</h1><span style="font-size: 16px; line-height: 1.45; font-weight: 600; color: #5B6862; text-align: center">{{ tgSub }}</span></div>
+      <sc-for list="{{ tiers }}" as="t" hint-placeholder-count="3"><div role="radio" tabindex="0" aria-checked="{{ t.on }}" onClick="{{ t.pick }}" style="{{ t.card }}"><div style="{{ t.blk }}"><sc-if value="{{ t.isStd }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ t.icC }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2v3" />
+  <path d="M16 2v3" />
+  <rect x="3" y="3" width="18" height="18" rx="2" />
+  <path d="M3 9h18" />
+  <path d="M8 13h.01" />
+  <path d="M12 13h.01" />
+  <path d="M16 13h.01" />
+  <path d="M8 17h.01" />
+  <path d="M12 17h.01" />
+  <path d="M16 17h.01" /></svg></sc-if><sc-if value="{{ t.isFast }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ t.icC }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 14 4-4" />
+  <path d="M3.34 19a10 10 0 1 1 17.32 0" /></svg></sc-if><sc-if value="{{ t.isPri }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ t.icC }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09" />
+  <path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.4 22.4 0 0 1-4 2z" />
+  <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 .05 5 .05" /></svg></sc-if><b style="font-size: 22px; line-height: 1; letter-spacing: -.6px; margin-top: 3px">{{ t.num }}</b><span style="font-size: 9.5px; font-weight: 800; letter-spacing: .8px">{{ t.unit }}</span></div><div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 7px"><div style="display: flex; align-items: center; gap: 8px"><b style="font-size: 17px; letter-spacing: -.3px">{{ t.name }}</b><sc-if value="{{ t.hasTag }}" hint-placeholder-val="{{ false }}"><span style="{{ t.tagSt }}">{{ t.tag }}</span></sc-if><span style="flex: 1"></span><span style="display: flex; align-items: baseline; gap: 1px; white-space: nowrap"><b style="font-size: 19px; letter-spacing: -.6px">{{ t.price }}</b><span style="{{ t.perSt }}">{{ t.per }}</span></span><span style="{{ t.radio }}"><sc-if value="{{ t.on }}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span></div><sc-for list="{{ t.fl }}" as="f" hint-placeholder-count="3"><div style="{{ f.st }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="{{ f.c }}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 6 9 17l-5-5"></path></svg><span>{{ f.t }}</span></div></sc-for></div></div></sc-for>
+      <div role="checkbox" tabindex="0" aria-checked="{{ agreeAll }}" onClick="{{ toggleAgree }}" style="display: flex; gap: 10px; align-items: flex-start; text-align: left; cursor: pointer; padding: 2px 2px 4px"><span style="{{ agreeBox }}"><sc-if value="{{ agreeAll }}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg></sc-if></span><span style="font-size: 12px; line-height: 1.45; color: #43504A; font-weight: 600">{{ agreeTxt }}<a href="https://claimclub.io/authorization" target="_blank" rel="noopener" style="color: #12805C; text-decoration: underline">{{ agreeLinkT }}</a>.</span></div>
+      <sc-if value="{{ agreeBad }}" hint-placeholder-val="{{ false }}"><span role="alert" style="font-size: 12.5px; font-weight: 800; color: #D92D20; text-align: left; margin-top: -4px">{{ agreeErrT }}</span></sc-if>
+      <button onClick="{{ tgGo }}" style="height: 56px; width: 100%; flex: none; border-radius: 999px; background: #3DDC97; color: #0F3B2E; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 24px rgba(61,220,151,.35)"><span>{{ tgCta }}</span></button>
+      <span style="font-size: 12px; line-height: 1.45; color: #5B6862; font-weight: 600; text-align: center">{{ tgFine }}</span>
+      <div style="display: flex; justify-content: center; gap: 22px; font-size: 12px; font-weight: 600; color: #43504A"><a href="https://claimclub.io/terms" target="_blank" rel="noopener" style="color: inherit">{{ L.termsW }}</a><a href="https://claimclub.io/privacy" target="_blank" rel="noopener" style="color: inherit">{{ L.privacyW }}</a></div>
+    </div>
+  </sc-if>
+
   <!-- MEMBERSHIP PLANS -->
   <!-- plan page, draft 1 -->
   <sc-if value="{{ isPlans }}" hint-placeholder-val="{{ false }}">
@@ -681,7 +707,7 @@ button:not(:disabled):active,[role=button]:active,a[href][style*="border-radius"
 class Component extends DCLogic {
   constructor(props) {
     super(props);
-    this.state = { flow: 'a', bankOn: true, step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, agreeAll: false, agreeErr: false, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
+    this.state = { flow: 'a', bankOn: true, step: 0, st: null, a: {}, filed: {}, bump: 0, email: '', lang: 'en', ai: 0, signed: {}, skipped: {}, consent: {}, sawAll: false, allQ: '', saOpen: false, saConsent: false, saSigned: false, agreeAll: false, agreeErr: false, tier: 'fast', stdIds: null, plan: '1m', pi: 0, paid: '', bankDone: false, buying: '', payState: '', card: '', exp: '', cvc: '', czip: '',
       p: { first: '', middle: '', last: '', street: '', apt: '', city: '', zip: '', phone: '', dob: '' } };
     let fid = props && props.offer;
     try { if (!fid && typeof location !== 'undefined' && location.search) fid = new URLSearchParams(location.search).get('offer'); } catch (e) {}
@@ -883,6 +909,7 @@ class Component extends DCLogic {
   }
   authList() { return this.matched().filter(m => m.mode === 'here'); }
   componentDidMount() {
+    fetch('/api/filing?standard=1').then(r => r.json()).then(j => { if (j && Array.isArray(j.ids)) this.setState({ stdIds: j.ids }); }).catch(() => {});
     setTimeout(() => this.track(), 0);
     // Bank connections are switched on and off in /admin > Settings. Off until the live config says otherwise.
     if (this.isLiveHost() && typeof fetch !== 'undefined') {
@@ -925,8 +952,8 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email'].concat(this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email'].concat(this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['details', 'tiers', 'verify'] : ['details', 'tiers', 'checkout', 'verify']) : this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['details', 'tiers', 'verify'] : ['details', 'tiers', 'checkout', 'verify']) : this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
@@ -1000,7 +1027,7 @@ class Component extends DCLogic {
     try { fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body, keepalive: true }).catch(() => {}); } catch (e) {}
   }
   // Pricing test (Nov 16 2026): which page a payment came from, so live.js can return to it.
-  offerStep(kind) { return this.isTrialFlow() ? 'trial' : (kind === 'member' ? 'plans' : 'pay'); }
+  offerStep(kind) { return this.isTierFlow() ? 'tiers' : this.isTrialFlow() ? 'trial' : (kind === 'member' ? 'plans' : 'pay'); }
   // Offer test (Nov 21 2026). Every offer that is switched on in /admin > Settings > Offer test can be shown.
   //   a: choice page ($7.99 first month membership or $49.99 filing fee)    b: $2 for 7 days, then $49.99 a year
   //   c: free for 7 days, then $49.99 a year                                  d: free for 3 days, then $4.99 a week
@@ -1015,18 +1042,20 @@ class Component extends DCLogic {
   }
   isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e' || f === 'f'; }
   offer() { return this.offers()[this.state.flow] || this.offers().b; }
+  // Offer G (Nov 21 2026): Standard (free), Fast $15/mo, Priority $30/mo on the T3 plan page, charged today.
+  isTierFlow(f) { return (f || this.state.flow) === 'g'; }
   // Trial end date for the current offer: 7 days (offers b, c) or 3 days (offer d) from today.
   trialEnd(es) { const d = new Date(Date.now() + this.offer().days * 864e5); try { return d.toLocaleDateString(es ? 'es-US' : 'en-US', { month: es ? 'long' : 'short', day: 'numeric', year: 'numeric' }); } catch (e) { return d.toDateString(); } }
   // New visitors get one of the switched-on offers at random, kept for a year in the cc_offer cookie.
   // A cookie for an offer that has since been switched off is replaced. ?flow=a|b|c|d forces one (for testing).
   pickFlow(on, final, cur) {
-    const ALL = ['a', 'b', 'c', 'd', 'e', 'f'];
+    const ALL = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
     on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['f'];
     let f = '';
     try {
       const q = new URLSearchParams(location.search).get('flow');
       if (ALL.includes(q)) f = q;
-      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdef])\b/);
+      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdefg])\b/);
       if (!f && m && on.includes(m[1])) f = m[1];
       if (!f && on.includes(cur)) f = cur;
       if (!f) { const r = new Uint8Array(1); crypto.getRandomValues(r); f = on[r[0] % on.length]; }
@@ -1034,10 +1063,10 @@ class Component extends DCLogic {
     } catch (e) { f = f || on[0]; }
     return f;
   }
-  setFlow(f) { if (f === this.state.flow) return; this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w', '1mt'].includes(this.state.plan) ? '1m' : this.state.plan }); }
+  setFlow(f) { if (f === this.state.flow) return; if (f === 'g') { this.setState({ flow: 'g', tier: 'fast', plan: 'fast' }); return; } this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w', '1mt', 'fast', 'pri'].includes(this.state.plan) ? '1m' : this.state.plan }); }
   planInfo(id, es) {
     const O = this.offer();
-    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1mt': { first: '$0', full: '$19.99', every: es ? 'cada mes' : 'every month' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
+    return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1mt': { first: '$0', full: '$19.99', every: es ? 'cada mes' : 'every month' }, std: { first: '$0', full: '$0', every: '' }, fast: { first: '$15', full: '$15', every: es ? 'cada mes' : 'every month' }, pri: { first: '$30', full: '$30', every: es ? 'cada mes' : 'every month' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
   }
   renderVals() {
     const s = this.state, K = this.cats(), S = this.skin(), Q = this.quiz(), name = this.stepName();
@@ -1246,8 +1275,8 @@ class Component extends DCLogic {
       billCount: plural(signedCount || AL.length, 'claim', 'claims', 'reclamo', 'reclamos'),
       // Pay page receipt (Nov 15): claims with payouts, expected earnings, today's fee, and that the member keeps 100%.
       ...(() => {
-        const its = (signedCount ? AL.filter(m => s.signed[m.id]) : AL), n = its.length || 1, mem = name === 'plans' || this.isTrialFlow(), p = this.planInfo(s.plan, es), tEnd = this.trialEnd(es), O = this.offer(), trialP = this.isTrialFlow() && (s.plan === '1y' || s.plan === '1w' || s.plan === '1mt');
-        const firstW = trialP ? (O.todayN ? (es ? 'prueba de ' + O.days + ' días' : O.days + '-day trial') : (es ? 'prueba gratis de ' + O.days + ' días' : 'free ' + O.days + '-day trial')) : { '1m': es ? 'primer mes' : 'first month', '3m': es ? 'primeros 3 meses' : 'first 3 months', '6m': es ? 'primeros 6 meses' : 'first 6 months' }[s.plan] || (es ? 'primer mes' : 'first month');
+        const its = (signedCount ? AL.filter(m => s.signed[m.id]) : AL), n = its.length || 1, mem = name === 'plans' || this.isTrialFlow() || this.isTierFlow(), p = this.planInfo(s.plan, es), tEnd = this.trialEnd(es), O = this.offer(), trialP = this.isTrialFlow() && (s.plan === '1y' || s.plan === '1w' || s.plan === '1mt');
+        const firstW = trialP ? (O.todayN ? (es ? 'prueba de ' + O.days + ' días' : O.days + '-day trial') : (es ? 'prueba gratis de ' + O.days + ' días' : 'free ' + O.days + '-day trial')) : { std: 'Standard', fast: 'Fast', pri: 'Priority', '1m': es ? 'primer mes' : 'first month', '3m': es ? 'primeros 3 meses' : 'first 3 months', '6m': es ? 'primeros 6 meses' : 'first 6 months' }[s.plan] || (es ? 'primer mes' : 'first month');
         const thenW = trialP ? (es ? 'Luego ' + O.full + ' por ' + O.unitEs + ' desde el ' + tEnd : 'Then ' + O.full + ' a ' + O.unit + ' from ' + tEnd) : es ? 'Luego ' + p.full + ' ' + p.every : 'Then ' + p.full + ' ' + ({ '1m': 'a month', '3m': 'every 3 months', '6m': 'every 6 months' }[s.plan] || 'a month');
         const claimsW = plural(n, 'claim', 'claims', 'reclamo', 'reclamos');
         return {
@@ -1266,11 +1295,11 @@ class Component extends DCLogic {
           rcHead: es ? 'TU RECIBO' : 'YOUR RECEIPT', rcHeadD: es ? 'TU RECIBO DE RECLAMOS' : 'YOUR CLAIMS RECEIPT', rcEarn: es ? 'Ganancias esperadas' : 'Expected earnings',
           rcFrom: es ? 'De ' + plural(n, 'acuerdo', 'acuerdos', 'acuerdo', 'acuerdos') + ' para los que calificas. Te pagan directo.' : 'From ' + (n === 1 ? '1 settlement' : n + ' settlements') + ' you qualify for. Paid straight to you.',
           rcShare: es ? 'Tu parte de cada pago' : 'Your share of every payout', pickPlanH: es ? 'Elige tu plan' : 'Pick your plan',
-          asideReceipt: ['plans', 'feepay', 'checkout', 'trial'].includes(name), notReceipt: !['plans', 'feepay', 'checkout', 'trial'].includes(name),
+          asideReceipt: ['plans', 'feepay', 'checkout', 'trial', 'tiers'].includes(name), notReceipt: !['plans', 'feepay', 'checkout', 'trial', 'tiers'].includes(name),
           // what the payment sheet in live.js shows
           sheetInfo: { total: noFigure ? '' : this.money(total), count: claimsW, es, fee: '$49.99', feeSub: es ? 'Tarifa de presentación · única, sin suscripción' : 'Filing fee · one time, no subscription', mem: p.first, memSub: trialP ? (es ? (O.todayN ? 'Prueba de ' : 'Prueba gratis de ') + O.days + ' días · luego ' + O.full + ' por ' + O.unitEs : (O.todayN ? '' : 'Free ') + O.days + '-day trial · then ' + O.full + ' a ' + O.unit) : es ? 'Membresía · ' + thenW.toLowerCase() : 'Membership · ' + thenW.toLowerCase(),
             // Free trials: the sheet button says Start my free trial instead of Pay $0.
-            payT: trialP && !O.todayN ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : '', todayN: trialP ? O.todayN : null, ltv: trialP ? (O.plan === '1w' ? 39.92 : O.plan === '1mt' ? 59.97 : O.fullN) : null},
+            payT: trialP && !O.todayN ? (es ? 'Empezar mi prueba gratis' : 'Start my free trial') : this.isTierFlow() ? (es ? 'Empezar ' : 'Start ') + (s.plan === 'pri' ? 'Priority' : 'Fast') + ' · ' + p.first : '', todayN: trialP ? O.todayN : this.isTierFlow() ? (s.plan === 'pri' ? 30 : 15) : null, ltv: trialP ? (O.plan === '1w' ? 39.92 : O.plan === '1mt' ? 59.97 : O.fullN) : this.isTierFlow() ? (s.plan === 'pri' ? 90 : 45) : null},
         };
       })(),
       estBackLabel: (es ? 'Hasta ' : 'Up to ') + this.money((signedCount ? AL.filter(m => s.signed[m.id]) : AL).filter(m => m.cat !== 'arb').reduce((t, m) => t + val(m), 0)),
@@ -1314,6 +1343,8 @@ class Component extends DCLogic {
             const per = es ? O.full + ' por ' + O.unitEs : O.full + ' a ' + O.unit;
             const thenL = wk ? (es ? 'Luego ' + per + '. Cancela cuando quieras.' : 'Then ' + per + '. Cancel anytime.') : (es ? 'Luego ' + per + ', solo ' + O.month + ' al mes. Cancela cuando quieras.' : 'Then ' + per + ', just ' + O.month + ' a month. Cancel anytime.');
             return {
+              // Offer G plan page (T3 final, Nov 21 2026). Standard's claims come from /api/filing?standard=1 (bot-fileable, nationwide).
+              isTiers: name === 'tiers', ...this.tierVals(AL, openAllN, es),
               isTrial: name === 'trial', trPerks: P.map(([t]) => ({ t })),
               trH: free ? (es ? 'Presenta ' + nW + ' gratis' : 'File ' + nW + ' free') : (es ? 'Presenta ' + nW + ' por ' + O.today : 'File ' + nW + ' for ' + O.today),
               trSub: free ? (es ? 'Prueba la membresía gratis ' + d + ' días. Empezamos a presentar hoy.' : 'Try membership free for ' + d + ' days. We start filing today.') : (es ? 'Prueba la membresía ' + d + ' días. Empezamos a presentar hoy.' : 'Try membership for ' + d + ' days. We start filing today.'),
@@ -1460,6 +1491,45 @@ class Component extends DCLogic {
   }
   // After payment: details (name, address) then the claim forms to sign.
   toSign() { this.setState({ pi: 0, step: this.afterPayStep() }); if (this.stepName() === 'verify') this.sendCode(); }
+  tierVals(AL, allN, es) {
+    const s = this.state, mine = AL.length, ids = s.stdIds, set = new Set(ids || []);
+    const stdN = ids ? ids.length : 55, stdMine = ids ? AL.filter(m => set.has(m.id)).length : 0;
+    const natN = this.data().filter(d => !d.st && this.daysLeft(d.dl) > 0).length;
+    const W = (en, sp) => es ? sp : en, sel = s.tier || 'fast';
+    const L = [
+      { k: 'std', name: 'Standard', price: W('Free', 'Gratis'), per: '', num: '30', unit: W('DAYS', 'DÍAS'), tag: '', feats: [W('Only ', 'Solo ') + stdN + W(' claims', ' reclamos'), ids ? stdMine + W(' of your ', ' de tus ') + mine + W(' claims', ' reclamos') : W('Some of your claims', 'Algunos de tus reclamos'), W('Track claims in your dashboard', 'Sigue tus reclamos en tu panel')] },
+      { k: 'fast', name: 'Fast', price: '$15', per: W('/mo', '/mes'), num: '3', unit: W('DAYS', 'DÍAS'), tag: W('MOST POPULAR', 'MÁS POPULAR'), feats: [W('All ' + natN + ' nationwide claims', 'Los ' + natN + ' reclamos nacionales'), W('All ' + mine + ' of your claims', 'Tus ' + mine + ' reclamos'), W('Reminders on new claims', 'Avisos de nuevos reclamos'), W('Notified when you get paid', 'Aviso cuando te paguen')] },
+      { k: 'pri', name: 'Priority', price: '$30', per: W('/mo', '/mes'), num: '24', unit: W('HOURS', 'HORAS'), tag: W('FASTEST', 'MÁS RÁPIDO'), feats: [W('All ' + allN + ' claims, incl. local', 'Los ' + allN + ' reclamos, incluso locales'), W('New claims filed for you', 'Nuevos reclamos presentados por ti'), W('First look at new claims', 'Primero en ver nuevos reclamos')].concat(s.mbOn !== false ? [W('Claim refunds', 'Reclamar reembolsos'), W('Subscription Manager', 'Gestor de suscripciones')] : []) },
+    ];
+    const tiers = L.map(t => {
+      const on = t.k === sel, dark = t.k === 'pri';
+      const card = 'display: flex; gap: 12px; align-items: stretch; padding: 12px; border-radius: 18px; text-align: left; cursor: pointer; ' + (dark ? 'background: #0F3B2E; color: #FFFFFF; ' : 'background: #FFFFFF; color: #0A0F0D; ') + 'box-shadow: ' + (on ? 'inset 0 0 0 2px #3DDC97, 0 12px 26px rgba(18,128,92,.16)' : dark ? '0 12px 26px rgba(10,15,13,.18)' : 'inset 0 0 0 1px #DDE5E0');
+      const blk = 'width: 76px; flex: none; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; ' + (on ? 'background: #3DDC97; color: #0F3B2E' : dark ? 'background: rgba(61,220,151,.16); color: #FFFFFF' : 'background: #F1F4F2; color: #0A0F0D');
+      const ic = on ? '#0F3B2E' : dark ? '#3DDC97' : '#5B6862';
+      return Object.assign({}, t, { on, off: !on, dark, card, blk, icC: ic, isStd: t.k === 'std', isFast: t.k === 'fast', isPri: t.k === 'pri', hasTag: !!t.tag,
+        tagSt: 'font-size: 10.5px; font-weight: 800; letter-spacing: .4px; padding: 3px 8px; border-radius: 99px; white-space: nowrap; ' + (t.k === 'fast' ? 'background: #3DDC97; color: #0F3B2E' : 'background: rgba(61,220,151,.18); color: #3DDC97'),
+        radio: 'width: 20px; height: 20px; flex: none; border-radius: 99px; display: flex; align-items: center; justify-content: center; ' + (on ? 'background: #12805C' : 'box-shadow: inset 0 0 0 2px ' + (dark ? '#4A5A53' : '#C9D3CD')),
+        perSt: 'font-size: 12px; font-weight: 700; color: ' + (dark ? '#9FC3B4' : '#5B6862'),
+        fl: t.feats.map(x => ({ t: x, st: 'display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 650; line-height: 1.3; color: ' + (dark ? '#E6EEEA' : '#0A0F0D'), c: dark ? '#3DDC97' : '#12805C' })),
+        pick: () => this.setState({ tier: t.k, plan: t.k, agreeErr: false }) });
+    });
+    const cta = sel === 'std' ? W('Start free', 'Empezar gratis') : W('Start ', 'Empezar ') + (sel === 'pri' ? 'Priority · $30' : 'Fast · $15') + W(' today', ' hoy');
+    const fine = sel === 'std' ? W('Free. No card needed. Payouts take 6 to 12 months on every plan.', 'Gratis. Sin tarjeta. Los pagos tardan de 6 a 12 meses en todos los planes.')
+      : W((sel === 'pri' ? '$30' : '$15') + ' today, renews monthly. Cancel anytime. Payouts take 6 to 12 months on every plan.', (sel === 'pri' ? '$30' : '$15') + ' hoy, se renueva cada mes. Cancela cuando quieras. Los pagos tardan de 6 a 12 meses en todos los planes.');
+    return { tiers, tgH: W('How fast should we file?', '¿Qué tan rápido presentamos?'), tgSub: W('How fast we file your claims after you join.', 'Qué tan rápido presentamos tus reclamos al unirte.'), tgCta: cta, tgFine: fine,
+      tgGo: () => this.tierGo() };
+  }
+  // Offer G: the plan page's button. Standard is free: no payment, straight to the email code (membership made after sign-in).
+  tierGo() {
+    if (!this.agreeSign()) return;
+    if (this.state.tier === 'std') {
+      try { sessionStorage.setItem('cc_std', '1'); } catch (e) {}
+      this.state.paid = 'std'; this.state.plan = 'std'; this.setState({ paid: 'std', buying: 'std', plan: 'std', step: this.steps().indexOf('verify') }); this.sendCode(); this.saveForApp();
+      return;
+    }
+    try { sessionStorage.removeItem('cc_std'); } catch (e) {}
+    this.setState({ buying: 'member', payState: '', step: this.steps().indexOf('checkout') });
+  }
   afterPayStep() { const S = this.steps(); return Math.min(S.length - 1, S.indexOf('checkout') + 1); }
   // Nov 21 2026: one blanket authorization on the trial page replaces signing each claim form. Returns false (and shows the error) until ticked.
   agreeSign() {
@@ -1473,7 +1543,7 @@ class Component extends DCLogic {
   saveForApp() {
     try {
       const ml = this.matched(), p = this.state.p;
-      const data = { ids: ml.map(m => m.id), signed: Object.keys(this.state.signed).filter(k => this.state.signed[k]), bank: !!this.state.bankDone, plan: this.state.paid === 'member' ? this.state.plan : '', paid: this.state.paid,
+      const data = { ids: ml.map(m => m.id), signed: Object.keys(this.state.signed).filter(k => this.state.signed[k]), bank: !!this.state.bankDone, plan: this.state.paid === 'member' || this.state.paid === 'std' ? this.state.plan : '', paid: this.state.paid,
         p: { name: [p.first, p.middle, p.last].filter(Boolean).join(' '), email: this.state.email, phone: p.phone, street: [p.street, p.apt].filter(Boolean).join(', '), city: p.city, st: this.state.st && this.state.st !== 'Other' ? this.state.st : '', zip: p.zip, dob: p.dob } };
       localStorage.setItem('claimclub_session', JSON.stringify(data));
       localStorage.setItem('claimclub_tour', '1');

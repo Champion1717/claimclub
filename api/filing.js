@@ -11,6 +11,11 @@ module.exports = async (req, res) => {
   const q = req.query || Object.fromEntries(new URL(req.url, 'http://x').searchParams);
   res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=600');
   try {
+    if (q.standard) {
+      // Offer G: the claims the free Standard plan covers (bot-fileable, nationwide, open).
+      const ids = await require('./_tiers').standardIds();
+      return send(res, 200, { ids, count: ids.length });
+    }
     if (q.catalog) {
       const { data, error } = await db().from('catalog_extra').select('id, data, is_new, hidden');
       if (error) throw error;

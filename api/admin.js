@@ -5,6 +5,7 @@ const { sendClaimEmail, sendNotice, COPY } = require('./_email');
 const { bot, botKeyOk, profileFor, botSettings, PROFILES, captchaFor, scansFor } = require('./_bot');
 const { getSpec, getSpecs } = require('./_spec');
 
+const { tierFor, paidEmails, TIERS, tierOf, fileBlock } = require('./_tiers');
 const STATUSES = ['ready', 'requested', 'needs_info', 'filed', 'review', 'approved', 'paid', 'denied', 'removed', 'auto', 'self'];
 const SPEC_KEYS = ['type', 'filer', 'form_url', 'admin', 'deadline', 'minutes', 'about', 'who', 'qualify', 'notice', 'needs', 'why_self', 'gather', 'steps', 'form_map', 'va_notes', 'member_note', 'start_note'];
 const money = (c) => '$' + (Math.round(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -153,18 +154,29 @@ const actions = {
     const { data: claims, error } = await sb.from('claims').select('*').in('status', want).order('requested_at', { ascending: true, nullsFirst: false }).limit(500);
     if (error) throw error;
     const ids = [...new Set((claims || []).map((c) => c.user_id))];
-    const [{ data: profiles }, { data: auths }] = ids.length ? await Promise.all([
+    const [{ data: profiles }, { data: auths }, { data: mems }] = ids.length ? await Promise.all([
       sb.from('profiles').select('id, email, name, phone, dob, address, state, pay_default, payout_handles').in('id', ids),
-      sb.from('authorizations').select('id, user_id, settlement_id, created_at').in('user_id', ids)
-    ]) : [{ data: [] }, { data: [] }];
+      sb.from('authorizations').select('id, user_id, settlement_id, created_at').in('user_id', ids),
+      sb.from('memberships').select('user_id, kind, plan, status').in('user_id', ids)
+    ]) : [{ data: [] }, { data: [] }, { data: [] }];
+    // Offer G tiers (Nov 21): file-by time from the plan (Standard 30 days, Fast 3 days, Priority 24 hours), Priority first.
+    const TIER = {}; (mems || []).forEach((m) => { TIER[m.user_id] = tierOf(m); });
     const sids = [...new Set((claims || []).map((c) => c.settlement_id))];
     const specs = await getSpecs(sids);
     const cids = (claims || []).map((c) => c.id);
     const { data: runs } = cids.length ? await sb.from('bot_runs').select('id, claim_id, status, mode, error, confirmation, started_at').in('claim_id', cids).order('started_at', { ascending: false }) : { data: [] };
     const RUN = {}; (runs || []).forEach((r) => { if (!RUN[r.claim_id]) RUN[r.claim_id] = r; });
     const SCAN = await scansFor(sids);
+    const RANK = { pri: 0, all: 1, fast: 2, fee: 3, std: 4 };
+    const out = [];
+    for (const c of claims || []) {
+      const t = TIER[c.user_id] || null, T = TIERS[t], since = Date.parse(c.requested_at || c.updated_at || c.created_at) || Date.now();
+      out.push(Object.assign({}, c, { tier: t, tierName: T ? T.name : t === 'all' ? 'Member' : t === 'fee' ? 'Filing fee' : '', dueAt: T ? new Date(since + T.hours * 3600e3).toISOString() : null,
+        notInPlan: t ? await fileBlock(t, c.settlement_id) : '' }));
+    }
+    out.sort((a, b) => ((RANK[a.tier] ?? 5) - (RANK[b.tier] ?? 5)) || ((Date.parse(a.dueAt || '') || 9e15) - (Date.parse(b.dueAt || '') || 9e15)));
     return {
-      claims: (claims || []).map((c) => Object.assign({}, c, {
+      claims: out.map((c) => Object.assign({}, c, {
         spec: specs[c.settlement_id] || null, bot: RUN[c.id] || null, botProfile: profileFor(specs[c.settlement_id]), captcha: captchaFor(SCAN[c.settlement_id], c.answers),
         profile: (profiles || []).find((p) => p.id === c.user_id) || null,
         authorization: (auths || []).find((a) => a.user_id === c.user_id && a.settlement_id === c.settlement_id) || null
@@ -295,7 +307,9 @@ const actions = {
     // The status trigger wrote a claim_events row; add the note and who did it.
     const { data: ev } = await sb.from('claim_events').select('id').eq('claim_id', id).order('created_at', { ascending: false }).limit(1).maybeSingle();
     let mail = { skipped: true };
-    if (b.notify !== false && status !== cur.status) {
+    // Offer G: payout emails are a Fast and Priority perk; Standard members see the payout in their dashboard only.
+    const noPaidMail = status === 'paid' && !paidEmails(await tierFor(cur.user_id));
+    if (b.notify !== false && status !== cur.status && !noPaidMail) {
       const { data: prof } = await sb.from('profiles').select('email, email_receipts, pay_default').eq('id', cur.user_id).maybeSingle();
       if (prof && prof.email && prof.email_receipts !== false) {
         mail = await sendClaimEmail({ to: prof.email, userId: cur.user_id, status, title: b.title || cur.settlement_id, ref: patch.claim_ref || cur.claim_ref, note: patch.admin_note, amount: row && row.paid_amount_cents ? money(row.paid_amount_cents) : '', method: prof.pay_default });

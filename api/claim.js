@@ -17,6 +17,7 @@ const { sendClaimEmail } = require('./_email');
 const { ipOf } = require('./_limit');
 const { getSpec } = require('./_spec');
 
+const { tierFor, fileBlock } = require('./_tiers');
 const BUCKET = 'claim-files';
 const VERSION = '2026-11-14';
 const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
@@ -69,6 +70,11 @@ module.exports = async (req, res) => {
     if (!sid) return send(res, 400, { error: 'Missing settlement' });
     const { data: cur } = await sb.from('claims').select('*').eq('user_id', uid).eq('settlement_id', sid).maybeSingle();
 
+    if (b.action === 'file' || b.action === 'start') {
+      // Offer G tiers: Standard files only bot-fileable claims, Fast no local ones (api/_tiers.js).
+      const why = await fileBlock(await tierFor(uid), sid);
+      if (why) return send(res, 403, { error: why, upgrade: true });
+    }
     if (b.action === 'file') {
       if (cur && !OPEN.includes(cur.status)) return send(res, 200, { claim: cur, already: true });
       // A settlement whose form requires the notice codes (Claim Number, PIN, Notice ID...) cannot be filed without them.

@@ -26,14 +26,14 @@ module.exports = async (req, res) => {
   const { sendNotice } = require('./_email');
   const { sendMetaEvent } = require('./_meta');
   const { flowFor, trialEndFor, renewFor, TRIAL_DAYS } = require('./_offers');
-  const LTV = (plan, flow) => (plan === '1w' ? 4.99 * 8 : plan === '1mt' ? 19.99 * 3 : renewFor(plan, flow));
+  const LTV = (plan, flow) => (plan === '1w' ? 4.99 * 8 : plan === '1mt' ? 19.99 * 3 : plan === 'fast' ? 45 : plan === 'pri' ? 90 : renewFor(plan, flow));
   try {
     if (event.type === 'checkout.session.completed') {
       const s = event.data.object, md = s.metadata || {}, email = (s.customer_details && s.customer_details.email) || s.customer_email || '';
       console.log('PAID', s.id, email, md.kind, md.plan, md.flow);
       // Meta Purchase (server copy) = a trial started (offers b, c, d). Value is what was charged today ($2 or $0).
       // Same event_id as the browser pixel, so Meta dedupes the two.
-      if (TRIAL_DAYS[md.plan] && s.mode === 'subscription') {
+      if ((TRIAL_DAYS[md.plan] || ['fast', 'pri'].includes(md.plan)) && s.mode === 'subscription') {
         await sendMetaEvent({ eventName: 'Purchase', eventId: s.id, eventTime: s.created, value: (s.amount_total || 0) / 100, extraCustom: { predicted_ltv: LTV(md.plan, md.flow) },
           email, phone: s.customer_details && s.customer_details.phone, meta: md });
       }

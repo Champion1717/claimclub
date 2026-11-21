@@ -22,9 +22,9 @@
   function uuid(){try{return crypto.randomUUID()}catch(e){return 'ic-'+Date.now()+'-'+Math.random().toString(36).slice(2)}}
   function metaAttr(){return{fbp:ck('_fbp'),fbc:fbc(),gpc:navigator.globalPrivacyControl?1:0,source_url:location.href}}
   // Offer test (Nov 21 2026): trial plans are 1y (offers b, c) and 1w (offer d). Value = what is charged today ($2 or $0).
-  function trialPlan(c){return c.state.plan==='1y'||c.state.plan==='1w'||c.state.plan==='1mt'}
-  function todayN(c){var o=c.offer?c.offer():null;return o?o.todayN:2}
-  function ltvN(c){if(c.state.plan==='1w')return 39.92;if(c.state.plan==='1mt')return 59.97;var o=c.offer?c.offer():null;return o&&o.plan==='1y'&&o.fullN?o.fullN:49.99}
+  function trialPlan(c){var p=c.state.plan;return p==='1y'||p==='1w'||p==='1mt'||p==='fast'||p==='pri'}
+  function todayN(c){if(c.state.plan==='fast')return 15;if(c.state.plan==='pri')return 30;var o=c.offer?c.offer():null;return o?o.todayN:2}
+  function ltvN(c){if(c.state.plan==='fast')return 45;if(c.state.plan==='pri')return 90;if(c.state.plan==='1w')return 39.92;if(c.state.plan==='1mt')return 59.97;var o=c.offer?c.offer():null;return o&&o.plan==='1y'&&o.fullN?o.fullN:49.99}
   function metaPurchase(c,kind,sid){
     if(!sid||kind!=='member'||!trialPlan(c)||!fbOk())return;
     try{if(sessionStorage.getItem('st_'+sid))return;sessionStorage.setItem('st_'+sid,'1')}catch(e){}
@@ -264,8 +264,9 @@
       return sb().then(function(c){return c.auth.verifyOtp({email:email,token:code,type:'email'})}).then(function(r){
         if(r.error||!r.data||!r.data.session)return {ok:false};
         // attach the purchase they just made to the new account (membership row), quietly
-        var body={action:'link'};
-        if(TK){var tk='fee',tp='1m';try{tk=sessionStorage.getItem('cc_test_kind')||'fee';tp=sessionStorage.getItem('cc_test_plan')||'1m'}catch(e){}body={action:'test',key:TK,kind:tk,plan:tp}}
+        var body={action:'link'},std=false;try{std=sessionStorage.getItem('cc_std')==='1'}catch(e){}
+        if(std){body={action:'standard'};try{if(fbOk())fbq('track','CompleteRegistration',{value:0,currency:'USD',content_name:'standard'})}catch(e){}}
+        else if(TK){var tk='fee',tp='1m';try{tk=sessionStorage.getItem('cc_test_kind')||'fee';tp=sessionStorage.getItem('cc_test_plan')||'1m'}catch(e){}body={action:'test',key:TK,kind:tk,plan:tp}}
         return fetch('/api/membership',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+r.data.session.access_token},body:JSON.stringify(body)}).catch(function(){}).then(function(){return {ok:true}});
       });
     }
@@ -312,6 +313,8 @@
       v.payFee=function(){if(TK)fakePay(c,'fee');else sheet(c,'fee',info)};
       v.subscribe=function(){if(TK)fakePay(c,'member');else sheet(c,'member',info)};
       v.trGo=function(){if(c.agreeSign&&!c.agreeSign())return;if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
+      // Offer G (Nov 21): Standard is free (no sheet); Fast and Priority open the payment sheet, charged today.
+      v.tgGo=function(){if(c.state.tier==='std'){c.tierGo();return}if(c.agreeSign&&!c.agreeSign())return;try{sessionStorage.removeItem('cc_std')}catch(e){}if(fbOk()&&!TK)fbq('track','InitiateCheckout',{value:todayN(c),currency:'USD'},{eventID:uuid()});v.subscribe()};
       v.payNow=function(){go(c,c.state.buying||'fee')};
       v.payCard=v.payNow;
     }

@@ -4,8 +4,9 @@ const { db, userFrom, readJson, send } = require('./_db');
 const P = require('./_plaid');
 
 async function isMember(uid) {
-  const { data } = await db().from('memberships').select('kind, status').eq('user_id', uid).maybeSingle();
-  return !!data && data.kind === 'member' && ['active', 'cancelling', 'test'].includes(data.status);
+  const { data } = await db().from('memberships').select('kind, status, plan').eq('user_id', uid).maybeSingle();
+  // Offer G: reviewing charges and subscriptions is Priority only (Standard and Fast do not include it).
+  return !!data && data.kind === 'member' && ['active', 'cancelling', 'test'].includes(data.status) && !['std', 'fast'].includes(data.plan);
 }
 // Anyone who paid (filing fee or membership) can connect a bank for payout alerts; reviewing charges and subscriptions is members only.
 async function hasPaid(uid) {

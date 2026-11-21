@@ -14,8 +14,10 @@ const OFFERS = {
   d: { name: 'Free for 3 days, then $4.99 a week', plan: '1w', trialDays: 3, first: 0, amount: 499, interval: 'week' },
   e: { name: 'Free for 3 days, then $49 a year', plan: '1y', trialDays: 3, first: 0, amount: 4900, interval: 'year' },
   f: { name: 'Free for 3 days, then $19.99 a month', plan: '1mt', trialDays: 3, first: 0, amount: 1999, interval: 'month' },
+  // Offer G (Nov 21 2026): three plans on one page (T3 design): Standard free, Fast $15/mo, Priority $30/mo, charged today, no trial.
+  g: { name: 'Plans: Standard free, Fast $15/mo, Priority $30/mo', plans: ['std', 'fast', 'pri'] },
 };
-const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true };
+const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false };
 const FLOWS = Object.keys(OFFERS);
 const isFlow = (f) => FLOWS.includes(f);
 // Trial plans: 1y (offers b and c) and 1w (offer d).
@@ -30,6 +32,7 @@ function flowFor(flow, plan) {
   if (isFlow(flow)) return flow;
   if (plan === '1w') return 'd';
   if (plan === '1mt') return 'f';
+  if (['std', 'fast', 'pri'].includes(plan)) return 'g';
   if (plan === '1y') return 'b';
   return 'a';
 }
