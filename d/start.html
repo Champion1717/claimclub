@@ -1062,7 +1062,9 @@ class Component extends DCLogic {
       if (ALL.includes(q)) f = q;
       const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdefg])\b/);
       if (!f && m && on.includes(m[1])) f = m[1];
-      if (!f && on.includes(cur)) f = cur;
+      // Keep the flow already shown only if the visitor is past the questions; otherwise a new visitor gets a fair random pick
+      // among the switched-on offers (the first call runs before /api/config answers, with only the default offer).
+      if (!f && on.includes(cur) && (!final || ['email', 'details', 'trial', 'tiers', 'checkout', 'verify', 'pay', 'plans'].includes(this.stepName && this.stepName()))) f = cur;
       if (!f) { const r = new Uint8Array(1); crypto.getRandomValues(r); f = on[r[0] % on.length]; }
       if (final) document.cookie = 'cc_offer=' + f + ';path=/;max-age=31536000;samesite=lax';
     } catch (e) { f = f || on[0]; }

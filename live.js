@@ -287,6 +287,11 @@
     return sbP;
   }
   function token(){return sb().then(function(c){return c.auth.getSession()}).then(function(r){var s=r&&r.data&&r.data.session;if(!s)throw new Error('Not signed in');return s.access_token})}
+  // Offer G: a free Standard signup has no purchase, so it is recorded as its own funnel step ('standard').
+  function trackStd(){
+    try{var sid=sessionStorage.getItem('cc_sid');if(!sid||DEMO||!/claimclub\.io$|vercel\.app$|^localhost$/.test(location.hostname))return;
+      fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},keepalive:true,body:JSON.stringify({sid:sid,step:'standard',device:innerWidth<820?'m':'d',flow:'g',source:sessionStorage.getItem('cc_src')||'other'})}).catch(function(){})}catch(e){}
+  }
   window.ccAuth={
     send:function(email){
       return sb().then(function(c){return c.auth.signInWithOtp({email:email,options:{shouldCreateUser:true}})})
@@ -297,7 +302,7 @@
         if(r.error||!r.data||!r.data.session)return {ok:false};
         // attach the purchase they just made to the new account (membership row), quietly
         var body={action:'link'},std=false;try{std=sessionStorage.getItem('cc_std')==='1'}catch(e){}
-        if(std){body={action:'standard'};try{if(fbOk())fbq('track','CompleteRegistration',{value:0,currency:'USD',content_name:'standard'})}catch(e){}}
+        if(std){body={action:'standard'};trackStd();try{if(fbOk())fbq('track','CompleteRegistration',{value:0,currency:'USD',content_name:'standard'})}catch(e){}}
         else if(TK){var tk='fee',tp='1m';try{tk=sessionStorage.getItem('cc_test_kind')||'fee';tp=sessionStorage.getItem('cc_test_plan')||'1m'}catch(e){}body={action:'test',key:TK,kind:tk,plan:tp}}
         return fetch('/api/membership',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+r.data.session.access_token},body:JSON.stringify(body)}).catch(function(){}).then(function(){return {ok:true}});
       });
