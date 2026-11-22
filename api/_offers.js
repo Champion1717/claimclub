@@ -8,7 +8,10 @@
 //   e: free 3-day trial, then $49 a year (Nov 21 2026)
 //   f: free 3-day trial, then $19.99 a month (Nov 21 2026)
 //   h: free 3-day trial, then $49.99 a year (Nov 22 2026)
-//   i: Flow C plans, demo page /demo/flow-c only, never in the rotation (Nov 22 2026): $19.99 a month (c1), $44.97 every 3 months (c3), $59.94 every 6 months (c6)
+// Flow C (the /check page, Nov 22 2026), its own A/B/C test:
+//   j: Flow C A, free 3-day trial, then $49.99 a year (plan 1y)
+//   k: Flow C B, free 3-day trial, then $19.99 a month (plan 1mt)
+//   i: Flow C C, plans $19.99 a month (c1), $44.97 every 3 months (c3), $59.94 every 6 months (c6), charged today
 const OFFERS = {
   a: { name: 'Choice page ($7.99 first month or $49.99 fee)' },
   b: { name: '$2 for 7 days, then $49.99 a year', plan: '1y', trialDays: 7, first: 200, amount: 4999, interval: 'year' },
@@ -19,9 +22,11 @@ const OFFERS = {
   h: { name: 'Free for 3 days, then $49.99 a year', plan: '1y', trialDays: 3, first: 0, amount: 4999, interval: 'year' },
   // Offer G (Nov 21 2026): three plans on one page (T3 design): Standard free, Fast $15/mo, Priority $30/mo, charged today, no trial.
   g: { name: 'Plans: Standard free, Fast $15/mo, Priority $30/mo', plans: ['std', 'fast', 'pri'] },
-  i: { name: 'Flow C plans: $19.99/mo, $44.97 per 3 months, $59.94 per 6 months', plans: ['c1', 'c3', 'c6'], demoOnly: true },
+  i: { name: 'Flow C · C: $19.99/mo, $44.97 per 3 months or $59.94 per 6 months', plans: ['c1', 'c3', 'c6'], flowC: 'C' },
+  j: { name: 'Flow C · A: free 3 days, then $49.99 a year', plan: '1y', trialDays: 3, first: 0, amount: 4999, interval: 'year', flowC: 'A' },
+  k: { name: 'Flow C · B: free 3 days, then $19.99 a month', plan: '1mt', trialDays: 3, first: 0, amount: 1999, interval: 'month', flowC: 'B' },
 };
-const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false, i: false };
+const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false, i: false, j: false, k: false };
 const FLOWS = Object.keys(OFFERS);
 const isFlow = (f) => FLOWS.includes(f);
 // Trial plans: 1y (offers b and c) and 1w (offer d).

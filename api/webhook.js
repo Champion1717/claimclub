@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
       console.log('PAID', s.id, email, md.kind, md.plan, md.flow);
       // Meta Purchase (server copy) = a trial started (offers b, c, d). Value is what was charged today ($2 or $0).
       // Same event_id as the browser pixel, so Meta dedupes the two.
-      if ((TRIAL_DAYS[md.plan] || ['fast', 'pri'].includes(md.plan)) && s.mode === 'subscription') {
+      if ((TRIAL_DAYS[md.plan] || ['fast', 'pri', 'c1', 'c3', 'c6'].includes(md.plan)) && s.mode === 'subscription') {
         await sendMetaEvent({ eventName: 'Purchase', eventId: s.id, eventTime: s.created, value: (s.amount_total || 0) / 100, extraCustom: { predicted_ltv: LTV(md.plan, md.flow) },
           email, phone: s.customer_details && s.customer_details.phone, meta: md });
       }
@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
       // The weekly plan's 3-day trial gets its reminder from the daily cron instead (api/find-cases.js), since Stripe sends this at signup.
       const sub = event.data.object, plan = sub.metadata && sub.metadata.plan;
       const { m, email } = await memberFor(sb, sub.id);
-      const short = plan === '1w' || plan === '1mt' || (m && ['e', 'h'].includes(m.flow)) || (sub.metadata && ['e', 'h'].includes(sub.metadata.flow));
+      const short = plan === '1w' || plan === '1mt' || (m && ['e', 'h', 'j'].includes(m.flow)) || (sub.metadata && ['e', 'h', 'j'].includes(sub.metadata.flow));
       if (!short && m && email && m.status === 'active' && !sub.cancel_at_period_end) {
         const end = new Date((sub.trial_end || 0) * 1000), day = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Los_Angeles' });
         await sendNotice({ to: email, userId: m.user_id, kind: 'trial_ending', c: {

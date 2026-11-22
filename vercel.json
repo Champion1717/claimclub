@@ -176,6 +176,16 @@
      "key": "v"
     }
    ]
+  },
+  {
+   "source": "/demo/flow-c",
+   "destination": "/check",
+   "permanent": false
+  },
+  {
+   "source": "/demo/flow-c/:step",
+   "destination": "/check/:step",
+   "permanent": false
   }
  ],
  "rewrites": [
@@ -406,12 +416,12 @@
    "destination": "/legal/delete-account.html"
   },
   {
-   "source": "/demo/flow-c",
-   "destination": "/demo/flow-c.html"
+   "source": "/check",
+   "destination": "/fc/start.html"
   },
   {
-   "source": "/demo/flow-c/:step",
-   "destination": "/demo/flow-c.html"
+   "source": "/check/:step",
+   "destination": "/fc/start.html"
   },
   {
    "source": "/terms",
@@ -534,6 +544,33 @@
   },
   {
    "source": "/demo/(.*)",
+   "headers": [
+    {
+     "key": "X-Robots-Tag",
+     "value": "noindex, nofollow"
+    }
+   ]
+  },
+  {
+   "source": "/fc/(.*)",
+   "headers": [
+    {
+     "key": "X-Robots-Tag",
+     "value": "noindex, nofollow"
+    }
+   ]
+  },
+  {
+   "source": "/check",
+   "headers": [
+    {
+     "key": "X-Robots-Tag",
+     "value": "noindex, nofollow"
+    }
+   ]
+  },
+  {
+   "source": "/check/(.*)",
    "headers": [
     {
      "key": "X-Robots-Tag",

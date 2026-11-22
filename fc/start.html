@@ -1,4 +1,4 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Claimclub · Flow C demo</title><link rel="icon" href="/favicon-48.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif&display=swap" rel="stylesheet"><style>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="robots" content="noindex,nofollow"><title>Claimclub · Check what you are owed</title><meta name="description" content="Answer a few questions to see which class action settlements you could be owed money from."><link rel="icon" href="/favicon-48.png"><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif&display=swap" rel="stylesheet"><style>
 .fc{--ink:#000000;--sec:#6E6E73;--sep:rgba(60,60,67,.14);--fill:#F2F2F7;--brand:#12805C;--dark:#0F3B2E;--mint:#3DDC97;
  font-family:-apple-system,BlinkMacSystemFont,Inter,"Helvetica Neue",Arial,sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;
  width:390px;height:844px;flex:none;border-radius:50px;overflow:hidden;position:relative;background:#FFFFFF;isolation:isolate;display:flex;flex-direction:column;box-shadow:0 0 0 11px #1C1C1E,0 0 0 12px #3A3A3C,0 30px 60px rgba(0,0,0,.25);user-select:none}
@@ -111,21 +111,54 @@ body.d .fcdk{width:100vw;height:100vh;border-radius:0;box-shadow:none}
 body.p{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#E9EEEB;overflow:hidden}body.p .fc{transform:scale(var(--sc,1));flex:none}
 .demoB{position:fixed;left:12px;bottom:12px;z-index:50;display:flex;gap:6px;align-items:center;padding:5px 6px 5px 12px;border-radius:99px;background:#0F3B2E;color:#FFF;font:800 11px/1 -apple-system,BlinkMacSystemFont,Inter,sans-serif;letter-spacing:.6px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px 10px;font-size:9.5px}body.m .demoB a{padding:3px 7px}
-.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style></head><body><div id="app"></div><div class="demoB">PREVIEW <a href="#" onclick="try{sessionStorage.removeItem('fc_prog')}catch(e){}location.href='/demo/flow-c'+location.search;return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),o=(q.get("offer")||"A").toUpperCase();if(!/^[ABC]$/.test(o))o="A";var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>/* Flow C production hooks (Nov 22 2026). Loaded only on /demo/flow-c, never on the canvas.
+.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style><script>(function(){try{if(sessionStorage.getItem("cc_src"))return;var q=new URLSearchParams(location.search),u=(q.get("utm_source")||"").toLowerCase(),m=(q.get("utm_medium")||"").toLowerCase(),h="";try{h=document.referrer?new URL(document.referrer).hostname:""}catch(e){}var s="other";if(q.get("fbclid")||/^(meta|facebook|fb|instagram|ig)$/.test(u)||/(^|\.)(facebook|instagram)\.com$/.test(h))s="meta";else if(q.get("gclid")||q.get("gbraid")||q.get("wbraid")||(u==="google"&&/cpc|paid|ads/.test(m)))s="google_ads";else if(/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave)\./.test(h)&&!/mail\./.test(h))s="organic";sessionStorage.setItem("cc_src",s)}catch(e){}})()</script><!-- Meta Pixel Code (skipped when the browser sends Global Privacy Control, on ?offer= links, and on /claim/<id> links for health settlements) -->
+<script>if(!navigator.globalPrivacyControl&&!/[?&]demo=/.test(location.search)&&!(function(){try{return sessionStorage.getItem('cc_demo')==='1'}catch(e){return false}})()&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '888237691005202');
+fbq('track', 'PageView');
+}</script>
+<noscript><img height="1" width="1" style="display:none"
+src="https://www.facebook.com/tr?id=888237691005202&ev=PageView&noscript=1"
+/></noscript>
+<!-- End Meta Pixel Code -->
+<!-- Google Ads tag (AW-18562196705; same skip rules as the Meta Pixel) -->
+<script>if(!navigator.globalPrivacyControl&&!/[?&]demo=/.test(location.search)&&!(function(){try{return sessionStorage.getItem('cc_demo')==='1'}catch(e){return false}})()&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
+(function(d){var t=d.createElement('script');t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=AW-18562196705';d.head.appendChild(t)})(document);
+window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};
+gtag('js',new Date());gtag('config','AW-18562196705');
+}</script>
+<!-- End Google Ads tag -->
+<!-- TikTok Pixel (DC1JPCJC77U6OQMID8CG; same skip rules as the Meta Pixel) -->
+<script>if(!navigator.globalPrivacyControl&&!/[?&]demo=/.test(location.search)&&!(function(){try{return sessionStorage.getItem('cc_demo')==='1'}catch(e){return false}})()&&!/[?&]offer=/.test(location.search)&&!/^\/claim\/(adapthealth|amca|arcare|auxilio|baptistdrew|bigfork|brockton|brookdale|camc|camobile|ciox_md|covenant|cpap|davita|doctorsimaging|dothouse|eyecare|fci|genericdrugs|hampton|harvard|healthport_uw|iod_pa|jbsmha|kaiser_mh|kroger|lagunahonda|lakeside|localmed|mdlive|mha|mhoa|missouridelta|natera|neutrogena|okanogan|parkdental|pohns|prime|renal|roseland|tenet|texasretina|uscarcadia|vidaysalud|washgastro|waynememorial|yuma)\/?$/i.test(location.pathname)){
+!function (w, d, t) {
+w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var r="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=r,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=r+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+ttq.load('DC1JPCJC77U6OQMID8CG');
+ttq.page();
+}(window, document, 'ttq');
+}</script>
+<!-- End TikTok Pixel -->
+</head><body><div id="app"></div><div class="demoB" style="display:none">PREVIEW <a href="#" onclick="try{sessionStorage.removeItem('fc_prog')}catch(e){}location.href='/check'+location.search;return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),f=(q.get("offer")||"").toUpperCase(),M={j:"A",k:"B",i:"C"},R={A:"j",B:"k",C:"i"},o="";if(/^[ABC]$/.test(f)){o=f;window.__fcPreview=1;var b=document.querySelector(".demoB");if(b)b.style.display="";}else{var m=document.cookie.match(/(?:^|;\s*)cc_offer=([ijk])\b/);if(m)o=M[m[1]];else{var r=new Uint8Array(1);try{crypto.getRandomValues(r)}catch(e){r[0]=Math.floor(Math.random()*255)}o="ABC"[r[0]%3];}document.cookie="cc_offer="+R[o]+";path=/;max-age=31536000;samesite=lax";}window.__fcFlow=R[o];var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>/* Flow C production hooks (Nov 22 2026). Loaded only on /demo/flow-c, never on the canvas.
    Real Stripe payment (Express Checkout + Payment Element through /api/checkout ui 'elements'),
    blanket authorization through /api/sign, the claim-flow session for the member app, and the
    hand-off to the real dashboard (email code sign-in there links the Stripe purchase).
    Card details are only ever typed into Stripe's own fields. */
 (function () {
   var SJS = 'https://js.stripe.com/endive/stripe.js', sjsP = null;
-  var OFF = { A: { plan: '1y', flow: 'h', today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $49.99 a year' },
-    B: { plan: '1mt', flow: 'f', today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $19.99 a month' } };
-  var CP = { '1m': { plan: 'c1', today: '$19.99', line: '$19.99 a month' }, '3m': { plan: 'c3', today: '$44.97', line: '$44.97 every 3 months' }, '6m': { plan: 'c6', today: '$59.94', line: '$59.94 every 6 months' } };
+  var OFF = { A: { plan: '1y', flow: 'j', todayN: 0, ltv: 49.99, today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $49.99 a year' },
+    B: { plan: '1mt', flow: 'k', todayN: 0, ltv: 59.97, today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $19.99 a month' } };
+  var CP = { '1m': { plan: 'c1', todayN: 19.99, today: '$19.99', line: '$19.99 a month' }, '3m': { plan: 'c3', todayN: 44.97, today: '$44.97', line: '$44.97 every 3 months' }, '6m': { plan: 'c6', todayN: 59.94, today: '$59.94', line: '$59.94 every 6 months' } };
   var ST = { Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA', Colorado: 'CO', Connecticut: 'CT', Delaware: 'DE', 'District of Columbia': 'DC', Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID', Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS', Kentucky: 'KY', Louisiana: 'LA', Maine: 'ME', Maryland: 'MD', Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN', Mississippi: 'MS', Missouri: 'MO', Montana: 'MT', Nebraska: 'NE', Nevada: 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR', Pennsylvania: 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD', Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT', Virginia: 'VA', Washington: 'WA', 'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY' };
   var AGREE = 'My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the Claim Filing Authorization Agreement.';
   var KEY = 'fc_state';
   var APPEAR = { theme: 'stripe', variables: { colorPrimary: '#12805C', colorBackground: '#FFFFFF', colorText: '#000000', colorDanger: '#FF3B30', fontFamily: '-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif', fontSizeBase: '16px', borderRadius: '12px', spacingUnit: '4px' } };
-  function offerOf(st) { if (st.offer === 'C') { var c = CP[st.pk || '6m'] || CP['6m']; return { plan: c.plan, flow: 'i', today: c.today, label: 'Pay ' + c.today, line: c.line }; } return OFF[st.offer] || OFF.A; }
+  function offerOf(st) { if (st.offer === 'C') { var c = CP[st.pk || '6m'] || CP['6m']; return { plan: c.plan, flow: 'i', todayN: c.todayN, ltv: c.todayN, today: c.today, label: 'Pay ' + c.today, line: c.line }; } return OFF[st.offer] || OFF.A; }
   function loadStripe() {
     if (window.Stripe) return Promise.resolve(window.Stripe);
     if (sjsP) return sjsP;
@@ -177,7 +210,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
   }
   // Each screen has its own URL (/demo/flow-c/<screen>) and the answers live in sessionStorage, so a refresh or the
   // browser's back button keeps your place. Paid screens can't be reached without paying, and you can't go back into payment.
-  var PROG = 'fc_prog', BASE = '/demo/flow-c', last = null, popping = false;
+  var PROG = 'fc_prog', BASE = '/check', last = null, popping = false;
   var SLUG = { w1: 'welcome', gap: 'unclaimed', w2: 'we-find', w3: 'we-file', w4: 'trust', rev: 'reviews', name: 'name', pains: 'about-you', goal: 'goal', plan: 'how-you-get-paid', qintro: 'quiz',
     load: 'checking', est: 'estimate', pick: 'choose-claims', chk: 'check-claims', win: 'ready', offer: 'checkout', paid: 'confirming', profile: 'details', bank: 'bank', open: 'opening', dash: 'dashboard' };
   var POST = { paid: 1, profile: 1, bank: 1, open: 1, dash: 1 };
@@ -196,11 +229,28 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
   }
   function jump(api, step) { api.set({ pick: '', menu: 0, payDone: 0 }); api.at(step); if (step === 'open') FC.open(api); }
 
-  var SESS = null, WAL = null;
+  var SESS = null, WAL = null, PREVIEW = !!window.__fcPreview;
+  // Funnel tracking (/api/track, same table as the claim flow; Flow C steps keep their own names, 'offer' counts as reaching the offer).
+  function track(api, step) {
+    if (PREVIEW || !/^(www\.)?claimclub\.io$|\.vercel\.app$|^localhost$|^127\./.test(location.hostname)) return;
+    var src = ''; try { src = sessionStorage.getItem('cc_src') || ''; } catch (e) {}
+    try { fetch('/api/track', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sid: sid(), step: step, idx: api.st.s, device: document.body.classList.contains('d') ? 'd' : 'm', lang: 'en', flow: offerOf(api.st).flow, source: src }) }).catch(function () {}); } catch (e) {}
+  }
+  // Ad events (Meta Pixel, Google Ads), never on preview links. Purchase uses the Checkout Session ID as the event ID (the webhook sends the same one server side).
+  function ck(n) { var m = document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)')); return m ? decodeURIComponent(m[1]) : ''; }
+  function fbc() { var c = ck('_fbc'); if (c) return c; var id = new URLSearchParams(location.search).get('fbclid'); if (id) { try { sessionStorage.setItem('cc_fbclid', id); } catch (e) {} } else { try { id = sessionStorage.getItem('cc_fbclid'); } catch (e) {} } return id ? 'fb.1.' + Date.now() + '.' + id : ''; }
+  function attr() { return { fbp: ck('_fbp'), fbc: fbc(), gpc: navigator.globalPrivacyControl ? 1 : 0, source_url: location.href }; }
+  function initCheckout(o) { if (PREVIEW || typeof window.fbq !== 'function') return; try { fbq('track', 'InitiateCheckout', { value: o.todayN, currency: 'USD' }, { eventID: 'ic-' + Date.now() + '-' + Math.random().toString(36).slice(2) }); } catch (e) {} }
+  function purchased(o, id) {
+    if (PREVIEW || !id) return;
+    try { if (sessionStorage.getItem('st_' + id)) return; sessionStorage.setItem('st_' + id, '1'); } catch (e) {}
+    try { if (typeof window.fbq === 'function') fbq('track', 'Purchase', { value: o.todayN, currency: 'USD', predicted_ltv: o.ltv }, { eventID: id }); } catch (e) {}
+    try { if (typeof window.gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18562196705/m4kHCID10LsdEOHJkpNF', value: o.todayN, currency: 'USD', transaction_id: id }); } catch (e) {}
+  }
   function saveRedirect(api, o, email) { try { var c = JSON.parse(JSON.stringify(api.st)); if (email) c.email = email; sessionStorage.setItem(KEY, JSON.stringify({ st: c, o: o })); } catch (e) {} }
   function paidOk(api, res, s, o, fail, done) {
     var id = (res.session && res.session.id) || s.secret.split('_secret_')[0];
-    verify(id).then(function (j) { if (j.paid) { if (done) done(); SESS = null; finish(api, j, o); } else if (fail) fail('We could not confirm that payment yet. Please try again.'); else toast(api, 'We could not confirm that payment yet.'); });
+    verify(id).then(function (j) { if (j.paid) { purchased(o, id); if (done) done(); SESS = null; finish(api, j, o); } else if (fail) fail('We could not confirm that payment yet. Please try again.'); else toast(api, 'We could not confirm that payment yet.'); });
   }
   var FC = {
     onStep: function (api) {
@@ -208,6 +258,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       if (step === 'offer') FC.wallet(api);
       if (step === last) return;
       var u = urlFor(step);
+      track(api, step);
       if (location.pathname + location.search !== u) { if (last && !popping) history.pushState({ fc: step }, '', u); else history.replaceState({ fc: step }, '', u); }
       last = step; popping = false;
     },
@@ -234,14 +285,15 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       history.replaceState(null, '', location.pathname);
       if (!saved) return;
       api.set(saved.st); api.at('offer');
-      verify(id).then(function (j) { if (j.paid) finish(api, j, saved.o); else toast(api, 'That payment did not go through. Please try again.'); });
+      verify(id).then(function (j) { if (j.paid) { purchased(saved.o, id); finish(api, j, saved.o); } else toast(api, 'That payment did not go through. Please try again.'); });
     },
     // One Stripe Checkout Session per plan, shared by the wallet buttons on the page and the card form in the popup.
     session: function (api) {
       var o = offerOf(api.st), key = o.plan + ':' + o.flow;
       if (SESS && SESS.key === key) return SESS.p;
       var ids = api.elig().map(function (d) { return d.id; });
-      var body = { kind: 'member', plan: o.plan, flow: o.flow, consent: true, ids: ids, sid: sid(), ui: 'elements', back: 'flow-c', path: '/demo/flow-c' };
+      var body = { kind: 'member', plan: o.plan, flow: o.flow, consent: true, ids: ids, sid: sid(), ui: 'elements', back: 'flow-c', path: '/check' }, at = attr();
+      for (var k0 in at) body[k0] = at[k0];
       if (okEmail(api.st.email)) body.email = api.st.email;
       var p = Promise.all([post('/api/checkout', body), loadStripe().catch(function () { return null; })]).then(function (r) {
         var j = r[0], S = r[1];
@@ -263,7 +315,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
         if (!s.checkout || !document.contains(box)) return;
         var o = s.o, ex = s.checkout.createExpressCheckoutElement({ buttonHeight: 52, buttonTheme: { applePay: 'black', googlePay: 'black' }, buttonType: { applePay: 'plain', googlePay: 'plain' }, layout: { maxColumns: 1, overflow: 'never' }, paymentMethodOrder: ['apple_pay', 'google_pay'], paymentMethods: { applePay: 'always', googlePay: 'always', link: 'never', paypal: 'never', amazonPay: 'never', klarna: 'never' } });
         WAL = ex;
-        ex.on('click', function (ev) { api.st.agree = true; ev.resolve(); }); // tapping a wallet button is the agreement (line under the buttons)
+        ex.on('click', function (ev) { api.st.agree = true; initCheckout(o); ev.resolve(); }); // tapping a wallet button is the agreement (line under the buttons)
         ex.on('confirm', function (ev) {
           saveRedirect(api, o, api.st.email);
           s.actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Try paying with a card.'); return r.actions.confirm({ expressCheckoutConfirmEvent: ev, redirect: 'if_required' }); })
@@ -294,7 +346,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       function showErr(m) { err.textContent = m || ''; err.hidden = !m; }
       Q('.fcp-x').onclick = close; sh.addEventListener('click', function (e) { if (e.target === sh) close(); });
       FC.session(api).then(function (s) {
-        var o = s.o;
+        var o = s.o; initCheckout(o);
         btn.textContent = o.label; Q('.fcp-f').textContent = 'Processed securely by Stripe. ' + (o.flow === 'i' ? 'Renews at ' + o.line + ' until you cancel.' : o.line + '. You will not be charged until your trial ends. Cancel anytime.');
         if (s.url) { saveRedirect(api, o, em.value.trim()); location.href = s.url; return; }
         card = s.checkout.createPaymentElement({ layout: { type: 'tabs' }, paymentMethodOrder: ['card'], wallets: { applePay: 'never', googlePay: 'never', link: 'never' }, terms: { card: 'never' } });

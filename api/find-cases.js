@@ -111,7 +111,7 @@ async function run() {
 async function weeklyReminders() {
   const { sendNotice } = require('./_email');
   const sb = db(), now = Date.now(), soon = new Date(now + 36 * 3600e3).toISOString();
-  const { data: ms } = await sb.from('memberships').select('user_id, plan, flow, trial_ends_at, started_at').or('plan.eq.1w,plan.eq.1mt,flow.eq.e,flow.eq.h').eq('status', 'active').gt('trial_ends_at', new Date(now).toISOString()).lte('trial_ends_at', soon);
+  const { data: ms } = await sb.from('memberships').select('user_id, plan, flow, trial_ends_at, started_at').or('plan.eq.1w,plan.eq.1mt,flow.eq.e,flow.eq.h,flow.eq.j').eq('status', 'active').gt('trial_ends_at', new Date(now).toISOString()).lte('trial_ends_at', soon);
   let sent = 0;
   for (const m of ms || []) {
     const { data: done } = await sb.from('email_log').select('id').eq('user_id', m.user_id).eq('kind', 'trial_ending').gte('created_at', m.started_at || new Date(now - 7 * 864e5).toISOString()).limit(1);

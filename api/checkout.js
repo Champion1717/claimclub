@@ -27,7 +27,7 @@ const PLANS = {
   c3: { amount: 4497, months: 3, noIntro: true, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_C3' },
   c6: { amount: 5994, months: 6, noIntro: true, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_C6' },
 };
-const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h'], '1w': ['d'], '1mt': ['f'], fast: ['g'], pri: ['g'], c1: ['i'], c3: ['i'], c6: ['i'] };
+const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h', 'j'], '1w': ['d'], '1mt': ['f', 'k'], fast: ['g'], pri: ['g'], c1: ['i'], c3: ['i'], c6: ['i'] };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {
@@ -71,7 +71,7 @@ module.exports = async (req, res) => {
   const sid = typeof b.sid === 'string' && /^[a-z0-9-]{8,64}$/i.test(b.sid) ? b.sid : '';
   const email = typeof b.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email) ? b.email : undefined;
   const ids = Array.isArray(b.ids) ? b.ids.filter((x) => typeof x === 'string').join(',').slice(0, 480) : '';
-  const back = b.back === 'dashboard' ? '/dashboard' : b.back === 'flow-c' ? '/demo/flow-c' : '/claim';
+  const back = b.back === 'dashboard' ? '/dashboard' : b.back === 'flow-c' ? '/check' : '/claim';
   const origin = (req.headers['x-forwarded-proto'] || 'https') + '://' + req.headers.host;
 
   let line;
