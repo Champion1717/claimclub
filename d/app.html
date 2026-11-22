@@ -1122,6 +1122,8 @@ class Component extends DCLogic {
   setForm(k, v) { this.setState({ form: Object.assign({}, this.state.form, { [k]: v }) }); }
   sheetVals() {
     const s = this.state, sh = s.sheet;
+    // Long answer options get full-width cards instead of squeezed pills (Nov 21 2026).
+    const optSt = (on, o) => String(o).length > 26 ? 'width:100%;min-height:52px;padding:13px 16px;border-radius:14px;font-size:14px;font-weight:700;line-height:1.4;text-align:left;' + (on ? 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-FFFFFF,#FFFFFF);color:var(--fg-0A0F0D,#0A0F0D);box-shadow:inset 0 0 0 1.5px var(--ln-DDE5E0,#DDE5E0)') : chip(on).replace('min-height:36px;padding:0 14px', 'min-height:44px;padding:0 18px');
     const chip = (on) => 'min-height:36px;padding:0 14px;border-radius:99px;font-size:13px;font-weight:800;' + (on ? 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-FFFFFF,#FFFFFF);color:var(--fg-0A0F0D,#0A0F0D);box-shadow:inset 0 0 0 1.5px var(--ln-DDE5E0,#DDE5E0)');
     if (!sh) return { sheetOpen: false, sh: { s1: false, s2: false, s3: false, qs: [], fields: [], pay: [], files: [] } };
     const SP = this.spec(sh.id), N = this.needsOf(sh.id), U = this.uploadOf(sh.id);
@@ -1136,7 +1138,7 @@ class Component extends DCLogic {
     const fields = FIELDS.map(x => ({ label: x.label, hint: x.hint, ph: x.ph || '', isText: x.type === 'text', isChips: x.type !== 'text', optional: !!x.optional, val: f[x.k] || '',
       hasUnsure: x.type === 'text' && !!x.unsure, unsure: x.unsure || '', unsureTap: () => this.setForm(x.k, x.unsure), unsureSt: 'align-self:flex-start;min-height:32px;padding:0 12px;border-radius:99px;font-size:12.5px;font-weight:800;' + (f[x.k] === x.unsure ? 'background:var(--bg-0F3B2E,#0F3B2E);color:var(--fg-FFFFFF,#FFFFFF)' : 'background:var(--bg-F3F6F4,#F3F6F4);color:var(--fg-43504A,#43504A)'),
       onIn: (e) => this.setForm(x.k, e.target.value),
-      opts: (x.opts || []).concat(x.unsure && x.type !== 'text' && (x.opts || []).indexOf(x.unsure) < 0 ? [x.unsure] : []).map(o => { const on = x.type === 'multi' ? (f[x.k] || []).indexOf(o) >= 0 : f[x.k] === o; return { o, st: chip(on), tap: () => { if (x.type === 'multi') { const a = (f[x.k] || []).slice(), j = a.indexOf(o); j >= 0 ? a.splice(j, 1) : a.push(o); this.setForm(x.k, a); } else this.setForm(x.k, o); } }; }) }));
+      opts: (x.opts || []).concat(x.unsure && x.type !== 'text' && (x.opts || []).indexOf(x.unsure) < 0 ? [x.unsure] : []).map(o => { const on = x.type === 'multi' ? (f[x.k] || []).indexOf(o) >= 0 : f[x.k] === o; return { o, st: optSt(on, o), tap: () => { if (x.type === 'multi') { const a = (f[x.k] || []).slice(), j = a.indexOf(o); j >= 0 ? a.splice(j, 1) : a.push(o); this.setForm(x.k, a); } else this.setForm(x.k, o); } }; }) }));
     const textOk = (x) => x.k === 'acct' ? /@/.test(f[x.k] || '') : String(f[x.k] || '').trim().length >= (x.k.indexOf('n_') === 0 ? 1 : 2);
     const ok2 = FIELDS.every(x => x.optional || (x.type === 'multi' ? (f[x.k] || []).length > 0 : x.type === 'text' ? textOk(x) : !!f[x.k]));
     const bank = !!s.acct.bank, mine = this.payList().filter(o => o !== 'Direct deposit' || bank), pm = f.pay || (s.payDef && (s.payDef !== 'Direct deposit' || bank) ? s.payDef : (mine[0] || ''));
