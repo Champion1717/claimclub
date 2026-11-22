@@ -138,9 +138,9 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       + '.dkc .fcp{align-items:center}.dkc .fcp-s{border-radius:22px;max-width:460px}'
       + '.fcp-h{display:flex;align-items:center;gap:8px}.fcp-h b{flex:1;font-size:20px;letter-spacing:-.4px}.fcp-x{width:32px;height:32px;border-radius:99px;border:0;background:#E5E5EA;color:#3C3C43;font-size:18px;cursor:pointer}'
       + '.fcp-r{display:flex;align-items:center;justify-content:space-between;background:#FFF;border-radius:14px;padding:12px 14px;font-size:14.5px}.fcp-r span{color:#6E6E73}.fcp-r b{font-size:16px}'
-      + '.fcp-e{height:50px;border-radius:12px;border:1px solid #D1D1D6;background:#FFF;padding:0 14px;font-size:16px;font-family:inherit;outline:none;width:100%;box-sizing:border-box}.fcp-e:focus{border-color:#12805C;box-shadow:0 0 0 3px rgba(18,128,92,.15)}'
+      + '.fcp .fcp-e{height:52px!important;min-height:52px;border-radius:12px;border:1px solid #D1D1D6;background:#FFF;padding:0 14px;font-size:16px;font-family:inherit;outline:none;width:100%;box-sizing:border-box}.fcp-e:focus{border-color:#12805C;box-shadow:0 0 0 3px rgba(18,128,92,.15)}'
       + '.fcp-l{font-size:12.5px;font-weight:600;color:#6E6E73;margin:2px 4px -6px}.fcp-or{display:flex;align-items:center;gap:10px;color:#8E8E93;font-size:13px}.fcp-or:before,.fcp-or:after{content:"";flex:1;height:1px;background:#D1D1D6}'
-      + '.fcp-err{color:#FF3B30;font-size:14px;font-weight:600;text-align:center}.fcp-pay{height:54px;border:0;border-radius:14px;background:#12805C;color:#FFF;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer}.fcp-pay:disabled{opacity:.55}'
+      + '.fcp-err{color:#FF3B30;font-size:14px;font-weight:600;text-align:center}.fcp .fcp-pay{height:56px!important;min-height:56px;border:0;border-radius:16px;background:#12805C;color:#FFF;font-size:18px!important;font-weight:700;font-family:inherit;cursor:pointer}.fcp-pay:disabled{opacity:.55}'
       + '.fcp-f{font-size:12px;color:#8E8E93;text-align:center;line-height:1.4}.fcp-ld{padding:28px 0;text-align:center;color:#8E8E93;font-size:14px}.fcp-ld i{display:block;margin:0 auto 10px;width:28px;height:28px;border-radius:50%;border:3px solid #DDE5E0;border-top-color:#12805C;animation:fcSpin .8s linear infinite}';
     document.head.appendChild(s);
   }
@@ -189,9 +189,16 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
   }
   function jump(api, step) { api.set({ pick: '', menu: 0, payDone: 0 }); api.at(step); if (step === 'open') FC.open(api); }
 
+  var SESS = null, WAL = null;
+  function saveRedirect(api, o, email) { try { var c = JSON.parse(JSON.stringify(api.st)); if (email) c.email = email; sessionStorage.setItem(KEY, JSON.stringify({ st: c, o: o })); } catch (e) {} }
+  function paidOk(api, res, s, o, fail, done) {
+    var id = (res.session && res.session.id) || s.secret.split('_secret_')[0];
+    verify(id).then(function (j) { if (j.paid) { if (done) done(); SESS = null; finish(api, j, o); } else if (fail) fail('We could not confirm that payment yet. Please try again.'); else toast(api, 'We could not confirm that payment yet.'); });
+  }
   var FC = {
     onStep: function (api) {
       var step = api.step(); saveProg(api);
+      if (step === 'offer') FC.wallet(api);
       if (step === last) return;
       var u = urlFor(step);
       if (location.pathname + location.search !== u) { if (last && !popping) history.pushState({ fc: step }, '', u); else history.replaceState({ fc: step }, '', u); }
@@ -222,68 +229,79 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       api.set(saved.st); api.at('offer');
       verify(id).then(function (j) { if (j.paid) finish(api, j, saved.o); else toast(api, 'That payment did not go through. Please try again.'); });
     },
+    // One Stripe Checkout Session per plan, shared by the wallet buttons on the page and the card form in the popup.
+    session: function (api) {
+      var o = offerOf(api.st), key = o.plan + ':' + o.flow;
+      if (SESS && SESS.key === key) return SESS.p;
+      var ids = api.elig().map(function (d) { return d.id; });
+      var body = { kind: 'member', plan: o.plan, flow: o.flow, consent: true, ids: ids, sid: sid(), ui: 'elements', back: 'flow-c', path: '/demo/flow-c' };
+      if (okEmail(api.st.email)) body.email = api.st.email;
+      var p = Promise.all([post('/api/checkout', body), loadStripe().catch(function () { return null; })]).then(function (r) {
+        var j = r[0], S = r[1];
+        if (j.clientSecret && S) { var stripe = S(j.publishableKey), checkout = stripe.initCheckoutElementsSdk({ clientSecret: j.clientSecret, elementsOptions: { appearance: APPEAR } }); return { o: o, secret: j.clientSecret, checkout: checkout, actionsP: checkout.loadActions() }; }
+        if (j.url) return { o: o, url: j.url };
+        throw new Error(j.error || 'no session');
+      });
+      p.catch(function () { if (SESS && SESS.p === p) SESS = null; });
+      SESS = { key: key, p: p };
+      return p;
+    },
+    // Real Apple Pay / Google Pay buttons (Stripe Express Checkout) in place of the page's pay buttons. Gated on the I agree box.
+    wallet: function (api) {
+      var box = api.el.querySelector('[data-wallet]');
+      if (!box || box.dataset.m || api.st.paidPlan) return;
+      box.dataset.m = '1';
+      if (WAL) { try { WAL.destroy(); } catch (e) {} WAL = null; }
+      FC.session(api).then(function (s) {
+        if (!s.checkout || !document.contains(box)) return;
+        var o = s.o, ex = s.checkout.createExpressCheckoutElement({ buttonHeight: 52, buttonTheme: { applePay: 'black', googlePay: 'black' }, buttonType: { applePay: 'plain', googlePay: 'plain' }, layout: { maxColumns: 1, overflow: 'never' }, paymentMethodOrder: ['apple_pay', 'google_pay'], paymentMethods: { applePay: 'always', googlePay: 'always', link: 'never', paypal: 'never', amazonPay: 'never', klarna: 'never' } });
+        WAL = ex;
+        ex.on('click', function (ev) { if (!api.st.agree) { toast(api, 'Tick the box to continue.'); var a = api.el.querySelector('[data-p="agree"]'); if (a) a.scrollIntoView({ block: 'center', behavior: 'smooth' }); return; } ev.resolve(); });
+        ex.on('confirm', function (ev) {
+          saveRedirect(api, o, api.st.email);
+          s.actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Try paying with a card.'); return r.actions.confirm({ expressCheckoutConfirmEvent: ev, redirect: 'if_required' }); })
+            .then(function (res) { if (res.type === 'success') paidOk(api, res, s, o); else toast(api, (res.error && res.error.message) || 'That payment did not go through.'); })
+            .catch(function (x) { toast(api, x.message || 'Something went wrong. Please try again.'); });
+        });
+        ex.mount(box);
+      }).catch(function () {});
+    },
+    changed: function (api, a) { if (a === 'pk') { var b = api.el.querySelector('[data-wallet]'); if (b) { delete b.dataset.m; b.innerHTML = ''; } FC.wallet(api); } },
     pay: function (api) {
-      var st = api.st, o = offerOf(st);
+      var st = api.st;
       if (!st.agree) return toast(api, 'Tick the box to continue.');
       css();
-      var ids = api.elig().map(function (d) { return d.id; });
       var sh = document.createElement('div'); sh.className = 'fcp';
-      sh.innerHTML = '<div class="fcp-s"><div class="fcp-h"><b>Checkout</b><button class="fcp-x" aria-label="Close">&times;</button></div>'
-        + '<div class="fcp-r"><span>' + esc(o.line) + '</span><b>' + o.today + ' today</b></div>'
+      sh.innerHTML = '<div class="fcp-s"><div class="fcp-h"><b>Pay with card</b><button class="fcp-x" aria-label="Close">&times;</button></div>'
         + '<div class="fcp-l">EMAIL</div><input class="fcp-e" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(st.email || '') + '">'
-        + '<div class="fcp-ld"><i></i>Loading secure payment</div><div class="fcp-x2"></div><div class="fcp-or" hidden>or pay with card</div><div class="fcp-card"></div>'
-        + '<div class="fcp-err" hidden></div><button class="fcp-pay" disabled>' + esc(o.label) + '</button>'
-        + '<div class="fcp-f">Payments are processed securely by Stripe. ' + (o.flow === 'i' ? 'Renews at ' + esc(o.line) + ' until you cancel.' : 'You will not be charged until your trial ends. Cancel anytime.') + '</div></div>';
+        + '<div class="fcp-ld"><i></i>Loading secure payment</div><div class="fcp-card"></div>'
+        + '<div class="fcp-err" hidden></div><button class="fcp-pay" disabled></button>'
+        + '<div class="fcp-f"></div></div>';
       api.el.appendChild(sh);
-      var Q = function (s) { return sh.querySelector(s); }, err = Q('.fcp-err'), btn = Q('.fcp-pay'), em = Q('.fcp-e'), cleanup = [];
-      function close() { cleanup.forEach(function (f) { try { f(); } catch (e) {} }); sh.remove(); }
+      var Q = function (q) { return sh.querySelector(q); }, err = Q('.fcp-err'), btn = Q('.fcp-pay'), em = Q('.fcp-e'), card = null;
+      function close() { try { card && card.destroy(); } catch (e) {} sh.remove(); }
       function showErr(m) { err.textContent = m || ''; err.hidden = !m; }
       Q('.fcp-x').onclick = close; sh.addEventListener('click', function (e) { if (e.target === sh) close(); });
-      function gate() { var e = em.value.trim(); if (!okEmail(e)) { showErr('Enter your email first.'); em.focus(); return null; } showErr(null); return e; }
-      var body = { kind: 'member', plan: o.plan, flow: o.flow, consent: true, ids: ids, sid: sid(), ui: 'elements', back: 'flow-c', path: '/demo/flow-c' };
-      if (okEmail(st.email)) body.email = st.email;
-      Promise.all([post('/api/checkout', body), loadStripe().catch(function () { return null; })]).then(function (r) {
-        var j = r[0], S = r[1];
-        if (j.clientSecret && S) return run(S(j.publishableKey), j.clientSecret);
-        if (j.url) { save(); location.href = j.url; return; }
-        throw new Error(j.error || 'no session');
-      }).catch(function () { var l = Q('.fcp-ld'); if (l) l.textContent = 'Payment could not load. Close this and try again.'; });
-      function save() { try { var c = JSON.parse(JSON.stringify(api.st)); c.email = em.value.trim(); sessionStorage.setItem(KEY, JSON.stringify({ st: c, o: o })); } catch (e) {} }
-      function run(stripe, secret) {
-        var checkout = stripe.initCheckoutElementsSdk({ clientSecret: secret, elementsOptions: { appearance: APPEAR } });
-        var express = checkout.createExpressCheckoutElement({ buttonHeight: 54, buttonTheme: { applePay: 'black', googlePay: 'black' }, buttonType: { applePay: 'plain', googlePay: 'plain' }, layout: { maxColumns: 1, overflow: 'never' }, paymentMethodOrder: ['apple_pay', 'google_pay', 'link'], paymentMethods: { applePay: 'always', googlePay: 'always', link: 'auto', paypal: 'never', amazonPay: 'never', klarna: 'never' } });
-        var card = checkout.createPaymentElement({ layout: { type: 'accordion', defaultCollapsed: false, radios: 'never', spacedAccordionItems: false, visibleAccordionItemsCount: 1 }, paymentMethodOrder: ['card'], wallets: { applePay: 'never', googlePay: 'never', link: 'never' } });
-        var actionsP = checkout.loadActions(), label = btn.textContent;
-        cleanup.push(function () { express.destroy(); card.destroy(); });
-        express.on('ready', function (ev) { var m = ev && ev.availablePaymentMethods; Q('.fcp-or').hidden = !(m && Object.keys(m).some(function (k) { return m[k]; })); });
-        express.on('loaderror', function () { Q('.fcp-or').hidden = true; });
+      FC.session(api).then(function (s) {
+        var o = s.o;
+        btn.textContent = o.label; Q('.fcp-f').textContent = 'Processed securely by Stripe. ' + (o.flow === 'i' ? 'Renews at ' + o.line + ' until you cancel.' : o.line + '. You will not be charged until your trial ends. Cancel anytime.');
+        if (s.url) { saveRedirect(api, o, em.value.trim()); location.href = s.url; return; }
+        card = s.checkout.createPaymentElement({ layout: { type: 'tabs' }, paymentMethodOrder: ['card'], wallets: { applePay: 'never', googlePay: 'never', link: 'never' }, terms: { card: 'never' } });
         card.on('ready', function () { var l = Q('.fcp-ld'); if (l) l.remove(); btn.disabled = false; });
-        function withEmail(r, e) { return r.actions.updateEmail ? r.actions.updateEmail(e).then(function (u) { if (u && u.type === 'error') throw new Error((u.error && u.error.message) || 'Check your email address.'); return r; }) : Promise.resolve(r); }
-        function paid(res) {
-          var id = (res.session && res.session.id) || secret.split('_secret_')[0];
-          btn.textContent = 'Confirming payment'; api.st.email = em.value.trim();
-          verify(id).then(function (j) { if (j.paid) { close(); finish(api, j, o); } else { btn.disabled = false; btn.textContent = label; showErr('We could not confirm that payment yet. Please try again.'); } });
-        }
-        express.on('click', function (event) { if (!gate()) return; event.resolve(); });
-        express.on('confirm', function (event) {
-          var e = gate(); if (!e) { if (event.paymentFailed) event.paymentFailed({ reason: 'fail' }); return; }
-          save();
-          actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Try the card form below.'); return withEmail(r, e); })
-            .then(function (r) { return r.actions.confirm({ expressCheckoutConfirmEvent: event, redirect: 'if_required' }); })
-            .then(function (res) { if (res.type === 'success') paid(res); else showErr((res.error && res.error.message) || 'That payment did not go through. Try again or use a card.'); })
-            .catch(function (x) { showErr(x.message); });
-        });
+        card.mount(Q('.fcp-card'));
+        var label = o.label;
         btn.onclick = function () {
-          var e = gate(); if (!e || btn.disabled) return;
-          btn.disabled = true; btn.textContent = 'Processing'; save();
+          var e = em.value.trim();
+          if (!okEmail(e)) { showErr('Enter your email first.'); em.focus(); return; }
+          if (btn.disabled) return;
+          showErr(null); btn.disabled = true; btn.textContent = 'Processing'; saveRedirect(api, o, e);
           var reset = function (m) { btn.disabled = false; btn.textContent = label; showErr(m); };
-          actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Close this and try again.'); return withEmail(r, e); })
+          s.actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Close this and try again.'); return r.actions.updateEmail ? r.actions.updateEmail(e).then(function (u) { if (u && u.type === 'error') throw new Error((u.error && u.error.message) || 'Check your email address.'); return r; }) : r; })
             .then(function (r) { return r.actions.confirm({ redirect: 'if_required' }); })
-            .then(function (res) { if (res.type === 'success') paid(res); else reset((res.error && res.error.message) || 'That card did not go through. Check the details or try another card.'); })
+            .then(function (res) { if (res.type === 'success') { api.st.email = e; btn.textContent = 'Confirming payment'; paidOk(api, res, s, o, function (m) { reset(m); }, close); } else reset((res.error && res.error.message) || 'That card did not go through. Check the details or try another card.'); })
             .catch(function (x) { reset(x.message || 'Something went wrong. Please try again.'); });
         };
-        express.mount(Q('.fcp-x2')); card.mount(Q('.fcp-card'));
-      }
+      }).catch(function () { var l = Q('.fcp-ld'); if (l) l.textContent = 'Payment could not load. Close this and try again.'; });
     },
     profile: function (api) {
       var st = api.st, f = {}; [].slice.call(api.el.querySelectorAll('.bd input.inp')).forEach(function (i) { f[i.dataset.f] = i.value.trim(); });
@@ -469,13 +487,13 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
         + e.slice(0, 4).map((d, k) => '<div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-top:.5px solid #E5E5EA;margin-top:' + (k ? 0 : 8) + 'px">' + T(d, 24) + '<span style="flex:1;font-size:12.5px;font-weight:600">' + d.co.split(' ')[0] + '</span><span style="font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:99px;background:' + (k < 2 ? '#E6F4EE;color:#12805C' : '#F2F2F7;color:#8E8E93') + '">' + (k < 2 ? 'Filed' : 'Filing') + '</span></div>').join('') + '</div>'
         + '<div style="position:absolute;left:-18px;right:-18px;bottom:96px;z-index:3;background:rgba(255,255,255,.96);border-radius:16px;padding:10px 12px;display:flex;gap:10px;align-items:center;color:#000;text-align:left;box-shadow:0 10px 24px rgba(0,0,0,.3);animation:fcFloat 3s ease-in-out infinite"><span style="width:30px;height:30px;flex:none;border-radius:8px;background:#0F3B2E;display:flex;align-items:center;justify-content:center">' + I(P.check, 16, '#3DDC97', 3) + '</span><span style="font-size:12.5px;line-height:1.3"><b>Claimclub</b><br>Your ' + (e[0] ? e[0].co : 'Apple') + ' claim was filed.</span></div></div><span style="position:absolute;left:0;right:0;bottom:0;height:110px;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(15,59,46,0),#0F3B2E 92%)"></span></div>'
         + '<div style="height:20px"></div>'
-        + '<div data-sec="opts">' + box + '</div>'
-        + '<div class="opt' + (st.agree ? ' on' : '') + '" data-a="agree" style="margin-top:12px;background:none;padding:4px 2px;gap:10px;font-size:11.5px;font-weight:400;color:#6E6E73;line-height:1.4;align-items:flex-start;min-height:0;box-shadow:none"><span class="ck sq" style="margin:0;width:18px;height:18px;border-radius:5px;' + (st.agree ? 'background:#12805C;box-shadow:none' : '') + '">' + (st.agree ? I(P.check, 15, '#FFF', 3.2) : '') + '</span><span>My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the Claim Filing Authorization Agreement.</span></div>'
-        + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px"><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:6px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="17" height="20" viewBox="2.225 0 19.55 24.0" style="display:block;flex:none"><path fill="#FFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>' + 'Pay</button><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:7px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="19" height="19" viewBox="0 0 48 48" style="display:block;flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>' + 'Pay</button><button class="btn mint" data-a="pay"' + (st.agree ? '' : ' disabled') + '>' + I(P.lock, 17, 'currentColor') + (O === 'C' ? 'Pay with card' : 'Start my free trial') + '</button><span style="font-size:12.5px;color:var(--sec);text-align:center;line-height:1.35">' + fine + '</span></div>'
+        + '<div data-sec="opts" data-p="opts">' + box + '</div>'
+        + '<div data-p="agree"><div class="opt' + (st.agree ? ' on' : '') + '" data-a="agree" style="margin-top:12px;background:none;padding:4px 2px;gap:10px;font-size:11.5px;font-weight:400;color:#6E6E73;line-height:1.4;align-items:flex-start;min-height:0;box-shadow:none"><span class="ck sq" style="margin:0;width:18px;height:18px;border-radius:5px;' + (st.agree ? 'background:#12805C;box-shadow:none' : '') + '">' + (st.agree ? I(P.check, 15, '#FFF', 3.2) : '') + '</span><span>My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the Claim Filing Authorization Agreement.</span></div></div>'
+        + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px">' + (window.ccFC ? '<div data-wallet style="min-height:0"></div>' : '<div data-p="wal" style="display:flex;flex-direction:column;gap:10px"><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:6px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="17" height="20" viewBox="2.225 0 19.55 24.0" style="display:block;flex:none"><path fill="#FFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>' + 'Pay</button><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:7px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="19" height="19" viewBox="0 0 48 48" style="display:block;flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>' + 'Pay</button></div>') + '<div data-p="pay" style="display:flex;flex-direction:column;gap:10px"><button class="btn mint" data-a="pay"' + (st.agree ? '' : ' disabled') + '>' + I(P.lock, 17, 'currentColor') + (O === 'C' ? 'Pay with card' : 'Start my free trial') + '</button><span style="font-size:12.5px;color:var(--sec);text-align:center;line-height:1.35">' + fine + '</span></div></div>'
         + (st.offer === 'C' ? '<div style="margin-top:18px;border-radius:18px;background:#FFF;padding:16px;display:flex;gap:12px;align-items:center"><span style="width:44px;height:44px;flex:none;border-radius:99px;background:#E6F4EE;display:flex;align-items:center;justify-content:center">' + I(P.shield, 22, '#12805C') + '</span><span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:16px">30-day money-back guarantee</b><span style="font-size:14px;color:var(--sec);line-height:1.35">Not happy? Email us within 30 days for a full refund.</span></span></div>' : '')
         + '<b style="display:block;font-size:22px;letter-spacing:-.5px;margin:26px 0 4px">Why people trust Claimclub</b><span style="font-size:12.5px;color:#8E8E93">Example reviews. Real member reviews coming soon.</span>'
         + REV.map((r) => '<div style="margin-top:10px;border-radius:16px;background:#FFF;padding:14px"><span style="display:flex;align-items:center;gap:10px"><img src="' + r.img + '" style="width:36px;height:36px;border-radius:99px"><span style="display:flex;flex-direction:column;flex:1"><b style="font-size:14.5px">' + r.n + '</b><span style="font-size:12.5px;color:#8E8E93">' + r.p + '</span></span><span class="chip">+$' + r.amt + '</span></span><span style="display:block;color:#FF9500;font-size:13px;letter-spacing:1px;margin-top:8px">★★★★★</span><span style="font-size:14.5px;line-height:1.4;display:block;margin-top:4px">“' + r.q + '”</span></div>').join('')
-        + '<b style="display:block;font-size:22px;letter-spacing:-.5px;margin:26px 0 8px">Questions</b><div class="grp">' + faq.map((f, k) => '<div class="row" data-a="faq" data-v="' + k + '" style="flex-direction:column;align-items:stretch;gap:6px;padding:14px 16px;cursor:pointer"><span style="display:flex;align-items:center"><b style="font-size:15.5px;flex:1">' + f[0] + '</b>' + I(st.faq === k ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6', 18, '#8E8E93') + '</span>' + (st.faq === k ? '<span style="font-size:14.5px;color:var(--sec);line-height:1.4">' + f[1] + '</span>' : '') + '</div>').join('') + '</div><div style="height:30px"></div></div>'); };
+        + '<b style="display:block;font-size:22px;letter-spacing:-.5px;margin:26px 0 8px">Questions</b><div class="grp" data-p="faq">' + faq.map((f, k) => '<div class="row" data-a="faq" data-v="' + k + '" style="flex-direction:column;align-items:stretch;gap:6px;padding:14px 16px;cursor:pointer"><span style="display:flex;align-items:center"><b style="font-size:15.5px;flex:1">' + f[0] + '</b>' + I(st.faq === k ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6', 18, '#8E8E93') + '</span>' + (st.faq === k ? '<span style="font-size:14.5px;color:var(--sec);line-height:1.4">' + f[1] + '</span>' : '') + '</div>').join('') + '</div><div style="height:30px"></div></div>'); };
     const LOGO = [['#FFF', 'M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z'], ['#FFF', 'M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z'], ['#FFF', 'M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z'], ['#FFF', 'M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z'], ['#FFF', 'M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z'], ['#3DDC97', 'M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z']];
     const CONF = (() => { const cols = ['#3DDC97', '#FFFFFF', '#9FE5C4', '#CFE9DD', '#FFD25C'], out = []; for (let i = 0; i < 34; i++) { const a = (i / 34) * Math.PI * 2 + (i % 3) * 0.21, d = 170 + ((i * 37) % 9) * 26; const x = Math.round(Math.cos(a) * d), y = Math.round(Math.sin(a) * d * 0.8 + 40 + (i % 4) * 22); out.push('<span class="conf" style="--x:' + x + 'px;--y:' + y + 'px;--r:' + ((i * 83) % 720 - 360) + 'deg;background:' + cols[i % cols.length] + ';width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:' + (i % 5 === 0 ? '50%' : '2px') + ';animation-delay:' + (0.62 + (i % 6) * 0.03).toFixed(2) + 's"></span>'); } return out.join(''); })();
     S.paid = () => { if (!st.payDone) return chrome('<div class="bd" style="justify-content:center;align-items:center;text-align:center;gap:18px;margin-top:-40px"><div style="width:56px;height:56px;border-radius:50%;border:5px solid #E6EFEA;border-top-color:#12805C;animation:fcSpin .9s linear infinite"></div><div style="font-size:18px;font-weight:800">Processing payment</div></div>', { noBack: true, noBar: true });
@@ -556,7 +574,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
         w.addEventListener('click', (e) => { e.stopPropagation(); const it = e.target.closest('.wi'); if (it) to(items.indexOf(it), true); w.focus({ preventScroll: true }); });
         w.addEventListener('keydown', (e) => { const m = { ArrowDown: 1, ArrowUp: -1, PageDown: 5, PageUp: -5 }[e.key]; if (m) { e.preventDefault(); to(idx + m, true); } else if (e.key === 'Enter' || e.key === 'Escape') { e.preventDefault(); st.pick = ''; draw(); } });
       });
-      if (k === 'offer') setTimeout(() => el.querySelectorAll('.fiu').forEach((f) => f.classList.add('vis')), 350);
+      if (k === 'offer') { if (st.fiuShown) el.querySelectorAll('.fiu').forEach((f) => { f.style.transition = 'none'; f.classList.add('vis'); }); else { st.fiuShown = 1; setTimeout(() => el.querySelectorAll('.fiu').forEach((f) => f.classList.add('vis')), 350); } }
     };
     const advC = () => { if (st.ci < picked().length - 1) { st.ci += 1; draw(true); } else go(STEPS.indexOf('win')); };
     const answer = (y) => { const d = D[parseInt(STEPS[st.s].slice(1))]; if (y) { st.yes[d.id] = 1; st.sel[d.id] = 1; } else { delete st.yes[d.id]; delete st.sel[d.id]; } next(); };
@@ -576,17 +594,17 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       else if (a === 'pain') { if (st.pains[v]) delete st.pains[v]; else st.pains[v] = 1; draw(); }
       else if (a === 'goal') { st.goal = v; draw(); }
       else if (a === 'ans') { const c = el.querySelector('.swipe'); if (c) { c.style.transition = 'transform .32s cubic-bezier(.3,.7,.4,1)'; c.style.setProperty('--dx', v === 'y' ? 520 : -520); } lift(1, true); setTimeout(() => answer(v === 'y'), 300); }
-      else if (a === 'pk') { st.pk = v; draw(); }
+      else if (a === 'pk') { st.pk = v; patch(a); }
       else if (a === 'sel') { if (st.sel[v]) delete st.sel[v]; else st.sel[v] = 1; draw(); }
       else if (a === 'chk') { const d = picked()[st.ci]; st.chk[d.id] = Object.assign({}, st.chk[d.id], { [t.dataset.k]: v }); draw(); }
       else if (a === 'nextc' || a === 'skip') { if (a === 'skip') { const d = picked()[st.ci]; delete st.chk[d.id]; } advC(); }
-      else if (a === 'agree') { st.agree = !st.agree; draw(); }
+      else if (a === 'agree') { st.agree = !st.agree; patch(a); }
       else if (a === 'tab') { st.tab = v; st.menu = 0; draw(); }
       else if (a === 'menu') { st.menu = !st.menu; draw(); }
       else if (a === 'tour') { st.tour = (st.tour || 0) + 1; draw(); }
       else if (a === 'tourx') { st.tour = 99; draw(); }
       else if (a === 'pick') { if (!(v === 'bday' ? st.bd : st.stt)) { if (v === 'bday') st.bd = ['01', '01', '1990']; else st.stt = 'California'; } st.pick = st.pick === v ? '' : v; draw(); }
-      else if (a === 'faq') { st.faq = st.faq === +v ? -1 : +v; draw(); }
+      else if (a === 'faq') { st.faq = st.faq === +v ? -1 : +v; patch(a); }
       else if (a === 'bank' && window.ccFC) window.ccFC.bank(API);
       else if (a === 'bank') { st.bank = 'busy'; draw(); setTimeout(() => { st.bank = 'done'; draw(); setTimeout(() => { if (STEPS[st.s] === 'bank') next(); }, 900); }, 1400); }
       else if (a === 'pay' && window.ccFC) window.ccFC.pay(API);
@@ -594,6 +612,13 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       else if (a === 'paid') doPaid();
       else if (a === 'restart') { st = init(); draw(true); }
     });
+    // Offer page toggles (agree, plan, FAQ) only swap the parts that changed, so the phone animation and Stripe's wallet buttons stay put.
+    function patch(a) {
+      if (STEPS[st.s] !== 'offer' || fixed) return draw();
+      const tmp = document.createElement('div'); tmp.innerHTML = S.offer();
+      tmp.querySelectorAll('[data-p]').forEach((n) => { const o = el.querySelector('[data-p="' + n.dataset.p + '"]'); if (o && o.outerHTML !== n.outerHTML) o.replaceWith(n); });
+      if (window.ccFC && window.ccFC.changed) window.ccFC.changed(API, a);
+    }
     function doPaid() { st.payDone = 0; next(); setTimeout(() => { st.payDone = 1; draw(); }, 1300); setTimeout(() => { if (STEPS[st.s] === 'paid') { st.payDone = 0; next(); } }, 4300); }
     // Production page hooks (window.ccFC, /demo/flow-c only): real Stripe payment, profile save, bank handoff, dashboard.
     const API = { el, get st() { return st; }, set: (o) => { Object.assign(st, o); draw(); }, at: (n) => { st.s = STEPS.indexOf(n); draw(true); }, next, draw, doPaid, elig, sum, D, step: () => STEPS[st.s] };

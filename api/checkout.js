@@ -103,6 +103,8 @@ module.exports = async (req, res) => {
     const lines = trial && first > 0 ? [line, { quantity: 1, price_data: { currency: 'usd', unit_amount: first, product_data: { name: 'Claimclub ' + trial + '-day trial', description: 'Then $' + (amt / 100).toFixed(2) + ' a ' + PLANS[plan].interval + ' from the end of your trial until you cancel.' } } }] : [line];
     const base = {
       mode: kind === 'fee' ? 'payment' : 'subscription',
+      // Flow C (/demo/flow-c): cards only, so Stripe's form shows just the card fields (Apple Pay and Google Pay are card wallets and still work).
+      ...(b.back === 'flow-c' ? { payment_method_types: ['card'] } : {}),
       line_items: lines,
       customer_email: email,
       ...discount,
