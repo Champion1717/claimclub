@@ -104,7 +104,165 @@ body.d .fcdk{width:100vw;height:100vh;border-radius:0;box-shadow:none}
 body.p{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#E9EEEB;overflow:hidden}body.p .fc{transform:scale(var(--sc,1));flex:none}
 .demoB{position:fixed;left:12px;bottom:12px;z-index:50;display:flex;gap:6px;align-items:center;padding:5px 6px 5px 12px;border-radius:99px;background:#0F3B2E;color:#FFF;font:800 11px/1 -apple-system,BlinkMacSystemFont,Inter,sans-serif;letter-spacing:.6px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px 10px;font-size:9.5px}body.m .demoB a{padding:3px 7px}
-.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style></head><body><div id="app"></div><div class="demoB">DEMO · NOT LIVE <a href="#" onclick="location.reload();return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),o=(q.get("offer")||"A").toUpperCase();if(!/^[ABC]$/.test(o))o="A";var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>class X {
+.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style></head><body><div id="app"></div><div class="demoB">PREVIEW <a href="#" onclick="location.reload();return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),o=(q.get("offer")||"A").toUpperCase();if(!/^[ABC]$/.test(o))o="A";var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>/* Flow C production hooks (Nov 22 2026). Loaded only on /demo/flow-c, never on the canvas.
+   Real Stripe payment (Express Checkout + Payment Element through /api/checkout ui 'elements'),
+   blanket authorization through /api/sign, the claim-flow session for the member app, and the
+   hand-off to the real dashboard (email code sign-in there links the Stripe purchase).
+   Card details are only ever typed into Stripe's own fields. */
+(function () {
+  var SJS = 'https://js.stripe.com/endive/stripe.js', sjsP = null;
+  var OFF = { A: { plan: '1y', flow: 'h', today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $49.99 a year' },
+    B: { plan: '1mt', flow: 'f', today: '$0.00', label: 'Start my free trial', line: 'Free for 3 days, then $19.99 a month' } };
+  var CP = { '1m': { plan: 'c1', today: '$19.99', line: '$19.99 a month' }, '3m': { plan: 'c3', today: '$44.97', line: '$44.97 every 3 months' }, '6m': { plan: 'c6', today: '$59.94', line: '$59.94 every 6 months' } };
+  var ST = { Alabama: 'AL', Alaska: 'AK', Arizona: 'AZ', Arkansas: 'AR', California: 'CA', Colorado: 'CO', Connecticut: 'CT', Delaware: 'DE', 'District of Columbia': 'DC', Florida: 'FL', Georgia: 'GA', Hawaii: 'HI', Idaho: 'ID', Illinois: 'IL', Indiana: 'IN', Iowa: 'IA', Kansas: 'KS', Kentucky: 'KY', Louisiana: 'LA', Maine: 'ME', Maryland: 'MD', Massachusetts: 'MA', Michigan: 'MI', Minnesota: 'MN', Mississippi: 'MS', Missouri: 'MO', Montana: 'MT', Nebraska: 'NE', Nevada: 'NV', 'New Hampshire': 'NH', 'New Jersey': 'NJ', 'New Mexico': 'NM', 'New York': 'NY', 'North Carolina': 'NC', 'North Dakota': 'ND', Ohio: 'OH', Oklahoma: 'OK', Oregon: 'OR', Pennsylvania: 'PA', 'Rhode Island': 'RI', 'South Carolina': 'SC', 'South Dakota': 'SD', Tennessee: 'TN', Texas: 'TX', Utah: 'UT', Vermont: 'VT', Virginia: 'VA', Washington: 'WA', 'West Virginia': 'WV', Wisconsin: 'WI', Wyoming: 'WY' };
+  var AGREE = 'My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the Claim Filing Authorization Agreement.';
+  var KEY = 'fc_state';
+  var APPEAR = { theme: 'stripe', variables: { colorPrimary: '#12805C', colorBackground: '#FFFFFF', colorText: '#000000', colorDanger: '#FF3B30', fontFamily: '-apple-system, BlinkMacSystemFont, Inter, system-ui, sans-serif', fontSizeBase: '16px', borderRadius: '12px', spacingUnit: '4px' } };
+  function offerOf(st) { if (st.offer === 'C') { var c = CP[st.pk || '6m'] || CP['6m']; return { plan: c.plan, flow: 'i', today: c.today, label: 'Pay ' + c.today, line: c.line }; } return OFF[st.offer] || OFF.A; }
+  function loadStripe() {
+    if (window.Stripe) return Promise.resolve(window.Stripe);
+    if (sjsP) return sjsP;
+    sjsP = new Promise(function (ok, no) { var t = document.createElement('script'); t.src = SJS; t.async = true; t.onload = function () { window.Stripe ? ok(window.Stripe) : no(new Error('no Stripe')); }; t.onerror = function () { sjsP = null; no(new Error('Stripe.js did not load')); }; document.head.appendChild(t); });
+    return sjsP;
+  }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function post(u, b) { return fetch(u, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(b) }).then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { j._ok = r.ok; return j; }); }); }
+  function okEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e || ''); }
+  function sid() { try { var s = sessionStorage.getItem('fc_sid'); if (s) return s; s = 'fc-' + Math.random().toString(36).slice(2, 12) + Date.now().toString(36); sessionStorage.setItem('fc_sid', s); return s; } catch (e) { return 'fc-' + Date.now().toString(36); } }
+  function toast(api, m) { var t = document.createElement('div'); t.textContent = m; t.style.cssText = 'position:absolute;left:50%;top:60px;transform:translateX(-50%);z-index:40;max-width:86%;padding:10px 16px;border-radius:14px;background:#1C1C1E;color:#FFF;font-size:14px;font-weight:600;box-shadow:0 10px 24px rgba(0,0,0,.25);text-align:center'; api.el.appendChild(t); setTimeout(function () { t.remove(); }, 3200); }
+  function css() {
+    if (document.getElementById('fcPayCss')) return;
+    var s = document.createElement('style'); s.id = 'fcPayCss';
+    s.textContent = '.fcp{position:absolute;inset:0;z-index:30;background:rgba(0,0,0,.38);display:flex;align-items:flex-end;justify-content:center;animation:fcIn .2s both}'
+      + '.fcp-s{background:#F2F2F7;width:100%;max-width:520px;max-height:92%;overflow:auto;border-radius:22px 22px 0 0;padding:16px 18px 30px;display:flex;flex-direction:column;gap:12px;box-sizing:border-box}'
+      + '.dkc .fcp{align-items:center}.dkc .fcp-s{border-radius:22px;max-width:460px}'
+      + '.fcp-h{display:flex;align-items:center;gap:8px}.fcp-h b{flex:1;font-size:20px;letter-spacing:-.4px}.fcp-x{width:32px;height:32px;border-radius:99px;border:0;background:#E5E5EA;color:#3C3C43;font-size:18px;cursor:pointer}'
+      + '.fcp-r{display:flex;align-items:center;justify-content:space-between;background:#FFF;border-radius:14px;padding:12px 14px;font-size:14.5px}.fcp-r span{color:#6E6E73}.fcp-r b{font-size:16px}'
+      + '.fcp-e{height:50px;border-radius:12px;border:1px solid #D1D1D6;background:#FFF;padding:0 14px;font-size:16px;font-family:inherit;outline:none;width:100%;box-sizing:border-box}.fcp-e:focus{border-color:#12805C;box-shadow:0 0 0 3px rgba(18,128,92,.15)}'
+      + '.fcp-l{font-size:12.5px;font-weight:600;color:#6E6E73;margin:2px 4px -6px}.fcp-or{display:flex;align-items:center;gap:10px;color:#8E8E93;font-size:13px}.fcp-or:before,.fcp-or:after{content:"";flex:1;height:1px;background:#D1D1D6}'
+      + '.fcp-err{color:#FF3B30;font-size:14px;font-weight:600;text-align:center}.fcp-pay{height:54px;border:0;border-radius:14px;background:#12805C;color:#FFF;font-size:17px;font-weight:700;font-family:inherit;cursor:pointer}.fcp-pay:disabled{opacity:.55}'
+      + '.fcp-f{font-size:12px;color:#8E8E93;text-align:center;line-height:1.4}.fcp-ld{padding:28px 0;text-align:center;color:#8E8E93;font-size:14px}.fcp-ld i{display:block;margin:0 auto 10px;width:28px;height:28px;border-radius:50%;border:3px solid #DDE5E0;border-top-color:#12805C;animation:fcSpin .8s linear infinite}';
+    document.head.appendChild(s);
+  }
+  function verify(id) { return fetch('/api/session?id=' + encodeURIComponent(id)).then(function (r) { return r.json(); }).catch(function () { return { paid: false }; }); }
+
+  function finish(api, j, o) {
+    try { sessionStorage.removeItem(KEY); } catch (e) {}
+    var email = (j && j.email) || api.st.email || '';
+    api.set({ email: email, paidPlan: o.plan, paidFlow: o.flow });
+    api.doPaid();
+  }
+
+  var FC = {
+    attach: function (api) {
+      if (/^(localhost|127\.)/.test(location.hostname)) window.__fcApi = api; // local tests
+      var q = new URLSearchParams(location.search), id = q.get('sid');
+      if (q.get('canceled')) history.replaceState(null, '', location.pathname + (q.get('offer') ? '?offer=' + q.get('offer') : ''));
+      if (!id) return;
+      var saved = null; try { saved = JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) {}
+      history.replaceState(null, '', location.pathname);
+      if (!saved) return;
+      api.set(saved.st); api.at('offer');
+      verify(id).then(function (j) { if (j.paid) finish(api, j, saved.o); else toast(api, 'That payment did not go through. Please try again.'); });
+    },
+    pay: function (api) {
+      var st = api.st, o = offerOf(st);
+      if (!st.agree) return toast(api, 'Tick the box to continue.');
+      css();
+      var ids = api.elig().map(function (d) { return d.id; });
+      var sh = document.createElement('div'); sh.className = 'fcp';
+      sh.innerHTML = '<div class="fcp-s"><div class="fcp-h"><b>Checkout</b><button class="fcp-x" aria-label="Close">&times;</button></div>'
+        + '<div class="fcp-r"><span>' + esc(o.line) + '</span><b>' + o.today + ' today</b></div>'
+        + '<div class="fcp-l">EMAIL</div><input class="fcp-e" type="email" autocomplete="email" inputmode="email" placeholder="you@example.com" value="' + esc(st.email || '') + '">'
+        + '<div class="fcp-ld"><i></i>Loading secure payment</div><div class="fcp-x2"></div><div class="fcp-or" hidden>or pay with card</div><div class="fcp-card"></div>'
+        + '<div class="fcp-err" hidden></div><button class="fcp-pay" disabled>' + esc(o.label) + '</button>'
+        + '<div class="fcp-f">Payments are processed securely by Stripe. ' + (o.flow === 'i' ? 'Renews at ' + esc(o.line) + ' until you cancel.' : 'You will not be charged until your trial ends. Cancel anytime.') + '</div></div>';
+      api.el.appendChild(sh);
+      var Q = function (s) { return sh.querySelector(s); }, err = Q('.fcp-err'), btn = Q('.fcp-pay'), em = Q('.fcp-e'), cleanup = [];
+      function close() { cleanup.forEach(function (f) { try { f(); } catch (e) {} }); sh.remove(); }
+      function showErr(m) { err.textContent = m || ''; err.hidden = !m; }
+      Q('.fcp-x').onclick = close; sh.addEventListener('click', function (e) { if (e.target === sh) close(); });
+      function gate() { var e = em.value.trim(); if (!okEmail(e)) { showErr('Enter your email first.'); em.focus(); return null; } showErr(null); return e; }
+      var body = { kind: 'member', plan: o.plan, flow: o.flow, consent: true, ids: ids, sid: sid(), ui: 'elements', back: 'flow-c', path: '/demo/flow-c' };
+      if (okEmail(st.email)) body.email = st.email;
+      Promise.all([post('/api/checkout', body), loadStripe().catch(function () { return null; })]).then(function (r) {
+        var j = r[0], S = r[1];
+        if (j.clientSecret && S) return run(S(j.publishableKey), j.clientSecret);
+        if (j.url) { save(); location.href = j.url; return; }
+        throw new Error(j.error || 'no session');
+      }).catch(function () { var l = Q('.fcp-ld'); if (l) l.textContent = 'Payment could not load. Close this and try again.'; });
+      function save() { try { var c = JSON.parse(JSON.stringify(api.st)); c.email = em.value.trim(); sessionStorage.setItem(KEY, JSON.stringify({ st: c, o: o })); } catch (e) {} }
+      function run(stripe, secret) {
+        var checkout = stripe.initCheckoutElementsSdk({ clientSecret: secret, elementsOptions: { appearance: APPEAR } });
+        var express = checkout.createExpressCheckoutElement({ buttonHeight: 54, buttonTheme: { applePay: 'black', googlePay: 'black' }, buttonType: { applePay: 'plain', googlePay: 'plain' }, layout: { maxColumns: 1, overflow: 'never' }, paymentMethodOrder: ['apple_pay', 'google_pay', 'link'], paymentMethods: { applePay: 'always', googlePay: 'always', link: 'auto', paypal: 'never', amazonPay: 'never', klarna: 'never' } });
+        var card = checkout.createPaymentElement({ layout: { type: 'accordion', defaultCollapsed: false, radios: 'never', spacedAccordionItems: false, visibleAccordionItemsCount: 1 }, paymentMethodOrder: ['card'], wallets: { applePay: 'never', googlePay: 'never', link: 'never' } });
+        var actionsP = checkout.loadActions(), label = btn.textContent;
+        cleanup.push(function () { express.destroy(); card.destroy(); });
+        express.on('ready', function (ev) { var m = ev && ev.availablePaymentMethods; Q('.fcp-or').hidden = !(m && Object.keys(m).some(function (k) { return m[k]; })); });
+        express.on('loaderror', function () { Q('.fcp-or').hidden = true; });
+        card.on('ready', function () { var l = Q('.fcp-ld'); if (l) l.remove(); btn.disabled = false; });
+        function withEmail(r, e) { return r.actions.updateEmail ? r.actions.updateEmail(e).then(function (u) { if (u && u.type === 'error') throw new Error((u.error && u.error.message) || 'Check your email address.'); return r; }) : Promise.resolve(r); }
+        function paid(res) {
+          var id = (res.session && res.session.id) || secret.split('_secret_')[0];
+          btn.textContent = 'Confirming payment'; api.st.email = em.value.trim();
+          verify(id).then(function (j) { if (j.paid) { close(); finish(api, j, o); } else { btn.disabled = false; btn.textContent = label; showErr('We could not confirm that payment yet. Please try again.'); } });
+        }
+        express.on('click', function (event) { if (!gate()) return; event.resolve(); });
+        express.on('confirm', function (event) {
+          var e = gate(); if (!e) { if (event.paymentFailed) event.paymentFailed({ reason: 'fail' }); return; }
+          save();
+          actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Try the card form below.'); return withEmail(r, e); })
+            .then(function (r) { return r.actions.confirm({ expressCheckoutConfirmEvent: event, redirect: 'if_required' }); })
+            .then(function (res) { if (res.type === 'success') paid(res); else showErr((res.error && res.error.message) || 'That payment did not go through. Try again or use a card.'); })
+            .catch(function (x) { showErr(x.message); });
+        });
+        btn.onclick = function () {
+          var e = gate(); if (!e || btn.disabled) return;
+          btn.disabled = true; btn.textContent = 'Processing'; save();
+          var reset = function (m) { btn.disabled = false; btn.textContent = label; showErr(m); };
+          actionsP.then(function (r) { if (r.type !== 'success') throw new Error('Payment could not start. Close this and try again.'); return withEmail(r, e); })
+            .then(function (r) { return r.actions.confirm({ redirect: 'if_required' }); })
+            .then(function (res) { if (res.type === 'success') paid(res); else reset((res.error && res.error.message) || 'That card did not go through. Check the details or try another card.'); })
+            .catch(function (x) { reset(x.message || 'Something went wrong. Please try again.'); });
+        };
+        express.mount(Q('.fcp-x2')); card.mount(Q('.fcp-card'));
+      }
+    },
+    profile: function (api) {
+      var st = api.st, f = {}; [].slice.call(api.el.querySelectorAll('.bd input.inp')).forEach(function (i) { f[i.dataset.f] = i.value.trim(); });
+      var p = { first: f['First name'], last: f['Last name'], phone: f.Phone, street: f.Street, city: f.City, zip: f.ZIP };
+      var bd = st.bd || [], dob = bd.length === 3 ? bd[0] + '/' + bd[1] + '/' + bd[2] : '', state = ST[st.stt] || '';
+      if (!p.first || !p.last) return toast(api, 'Enter your first and last name.');
+      if (String(p.phone || '').replace(/\D/g, '').length < 10) return toast(api, 'Enter a 10-digit phone number.');
+      if (!dob) return toast(api, 'Pick your birthday.');
+      if (!p.street || !p.city || !state) return toast(api, 'Enter your full address.');
+      if (!/^\d{5}$/.test(p.zip || '')) return toast(api, 'Enter a 5-digit ZIP code.');
+      var name = p.first + ' ' + p.last, ids = api.elig().map(function (d) { return d.id; }), now = new Date().toISOString();
+      st.p = p;
+      try {
+        localStorage.setItem('claimclub_session', JSON.stringify({ ids: ids, signed: ids, bank: false, plan: st.paidPlan || '', paid: 'member', flow: st.paidFlow || '',
+          p: { name: name, email: st.email || '', phone: p.phone, street: p.street, city: p.city, st: state, zip: p.zip, dob: dob } }));
+        localStorage.setItem('claimclub_tour', '1');
+      } catch (e) {}
+      if (okEmail(st.email) && ids.length) post('/api/sign', { email: st.email, lang: 'en', page: '/demo/flow-c', method: 'blanket', records: api.elig().map(function (d) {
+        return { settlement_id: d.id, settlement_title: d.co, signer_name: name, signature_text: name, details: { street: p.street, city: p.city, state: state, zip: p.zip, phone: p.phone, dob: dob }, answers: st.chk[d.id] || {},
+          statements: { attestation: AGREE, consent: 'Agreed at checkout', agreement_url: 'https://www.claimclub.io/authorization' }, agreement_version: '2026-11-21', client_signed_at: now };
+      }) }).catch(function () {});
+      api.next();
+    },
+    bank: function (api) {
+      // Plaid opens in the dashboard after sign-in (same hand-off as the claim flow).
+      try { localStorage.setItem('claimclub_connect', '1'); } catch (e) {}
+      api.set({ bank: 'done' }); setTimeout(function () { if (api.step() === 'bank') api.next(); }, 700);
+    },
+    open: function (api) {
+      var e = api.st.email || '';
+      location.href = '/login' + (okEmail(e) ? '?email=' + encodeURIComponent(e) : '');
+    }
+  };
+  window.ccFC = FC;
+})();
+</script><script>class X {
   componentDidMount() {
     const roots = [document]; document.querySelectorAll('*').forEach((el) => { if (el.shadowRoot) roots.push(el.shadowRoot); });
     roots.forEach((root) => root.querySelectorAll('[data-fc]').forEach((el) => { if (!el._fc) { el._fc = 1; this.boot(el); } }));
@@ -138,10 +296,10 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
     const picked = () => D.filter((d) => st.sel[d.id]);
     const elig = () => picked().filter((d) => d.checks.every((q, k) => (st.chk[d.id] || {})[k] === 'y'));
     const sum = (L) => L.reduce((t, d) => t + (d.max || 0), 0);
-    const go = (n) => { st.s = Math.max(0, Math.min(STEPS.length - 1, n)); draw(true); if (STEPS[st.s] === 'load') runLoad(); if (STEPS[st.s] === 'open') setTimeout(() => { if (STEPS[st.s] === 'open') next(); }, 1600); };
+    const go = (n) => { st.s = Math.max(0, Math.min(STEPS.length - 1, n)); draw(true); if (STEPS[st.s] === 'load') runLoad(); if (STEPS[st.s] === 'open') setTimeout(() => { if (STEPS[st.s] !== 'open') return; if (window.ccFC) window.ccFC.open(API); else next(); }, 1600); };
     const next = () => go(st.s + 1);
     let lt;
-    const runLoad = () => { st.load = 0; clearInterval(lt); lt = setInterval(() => { st.load += 1; draw(); if (st.load >= 4) { clearInterval(lt); setTimeout(() => { if (STEPS[st.s] === 'load') next(); }, 500); } }, 650); };
+    const runLoad = () => { st.load = 0; clearInterval(lt); lt = setInterval(() => { st.load += 1; if (STEPS[st.s] === 'load') { const tmp = document.createElement('div'); tmp.innerHTML = S.load(); const n = tmp.querySelector('.ldchk'), o = el.querySelector('.ldchk'); if (n && o) o.replaceWith(n); else draw(); } if (st.load >= 4) { clearInterval(lt); setTimeout(() => { if (STEPS[st.s] === 'load') next(); }, 500); } }, 650); };
 
     const chrome = (inner, o) => {
       o = o || {};
@@ -215,7 +373,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
     });
     S.load = () => { const m = matched().length ? matched() : D.slice(0, 4), steps = ['Reviewing your answers', 'Matching open settlements', 'Estimating your payouts', 'Finishing up'];
       const ring = (i) => i < st.load ? '<span style="width:24px;height:24px;border-radius:99px;background:#12805C;display:flex;align-items:center;justify-content:center">' + I(P.check, 14, '#FFF', 3.2) + '</span>' : '<span style="width:24px;height:24px;border-radius:99px;border:2.5px solid ' + (i === st.load ? '#12805C' : '#D1D1D6') + ';border-right-color:transparent;' + (i === st.load ? 'animation:fcSpin .9s linear infinite' : '') + '"></span>';
-      const checks = '<div style="display:flex;flex-direction:column;gap:14px;margin-top:22px;text-align:left;width:250px">' + steps.map((t, i) => '<span style="display:flex;align-items:center;gap:12px;font-size:16px;font-weight:600;color:' + (i <= st.load ? '#000' : '#AEAEB2') + '">' + ring(i) + t + '</span>').join('') + '</div>';
+      const checks = '<div class="ldchk" style="display:flex;flex-direction:column;gap:14px;margin-top:22px;text-align:left;width:250px">' + steps.map((t, i) => '<span style="display:flex;align-items:center;gap:12px;font-size:16px;font-weight:600;color:' + (i <= st.load ? '#000' : '#AEAEB2') + '">' + ring(i) + t + '</span>').join('') + '</div>';
       const n = m.length, ps = Array.from({ length: n }, (x, k) => { const a = -Math.PI / 2 + k * 2 * Math.PI / n; return [105 + 88 * Math.cos(a), 105 + 88 * Math.sin(a)]; });
       return chrome('<div class="bd" style="justify-content:center;align-items:center;text-align:center;margin-top:-30px"><div style="position:relative;width:210px;height:210px"><div style="position:absolute;inset:17px;border-radius:99px;border:2px dashed #CFE6DA"></div><div style="position:absolute;inset:0;animation:fcSpin 12s linear infinite">'
         + m.map((d, k) => '<div style="position:absolute;left:' + (ps[k][0] - 21) + 'px;top:' + (ps[k][1] - 21) + 'px;padding:3px;border-radius:12px;background:#FFF;box-shadow:0 4px 12px rgba(0,0,0,.12);animation:fcSpin 12s linear infinite reverse">' + T(d, 36) + '</div>').join('')
@@ -257,7 +415,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
         + '<div data-sec="opts">' + box + '</div>'
         + '<div class="opt' + (st.agree ? ' on' : '') + '" data-a="agree" style="margin-top:12px;background:none;padding:4px 2px;gap:10px;font-size:11.5px;font-weight:400;color:#6E6E73;line-height:1.4;align-items:flex-start;min-height:0;box-shadow:none"><span class="ck sq" style="margin:0;width:18px;height:18px;border-radius:5px;' + (st.agree ? 'background:#12805C;box-shadow:none' : '') + '">' + (st.agree ? I(P.check, 15, '#FFF', 3.2) : '') + '</span><span>My answers are true, and I agree that Claimclub can fill out and file my claims for me, as described in the Claim Filing Authorization Agreement.</span></div>'
         + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:14px"><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:6px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="17" height="20" viewBox="2.225 0 19.55 24.0" style="display:block;flex:none"><path fill="#FFF" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg>' + 'Pay</button><button class="btn" data-a="pay" style="background:#000;height:52px;font-size:19px;gap:7px"' + (st.agree ? '' : ' disabled') + '>' + '<svg width="19" height="19" viewBox="0 0 48 48" style="display:block;flex:none"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>' + 'Pay</button><button class="btn mint" data-a="pay"' + (st.agree ? '' : ' disabled') + '>' + I(P.lock, 17, 'currentColor') + (O === 'C' ? 'Pay with card' : 'Start my free trial') + '</button><span style="font-size:12.5px;color:var(--sec);text-align:center;line-height:1.35">' + fine + '</span></div>'
-        + '<div style="margin-top:18px;border-radius:18px;background:#FFF;padding:16px;display:flex;gap:12px;align-items:center"><span style="width:44px;height:44px;flex:none;border-radius:99px;background:#E6F4EE;display:flex;align-items:center;justify-content:center">' + I(P.shield, 22, '#12805C') + '</span><span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:16px">30-day money-back guarantee</b><span style="font-size:14px;color:var(--sec);line-height:1.35">Not happy? Email us within 30 days for a full refund.</span></span></div>'
+        + (st.offer === 'C' ? '<div style="margin-top:18px;border-radius:18px;background:#FFF;padding:16px;display:flex;gap:12px;align-items:center"><span style="width:44px;height:44px;flex:none;border-radius:99px;background:#E6F4EE;display:flex;align-items:center;justify-content:center">' + I(P.shield, 22, '#12805C') + '</span><span style="display:flex;flex-direction:column;gap:2px"><b style="font-size:16px">30-day money-back guarantee</b><span style="font-size:14px;color:var(--sec);line-height:1.35">Not happy? Email us within 30 days for a full refund.</span></span></div>' : '')
         + '<b style="display:block;font-size:22px;letter-spacing:-.5px;margin:26px 0 4px">Why people trust Claimclub</b><span style="font-size:12.5px;color:#8E8E93">Example reviews. Real member reviews coming soon.</span>'
         + REV.map((r) => '<div style="margin-top:10px;border-radius:16px;background:#FFF;padding:14px"><span style="display:flex;align-items:center;gap:10px"><img src="' + r.img + '" style="width:36px;height:36px;border-radius:99px"><span style="display:flex;flex-direction:column;flex:1"><b style="font-size:14.5px">' + r.n + '</b><span style="font-size:12.5px;color:#8E8E93">' + r.p + '</span></span><span class="chip">+$' + r.amt + '</span></span><span style="display:block;color:#FF9500;font-size:13px;letter-spacing:1px;margin-top:8px">★★★★★</span><span style="font-size:14.5px;line-height:1.4;display:block;margin-top:4px">“' + r.q + '”</span></div>').join('')
         + '<b style="display:block;font-size:22px;letter-spacing:-.5px;margin:26px 0 8px">Questions</b><div class="grp">' + faq.map((f, k) => '<div class="row" data-a="faq" data-v="' + k + '" style="flex-direction:column;align-items:stretch;gap:6px;padding:14px 16px;cursor:pointer"><span style="display:flex;align-items:center"><b style="font-size:15.5px;flex:1">' + f[0] + '</b>' + I(st.faq === k ? 'm18 15-6-6-6 6' : 'm6 9 6 6 6-6', 18, '#8E8E93') + '</span>' + (st.faq === k ? '<span style="font-size:14.5px;color:var(--sec);line-height:1.4">' + f[1] + '</span>' : '') + '</div>').join('') + '</div><div style="height:30px"></div></div>'); };
@@ -273,8 +431,8 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
     const PICK = (k) => '<span data-val="' + k + '" style="flex:1;font-size:17px;cursor:pointer;color:' + (st.pick === k ? '#12805C' : pv(k) ? '#000' : '#AEAEB2') + '">' + (pv(k) || (k === 'bday' ? 'MM / DD / YYYY' : 'Select')) + '</span>';
     const COLS = { bday: [['m', MONTHS], ['d', DAYS], ['y', YEARS]], state: [['s', STATES]] };
     const WHEEL = (k) => '<div class="whw"><span class="whb"></span>' + COLS[k].map((c) => '<div class="whl" data-w="' + k + ':' + c[0] + '" style="flex:' + (k === 'state' ? 1 : c[0] === 'y' ? 1.3 : 1) + '"><div style="height:82px"></div>' + c[1].map((v) => '<div class="wi">' + v + '</div>').join('') + '<div style="height:82px"></div></div>').join('') + '</div>';
-    S.profile = () => chrome('<div class="bd scr" style="background:#F2F2F7;padding-top:4px"><span class="chip" style="align-self:flex-start;margin-bottom:8px">' + I(P.check, 13, 'currentColor', 3) + 'Trial started</span><h1 class="t1" style="font-size:28px">Your filing details</h1><p class="sub" style="font-size:15px">These go on every claim form. Use your legal name and current address.</p>'
-      + [['FULL NAME', [['First name', st.name || ''], ['Last name', '']]], ['CONTACT', [['Phone', ''], ['Birthday', 'BDAY']]], ['ADDRESS', [['Street', ''], ['City', ''], ['State', 'STATE'], ['ZIP', '']]]].map((g) => '<div class="lab" style="margin-top:18px">' + g[0] + '</div><div class="grp">' + g[1].map((f) => '<div class="row" style="padding:0 16px;height:48px"' + (f[1] === 'BDAY' || f[1] === 'STATE' ? ' data-a="pick" data-v="' + (f[1] === 'BDAY' ? 'bday' : 'state') + '"' : '') + '><span style="width:120px;flex:none;font-size:15px;white-space:nowrap">' + f[0] + '</span>' + (f[1] === 'BDAY' || f[1] === 'STATE' ? PICK(f[1] === 'BDAY' ? 'bday' : 'state') : '<input class="inp" style="background:none;height:48px;padding:0" placeholder="Required" value="' + f[1] + '">') + '</div>' + (f[1] === 'BDAY' && st.pick === 'bday' ? WHEEL('bday') : f[1] === 'STATE' && st.pick === 'state' ? WHEEL('state') : '')).join('') + '</div>').join('')
+    S.profile = () => chrome('<div class="bd scr" style="background:#F2F2F7;padding-top:4px"><span class="chip" style="align-self:flex-start;margin-bottom:8px">' + I(P.check, 13, 'currentColor', 3) + (st.offer === 'C' ? 'Payment confirmed' : 'Trial started') + '</span><h1 class="t1" style="font-size:28px">Your filing details</h1><p class="sub" style="font-size:15px">These go on every claim form. Use your legal name and current address.</p>'
+      + [['FULL NAME', [['First name', st.name || ''], ['Last name', '']]], ['CONTACT', [['Phone', ''], ['Birthday', 'BDAY']]], ['ADDRESS', [['Street', ''], ['City', ''], ['State', 'STATE'], ['ZIP', '']]]].map((g) => '<div class="lab" style="margin-top:18px">' + g[0] + '</div><div class="grp">' + g[1].map((f) => '<div class="row" style="padding:0 16px;height:48px"' + (f[1] === 'BDAY' || f[1] === 'STATE' ? ' data-a="pick" data-v="' + (f[1] === 'BDAY' ? 'bday' : 'state') + '"' : '') + '><span style="width:120px;flex:none;font-size:15px;white-space:nowrap">' + f[0] + '</span>' + (f[1] === 'BDAY' || f[1] === 'STATE' ? PICK(f[1] === 'BDAY' ? 'bday' : 'state') : '<input class="inp" data-f="' + f[0] + '" style="background:none;height:48px;padding:0" placeholder="Required" value="' + String((st.pf || {})[f[0]] != null ? st.pf[f[0]] : f[1]).replace(/"/g, '&quot;') + '">') + '</div>' + (f[1] === 'BDAY' && st.pick === 'bday' ? WHEEL('bday') : f[1] === 'STATE' && st.pick === 'state' ? WHEEL('state') : '')).join('') + '</div>').join('')
       + '<p style="font-size:13px;color:var(--sec);margin:12px 4px 18px;display:flex;gap:6px">' + I(P.lock, 14, '#8E8E93') + 'Encrypted. Used only to file your claims.</p></div>' + foot(btn('Continue', 'next')), { noBack: true });
     S.bank = () => { const ph = '<div style="position:absolute;left:50%;bottom:-40px;width:210px;height:290px;margin-left:-105px;border-radius:38px;background:#10131A;padding:8px;box-shadow:0 30px 60px rgba(0,0,0,.35)"><div style="width:100%;height:100%;border-radius:30px;background:#F2F2F7;padding:36px 12px 0;display:flex;flex-direction:column;gap:6px"><span style="position:absolute;top:16px;left:50%;transform:translateX(-50%);width:64px;height:18px;border-radius:9px;background:#10131A"></span><b style="font-size:12px;color:#8E8E93;letter-spacing:.6px">YOUR PAYOUTS</b>'
         + elig().slice(0, 3).map((d) => '<div style="display:flex;align-items:center;gap:8px;padding:8px;border-radius:12px;background:#FFF">' + T(d, 24) + '<span style="flex:1;font-size:12px;font-weight:600">' + d.co.split(' ')[0] + '</span><b style="font-size:12px;color:#12805C">' + d.pay.replace('Up to ', '') + '</b></div>').join('') + '</div></div>';
@@ -340,9 +498,10 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       const up = () => { if (x0 === null) return; x0 = null; if (Math.abs(dx) > 90) { c.style.transition = 'transform .25s ease'; c.style.setProperty('--dx', dx > 0 ? 520 : -520); lift(1, true); setTimeout(() => answer(dx > 0), 250); } else { c.style.transition = 'transform .2s ease'; c.style.setProperty('--dx', 0); lift(0, true); } };
       c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
     };
+    el.addEventListener('input', (e) => { const t = e.target; if (t.dataset && t.dataset.f) { st.pf = Object.assign({}, st.pf, { [t.dataset.f]: t.value }); } });
     el.addEventListener('click', (e) => {
       if (fixed) return; const t = e.target.closest('[data-a]'); if (!t || t.disabled) return; const a = t.dataset.a, v = t.dataset.v;
-      if (a === 'next') next();
+      if (a === 'next') { if (window.ccFC && STEPS[st.s] === 'profile') return window.ccFC.profile(API); next(); }
       else if (a === 'back') { let n = st.s - 1; if (STEPS[n] === 'load') n -= 1; go(n); }
       else if (a === 'pain') { if (st.pains[v]) delete st.pains[v]; else st.pains[v] = 1; draw(); }
       else if (a === 'goal') { st.goal = v; draw(); }
@@ -358,11 +517,17 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       else if (a === 'tourx') { st.tour = 99; draw(); }
       else if (a === 'pick') { if (!(v === 'bday' ? st.bd : st.stt)) { if (v === 'bday') st.bd = ['01', '01', '1990']; else st.stt = 'California'; } st.pick = st.pick === v ? '' : v; draw(); }
       else if (a === 'faq') { st.faq = st.faq === +v ? -1 : +v; draw(); }
+      else if (a === 'bank' && window.ccFC) window.ccFC.bank(API);
       else if (a === 'bank') { st.bank = 'busy'; draw(); setTimeout(() => { st.bank = 'done'; draw(); setTimeout(() => { if (STEPS[st.s] === 'bank') next(); }, 900); }, 1400); }
+      else if (a === 'pay' && window.ccFC) window.ccFC.pay(API);
       else if (a === 'pay') { const sh = document.createElement('div'); sh.setAttribute('data-sheet', '1'); sh.style.cssText = 'position:absolute;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:flex-end;z-index:9'; sh.innerHTML = '<div style="background:#F2F2F7;width:100%;border-radius:22px 22px 0 0;padding:22px 20px 40px;display:flex;flex-direction:column;gap:12px;animation:fcIn .25s both"><b style="font-size:20px;text-align:center">Payment</b><div style="height:54px;border-radius:12px;background:#000;color:#FFF;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600"> Pay</div><div style="height:120px;border-radius:12px;background:repeating-linear-gradient(45deg,#E5E5EA,#E5E5EA 8px,#ECECEF 8px,#ECECEF 16px);display:flex;align-items:center;justify-content:center;color:#8E8E93;font-size:14px;font-weight:600">Stripe card form goes here</div><button class="btn mint" data-a="paid">Start my free trial</button></div>'; el.appendChild(sh); }
-      else if (a === 'paid') { st.payDone = 0; next(); setTimeout(() => { st.payDone = 1; draw(); }, 1300); setTimeout(() => { if (STEPS[st.s] === 'paid') { st.payDone = 0; next(); } }, 4300); }
+      else if (a === 'paid') doPaid();
       else if (a === 'restart') { st = init(); draw(true); }
     });
+    function doPaid() { st.payDone = 0; next(); setTimeout(() => { st.payDone = 1; draw(); }, 1300); setTimeout(() => { if (STEPS[st.s] === 'paid') { st.payDone = 0; next(); } }, 4300); }
+    // Production page hooks (window.ccFC, /demo/flow-c only): real Stripe payment, profile save, bank handoff, dashboard.
+    const API = { el, get st() { return st; }, set: (o) => { Object.assign(st, o); draw(); }, at: (n) => { st.s = STEPS.indexOf(n); draw(true); }, next, draw, doPaid, elig, sum, D, step: () => STEPS[st.s] };
+    if (window.ccFC && !fixed) window.ccFC.attach(API);
     el._setOffer = (o) => { st.offer = o; draw(); };
     draw();
   }

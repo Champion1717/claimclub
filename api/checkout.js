@@ -22,8 +22,12 @@ const PLANS = {
   // Offer G (Nov 21 2026): charged today, no trial and no intro coupon. Standard is free and never reaches checkout.
   fast: { amount: 1500, months: 1, interval: 'month', noIntro: true, name: 'Claimclub Fast (monthly)', env: 'STRIPE_PRICE_FAST' },
   pri: { amount: 3000, months: 1, interval: 'month', noIntro: true, name: 'Claimclub Priority (monthly)', env: 'STRIPE_PRICE_PRI' },
+  // Flow C plans (Nov 22 2026, /demo/flow-c only, flow i): charged today, no trial, no intro coupon. 30-day money-back guarantee (Terms).
+  c1: { amount: 1999, months: 1, interval: 'month', noIntro: true, name: 'Claimclub membership (1 month)', env: 'STRIPE_PRICE_C1' },
+  c3: { amount: 4497, months: 3, noIntro: true, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_C3' },
+  c6: { amount: 5994, months: 6, noIntro: true, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_C6' },
 };
-const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h'], '1w': ['d'], '1mt': ['f'], fast: ['g'], pri: ['g'] };
+const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h'], '1w': ['d'], '1mt': ['f'], fast: ['g'], pri: ['g'], c1: ['i'], c3: ['i'], c6: ['i'] };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {
@@ -67,7 +71,7 @@ module.exports = async (req, res) => {
   const sid = typeof b.sid === 'string' && /^[a-z0-9-]{8,64}$/i.test(b.sid) ? b.sid : '';
   const email = typeof b.email === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email) ? b.email : undefined;
   const ids = Array.isArray(b.ids) ? b.ids.filter((x) => typeof x === 'string').join(',').slice(0, 480) : '';
-  const back = b.back === 'dashboard' ? '/dashboard' : '/claim';
+  const back = b.back === 'dashboard' ? '/dashboard' : b.back === 'flow-c' ? '/demo/flow-c' : '/claim';
   const origin = (req.headers['x-forwarded-proto'] || 'https') + '://' + req.headers.host;
 
   let line;
@@ -81,7 +85,7 @@ module.exports = async (req, res) => {
     const p = Object.assign({}, PLANS[plan], o ? { amount: o.amount, trialDays: o.trialDays } : {});
     line = process.env[p.env] && p.amount === PLANS[plan].amount
       ? { price: process.env[p.env], quantity: 1 }
-      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: p.interval ? { interval: p.interval } : { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: p.trialDays ? 'Renews at this price after your free or $2 trial until you cancel.' : p.noIntro ? 'Renews every month at this price until you cancel.' : 'Intro price for your first billing period, then renews at the full price until you cancel.' } } };
+      : { quantity: 1, price_data: { currency: 'usd', unit_amount: p.amount, recurring: p.interval ? { interval: p.interval } : { interval: 'month', interval_count: p.months }, product_data: { name: p.name, description: p.trialDays ? 'Renews at this price after your free or $2 trial until you cancel.' : p.noIntro ? (p.months > 1 && !p.interval ? 'Renews every ' + p.months + ' months at this price until you cancel.' : 'Renews every month at this price until you cancel.') : 'Intro price for your first billing period, then renews at the full price until you cancel.' } } };
   }
 
   try {

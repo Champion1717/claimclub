@@ -23,7 +23,7 @@ function readJson(req) {
   if (typeof req.body === 'string') { try { return Promise.resolve(JSON.parse(req.body || '{}')); } catch (e) { return Promise.resolve({}); } }
   return new Promise((resolve) => { let d = ''; req.on('data', (c) => (d += c)); req.on('end', () => { try { resolve(JSON.parse(d || '{}')); } catch (e) { resolve({}); } }); });
 }
-const MONTHS = { '1m': 1, '3m': 3, '6m': 6, '1y': 12 };
+const MONTHS = { '1m': 1, '3m': 3, '6m': 6, '1y': 12, c1: 1, c3: 3, c6: 6 };
 function renewsAt(plan, from) { const d = new Date(from || Date.now()); if (plan === '1w') d.setDate(d.getDate() + 7); else d.setMonth(d.getMonth() + (MONTHS[plan] || 1)); return d.toISOString(); }
 function send(res, code, obj) { res.statusCode = code; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(obj)); }
 module.exports = { db, userFrom, readJson, renewsAt, send, MONTHS, URL_, PUBLIC_KEY };

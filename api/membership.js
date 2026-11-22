@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
     }
     if (b.action === 'switch') {
       if (!PRICE[b.plan] || b.plan === cur.plan) return send(res, 400, { error: 'Pick a different plan' });
-      if (['1y', '1w', '1mt', 'std', 'fast', 'pri'].includes(cur.plan)) return send(res, 400, { error: 'This plan cannot be switched' });
+      if (['1y', '1w', '1mt', 'std', 'fast', 'pri', 'c1', 'c3', 'c6'].includes(cur.plan)) return send(res, 400, { error: 'This plan cannot be switched' });
       if (stripe && cur.stripe_subscription) {
         // Change the price from the next renewal on. No charge or proration today.
         const sub = await stripe.subscriptions.retrieve(cur.stripe_subscription);

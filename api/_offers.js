@@ -8,6 +8,7 @@
 //   e: free 3-day trial, then $49 a year (Nov 21 2026)
 //   f: free 3-day trial, then $19.99 a month (Nov 21 2026)
 //   h: free 3-day trial, then $49.99 a year (Nov 22 2026)
+//   i: Flow C plans, demo page /demo/flow-c only, never in the rotation (Nov 22 2026): $19.99 a month (c1), $44.97 every 3 months (c3), $59.94 every 6 months (c6)
 const OFFERS = {
   a: { name: 'Choice page ($7.99 first month or $49.99 fee)' },
   b: { name: '$2 for 7 days, then $49.99 a year', plan: '1y', trialDays: 7, first: 200, amount: 4999, interval: 'year' },
@@ -18,8 +19,9 @@ const OFFERS = {
   h: { name: 'Free for 3 days, then $49.99 a year', plan: '1y', trialDays: 3, first: 0, amount: 4999, interval: 'year' },
   // Offer G (Nov 21 2026): three plans on one page (T3 design): Standard free, Fast $15/mo, Priority $30/mo, charged today, no trial.
   g: { name: 'Plans: Standard free, Fast $15/mo, Priority $30/mo', plans: ['std', 'fast', 'pri'] },
+  i: { name: 'Flow C plans: $19.99/mo, $44.97 per 3 months, $59.94 per 6 months', plans: ['c1', 'c3', 'c6'], demoOnly: true },
 };
-const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false };
+const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false, i: false };
 const FLOWS = Object.keys(OFFERS);
 const isFlow = (f) => FLOWS.includes(f);
 // Trial plans: 1y (offers b and c) and 1w (offer d).
@@ -28,19 +30,20 @@ const TRIAL_DAYS = { '1y': 7, '1w': 3, '1mt': 3 };
 const trialDaysFor = (plan, flow) => (TRIAL_DAYS[plan] ? ((OFFERS[flow] && OFFERS[flow].plan === plan && OFFERS[flow].trialDays) || TRIAL_DAYS[plan]) : 0);
 const trialEndFor = (plan, from, flow) => { const d = trialDaysFor(plan, flow); return d ? new Date(new Date(from || Date.now()).getTime() + d * 864e5).toISOString() : null; };
 // What the plan renews at for this offer, in dollars (for Meta predicted value and emails).
-const renewFor = (plan, flow) => ((OFFERS[flow] && OFFERS[flow].plan === plan && OFFERS[flow].amount) || ({ '1y': 4999, '1w': 499, '1mt': 1999 })[plan] || 0) / 100;
+const renewFor = (plan, flow) => ((OFFERS[flow] && OFFERS[flow].plan === plan && OFFERS[flow].amount) || ({ '1y': 4999, '1w': 499, '1mt': 1999, c1: 1999, c3: 4497, c6: 5994 })[plan] || 0) / 100;
 // Which flow a purchase belongs to when the browser did not say (old sessions).
 function flowFor(flow, plan) {
   if (isFlow(flow)) return flow;
   if (plan === '1w') return 'd';
   if (plan === '1mt') return 'f';
   if (['std', 'fast', 'pri'].includes(plan)) return 'g';
+  if (['c1', 'c3', 'c6'].includes(plan)) return 'i';
   if (plan === '1y') return 'b';
   return 'a';
 }
 function offersOn(v) {
   const o = Object.assign({}, DEFAULT_ON, v && typeof v === 'object' ? v : {});
-  const on = FLOWS.filter((k) => o[k] === true);
+  const on = FLOWS.filter((k) => o[k] === true && !OFFERS[k].demoOnly); // demo-only offers (i) never enter the rotation
   return on.length ? on : ['f'];
 }
 // Device type from the browser's user agent: iphone, android, tablet, mac, windows, other.
