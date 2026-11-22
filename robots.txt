@@ -1,5 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /demo/
 
 Sitemap: https://www.claimclub.io/sitemap.xml

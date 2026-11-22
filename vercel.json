@@ -406,6 +406,10 @@
    "destination": "/legal/delete-account.html"
   },
   {
+   "source": "/demo/flow-c",
+   "destination": "/demo/flow-c.html"
+  },
+  {
    "source": "/terms",
    "destination": "/legal/terms.html"
   },
@@ -517,6 +521,15 @@
   },
   {
    "source": "/m/app.html",
+   "headers": [
+    {
+     "key": "X-Robots-Tag",
+     "value": "noindex, nofollow"
+    }
+   ]
+  },
+  {
+   "source": "/demo/(.*)",
    "headers": [
     {
      "key": "X-Robots-Tag",
