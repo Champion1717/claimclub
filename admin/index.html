@@ -77,7 +77,8 @@ textarea.inp{height:auto;min-height:64px;padding:10px 12px;resize:vertical}
 .seg button{padding:6px 12px;border-radius:99px;font-weight:800;font-size:12px;color:#43504A}
 .seg button.on{background:#FFFFFF;color:#0A0F0D;box-shadow:0 1px 3px rgba(10,15,13,.12)}
 @media (max-width:900px){.app{flex-direction:column}.side{width:100%;height:auto;position:sticky;top:0;z-index:20;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:4px;padding:10px 12px;overflow-x:auto;scrollbar-width:none;box-sizing:border-box}.side::-webkit-scrollbar{display:none}.brand{padding:0 8px 0 4px;flex:none;font-size:16px}.nav{width:auto;flex:none;padding:8px 12px;white-space:nowrap}.nav svg{display:none}.nav .ct{margin-left:4px}.side .who{margin:0 0 0 auto;padding:0 4px;flex:none;font-size:0;word-break:normal}.side .who br{display:none}.side .who button{margin:0;font-size:12px;white-space:nowrap}.grid2{grid-template-columns:1fr}main{padding:18px 16px 48px}.kv{grid-template-columns:110px minmax(0,1fr)}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:640px){table:has(thead) thead{display:none}table:has(thead) tr{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 2px;border-bottom:1px solid #EEF2F0}table:has(thead) td{display:block;padding:0;border:0}table:has(thead) td:first-child{flex-basis:100%}.modal{padding:0 !important}.modal>div{border-radius:0 !important;max-height:100dvh !important;min-height:100dvh;width:100% !important;max-width:none !important;box-sizing:border-box}h1{font-size:21px}.tile .v{font-size:22px}}
+.mlab{display:none;color:#6B7C74;font-size:12px;font-weight:600}
+@media (max-width:640px){.mlab{display:inline !important}table:has(thead) thead{display:none}table:has(thead) tr{display:flex;flex-wrap:wrap;gap:6px 14px;padding:12px 2px;border-bottom:1px solid #EEF2F0}table:has(thead) td{display:block;padding:0;border:0}table:has(thead) td:first-child{flex-basis:100%}.modal{padding:0 !important}.modal>div{border-radius:0 !important;max-height:100dvh !important;min-height:100dvh;width:100% !important;max-width:none !important;box-sizing:border-box}h1{font-size:21px}.tile .v{font-size:22px}}
 @media print{.side,.noprint{display:none!important}.modal{position:static;background:none;padding:0}.modal>div{box-shadow:none;max-height:none}}
 </style>
 <style id="cc-hover">/* Simple hover effect for every button on the site. No shadow on hover (it drew a square box around text buttons). */
@@ -542,10 +543,43 @@ function demoCard() {
     + '<tr><td><b>Dashboard only</b><div class="small muted">Sample member with 6 claims</div></td><td style="text-align:right;display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap">' + D.map(([t, k]) => btn(t, '/dashboard?demo=' + k)).join('') + '</td></tr>'
     + '</tbody></table></div>';
 }
+// Nov 22 2026: Funnel has two tabs, Currently running (which offers are live and how visitors are split) and Results.
+const OFF_KEYS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'i'];
+const FLOWC_KEY = { j: 'A', k: 'B', i: 'C' };
+function funTabs(cur) {
+  return '<div class="seg" role="tablist" style="margin-bottom:14px">' + [['running', 'Currently running'], ['results', 'Results']].map(([k, t]) => '<button data-ftab="' + k + '" class="' + (k === cur ? 'on' : '') + '">' + t + '</button>').join('') + '</div>';
+}
+function wireTabs() { document.querySelectorAll('[data-ftab]').forEach((b) => { b.onclick = () => { cache.funTab = b.dataset.ftab; funnel(); }; }); }
+async function running() {
+  main('<h1>Funnel</h1><div class="sub">Which offers are live right now and how new visitors are split between them.</div>' + funTabs('running') + '<div class="empty">Loading...</div>'); wireTabs();
+  const t = new Date(), today = pdDay(t), wk = pdDay(new Date(t.getTime() - 6 * 864e5));
+  let a, w; try { [a, w] = await Promise.all([api('funnel', { from: today, to: today }), api('funnel', { from: wk, to: today })]); } catch (e) { return fail(e); }
+  const on = OFF_KEYS.filter((k) => a.on && a.on[k]), share = on.length ? 100 / on.length : 0;
+  const vis = (r) => { const o = {}; let tot = 0; r.rows.filter((x) => x.dim === 'flow').forEach((x) => { o[x.k] = Number(x.visitors) || 0; tot += o[x.k]; }); return { o, tot }; };
+  const A = vis(a), W = vis(w);
+  const ml = (t) => '<span class="mlab">' + t + ' </span>';
+  const pc = (v, tot) => tot ? Math.round(v / tot * 1000) / 10 + '%' : '-';
+  const where = (k) => FLOWC_KEY[k] ? 'Flow C at /check' : 'Claim flow at /claim';
+  const prev = (k) => FLOWC_KEY[k] ? '<a href="/check?view=phone&offer=' + FLOWC_KEY[k] + '" target="_blank" rel="noopener" class="pill p-ready" style="text-decoration:none;font-weight:800">Phone</a> <a href="/check?view=desktop&offer=' + FLOWC_KEY[k] + '" target="_blank" rel="noopener" class="pill p-ready" style="text-decoration:none;font-weight:800">Desktop</a>' : '<a href="/m/start.html?v=1&demo=1&flow=' + k + '" target="_blank" rel="noopener" class="pill p-ready" style="text-decoration:none;font-weight:800">Phone</a> <a href="/d/start.html?v=1&demo=1&flow=' + k + '" target="_blank" rel="noopener" class="pill p-ready" style="text-decoration:none;font-weight:800">Desktop</a>';
+  const live = '<div class="card" style="margin-bottom:14px"><h2>Live split</h2><div class="small muted" style="margin-bottom:10px;max-width:680px;line-height:1.55">' + on.length + ' offer' + (on.length === 1 ? '' : 's') + ' running. Every new visitor gets one of them at random, with an equal chance, and keeps it for a year. Turn offers on or off in Settings > Offer test.</div>'
+    + '<table><thead><tr><th>Offer</th><th>Where it runs</th><th style="width:34%">Share of new visitors</th><th style="text-align:right">Preview</th></tr></thead><tbody>'
+    + on.map((k) => '<tr><td><b>' + esc(OFFER_SHORT[k] || k) + '</b></td><td class="small">' + where(k) + '</td><td><div class="row" style="gap:10px;align-items:center"><div class="bar" style="flex:1"><span style="width:' + share + '%"></span></div><b>' + (Math.round(share * 10) / 10) + '%</b></div></td><td style="text-align:right;white-space:nowrap">' + prev(k) + '</td></tr>').join('')
+    + '</tbody></table>'
+    + (on.some((k) => FLOWC_KEY[k]) && !['i', 'j', 'k'].every((k) => on.includes(k)) ? '<div class="small err" style="margin-top:10px">Visitors who open /check directly (not through /claim) are always split evenly across Flow C A, B and C, even ones switched off here.</div>' : '')
+    + '</div>';
+  const keys = OFF_KEYS.filter((k) => on.includes(k) || A.o[k] || W.o[k]);
+  const actual = '<div class="card" style="margin-bottom:14px"><h2>Actual split</h2><div class="small muted" style="margin-bottom:10px">Visitors who started the claim flow, by the offer they got. Returning visitors keep the offer they first got, so an offer that is off can still show a few.</div>'
+    + '<table><thead><tr><th>Offer</th><th style="text-align:right">Target</th><th style="text-align:right">Today</th><th style="text-align:right">Last 7 days</th></tr></thead><tbody>'
+    + keys.map((k) => '<tr><td><b>' + esc(OFFER_SHORT[k] || k) + '</b>' + (on.includes(k) ? '' : ' <span class="small muted">(off)</span>') + '</td><td style="text-align:right">' + ml('Target') + (on.includes(k) ? (Math.round(share * 10) / 10) + '%' : '0%') + '</td><td style="text-align:right">' + ml('Today') + '<b>' + pc(A.o[k] || 0, A.tot) + '</b> <span class="small muted">' + (A.o[k] || 0) + '</span></td><td style="text-align:right">' + ml('7 days') + '<b>' + pc(W.o[k] || 0, W.tot) + '</b> <span class="small muted">' + (W.o[k] || 0) + '</span></td></tr>').join('')
+    + '<tr><td class="small muted">Total visitors</td><td></td><td style="text-align:right" class="small muted">' + ml('Today') + A.tot + '</td><td style="text-align:right" class="small muted">' + ml('7 days') + W.tot + '</td></tr>'
+    + '</tbody></table></div>';
+  main('<h1>Funnel</h1><div class="sub">Which offers are live right now and how new visitors are split between them.</div>' + funTabs('running') + live + actual); wireTabs();
+}
 async function funnel() {
+  if ((cache.funTab || 'running') === 'running') return running();
   const F = cache.fun || (cache.fun = { range: 'd7', from: '', to: '', flow: '', source: '', dtype: '' });
   const rg = F.range === 'custom' ? [F.from, F.to] : fRange(F.range);
-  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does.</div><div class="empty">Loading...</div>');
+  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does.</div>' + funTabs('results') + '<div class="empty">Loading...</div>'); wireTabs();
   let r; try { r = await api('funnel', { from: rg[0], to: rg[1], flow: F.flow, source: F.source, dtype: F.dtype }); } catch (e) { return fail(e); }
   const $c = (c) => '$' + (Number(c || 0) / 100).toFixed(2), pct = (a, b) => b ? (a / b * 100).toFixed(1) + '%' : '-', n = (x, k) => Number((x || {})[k] || 0);
   const by = (dim) => { const o = {}; r.rows.filter((x) => x.dim === dim).forEach((x) => { o[x.k] = x; }); return o; };
@@ -558,11 +592,11 @@ async function funnel() {
     + (F.range === 'custom' ? '<input type="date" id="fFrom" value="' + esc(rg[0] || '') + '" style="height:32px;border-radius:10px;border:1px solid #DDE5E0;padding:0 8px;font:inherit"><span class="small muted">to</span><input type="date" id="fTo" value="' + esc(rg[1] || '') + '" style="height:32px;border-radius:10px;border:1px solid #DDE5E0;padding:0 8px;font:inherit"><button class="btn soft" id="fGo" style="height:32px">Apply</button>' : '')
     + '<span class="small muted">' + esc(r.from) + ' to ' + esc(r.to) + ' (Pacific)</span></div>'
     + '<div class="row" style="gap:14px;flex-wrap:wrap;align-items:center">' + seg('source', [['', 'All sources'], ['meta', 'Meta'], ['google_ads', 'Google Ads'], ['organic', 'Organic'], ['other', 'Other'], ['unknown', 'Unknown']], F.source)
-    + sel('flow', 'Offer', [['', 'All offers']].concat(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((k) => [k, OFFER_SHORT[k]])), F.flow)
+    + sel('flow', 'Offer', [['', 'All offers']].concat(OFF_KEYS.map((k) => [k, OFFER_SHORT[k]])), F.flow)
     + sel('dtype', 'Device', [['', 'All devices']].concat(Object.keys(DEV_LABEL).map((k) => [k, DEV_LABEL[k]])), F.dtype) + '</div></div>';
   // offer comparison
-  const offs = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].filter((k) => (r.on && r.on[k]) || FL[k]);
-  const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999 };
+  const offs = OFF_KEYS.filter((k) => (r.on && r.on[k]) || FL[k]);
+  const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999, j: 4999 };
   const line = (label, fn, note) => '<tr><td><b>' + label + '</b>' + (note ? '<div class="small muted">' + note + '</div>' : '') + '</td>' + offs.map((f) => '<td style="text-align:right;font-weight:700">' + fn(FL[f] || {}, f) + '</td>').join('') + '</tr>';
   const comp = '<div class="card" style="margin-bottom:14px"><h2>Offer test</h2><div class="small muted" style="margin-bottom:8px">New visitors get one of the offers switched on in Settings, at random. Turn offers on or off in Settings > Offer test.</div><div style="overflow-x:auto">'
     + '<table><thead><tr><th></th>' + offs.map((f) => '<th style="text-align:right">' + esc(OFFER_SHORT[f]) + (r.on && r.on[f] ? '' : ' <span class="small muted">(off)</span>') + '</th>').join('') + '</tr></thead><tbody>'
@@ -574,8 +608,8 @@ async function funnel() {
     + line('Paid plan picked', (x, f) => f === 'g' ? 'Fast ' + n(x, 'plan_fast') + ' · Priority ' + n(x, 'plan_pri') : '-', 'Offer G only.')
     + line('Any signup per visitor', (x) => pct(n(x, 'buyers') + n(x, 'std_signups'), n(x, 'visitors')), 'Paid, trial or free Standard.')
     + line('Money taken at checkout', (x) => $c(n(x, 'revenue_cents')), 'Free trials take $0. Renewals not included.')
-    + line('Trials running / cancelled / converted', (x, f) => f === 'a' || f === 'g' ? '-' : n(x, 'in_trial') + ' / ' + n(x, 'trial_cancelled') + ' / ' + n(x, 'trial_converted'), 'Converted = paid the first full charge after the trial.')
-    + line('Trial to paid', (x, f) => f === 'a' || f === 'g' ? '-' : pct(n(x, 'trial_converted'), n(x, 'trial_converted') + n(x, 'trial_cancelled')), 'Of trials that have ended.')
+    + line('Trials running / cancelled / converted', (x, f) => f === 'a' || f === 'g' || f === 'i' ? '-' : n(x, 'in_trial') + ' / ' + n(x, 'trial_cancelled') + ' / ' + n(x, 'trial_converted'), 'Converted = paid the first full charge after the trial.')
+    + line('Trial to paid', (x, f) => f === 'a' || f === 'g' || f === 'i' ? '-' : pct(n(x, 'trial_converted'), n(x, 'trial_converted') + n(x, 'trial_cancelled')), 'Of trials that have ended.')
     + line('Projected per visitor', (x, f) => PRICE[f] && n(x, 'visitors') ? $c((n(x, 'revenue_cents') + n(x, 'buyers') * 0.4 * PRICE[f]) / n(x, 'visitors')) : '-', 'Yearly offers only: money taken today plus 40% of trials renewing at the yearly price.')
     + '</tbody></table></div></div>';
   // breakdowns
@@ -596,7 +630,7 @@ async function funnel() {
     return '<tr><td><b>' + esc(STEP_LABEL[x.step] || ('Question ' + (parseInt(x.step.slice(1), 10) + 1))) + '</b></td><td style="width:45%"><div class="bar"><span style="width:' + Math.round(v / top * 100) + '%"></span></div></td><td style="text-align:right;font-weight:800">' + v + '</td><td style="text-align:right" class="small ' + (drop > .3 ? 'err' : 'muted') + '">' + (drop ? '-' + Math.round(drop * 100) + '%' : '') + '</td><td style="text-align:right" class="small muted">' + Math.round(v / top * 100) + '% of start</td></tr>'; }).join('');
   const funnelCard = '<div class="card" style="margin-bottom:14px"><div class="row" style="justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px"><h2 style="margin:0">Steps</h2>' + (worst ? '<span class="small"><b>Biggest drop:</b> ' + esc(STEP_LABEL[worst.step] || worst.step) + ' (' + Math.round(worst.drop * 100) + '% left before it)</span>' : '') + '</div>'
     + (rows ? '<table><thead><tr><th>Step</th><th></th><th style="text-align:right">Visitors</th><th style="text-align:right">Drop</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>' : '<div class="empty">No visits in this range.</div>') + '</div>';
-  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does. Source and device are recorded from Nov 21 2026.</div>' + demoCard() + controls + comp
+  main('<h1>Funnel</h1><div class="sub">How far visitors get in the claim flow, and how each offer does. Source and device are recorded from Nov 21 2026.</div>' + funTabs('results') + demoCard() + controls + comp
     + bd('By source', SR, (k) => SRC_LABEL[k] || k, ['meta', 'google_ads', 'organic', 'other', 'unknown'])
     + bd('By device', DV, (k) => DEV_LABEL[k] || k, ['iphone', 'android', 'tablet', 'mac', 'windows', 'other', 'unknown'])
     + funnelCard + bd('By day', DY, dayLabel, days));
