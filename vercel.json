@@ -441,7 +441,19 @@
   },
   {
    "source": "/about",
-   "destination": "/about.html"
+   "destination": "/pages/about.html"
+  },
+  {
+   "source": "/how-it-works",
+   "destination": "/pages/how-it-works.html"
+  },
+  {
+   "source": "/settlements",
+   "destination": "/pages/settlements.html"
+  },
+  {
+   "source": "/settlements/:id",
+   "destination": "/pages/s/:id.html"
   },
   {
    "source": "/admin",
