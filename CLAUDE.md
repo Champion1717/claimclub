@@ -405,3 +405,4 @@ The Claude Design artifact is slug `e219f7fe-a396-4a66-8f6e-c6857c0cf8e8`. After
 - Purchases from A and B count under flows h and f in the funnel (their `sid` starts with `fc-`). No pixel events on this page.
 - Loader fix: the "checking your matches" step only swaps the `.ldchk` list each tick, so the spinner no longer restarts every 650ms.
 - Test: /tmp/t_fcpay.py pattern (fake Stripe.js, `window.__fcApi` on localhost).
+- Nov 22: Flow C birthday and state wheels work on desktop. Items snap by their center (`scroll-snap-align: center`; with `start` the snap fought the code and left the value about 10px off the band, which is why it drifted and could read the wrong value). One mouse-wheel notch moves one item, trackpads add up, clicking an item picks it, arrow keys and Page Up/Down work when focused, Enter/Escape or the new Done button closes it, and the picked item is bold. Test: /tmp/t_wheel.py pattern.
