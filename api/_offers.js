@@ -7,6 +7,7 @@
 //   d: free 3-day trial, then $4.99 a week
 //   e: free 3-day trial, then $49 a year (Nov 21 2026)
 //   f: free 3-day trial, then $19.99 a month (Nov 21 2026)
+//   h: free 3-day trial, then $49.99 a year (Nov 22 2026)
 const OFFERS = {
   a: { name: 'Choice page ($7.99 first month or $49.99 fee)' },
   b: { name: '$2 for 7 days, then $49.99 a year', plan: '1y', trialDays: 7, first: 200, amount: 4999, interval: 'year' },
@@ -14,10 +15,11 @@ const OFFERS = {
   d: { name: 'Free for 3 days, then $4.99 a week', plan: '1w', trialDays: 3, first: 0, amount: 499, interval: 'week' },
   e: { name: 'Free for 3 days, then $49 a year', plan: '1y', trialDays: 3, first: 0, amount: 4900, interval: 'year' },
   f: { name: 'Free for 3 days, then $19.99 a month', plan: '1mt', trialDays: 3, first: 0, amount: 1999, interval: 'month' },
+  h: { name: 'Free for 3 days, then $49.99 a year', plan: '1y', trialDays: 3, first: 0, amount: 4999, interval: 'year' },
   // Offer G (Nov 21 2026): three plans on one page (T3 design): Standard free, Fast $15/mo, Priority $30/mo, charged today, no trial.
   g: { name: 'Plans: Standard free, Fast $15/mo, Priority $30/mo', plans: ['std', 'fast', 'pri'] },
 };
-const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false };
+const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false };
 const FLOWS = Object.keys(OFFERS);
 const isFlow = (f) => FLOWS.includes(f);
 // Trial plans: 1y (offers b and c) and 1w (offer d).

@@ -1045,10 +1045,11 @@ class Component extends DCLogic {
       c: { plan: '1y', days: 7, today: '$0', todayN: 0, full: '$49.99', fullN: 49.99, unit: 'year', unitEs: 'año', month: '$4.17' },
       d: { plan: '1w', days: 3, today: '$0', todayN: 0, full: '$4.99', fullN: 4.99, unit: 'week', unitEs: 'semana' },
       e: { plan: '1y', days: 3, today: '$0', todayN: 0, full: '$49', fullN: 49, unit: 'year', unitEs: 'año', month: '$4.08' },
+      h: { plan: '1y', days: 3, today: '$0', todayN: 0, full: '$49.99', fullN: 49.99, unit: 'year', unitEs: 'año', month: '$4.17' },
       f: { plan: '1mt', days: 3, today: '$0', todayN: 0, full: '$19.99', fullN: 19.99, unit: 'month', unitEs: 'mes' },
     };
   }
-  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e' || f === 'f'; }
+  isTrialFlow(f) { f = f || this.state.flow; return f === 'b' || f === 'c' || f === 'd' || f === 'e' || f === 'f' || f === 'h'; }
   offer() { return this.offers()[this.state.flow] || this.offers().b; }
   // Offer G (Nov 21 2026): Standard (free), Fast $15/mo, Priority $30/mo on the T3 plan page, charged today.
   isTierFlow(f) { return (f || this.state.flow) === 'g'; }
@@ -1057,13 +1058,13 @@ class Component extends DCLogic {
   // New visitors get one of the switched-on offers at random, kept for a year in the cc_offer cookie.
   // A cookie for an offer that has since been switched off is replaced. ?flow=a|b|c|d forces one (for testing).
   pickFlow(on, final, cur) {
-    const ALL = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+    const ALL = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
     on = Array.isArray(on) && on.filter(f => ALL.includes(f)).length ? on.filter(f => ALL.includes(f)) : ['f'];
     let f = '';
     try {
       const q = new URLSearchParams(location.search).get('flow');
       if (ALL.includes(q)) f = q;
-      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdefg])\b/);
+      const m = document.cookie.match(/(?:^|;\s*)cc_offer=([abcdefgh])\b/);
       if (!f && m && on.includes(m[1])) f = m[1];
       // Keep the flow already shown only if the visitor is past the questions; otherwise a new visitor gets a fair random pick
       // among the switched-on offers (the first call runs before /api/config answers, with only the default offer).

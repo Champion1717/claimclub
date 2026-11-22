@@ -508,7 +508,7 @@ async function memberPanel(id) {
 
 // ---------- funnel ----------
 // Nov 21 2026: date range, offer, traffic source and device filters; offer comparison plus breakdowns by source, device and day.
-const OFFER_SHORT = { a: 'A · Choice page', b: 'B · $2 then $49.99/yr', c: 'C · Free 7 days then $49.99/yr', d: 'D · Free 3 days then $4.99/wk', e: 'E · Free 3 days then $49/yr', f: 'F · Free 3 days then $19.99/mo', g: 'G · Plans: Standard free, Fast $15, Priority $30' };
+const OFFER_SHORT = { a: 'A · Choice page', b: 'B · $2 then $49.99/yr', c: 'C · Free 7 days then $49.99/yr', d: 'D · Free 3 days then $4.99/wk', e: 'E · Free 3 days then $49/yr', f: 'F · Free 3 days then $19.99/mo', h: 'H · Free 3 days then $49.99/yr', g: 'G · Plans: Standard free, Fast $15, Priority $30' };
 const SRC_LABEL = { meta: 'Meta', google_ads: 'Google Ads', organic: 'Organic search', other: 'Other', unknown: 'Unknown (before Nov 21)' };
 const DEV_LABEL = { iphone: 'iPhone', android: 'Android', tablet: 'iPad / tablet', mac: 'Mac', windows: 'Windows', other: 'Other', unknown: 'Unknown (before Nov 21)' };
 const pdDay = (d) => d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
@@ -546,11 +546,11 @@ async function funnel() {
     + (F.range === 'custom' ? '<input type="date" id="fFrom" value="' + esc(rg[0] || '') + '" style="height:32px;border-radius:10px;border:1px solid #DDE5E0;padding:0 8px;font:inherit"><span class="small muted">to</span><input type="date" id="fTo" value="' + esc(rg[1] || '') + '" style="height:32px;border-radius:10px;border:1px solid #DDE5E0;padding:0 8px;font:inherit"><button class="btn soft" id="fGo" style="height:32px">Apply</button>' : '')
     + '<span class="small muted">' + esc(r.from) + ' to ' + esc(r.to) + ' (Pacific)</span></div>'
     + '<div class="row" style="gap:14px;flex-wrap:wrap;align-items:center">' + seg('source', [['', 'All sources'], ['meta', 'Meta'], ['google_ads', 'Google Ads'], ['organic', 'Organic'], ['other', 'Other'], ['unknown', 'Unknown']], F.source)
-    + sel('flow', 'Offer', [['', 'All offers']].concat(['a', 'b', 'c', 'd', 'e', 'f', 'g'].map((k) => [k, OFFER_SHORT[k]])), F.flow)
+    + sel('flow', 'Offer', [['', 'All offers']].concat(['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].map((k) => [k, OFFER_SHORT[k]])), F.flow)
     + sel('dtype', 'Device', [['', 'All devices']].concat(Object.keys(DEV_LABEL).map((k) => [k, DEV_LABEL[k]])), F.dtype) + '</div></div>';
   // offer comparison
-  const offs = ['a', 'b', 'c', 'd', 'e', 'f', 'g'].filter((k) => (r.on && r.on[k]) || FL[k]);
-  const PRICE = { b: 4999, c: 4999, e: 4900 };
+  const offs = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'].filter((k) => (r.on && r.on[k]) || FL[k]);
+  const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999 };
   const line = (label, fn, note) => '<tr><td><b>' + label + '</b>' + (note ? '<div class="small muted">' + note + '</div>' : '') + '</td>' + offs.map((f) => '<td style="text-align:right;font-weight:700">' + fn(FL[f] || {}, f) + '</td>').join('') + '</tr>';
   const comp = '<div class="card" style="margin-bottom:14px"><h2>Offer test</h2><div class="small muted" style="margin-bottom:8px">New visitors get one of the offers switched on in Settings, at random. Turn offers on or off in Settings > Offer test.</div><div style="overflow-x:auto">'
     + '<table><thead><tr><th></th>' + offs.map((f) => '<th style="text-align:right">' + esc(OFFER_SHORT[f]) + (r.on && r.on[f] ? '' : ' <span class="small muted">(off)</span>') + '</th>').join('') + '</tr></thead><tbody>'
@@ -648,7 +648,7 @@ async function settings() {
     + '<div class="row small" style="margin-top:10px"><span class="pill ' + (con ? 'p-approved' : 'p-ready') + '">' + (con ? 'On' : 'Off') + '</span><span id="cmsg" class="muted" role="status"></span></div></div>');
   // Offer test (Nov 21 2026): which offers new visitors can get, at random among the ones switched on.
   const ot = r.settings.offer_test || { a: false, b: false, c: false, d: false, e: false, f: true }, otm = r.settings.offer_test_meta;
-  const OT = [['a', 'A · Choice page', '$7.99 first month membership (then $29.99/mo, or 3 and 6 month plans) or a $49.99 one-time filing fee.'], ['b', 'B · $2 trial', '$2 today for 7 days, then $49.99 a year.'], ['c', 'C · Free 7-day trial', '$0 today for 7 days, then $49.99 a year.'], ['d', 'D · Free 3-day trial, weekly', '$0 today for 3 days, then $4.99 a week.'], ['e', 'E · Free 3-day trial, $49 yearly', '$0 today for 3 days, then $49 a year.'], ['f', 'F · Free 3-day trial, $19.99 monthly', '$0 today for 3 days, then $19.99 a month.'], ['g', 'G · Plans (T3)', 'Plan page: Standard free (filed within 30 days, bot-fileable claims only), Fast $15/mo (3 days, all nationwide), Priority $30/mo (24 hours, all claims plus refunds). Charged today, no trial.']];
+  const OT = [['a', 'A · Choice page', '$7.99 first month membership (then $29.99/mo, or 3 and 6 month plans) or a $49.99 one-time filing fee.'], ['b', 'B · $2 trial', '$2 today for 7 days, then $49.99 a year.'], ['c', 'C · Free 7-day trial', '$0 today for 7 days, then $49.99 a year.'], ['d', 'D · Free 3-day trial, weekly', '$0 today for 3 days, then $4.99 a week.'], ['e', 'E · Free 3-day trial, $49 yearly', '$0 today for 3 days, then $49 a year.'], ['f', 'F · Free 3-day trial, $19.99 monthly', '$0 today for 3 days, then $19.99 a month.'], ['h', 'H · Free 3-day trial, $49.99 yearly', '$0 today for 3 days, then $49.99 a year ($4.17/mo).'], ['g', 'G · Plans (T3)', 'Plan page: Standard free (filed within 30 days, bot-fileable claims only), Fast $15/mo (3 days, all nationwide), Priority $30/mo (24 hours, all claims plus refunds). Charged today, no trial.']];
   const onN = OT.filter(([k]) => ot[k] === true).length;
   $('#main').insertAdjacentHTML('beforeend', '<div class="card"><h2 style="margin-bottom:6px">Offer test</h2><div class="small muted" style="line-height:1.55;max-width:640px">New visitors get one of the offers that are on, at random, and keep it for a year. Visitors who already have an offer that you turn off get a new one. At least one offer stays on. Compare them in Funnel.</div>'
     + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">' + OT.map(([k, t, d]) => { const on = ot[k] === true; return '<div class="row" style="justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid #EEF2F0"><div><b>' + t + '</b><div class="small muted">' + d + '</div></div>'

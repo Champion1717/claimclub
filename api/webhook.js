@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
       // The weekly plan's 3-day trial gets its reminder from the daily cron instead (api/find-cases.js), since Stripe sends this at signup.
       const sub = event.data.object, plan = sub.metadata && sub.metadata.plan;
       const { m, email } = await memberFor(sb, sub.id);
-      const short = plan === '1w' || plan === '1mt' || (m && m.flow === 'e') || (sub.metadata && sub.metadata.flow === 'e');
+      const short = plan === '1w' || plan === '1mt' || (m && ['e', 'h'].includes(m.flow)) || (sub.metadata && ['e', 'h'].includes(sub.metadata.flow));
       if (!short && m && email && m.status === 'active' && !sub.cancel_at_period_end) {
         const end = new Date((sub.trial_end || 0) * 1000), day = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'America/Los_Angeles' });
         await sendNotice({ to: email, userId: m.user_id, kind: 'trial_ending', c: {
