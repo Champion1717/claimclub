@@ -1515,13 +1515,13 @@ class Component extends DCLogic {
       const on = t.k === sel, dark = t.k === 'pri', gr = t.k === 'std';
       // Nov 21 2026: Standard is a quieter grey card (grey checks, grey time block), still a clear option.
       const card = 'display: flex; gap: 12px; align-items: stretch; padding: 12px; border-radius: 18px; text-align: left; cursor: pointer; ' + (dark ? 'background: #0F3B2E; color: #FFFFFF; ' : gr ? (on ? 'background: #FFFFFF; color: #0A0F0D; ' : 'background: #F6F8F7; color: #26302B; ') : 'background: #FFFFFF; color: #0A0F0D; ') + 'box-shadow: ' + (gr ? (on ? 'inset 0 0 0 2px #0A0F0D' : 'inset 0 0 0 1px #DDE3E0') : on ? 'inset 0 0 0 2px #3DDC97, 0 12px 26px rgba(18,128,92,.16)' : dark ? '0 12px 26px rgba(10,15,13,.18)' : 'inset 0 0 0 1px #DDE5E0');
-      const blk = 'width: 76px; flex: none; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; ' + (gr ? 'background: #E9EDEB; color: #5B6862' : on ? 'background: #3DDC97; color: #0F3B2E' : dark ? 'background: rgba(61,220,151,.16); color: #FFFFFF' : 'background: #F1F4F2; color: #0A0F0D');
-      const ic = gr ? '#7B8781' : on ? '#0F3B2E' : dark ? '#3DDC97' : '#5B6862';
+      const blk = 'width: 76px; flex: none; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; ' + (gr ? 'background: #E9EDEB; color: ' + (on ? '#0A0F0D' : '#5B6862') : on ? 'background: #3DDC97; color: #0F3B2E' : dark ? 'background: rgba(61,220,151,.16); color: #FFFFFF' : 'background: #F1F4F2; color: #0A0F0D');
+      const ic = gr ? (on ? '#0A0F0D' : '#7B8781') : on ? '#0F3B2E' : dark ? '#3DDC97' : '#5B6862';
       return Object.assign({}, t, { on, off: !on, dark, card, blk, icC: ic, isStd: t.k === 'std', isFast: t.k === 'fast', isPri: t.k === 'pri', hasTag: !!t.tag,
         tagSt: 'font-size: 10.5px; font-weight: 800; letter-spacing: .4px; padding: 3px 8px; border-radius: 99px; white-space: nowrap; ' + (t.k === 'fast' ? 'background: #3DDC97; color: #0F3B2E' : 'background: rgba(61,220,151,.18); color: #3DDC97'),
         radio: 'width: 20px; height: 20px; flex: none; border-radius: 99px; display: flex; align-items: center; justify-content: center; ' + (on ? 'background: ' + (gr ? '#0A0F0D' : '#12805C') : 'box-shadow: inset 0 0 0 2px ' + (dark ? '#4A5A53' : gr ? '#B8C1BC' : '#C9D3CD')),
         perSt: 'font-size: 12px; font-weight: 700; color: ' + (dark ? '#9FC3B4' : '#5B6862'),
-        fl: t.feats.map(x => ({ t: x, st: 'display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 650; line-height: 1.3; color: ' + (dark ? '#E6EEEA' : gr ? '#5B6862' : '#0A0F0D'), c: dark ? '#3DDC97' : gr ? '#9AA5A0' : '#12805C' })),
+        fl: t.feats.map(x => ({ t: x, st: 'display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 650; line-height: 1.3; color: ' + (dark ? '#E6EEEA' : gr && !on ? '#5B6862' : '#0A0F0D'), c: dark ? '#3DDC97' : gr ? (on ? '#0A0F0D' : '#9AA5A0') : '#12805C' })),
         pick: () => this.setState({ tier: t.k, plan: t.k, agreeErr: false }) });
     });
     const cta = sel === 'std' ? W('Continue with Standard', 'Seguir con Standard') : W('Start ', 'Empezar ') + (sel === 'pri' ? 'Priority · $30' : 'Fast · $15') + W(' today', ' hoy');
