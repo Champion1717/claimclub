@@ -90,6 +90,15 @@ button[aria-expanded]:not(:disabled):hover,button[aria-expanded]:not(:disabled):
 }
 @media (prefers-reduced-motion: reduce){button,[role=button],a[href]{transition:none !important}}
 </style>
+<script>/* Enter = the screen's main button (Nov 22 2026). Buttons marked data-enter are the "continue" action of their screen; on a keyboard,
+Enter clicks the visible one (the newest one, so an open sheet or popup wins). Fields that need Enter themselves are left alone. */
+(function(){if(window.__ccEnter)return;window.__ccEnter=1;
+document.addEventListener('keydown',function(e){
+if(e.key!=='Enter'||e.defaultPrevented||e.isComposing||e.shiftKey||e.altKey||e.ctrlKey||e.metaKey)return;
+var t=e.target||{},tag=(t.tagName||'').toUpperCase();
+if(tag==='TEXTAREA'||tag==='SELECT'||tag==='BUTTON'||tag==='A'||t.isContentEditable||(t.closest&&t.closest('[data-noenter]')))return;
+var bs=[].slice.call(document.querySelectorAll('[data-enter]')).filter(function(b){if(b.disabled||b.getAttribute('aria-disabled')==='true')return false;var r=b.getBoundingClientRect();if(!r.width||!r.height)return false;var s=getComputedStyle(b);return s.visibility!=='hidden'&&s.pointerEvents!=='none'&&s.opacity!=='0'});
+if(!bs.length||document.querySelector('.ccp'))return;e.preventDefault();bs[bs.length-1].click();});})();</script>
 </head>
 <body>
 <div id="root"></div>

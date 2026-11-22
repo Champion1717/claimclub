@@ -64,6 +64,15 @@ button[aria-expanded]:not(:disabled):hover,button[aria-expanded]:not(:disabled):
 }
 @media (prefers-reduced-motion: reduce){button,[role=button],a[href]{transition:none !important}}
 </style>
+<script>/* Enter = the screen's main button (Nov 22 2026). Buttons marked data-enter are the "continue" action of their screen; on a keyboard,
+Enter clicks the visible one (the newest one, so an open sheet or popup wins). Fields that need Enter themselves are left alone. */
+(function(){if(window.__ccEnter)return;window.__ccEnter=1;
+document.addEventListener('keydown',function(e){
+if(e.key!=='Enter'||e.defaultPrevented||e.isComposing||e.shiftKey||e.altKey||e.ctrlKey||e.metaKey)return;
+var t=e.target||{},tag=(t.tagName||'').toUpperCase();
+if(tag==='TEXTAREA'||tag==='SELECT'||tag==='BUTTON'||tag==='A'||t.isContentEditable||(t.closest&&t.closest('[data-noenter]')))return;
+var bs=[].slice.call(document.querySelectorAll('[data-enter]')).filter(function(b){if(b.disabled||b.getAttribute('aria-disabled')==='true')return false;var r=b.getBoundingClientRect();if(!r.width||!r.height)return false;var s=getComputedStyle(b);return s.visibility!=='hidden'&&s.pointerEvents!=='none'&&s.opacity!=='0'});
+if(!bs.length||document.querySelector('.ccp'))return;e.preventDefault();bs[bs.length-1].click();});})();</script>
 </head><body>
 <header><div class="hw"><a class="brand" href="/" aria-label="Claimclub home"><svg width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><path fill="#0A0F0D" d="M81.4 83.6A46 46 0 0 1 51.6 96.0L51.2 83.0A33 33 0 0 0 72.5 74.1Z"></path><path fill="#0A0F0D" d="M48.4 96.0A46 46 0 0 1 18.6 83.6L27.5 74.1A33 33 0 0 0 48.8 83.0Z"></path><path fill="#0A0F0D" d="M16.4 81.4A46 46 0 0 1 4.0 51.6L17.0 51.2A33 33 0 0 0 25.9 72.5Z"></path><path fill="#0A0F0D" d="M4.0 48.4A46 46 0 0 1 16.4 18.6L25.9 27.5A33 33 0 0 0 17.0 48.8Z"></path><path fill="#0A0F0D" d="M18.6 16.4A46 46 0 0 1 48.4 4.0L48.8 17.0A33 33 0 0 0 27.5 25.9Z"></path><path fill="#12805C" d="M51.6 4.0A46 46 0 0 1 81.4 16.4L72.5 25.9A33 33 0 0 0 51.2 17.0Z"></path></svg><span>claim<b>club</b><i>.io</i></span></a><a class="cta" href="/"><span class="lg">Check what you're owed</span><span class="sm">Get started</span></a></div></header>
 <div class="wrap"><nav class="side" aria-label="Legal and company pages"><a href="/authorization" class="">Claim Filing Authorization Agreement</a><a href="/terms" class="">Terms & Conditions</a><a href="/privacy" class="">Privacy Policy</a><a href="/security" class="">Security</a><a href="/delete-account" class="">Delete your account</a><a href="/about" class="on">About Claimclub</a></nav><main><div class="hero"><h1>Money you're owed shouldn't go unclaimed.</h1><p>Every year, billions of dollars from class action settlements go unclaimed, mostly because people never hear about them or don't have time for the forms. Claimclub fixes that.</p></div>

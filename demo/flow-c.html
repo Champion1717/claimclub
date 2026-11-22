@@ -104,7 +104,7 @@ body.d .fcdk{width:100vw;height:100vh;border-radius:0;box-shadow:none}
 body.p{display:flex;align-items:center;justify-content:center;min-height:100vh;background:#E9EEEB;overflow:hidden}body.p .fc{transform:scale(var(--sc,1));flex:none}
 .demoB{position:fixed;left:12px;bottom:12px;z-index:50;display:flex;gap:6px;align-items:center;padding:5px 6px 5px 12px;border-radius:99px;background:#0F3B2E;color:#FFF;font:800 11px/1 -apple-system,BlinkMacSystemFont,Inter,sans-serif;letter-spacing:.6px;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px 10px;font-size:9.5px}body.m .demoB a{padding:3px 7px}
-.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style></head><body><div id="app"></div><div class="demoB">PREVIEW <a href="#" onclick="location.reload();return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),o=(q.get("offer")||"A").toUpperCase();if(!/^[ABC]$/.test(o))o="A";var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>/* Flow C production hooks (Nov 22 2026). Loaded only on /demo/flow-c, never on the canvas.
+.demoB a{color:#0F3B2E;background:#3DDC97;border-radius:99px;padding:5px 9px;text-decoration:none;letter-spacing:0}</style></head><body><div id="app"></div><div class="demoB">PREVIEW <a href="#" onclick="try{sessionStorage.removeItem('fc_prog')}catch(e){}location.href='/demo/flow-c'+location.search;return false">Restart</a></div><script>(function(){var q=new URLSearchParams(location.search),o=(q.get("offer")||"A").toUpperCase();if(!/^[ABC]$/.test(o))o="A";var v=(q.get("view")||"").toLowerCase(),d=v?v==="desktop":innerWidth>=820,fr=!d&&innerWidth>=500;document.body.className=d?"d":fr?"p":"m";if(fr){var sc=Math.min(1,(innerHeight-48)/868);document.documentElement.style.setProperty("--sc",sc);}document.getElementById("app").innerHTML=d?'<div class="fcdk"><div class="fc dkc" data-fc data-offer="'+o+'"></div></div>':'<div class="fc" data-fc data-offer="'+o+'"></div>';})();</script><script>/* Flow C production hooks (Nov 22 2026). Loaded only on /demo/flow-c, never on the canvas.
    Real Stripe payment (Express Checkout + Payment Element through /api/checkout ui 'elements'),
    blanket authorization through /api/sign, the claim-flow session for the member app, and the
    hand-off to the real dashboard (email code sign-in there links the Stripe purchase).
@@ -153,8 +153,65 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
     api.doPaid();
   }
 
+  // Enter presses the screen's main button (desktop keyboards), unless focus is in a field that needs Enter or a sheet is open.
+  function enterKey(api, e) {
+    if (e.key !== 'Enter' || e.shiftKey || e.altKey || e.metaKey || e.ctrlKey || e.isComposing) return;
+    var t = e.target, tag = (t && t.tagName) || '';
+    if (tag === 'TEXTAREA' || tag === 'BUTTON' || tag === 'A' || (t && t.closest && t.closest('.whl'))) return;
+    if (/^q\d+$/.test(api.step())) return; // questions are answered with Yes / No, not Enter
+    var sheet = api.el.querySelector('.fcp');
+    if (sheet) { if (tag === 'INPUT') { var pb = sheet.querySelector('.fcp-pay'); if (pb && !pb.disabled) { e.preventDefault(); pb.click(); } } return; }
+    var btns = [].slice.call(api.el.querySelectorAll('.ft .btn, .ft button')).filter(function (b) { return !b.disabled && b.offsetParent !== null; });
+    var b = btns.filter(function (x) { return x.dataset.a === 'next' || x.dataset.a === 'pay' || x.dataset.a === 'nextc'; })[0] || btns[btns.length - 1];
+    if (api.step() === 'offer') { var m = api.el.querySelector('[data-a="pay"].mint') || api.el.querySelector('[data-a="pay"]'); b = m && !m.disabled ? m : null; }
+    if (!b) return;
+    if (api.st.pick) { api.set({ pick: '' }); }
+    e.preventDefault(); b.click();
+  }
+  // Each screen has its own URL (/demo/flow-c/<screen>) and the answers live in sessionStorage, so a refresh or the
+  // browser's back button keeps your place. Paid screens can't be reached without paying, and you can't go back into payment.
+  var PROG = 'fc_prog', BASE = '/demo/flow-c', last = null, popping = false;
+  var SLUG = { w1: 'welcome', gap: 'unclaimed', w2: 'we-find', w3: 'we-file', w4: 'trust', rev: 'reviews', name: 'name', pains: 'about-you', goal: 'goal', plan: 'how-you-get-paid', qintro: 'quiz',
+    load: 'checking', est: 'estimate', pick: 'choose-claims', chk: 'check-claims', win: 'ready', offer: 'checkout', paid: 'confirming', profile: 'details', bank: 'bank', open: 'opening', dash: 'dashboard' };
+  var POST = { paid: 1, profile: 1, bank: 1, open: 1, dash: 1 };
+  function slugOf(step) { return /^q\d+$/.test(step) ? 'question-' + (+step.slice(1) + 1) : SLUG[step] || step; }
+  function stepOf(slug) { var m = /^question-(\d+)$/.exec(slug || ''); if (m) return 'q' + (m[1] - 1); for (var k in SLUG) if (SLUG[k] === slug) return k; return ''; }
+  function urlFor(step) { var q = new URLSearchParams(location.search); ['sid', 'paid', 'canceled'].forEach(function (k) { q.delete(k); }); var qs = q.toString(); return BASE + (step === 'w1' ? '' : '/' + slugOf(step)) + (qs ? '?' + qs : ''); }
+  function saveProg(api) { try { var c = JSON.parse(JSON.stringify(api.st)); delete c.pick; delete c.menu; c.payDone = 0; sessionStorage.setItem(PROG, JSON.stringify(c)); } catch (e) {} }
+  function allowed(api, step) { // where a request for <step> may land
+    var paid = !!api.st.paidPlan;
+    if (paid && !POST[step]) return 'profile';
+    if (!paid && POST[step]) { var cur = api.step(); return POST[cur] ? 'offer' : cur; }
+    if (step === 'load') return 'est';
+    if (step === 'paid') return 'profile';
+    if (/^q\d+$/.test(step) || ['est', 'pick', 'chk', 'win', 'offer'].indexOf(step) >= 0) { if (step !== 'q0' && /^q/.test(step) && !api.st.name) return 'name'; }
+    return step;
+  }
+  function jump(api, step) { api.set({ pick: '', menu: 0, payDone: 0 }); api.at(step); if (step === 'open') FC.open(api); }
+
   var FC = {
+    onStep: function (api) {
+      var step = api.step(); saveProg(api);
+      if (step === last) return;
+      var u = urlFor(step);
+      if (location.pathname + location.search !== u) { if (last && !popping) history.pushState({ fc: step }, '', u); else history.replaceState({ fc: step }, '', u); }
+      last = step; popping = false;
+    },
     attach: function (api) {
+      // Restore the saved answers and the screen named in the URL.
+      var saved = null; try { saved = JSON.parse(sessionStorage.getItem(PROG) || 'null'); } catch (e) {}
+      var want = stepOf(location.pathname.replace(BASE, '').replace(/^\/|\/$/g, ''));
+      if (saved && !new URLSearchParams(location.search).get('sid')) {
+        var off = api.st.offer; Object.assign(api.st, saved); api.st.offer = off;
+        var target = allowed(api, want || 'w1'); jump(api, target);
+      } else if (want && want !== 'w1') { history.replaceState(null, '', urlFor('w1')); }
+      window.addEventListener('popstate', function (e) {
+        var s = (e.state && e.state.fc) || stepOf(location.pathname.replace(BASE, '').replace(/^\/|\/$/g, '')) || 'w1';
+        var t = allowed(api, s); popping = true; jump(api, t);
+        if (t !== s) history.replaceState({ fc: t }, '', urlFor(t));
+      });
+      document.addEventListener('keydown', function (e) { enterKey(api, e); });
+
       if (/^(localhost|127\.)/.test(location.hostname)) window.__fcApi = api; // local tests
       var q = new URLSearchParams(location.search), id = q.get('sid');
       if (q.get('canceled')) history.replaceState(null, '', location.pathname + (q.get('offer') ? '?offer=' + q.get('offer') : ''));
@@ -481,6 +538,7 @@ body.m .demoB{left:50%;bottom:5px;transform:translateX(-50%);padding:3px 4px 3px
       if (el.classList.contains('dkc')) { const w = el.clientWidth || 1280; el.style.setProperty('--pad', Math.max(20, (w - 460) / 2) + 'px'); el.style.setProperty('--padD', Math.max(20, (w - 720) / 2) + 'px'); }
       el.querySelectorAll('.whl').forEach((w) => { const [pk, c] = w.dataset.w.split(':'), vals = Array.from(w.querySelectorAll('.wi')).map((x) => x.textContent); const cur = pk === 'bday' ? (st.bd || ['01', '01', '1990'])[{ m: 0, d: 1, y: 2 }[c]] : (st.stt || 'California'); w.scrollTop = Math.max(0, vals.indexOf(cur)) * 36; });
       if (fixed) return;
+      if (window.ccFC && window.ccFC.onStep) window.ccFC.onStep(API);
       const inp = el.querySelector('input[data-k=name]'); if (inp) { inp.oninput = (e) => { st.name = e.target.value; const bt = el.querySelector('[data-a=next]'); bt.disabled = !st.name.trim(); }; }
       const sw = el.querySelector('.swipe'); if (sw) wireSwipe(sw);
       el.querySelectorAll('.whl').forEach((w) => { const [pk, c] = w.dataset.w.split(':'), vals = Array.from(w.querySelectorAll('.wi')).map((x) => x.textContent);

@@ -410,6 +410,10 @@
    "destination": "/demo/flow-c.html"
   },
   {
+   "source": "/demo/flow-c/:step",
+   "destination": "/demo/flow-c.html"
+  },
+  {
    "source": "/terms",
    "destination": "/legal/terms.html"
   },
