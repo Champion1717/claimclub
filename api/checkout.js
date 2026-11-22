@@ -103,8 +103,6 @@ module.exports = async (req, res) => {
     const lines = trial && first > 0 ? [line, { quantity: 1, price_data: { currency: 'usd', unit_amount: first, product_data: { name: 'Claimclub ' + trial + '-day trial', description: 'Then $' + (amt / 100).toFixed(2) + ' a ' + PLANS[plan].interval + ' from the end of your trial until you cancel.' } } }] : [line];
     const base = {
       mode: kind === 'fee' ? 'payment' : 'subscription',
-      // Flow C (/demo/flow-c): cards only, so Stripe's form shows just the card fields (Apple Pay and Google Pay are card wallets and still work).
-      ...(b.back === 'flow-c' ? { payment_method_types: ['card'] } : {}),
       line_items: lines,
       customer_email: email,
       ...discount,
@@ -115,8 +113,15 @@ module.exports = async (req, res) => {
     const pk = b.ui === 'elements' ? publishableKey() : null;
     if (pk) {
       try {
-        const s = await stripe.checkout.sessions.create({ ...base, ui_mode: 'elements', return_url: done }, { apiVersion: ELEMENTS_API });
-        if (s.client_secret) return res.end(JSON.stringify({ clientSecret: s.client_secret, publishableKey: pk }));
+        // Flow C (/demo/flow-c) hides Cash App, Klarna, Amazon Pay and Link in Stripe's form. If Stripe refuses that, retry without it
+        // (Nov 22: payment_method_types made the in-page session fail and the page fell back to Stripe's hosted page).
+        const tries = b.back === 'flow-c' ? [{ excluded_payment_method_types: ['cashapp', 'klarna', 'amazon_pay', 'link', 'affirm', 'afterpay_clearpay'] }, {}] : [{}];
+        for (const extra of tries) {
+          try {
+            const s = await stripe.checkout.sessions.create({ ...base, ...extra, ui_mode: 'elements', return_url: done }, { apiVersion: ELEMENTS_API });
+            if (s.client_secret) return res.end(JSON.stringify({ clientSecret: s.client_secret, publishableKey: pk }));
+          } catch (e) { console.error('[checkout] in-page session failed' + (Object.keys(extra).length ? ' (with excluded methods)' : ', using the hosted page'), e.message); }
+        }
       } catch (e) { console.error('[checkout] in-page session failed, using the hosted page', e.message); }
     }
     const session = await stripe.checkout.sessions.create({
