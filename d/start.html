@@ -956,8 +956,8 @@ class Component extends DCLogic {
   }
   componentWillUnmount() { clearTimeout(this._t); clearTimeout(this._calc); clearTimeout(this._bk); clearTimeout(this._pay); }
   steps() {
-    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['details', 'tiers', 'verify'] : ['details', 'tiers', 'checkout', 'verify']) : this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
-    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['details', 'tiers', 'verify'] : ['details', 'tiers', 'checkout', 'verify']) : this.isTrialFlow() ? ['details', 'trial', 'checkout', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
+    if (this.quickMode()) return this.quiz().map((q, i) => 'q' + i).concat(this.state.focus && !this.state.focusMore ? ['picked'] : []).concat(['all', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['tiers', 'details', 'verify'] : ['tiers', 'checkout', 'details', 'verify']) : this.isTrialFlow() ? ['trial', 'checkout', 'details', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
+    return ['intro1', 'intro2', 'state'].concat(this.quiz().map((q, i) => 'q' + i)).concat(['calc', 'reveal', 'email'].concat(this.isTierFlow() ? (this.state.tier === 'std' ? ['tiers', 'details', 'verify'] : ['tiers', 'checkout', 'details', 'verify']) : this.isTrialFlow() ? ['trial', 'checkout', 'details', 'verify'] : ['pay', 'plans', 'checkout', 'details', 'verify', 'auth']).concat(this.state.bankOn ? ['bank'] : []));
   }
   stepName() { return this.steps()[this.state.step]; }
   go(d) {
@@ -1259,7 +1259,7 @@ class Component extends DCLogic {
       emailBusy: !!s.emailBusy, emailIdle: !s.emailBusy, emailExists: !!em && s.emailExists === em, loginHref: '/login?email=' + encodeURIComponent(em),
       otherEmailFlow: () => this.setState({ email: '', emailExists: '', emailTried: false }), quickSignIn: () => { if (!emailOk) this.setState({ email: 'alex.rivera@gmail.com' }); this.go(1); },
       p, inp, stCode: stCode || '', setFirst: setP('first'), setMiddle: setP('middle'), setLast: setP('last'), setStreet: setP('street'), setApt: setP('apt'), setCity: setP('city'), setZip: setP('zip'), setPhone: setP('phone'), setDob: (e) => this.setState({ p: Object.assign({}, this.state.p, { dob: this.slashFmt(e.target.value, this.state.p.dob, [2, 2, 4]) }) }),
-      detDisabled: false, detStyle: S.btn(true), detNext: () => { if (detOk) this.go(1); else this.setState({ detTried: true }); },
+      detDisabled: false, detStyle: S.btn(true), detNext: () => { if (!detOk) { this.setState({ detTried: true }); return; } if (this.state.signPending) { this.recordSign(this.authList(), 'blanket'); this.setState({ signPending: false }); } this.go(1); },
       fe: showDE, detErrN: Object.keys(showDE).length, hasDetErr: Object.keys(showDE).length > 0,
       detErrMsg: es ? 'Revisa los campos marcados para que tus reclamos no sean rechazados.' : 'Fix the highlighted fields so your claims are not rejected.',
       fs: ['first', 'middle', 'last', 'street', 'apt', 'city', 'st', 'zip', 'phone', 'dob'].reduce((o, k) => { o[k] = inp + (showDE[k] ? ';border-color:#C8323B;background:#FFF7F7' : ''); return o; }, {}),
@@ -1535,7 +1535,7 @@ class Component extends DCLogic {
     if (this.state.tier === 'std') {
       if (!this.agreeSign()) return;
       try { sessionStorage.setItem('cc_std', '1'); } catch (e) {}
-      this.state.paid = 'std'; this.state.plan = 'std'; this.setState({ paid: 'std', buying: 'std', plan: 'std', step: this.steps().indexOf('verify') }); this.sendCode(); this.saveForApp();
+      this.state.paid = 'std'; this.state.plan = 'std'; this.setState({ paid: 'std', buying: 'std', plan: 'std', step: this.steps().indexOf('details') }); this.saveForApp();
       return;
     }
     try { sessionStorage.removeItem('cc_std'); } catch (e) {}
@@ -1545,7 +1545,8 @@ class Component extends DCLogic {
   // Nov 21 2026: one blanket authorization on the trial page replaces signing each claim form. Returns false (and shows the error) until ticked.
   agreeSign() {
     if (!this.state.agreeAll) { this.setState({ agreeErr: true }); return false; }
-    const AL = this.authList(); this.recordSign(AL, 'blanket');
+    // Nov 22: details come after payment, so the record (which carries the typed name) is sent when the details step is done (detNext).
+    const AL = this.authList(); if ((this.state.p || {}).first && (this.state.p || {}).last) this.recordSign(AL, 'blanket'); else this.state.signPending = true;
     const sg = Object.assign({}, this.state.signed), cs = Object.assign({}, this.state.consent); AL.forEach(m => { sg[m.id] = true; cs[m.id] = true; });
     this.setState({ signed: sg, consent: cs, agreeErr: false }); return true;
   }
