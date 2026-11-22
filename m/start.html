@@ -688,7 +688,7 @@ class Component extends DCLogic {
       asideEmpty: ['Settlements you match will appear here as you answer.', 'Los acuerdos que coincidan aparecerán aquí mientras respondes.'],
       b1: ['Every settlement is court-approved', 'Cada acuerdo está aprobado por un tribunal'], b2: ['We pre-fill and submit your claims', 'Llenamos y enviamos tus reclamos'],
       b3: ['Payouts come straight from the settlement', 'Los pagos vienen directo del acuerdo'], b4: ['Cancel anytime', 'Cancela cuando quieras'],
-      asideNote: ['Amounts are caps or estimates from each settlement notice and are not guaranteed.', 'Los montos son límites o estimados de cada aviso y no están garantizados.'],
+      asideNote: ['Amounts are estimates, not guaranteed.', 'Los montos son estimados, no garantizados.'],
       i1a: ["There's money out there with ", 'Hay dinero por ahí con '], i1b: ['your name on it.', 'tu nombre.'],
       i1p: ['Companies settle class action lawsuits all the time. Most people never claim their share.', 'Las empresas resuelven demandas colectivas todo el tiempo. La mayoría de la gente nunca reclama su parte.'],
       exHead: ['REAL SETTLEMENTS, OPEN NOW', 'ACUERDOS REALES, ABIERTOS AHORA'], exNote: ['Examples', 'Ejemplos'],
@@ -924,7 +924,7 @@ class Component extends DCLogic {
     if (S[n] === 'all' && !this.state.sawAll) n += d;
     if (S[n] === 'verify' && this.state.verified) n += d;
     // Offer G: arriving at the plan page from the details step always starts on Fast (unless the link sets ?tier=).
-    if (d > 0 && S[n] === 'tiers') { let tq = ''; try { tq = new URLSearchParams(location.search).get('tier') || ''; } catch (e) {} if (!['std', 'fast', 'pri'].includes(tq)) { this.state.tier = 'fast'; this.state.plan = 'fast'; } }
+    if (d > 0 && S[n] === 'tiers') { this.state.tier = 'fast'; this.state.plan = 'fast'; }
     if (S[n] === 'auth' && noAuth) n += d;
     // Payment comes before details and signing (Nov 15): going back from details never re-enters payment.
     if (d < 0 && this.state.paid && ['perks', 'checkout', 'plans', 'pay', 'feepay', 'trial'].includes(S[n])) return;
@@ -1030,7 +1030,7 @@ class Component extends DCLogic {
     } catch (e) { f = f || on[0]; }
     return f;
   }
-  setFlow(f) { if (f === this.state.flow) return; if (f === 'g') { let tq = 'fast'; try { const t0 = new URLSearchParams(location.search).get('tier'); if (['std', 'fast', 'pri'].includes(t0)) tq = t0; } catch (e) {} this.setState({ flow: 'g', tier: tq, plan: tq }); return; } this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w', '1mt', 'fast', 'pri'].includes(this.state.plan) ? '1m' : this.state.plan }); }
+  setFlow(f) { if (f === this.state.flow) return; if (f === 'g') { this.setState({ flow: 'g', tier: 'fast', plan: 'fast' }); return; } this.setState(this.isTrialFlow(f) ? { flow: f, plan: this.offers()[f].plan } : { flow: 'a', plan: ['1y', '1w', '1mt', 'fast', 'pri'].includes(this.state.plan) ? '1m' : this.state.plan }); }
   planInfo(id, es) {
     const O = this.offer();
     return ({ '1y': { first: O.plan === '1y' ? O.today : '$2', full: O.plan === '1y' ? O.full : '$49.99', every: es ? 'cada año' : 'every year' }, '1mt': { first: '$0', full: '$19.99', every: es ? 'cada mes' : 'every month' }, std: { first: '$0', full: '$0', every: '' }, fast: { first: '$15', full: '$15', every: es ? 'cada mes' : 'every month' }, pri: { first: '$30', full: '$30', every: es ? 'cada mes' : 'every month' }, '1w': { first: '$0', full: '$4.99', every: es ? 'cada semana' : 'every week' }, '1m': { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' }, '3m': { first: '$18.99', full: '$74.99', every: es ? 'cada 3 meses' : 'every 3 months' }, '6m': { first: '$29.99', full: '$119.99', every: es ? 'cada 6 meses' : 'every 6 months' } })[id] || { first: '$7.99', full: '$29.99', every: es ? 'cada mes' : 'every month' };
@@ -1191,7 +1191,7 @@ class Component extends DCLogic {
       inQuiz: qNum > 0, notQuiz: qNum === 0, showBack, showSegs: qNum > 0 && qTotal > 1,
       quickNote: quick && qIndex >= 0, quickNoteText: es ? 'Cuando te unas revisamos más de 70 reclamos más para ti.' : "After you join, we check 70+ more claims for you.",
       setStCode: (e) => this.setState({ st: (e.target.value || '').toUpperCase().slice(0, 2) }),
-      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth', 'plans', 'feepay', 'checkout'].includes(name)),
+      asideMatches: qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth'].includes(name), asideInfo: !(qNum > 0 || ['picked', 'all', 'calc', 'reveal', 'email', 'details', 'verify', 'auth', 'plans', 'feepay', 'checkout', 'trial', 'tiers'].includes(name)),
       qLabel: qNum + ' ' + L.of + ' ' + qTotal, qFull: L.qWord + ' ' + qNum + ' ' + L.of + ' ' + qTotal, segs, q, states,
       segGrid: 'flex-grow:1;display:grid;grid-template-columns:repeat(' + qTotal + ',minmax(0,1fr));gap:4px',
       i2h: L.i2a + qTotal + L.i2b,
@@ -1259,7 +1259,7 @@ class Component extends DCLogic {
           joinSub: es ? 'La membresía presenta ' + (n === 1 ? 'este reclamo' : 'estos ' + n) + ' y cada nuevo reclamo para ti.' : 'Membership files ' + (n === 1 ? 'this claim' : 'these ' + n) + ' plus every new claim you qualify for.',
           switchW: es ? 'Cambiar' : 'Switch', keepH: es ? 'Te quedas con el 100% de cada pago' : 'You keep 100% of every payout', keepP: es ? 'Es una tarifa de presentación, no una comisión.' : 'This is a filing fee, not a cut.',
           keepP2: mem ? (es ? 'La membresía es un precio fijo, no una comisión. Cada acuerdo te paga directo y nunca nos quedamos con una parte.' : 'Membership is a flat price, not a cut. Each settlement pays you directly, and we never take a share of what you get.') : es ? 'Es una tarifa, no una comisión. Cada acuerdo te paga directo y nunca nos quedamos con una parte.' : 'This is a filing fee, not a cut. Each settlement pays you directly, and we never take a share of what you get.',
-          rcHead: es ? 'TU RECIBO' : 'YOUR RECEIPT', rcHeadD: es ? 'TU RECIBO DE RECLAMOS' : 'YOUR CLAIMS RECEIPT', rcEarn: es ? 'Ganancias esperadas' : 'Expected earnings',
+          rcHead: es ? 'TU RECIBO' : 'YOUR RECEIPT', rcHeadD: es ? 'TUS RECLAMOS' : 'YOUR CLAIMS', rcEarn: es ? 'Ganancias esperadas' : 'Expected earnings',
           rcFrom: es ? 'De ' + plural(n, 'acuerdo', 'acuerdos', 'acuerdo', 'acuerdos') + ' para los que calificas. Te pagan directo.' : 'From ' + (n === 1 ? '1 settlement' : n + ' settlements') + ' you qualify for. Paid straight to you.',
           rcShare: es ? 'Tu parte de cada pago' : 'Your share of every payout', pickPlanH: es ? 'Elige tu plan' : 'Pick your plan',
           asideReceipt: ['plans', 'feepay', 'checkout', 'trial', 'tiers'].includes(name), notReceipt: !['plans', 'feepay', 'checkout', 'trial', 'tiers'].includes(name),
