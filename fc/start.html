@@ -647,8 +647,8 @@ ttq.page();
     const wireSwipe = (c) => {
       let x0 = null, dx = 0;
       c.addEventListener('pointerdown', (e) => { if (e.target.closest('[data-a]')) return; x0 = e.clientX; dx = 0; c.setPointerCapture(e.pointerId); c.style.transition = 'none'; });
-      c.addEventListener('pointermove', (e) => { if (x0 === null) return; dx = (e.clientX - x0) / (el.getBoundingClientRect().width / 390); c.style.setProperty('--dx', dx); lift(Math.min(1, Math.abs(dx) / 140), false); });
-      const up = () => { if (x0 === null) return; x0 = null; if (Math.abs(dx) > 90) { c.style.transition = 'transform .25s ease'; c.style.setProperty('--dx', dx > 0 ? 520 : -520); lift(1, true); setTimeout(() => answer(dx > 0), 250); } else { c.style.transition = 'transform .2s ease'; c.style.setProperty('--dx', 0); lift(0, true); } };
+      c.addEventListener('pointermove', (e) => { if (x0 === null) return; dx = (e.clientX - x0) / (el.getBoundingClientRect().width / 390); c.style.setProperty('--dx', dx); c.style.opacity = String(1 - Math.min(.35, Math.abs(dx) / 500)); lift(Math.min(1, Math.abs(dx) / 140), false); });
+      const up = () => { if (x0 === null) return; x0 = null; if (Math.abs(dx) > 90) { c.style.transition = 'transform .25s ease, opacity .25s ease'; c.style.setProperty('--dx', dx > 0 ? 520 : -520); c.style.opacity = '0'; lift(1, true); setTimeout(() => answer(dx > 0), 250); } else { c.style.opacity = ''; c.style.transition = 'transform .2s ease, opacity .2s ease'; c.style.setProperty('--dx', 0); lift(0, true); } };
       c.addEventListener('pointerup', up); c.addEventListener('pointercancel', up);
     };
     el.addEventListener('input', (e) => { const t = e.target; if (t.dataset && t.dataset.f) { st.pf = Object.assign({}, st.pf, { [t.dataset.f]: t.value }); } });
@@ -658,7 +658,7 @@ ttq.page();
       else if (a === 'back') { let n = st.s - 1; if (STEPS[n] === 'load') n -= 1; go(n); }
       else if (a === 'pain') { if (st.pains[v]) delete st.pains[v]; else st.pains[v] = 1; draw(); }
       else if (a === 'goal') { st.goal = v; draw(); }
-      else if (a === 'ans') { const c = el.querySelector('.swipe'); if (c) { c.style.transition = 'transform .32s cubic-bezier(.3,.7,.4,1)'; c.style.setProperty('--dx', v === 'y' ? 520 : -520); } lift(1, true); setTimeout(() => answer(v === 'y'), 300); }
+      else if (a === 'ans') { const c = el.querySelector('.swipe'); if (c) { c.style.transition = 'transform .32s cubic-bezier(.3,.7,.4,1), opacity .3s ease'; c.style.setProperty('--dx', v === 'y' ? 520 : -520); c.style.opacity = '0'; } lift(1, true); setTimeout(() => answer(v === 'y'), 300); }
       else if (a === 'pk') { st.pk = v; patch(a); }
       else if (a === 'sel') { if (st.sel[v]) delete st.sel[v]; else st.sel[v] = 1; draw(); }
       else if (a === 'chk') { const d = picked()[st.ci]; st.chk[d.id] = Object.assign({}, st.chk[d.id], { [t.dataset.k]: v }); draw(); }
