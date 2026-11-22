@@ -966,6 +966,8 @@ class Component extends DCLogic {
     if (d < 0 && S[n] === 'calc') n -= 1;
     if (S[n] === 'all' && !this.state.sawAll) n += d;
     if (S[n] === 'verify' && this.state.verified) n += d;
+    // Offer G: arriving at the plan page from the details step always starts on Fast (unless the link sets ?tier=).
+    if (d > 0 && S[n] === 'tiers') { let tq = ''; try { tq = new URLSearchParams(location.search).get('tier') || ''; } catch (e) {} if (!['std', 'fast', 'pri'].includes(tq)) { this.state.tier = 'fast'; this.state.plan = 'fast'; } }
     if (S[n] === 'auth' && noAuth) n += d;
     // Payment comes before details and signing (Nov 15): going back from details never re-enters payment.
     if (d < 0 && this.state.paid && ['perks', 'checkout', 'plans', 'pay', 'feepay', 'trial'].includes(S[n])) return;
@@ -1525,7 +1527,7 @@ class Component extends DCLogic {
     const cta = sel === 'std' ? W('Continue with Standard', 'Seguir con Standard') : W('Start ', 'Empezar ') + (sel === 'pri' ? 'Priority · $30' : 'Fast · $15') + W(' today', ' hoy');
     const fine = sel === 'std' ? (ids ? W('Free. Only ' + stdMine + ' of your ' + mine + ' claims get filed. You can upgrade later.', 'Gratis. Solo se presentan ' + stdMine + ' de tus ' + mine + ' reclamos. Puedes mejorar tu plan después.') : W('Free. Only some of your claims get filed. You can upgrade later.', 'Gratis. Solo se presentan algunos de tus reclamos. Puedes mejorar tu plan después.'))
       : W((sel === 'pri' ? '$30' : '$15') + ' today, renews monthly. Cancel anytime. Payouts take 6 to 12 months on every plan.', (sel === 'pri' ? '$30' : '$15') + ' hoy, se renueva cada mes. Cancela cuando quieras. Los pagos tardan de 6 a 12 meses en todos los planes.');
-    return { tiers, tgAgree: sel === 'std', tgBtnSt: 'width: 100%; flex: none; border-radius: 999px; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; ' + (sel === 'std' ? 'background: #FFFFFF; color: #26302B; box-shadow: inset 0 0 0 1.5px #C9D3CD' : 'background: #3DDC97; color: #0F3B2E; box-shadow: 0 10px 24px rgba(61,220,151,.35)'), tgH: W('How fast should we file?', '¿Qué tan rápido presentamos?'), tgSub: W('How fast we file your claims after you join.', 'Qué tan rápido presentamos tus reclamos al unirte.'), tgCta: cta, tgFine: fine,
+    return { tiers, tgAgree: sel === 'std', tgBtnSt: 'width: 100%; flex: none; border-radius: 999px; font-size: 17px; font-weight: 800; display: flex; align-items: center; justify-content: center; ' + (sel === 'std' ? 'background: #FFFFFF; color: #26302B; box-shadow: inset 0 0 0 1.5px #C9D3CD' : 'background: #3DDC97; color: #0F3B2E; box-shadow: 0 10px 24px rgba(61,220,151,.35)'), tgH: W('How fast should we file?', '¿Qué tan rápido presentamos?'), tgSub: W('Choose one of your filing plans below:', 'Elige uno de tus planes de presentación:'), tgCta: cta, tgFine: fine,
       tgGo: () => this.tierGo() };
   }
   // Offer G: the plan page's button. Standard is free: no payment, straight to the email code (membership made after sign-in).
