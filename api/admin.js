@@ -82,7 +82,51 @@ const actions = {
     const by = (arr, k) => (arr || []).reduce((m, r) => { const v = r[k] || 'none'; m[v] = (m[v] || 0) + 1; return m; }, {});
     const activeMem = (mems || []).filter((m) => m.kind === 'member' && (m.status === 'active' || m.status === 'cancelling'));
     const visitors = (funnel || []).reduce((m, r) => Math.max(m, Number(r.visitors) || 0), 0);
+    // Nov 23 2026 admin redesign: "Needs you" counts, 14-day trend lines and recent activity.
+    const now = Date.now(), dayOf = (t) => new Date(t).toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+    const today = dayOf(now);
+    const q = await actions.queue({ statuses: ['requested', 'needs_info'] });
+    const late = q.claims.filter((c) => c.dueAt && Date.parse(c.dueAt) < now).length;
+    const dueToday = q.claims.filter((c) => c.dueAt && Date.parse(c.dueAt) >= now && dayOf(c.dueAt) === today).length;
+    const replied = q.claims.filter((c) => c.member_replied_at && c.status === 'requested').length;
+    const [{ data: casesNew }, { count: refundsOpen }, { data: lastFail }, { data: allMem }, { data: ev }, { data: rr }, { data: profs }, { data: d14 }] = await Promise.all([
+      sb.from('case_candidates').select('kind').eq('status', 'new').limit(5000),
+      sb.from('refund_requests').select('id', { count: 'exact', head: true }).in('status', ['requested', 'replied']),
+      sb.from('email_log').select('to_email, subject, created_at').not('error', 'is', null).gte('created_at', since7).order('created_at', { ascending: false }).limit(1),
+      sb.from('memberships').select('user_id, kind, plan, status, flow, started_at, trial_ends_at').limit(10000),
+      sb.from('claim_events').select('user_id, settlement_id, status, actor, created_at').order('created_at', { ascending: false }).limit(12),
+      sb.from('refund_requests').select('user_id, company, amount, kind, status, created_at').order('created_at', { ascending: false }).limit(5),
+      sb.from('profiles').select('id, name, email').order('created_at', { ascending: false }).limit(2000),
+      sb.rpc('admin_daily', { p_days: 14 })
+    ]);
+    const paidM = (allMem || []).filter((m) => m.plan !== 'std' && m.status !== 'test');
+    const inTrial = (m) => m.trial_ends_at && Date.parse(m.trial_ends_at) > now && m.status !== 'ended';
+    const paying = (m) => ['active', 'cancelling', 'past_due'].includes(m.status) && !inTrial(m);
+    const ended = paidM.filter((m) => m.trial_ends_at && Date.parse(m.trial_ends_at) <= now);
+    const kept = ended.filter((m) => ['active', 'cancelling', 'past_due'].includes(m.status)).length;
+    const days = (d14 || []).map((d) => d.day);
+    const bucket = (arr, key, val) => days.map((d) => (arr || []).filter((x) => x[key] && dayOf(x[key]) === d).reduce((t, x) => t + (val ? val(x) : 1), 0));
+    const series = {
+      days, visitors: (d14 || []).map((d) => Number(d.visitors) || 0),
+      trials: bucket(paidM.filter((m) => m.trial_ends_at), 'started_at'),
+      revenue: bucket(buys, 'created_at', (x) => (x.amount_cents || 0) / 100),
+      paying: days.map((d) => paidM.filter((m) => m.started_at && dayOf(m.started_at) <= d && ['active', 'cancelling', 'past_due'].includes(m.status)).length),
+      kept: days.map((d) => { const e = ended.filter((m) => dayOf(m.trial_ends_at) <= d); return e.length ? Math.round(100 * e.filter((m) => m.status !== 'ended').length / e.length) : 0; })
+    };
+    const P = {}; (profs || []).forEach((p) => { P[p.id] = p; });
+    const who = (id) => { const p = P[id]; return p ? (p.name || p.email || 'A member') : 'A member'; };
+    const act = [];
+    (ev || []).forEach((e) => act.push({ at: e.created_at, icon: e.status === 'filed' ? 'file-check' : e.status === 'paid' ? 'hand-coins' : e.status === 'needs_info' ? 'message-square' : 'inbox', tone: e.status === 'needs_info' ? 'amber' : 'green', t: who(e.user_id) + ': ' + e.settlement_id + ' ' + String(e.status).replace('_', ' '), s: e.actor || '' }));
+    paidM.filter((m) => m.started_at).sort((a, b) => Date.parse(b.started_at) - Date.parse(a.started_at)).slice(0, 8).forEach((m) => act.push({ at: m.started_at, icon: 'credit-card', tone: 'green', t: who(m.user_id) + (m.trial_ends_at ? ' started a free trial' : ' joined'), s: 'Offer ' + String(m.flow || '').toUpperCase() + ' · ' + (m.plan || m.kind) }));
+    (rr || []).forEach((r) => act.push({ at: r.created_at, icon: 'receipt', tone: 'blue', t: who(r.user_id) + (r.kind === 'cancel' ? ' asked to cancel ' : ' asked for a refund from ') + r.company, s: r.amount ? '$' + Number(r.amount).toFixed(2) : '' }));
+    act.sort((a, b) => Date.parse(b.at) - Date.parse(a.at));
+    const casesN = (casesNew || []).length;
     return {
+      needs: { queue: q.claims.length, late, dueToday, replied, cases: casesN, refunds: refundsOpen || 0, emailsFailed, lastFailTo: lastFail && lastFail[0] ? lastFail[0].to_email : '' },
+      kpi: { visitorsToday: series.visitors[series.visitors.length - 1] || 0, trials7: series.trials.slice(-7).reduce((a, b) => a + b, 0), trialsPrev7: series.trials.slice(0, 7).reduce((a, b) => a + b, 0),
+        payingNow: paidM.filter(paying).length, inTrial: paidM.filter(inTrial).length, rev7: series.revenue.slice(-7).reduce((a, b) => a + b, 0), revPrev7: series.revenue.slice(0, 7).reduce((a, b) => a + b, 0),
+        keptPct: ended.length ? Math.round(100 * kept / ended.length) : null, endedTrials: ended.length },
+      series, activity: act.slice(0, 8), queuePreview: q.claims.slice(0, 6).map((c) => ({ id: c.id, settlement_id: c.settlement_id, status: c.status, tierName: c.tierName, dueAt: c.dueAt, member_replied_at: c.member_replied_at, name: c.profile && (c.profile.name || c.profile.email), email: c.profile && c.profile.email })),
       members, members7, orders, revenue: money(revenue), revenueCents: revenue, authorizations: auths, emailsFailed,
       ordersByKind: by(buys, 'kind'), activeMembers: activeMem.length, activeByPlan: by(activeMem, 'plan'),
       claimsByStatus: by(claims, 'status'), queue: ((by(claims, 'status').requested) || 0) + ((by(claims, 'status').needs_info) || 0),
@@ -106,24 +150,42 @@ const actions = {
     return { from, to, flow, source, dtype, steps: (data && data.steps) || [], rows: (data && data.rows) || [], offers, on: (await readSettings()).offer_test };
   },
 
+  // Members (Nov 23 2026): only people who signed up for a paid plan or trial. Free Standard (plan std),
+  // test memberships and accounts with no membership are left out.
   async users(b) {
-    const sb = db(), from = Math.max(0, parseInt(b.offset, 10) || 0);
-    let q = sb.from('profiles').select('id, email, name, phone, state, address, created_at, pay_default', { count: 'exact' }).order('created_at', { ascending: false }).range(from, from + 49);
+    const sb = db(), from = Math.max(0, parseInt(b.offset, 10) || 0), now = Date.now();
+    const { data: mems, error: me1 } = await sb.from('memberships').select('user_id, kind, plan, status, flow, started_at, trial_ends_at, renews_at').neq('status', 'test').limit(20000);
+    if (me1) throw me1;
+    const paid = (mems || []).filter((m) => m.plan !== 'std');
+    const inTrial = (m) => !!(m.trial_ends_at && Date.parse(m.trial_ends_at) > now && m.status !== 'ended');
+    const bucket = (m) => m.status === 'ended' || m.status === 'cancelling' ? 'cancelled' : inTrial(m) ? 'trial' : 'paying';
+    const M = {}; paid.forEach((m) => { M[m.user_id] = Object.assign({}, m, { bucket: bucket(m), inTrial: inTrial(m) }); });
+    const since7 = now - 7 * 864e5, cut30 = now - 30 * 864e5;
+    const stats = { total: paid.length, new7: paid.filter((m) => Date.parse(m.started_at || 0) > since7).length,
+      trial: paid.filter((m) => M[m.user_id].bucket === 'trial').length, trialEnding: paid.filter((m) => inTrial(m) && Date.parse(m.trial_ends_at) < now + 7 * 864e5).length,
+      paying: paid.filter((m) => M[m.user_id].bucket === 'paying').length, cancelled: paid.filter((m) => M[m.user_id].bucket === 'cancelled').length };
+    let ids = Object.keys(M);
+    const f = String(b.f || 'all');
+    if (['trial', 'paying', 'cancelled'].includes(f)) ids = ids.filter((id) => M[id].bucket === f);
+    if (f === 'tofile' && ids.length) { const { data: rq } = await sb.from('claims').select('user_id').in('user_id', ids).in('status', ['requested', 'needs_info']); const has = new Set((rq || []).map((r) => r.user_id)); ids = ids.filter((id) => has.has(id)); }
+    if (!ids.length) return { total: 0, offset: from, stats, users: [] };
+    let q = sb.from('profiles').select('id, email, name, phone, state, address, created_at, pay_default', { count: 'exact' }).in('id', ids).order('created_at', { ascending: false }).range(from, from + 49);
     const term = String(b.q || '').trim().replace(/[,%()]/g, ' ');
     if (term) q = q.or('email.ilike.%' + term + '%,name.ilike.%' + term + '%,phone.ilike.%' + term + '%');
     const { data: users, count: total, error } = await q;
     if (error) throw error;
-    const ids = (users || []).map((u) => u.id);
-    const [{ data: claims }, { data: mems }, { data: auths }] = ids.length ? await Promise.all([
-      sb.from('claims').select('user_id, status').in('user_id', ids),
-      sb.from('memberships').select('user_id, kind, plan, status').in('user_id', ids),
-      sb.from('authorizations').select('user_id').in('user_id', ids)
+    const uids = (users || []).map((u) => u.id), emails = (users || []).map((u) => (u.email || '').toLowerCase()).filter(Boolean);
+    const [{ data: claims }, { data: auths }, { data: buys }] = uids.length ? await Promise.all([
+      sb.from('claims').select('user_id, status').in('user_id', uids),
+      sb.from('authorizations').select('user_id').in('user_id', uids),
+      sb.from('purchases').select('user_id, email, amount_cents').or('user_id.in.(' + uids.join(',') + ')' + (emails.length ? ',email.in.(' + emails.map((e) => '"' + e.replace(/"/g, '') + '"').join(',') + ')' : ''))
     ]) : [{ data: [] }, { data: [] }, { data: [] }];
     return {
-      total, offset: from,
+      total, offset: from, stats,
       users: (users || []).map((u) => {
-        const c = (claims || []).filter((x) => x.user_id === u.id), m = (mems || []).find((x) => x.user_id === u.id);
-        return Object.assign({}, u, { claims: c.length, requested: c.filter((x) => x.status === 'requested').length, signed: (auths || []).filter((x) => x.user_id === u.id).length, membership: m || null });
+        const c = (claims || []).filter((x) => x.user_id === u.id), em = (u.email || '').toLowerCase();
+        const paidCents = (buys || []).filter((x) => x.user_id === u.id || (em && (x.email || '').toLowerCase() === em)).reduce((t, x) => t + (x.amount_cents || 0), 0);
+        return Object.assign({}, u, { claims: c.length, requested: c.filter((x) => x.status === 'requested' || x.status === 'needs_info').length, signed: (auths || []).filter((x) => x.user_id === u.id).length, membership: M[u.id] || null, paidCents });
       })
     };
   },
@@ -267,6 +329,43 @@ const actions = {
     }
     await sb.from('case_candidates').update({ status: 'approved', reviewed_by: by, reviewed_at: now }).eq('id', id);
     return { ok: true };
+  },
+
+  // Admins (Nov 23 2026): list, add by email (creates a confirmed account if needed), remove (not yourself, not the owner).
+  async admins() {
+    const sb = db();
+    const { data: rows } = await sb.from('admins').select('user_id, role, created_at').order('created_at');
+    const out = [];
+    for (const r of rows || []) {
+      const { data: u } = await sb.auth.admin.getUserById(r.user_id);
+      const { data: p } = await sb.from('profiles').select('name').eq('id', r.user_id).maybeSingle();
+      out.push({ user_id: r.user_id, role: r.role || 'admin', email: u && u.user ? u.user.email : '', name: p ? p.name : '', created_at: r.created_at });
+    }
+    return { admins: out };
+  },
+  async addAdmin(b, user) {
+    const sb = db(), email = String(b.email || '').trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return { error: 'Enter an email' };
+    const { data: me } = await sb.from('admins').select('role').eq('user_id', user.id).maybeSingle();
+    if (!me || me.role !== 'owner') return { error: 'Only the owner can add admins' };
+    let uid = null;
+    const { data: list } = await sb.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    const found = ((list && list.users) || []).find((u) => (u.email || '').toLowerCase() === email);
+    if (found) uid = found.id;
+    else { const { data: cu, error } = await sb.auth.admin.createUser({ email, email_confirm: true }); if (error) throw error; uid = cu.user.id; }
+    const { error } = await sb.from('admins').upsert({ user_id: uid, role: 'admin' });
+    if (error) throw error;
+    return actions.admins();
+  },
+  async removeAdmin(b, user) {
+    const sb = db(), uid = String(b.user_id || '');
+    const { data: me } = await sb.from('admins').select('role').eq('user_id', user.id).maybeSingle();
+    if (!me || me.role !== 'owner') return { error: 'Only the owner can remove admins' };
+    if (uid === user.id) return { error: 'You cannot remove yourself' };
+    const { data: t } = await sb.from('admins').select('role').eq('user_id', uid).maybeSingle();
+    if (t && t.role === 'owner') return { error: 'The owner cannot be removed' };
+    await sb.from('admins').delete().eq('user_id', uid);
+    return actions.admins();
   },
 
   botRuns: (b) => bot.botRuns(b),
