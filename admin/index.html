@@ -539,7 +539,7 @@ function authModal(a) {
 // ---------- members ----------
 // ---------- funnel ----------
 // Nov 21 2026: date range, offer, traffic source and device filters; offer comparison plus breakdowns by source, device and day.
-const OFFER_SHORT = { a: 'A · Choice page', b: 'B · $2 then $49.99/yr', c: 'C · Free 7 days then $49.99/yr', d: 'D · Free 3 days then $4.99/wk', e: 'E · Free 3 days then $49/yr', f: 'F · Free 3 days then $19.99/mo', h: 'H · Free 3 days then $49.99/yr', j: 'Flow C · A · Free 3 days then $49.99/yr', k: 'Flow C · B · Free 3 days then $19.99/mo', i: 'Flow C · C · 1, 3 or 6 month plans', g: 'G · Plans: Standard free, Fast $15, Priority $30' };
+const OFFER_SHORT = { a: 'A · Choice page', b: 'B · $2 then $49.99/yr', c: 'C · Free 7 days then $49.99/yr', d: 'D · Free 3 days then $4.99/wk', e: 'E · Free 3 days then $49/yr', f: 'F · Free 3 days then $19.99/mo', h: 'H · Free 3 days then $49.99/yr', j: 'Flow C · A · Free 3 days then $49.99/yr', k: 'Flow C · B · Free 3 days then $19.99/mo', l: 'Flow C · C · $2 for 3 days then $49/yr', i: 'Flow C · C · 1, 3 or 6 month plans', g: 'G · Plans: Standard free, Fast $15, Priority $30' };
 const SRC_LABEL = { meta: 'Meta', google_ads: 'Google Ads', organic: 'Organic search', other: 'Other', unknown: 'Unknown (before Nov 21)' };
 const DEV_LABEL = { iphone: 'iPhone', android: 'Android', tablet: 'iPad / tablet', mac: 'Mac', windows: 'Windows', other: 'Other', unknown: 'Unknown (before Nov 21)' };
 const pdDay = (d) => d.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
@@ -565,8 +565,8 @@ function demoCard() {
     + '</tbody></table></div>';
 }
 // Nov 22 2026: Funnel has two tabs, Currently running (which offers are live and how visitors are split) and Results.
-const OFF_KEYS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'i'];
-const FLOWC_KEY = { j: 'A', k: 'B', i: 'C' };
+const OFF_KEYS = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'j', 'k', 'l', 'i'];
+const FLOWC_KEY = { j: 'A', k: 'B', l: 'C', i: 'C (old)' };
 function funTabs(cur) {
   return '<div class="seg" role="tablist" style="margin-bottom:14px">' + [['running', 'Currently running'], ['results', 'Results']].map(([k, t]) => '<button data-ftab="' + k + '" class="' + (k === cur ? 'on' : '') + '">' + t + '</button>').join('') + '</div>';
 }
@@ -586,7 +586,7 @@ async function running() {
     + '<table><thead><tr><th>Offer</th><th>Where it runs</th><th style="width:34%">Share of new visitors</th><th style="text-align:right">Preview</th></tr></thead><tbody>'
     + on.map((k) => '<tr><td><b>' + esc(OFFER_SHORT[k] || k) + '</b></td><td class="small">' + where(k) + '</td><td><div class="row" style="gap:10px;align-items:center"><div class="bar" style="flex:1"><span style="width:' + share + '%"></span></div><b>' + (Math.round(share * 10) / 10) + '%</b></div></td><td style="text-align:right;white-space:nowrap">' + prev(k) + '</td></tr>').join('')
     + '</tbody></table>'
-    + (on.some((k) => FLOWC_KEY[k]) && !['i', 'j', 'k'].every((k) => on.includes(k)) ? '<div class="small err" style="margin-top:10px">Visitors who open /check directly (not through /claim) are always split evenly across Flow C A, B and C, even ones switched off here.</div>' : '')
+    + (on.some((k) => FLOWC_KEY[k]) && !['j', 'k', 'l'].every((k) => on.includes(k)) ? '<div class="small err" style="margin-top:10px">Visitors who open /check directly (not through /claim) are always split evenly across Flow C A, B and C, even ones switched off here.</div>' : '')
     + '</div>';
   const keys = OFF_KEYS.filter((k) => on.includes(k) || A.o[k] || W.o[k]);
   const actual = '<div class="card" style="margin-bottom:14px"><h2>Actual split</h2><div class="small muted" style="margin-bottom:10px">Visitors who started the claim flow, by the offer they got. Returning visitors keep the offer they first got, so an offer that is off can still show a few.</div>'
@@ -617,7 +617,7 @@ async function funnel() {
     + sel('dtype', 'Device', [['', 'All devices']].concat(Object.keys(DEV_LABEL).map((k) => [k, DEV_LABEL[k]])), F.dtype) + '</div></div>';
   // offer comparison
   const offs = OFF_KEYS.filter((k) => (r.on && r.on[k]) || FL[k]);
-  const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999, j: 4999 };
+  const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999, j: 4999, l: 4900 };
   const line = (label, fn, note) => '<tr><td><b>' + label + '</b>' + (note ? '<div class="small muted">' + note + '</div>' : '') + '</td>' + offs.map((f) => '<td style="text-align:right;font-weight:700">' + fn(FL[f] || {}, f) + '</td>').join('') + '</tr>';
   const comp = '<div class="card" style="margin-bottom:14px"><h2>Offer test</h2><div class="small muted" style="margin-bottom:8px">New visitors get one of the offers switched on in Settings, at random. Turn offers on or off in Settings > Offer test.</div><div style="overflow-x:auto">'
     + '<table><thead><tr><th></th>' + offs.map((f) => '<th style="text-align:right">' + esc(OFFER_SHORT[f]) + (r.on && r.on[f] ? '' : ' <span class="small muted">(off)</span>') + '</th>').join('') + '</tr></thead><tbody>'
@@ -715,7 +715,7 @@ async function settings() {
     + '<div class="row small" style="margin-top:10px"><span class="pill ' + (con ? 'p-approved' : 'p-ready') + '">' + (con ? 'On' : 'Off') + '</span><span id="cmsg" class="muted" role="status"></span></div></div>');
   // Offer test (Nov 21 2026): which offers new visitors can get, at random among the ones switched on.
   const ot = r.settings.offer_test || { a: false, b: false, c: false, d: false, e: false, f: true }, otm = r.settings.offer_test_meta;
-  const OT = [['a', 'A · Choice page', '$7.99 first month membership (then $29.99/mo, or 3 and 6 month plans) or a $49.99 one-time filing fee.'], ['b', 'B · $2 trial', '$2 today for 7 days, then $49.99 a year.'], ['c', 'C · Free 7-day trial', '$0 today for 7 days, then $49.99 a year.'], ['d', 'D · Free 3-day trial, weekly', '$0 today for 3 days, then $4.99 a week.'], ['e', 'E · Free 3-day trial, $49 yearly', '$0 today for 3 days, then $49 a year.'], ['f', 'F · Free 3-day trial, $19.99 monthly', '$0 today for 3 days, then $19.99 a month.'], ['h', 'H · Free 3-day trial, $49.99 yearly', '$0 today for 3 days, then $49.99 a year ($4.17/mo).'], ['j', 'Flow C · A', 'The /check flow. $0 today for 3 days, then $49.99 a year.'], ['k', 'Flow C · B', 'The /check flow. $0 today for 3 days, then $19.99 a month.'], ['i', 'Flow C · C', 'The /check flow. $19.99 a month, $44.97 every 3 months or $59.94 every 6 months, charged today. 30-day money-back guarantee.'], ['g', 'G · Plans (T3)', 'Plan page: Standard free (filed within 30 days, bot-fileable claims only), Fast $15/mo (3 days, all nationwide), Priority $30/mo (24 hours, all claims plus refunds). Charged today, no trial.']];
+  const OT = [['a', 'A · Choice page', '$7.99 first month membership (then $29.99/mo, or 3 and 6 month plans) or a $49.99 one-time filing fee.'], ['b', 'B · $2 trial', '$2 today for 7 days, then $49.99 a year.'], ['c', 'C · Free 7-day trial', '$0 today for 7 days, then $49.99 a year.'], ['d', 'D · Free 3-day trial, weekly', '$0 today for 3 days, then $4.99 a week.'], ['e', 'E · Free 3-day trial, $49 yearly', '$0 today for 3 days, then $49 a year.'], ['f', 'F · Free 3-day trial, $19.99 monthly', '$0 today for 3 days, then $19.99 a month.'], ['h', 'H · Free 3-day trial, $49.99 yearly', '$0 today for 3 days, then $49.99 a year ($4.17/mo).'], ['j', 'Flow C · A', 'The /check flow. $0 today for 3 days, then $49.99 a year.'], ['k', 'Flow C · B', 'The /check flow. $0 today for 3 days, then $19.99 a month.'], ['l', 'Flow C · C', 'The /check flow. $2 today for 3 days, then $49 a year.'], ['i', 'Flow C · old C (plans)', 'The /check flow. $19.99 a month, $44.97 every 3 months or $59.94 every 6 months, charged today. 30-day money-back guarantee.'], ['g', 'G · Plans (T3)', 'Plan page: Standard free (filed within 30 days, bot-fileable claims only), Fast $15/mo (3 days, all nationwide), Priority $30/mo (24 hours, all claims plus refunds). Charged today, no trial.']];
   const onN = OT.filter(([k]) => ot[k] === true).length;
   $('#main').insertAdjacentHTML('beforeend', '<div class="card"><h2 style="margin-bottom:6px">Offer test</h2><div class="small muted" style="line-height:1.55;max-width:640px">New visitors get one of the offers that are on, at random, and keep it for a year. Visitors who already have an offer that you turn off get a new one. At least one offer stays on. Compare them in Funnel.</div>'
     + '<div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">' + OT.map(([k, t, d]) => { const on = ot[k] === true; return '<div class="row" style="justify-content:space-between;align-items:center;gap:14px;padding:10px 0;border-top:1px solid #EEF2F0"><div><b>' + t + '</b><div class="small muted">' + d + '</div></div>'
@@ -854,7 +854,7 @@ async function overview() {
     const t = new Date(), w = await api('funnel', { from: pdDay(new Date(t.getTime() - 6 * 864e5)), to: pdDay(t) });
     const live = OFF_KEYS.filter((k) => w.on && w.on[k]);
     const FL = {}; w.rows.filter((x) => x.dim === 'flow').forEach((x) => { FL[x.k] = x; });
-    const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999, j: 4999, f: 1999, k: 1999 };
+    const PRICE = { b: 4999, c: 4999, e: 4900, h: 4999, j: 4999, l: 4900, f: 1999, k: 1999 };
     const val = (k) => { const x = FL[k] || {}, v = +x.visitors || 0; return v ? ((+x.revenue_cents || 0) + (+x.buyers || 0) * 0.4 * (PRICE[k] || 0)) / v / 100 : 0; };
     const best = live.slice().sort((a, b) => val(b) - val(a))[0];
     const mx = Math.max(0.01, ...live.map(val));
