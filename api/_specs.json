@@ -6702,8 +6702,8 @@
  },
  {
   "id": "everbridge",
-  "type": "closed",
-  "filer": "none",
+  "type": "self",
+  "filer": "member",
   "form_url": "https://veritaconnect.com/EverbridgeSecuritiesSettlement/",
   "admin": "Verita Global LLC",
   "deadline": "2026-11-25",
@@ -6784,8 +6784,8 @@
  },
  {
   "id": "wellnow",
-  "type": "closed",
-  "filer": "none",
+  "type": "self",
+  "filer": "member",
   "form_url": "https://searswellnowsettlement.com/documents/",
   "admin": "Simpluris, Inc.",
   "deadline": "2026-11-25",
@@ -6862,8 +6862,8 @@
  },
  {
   "id": "fujifilm",
-  "type": "closed",
-  "filer": "none",
+  "type": "we",
+  "filer": "va",
   "form_url": "https://www.flbdatasettlement.com/",
   "admin": "Simpluris, Inc.",
   "deadline": "2026-11-25",
@@ -17987,8 +17987,8 @@
  },
  {
   "id": "neutrogena",
-  "type": "closed",
-  "filer": "none",
+  "type": "we",
+  "filer": "va",
   "form_url": "https://skin360bipasettlement.pnclassaction.com/",
   "admin": "Eisner Advisory Group LLC",
   "deadline": "2026-11-25",
@@ -26362,122 +26362,5 @@
   "va_notes": "",
   "member_note": "No claim form is open yet; keep your bail premium receipts and agreements for when it opens.",
   "confidence": "low"
- },
- {
-  "type": "we",
-  "filer": "va",
-  "form_url": "https://www.mbpricingsettlement.com/submit-claim",
-  "admin": "Angeion Group",
-  "deadline": "2026-12-28",
-  "minutes": 0,
-  "needs": [],
-  "why_self": "",
-  "gather": [],
-  "steps": [],
-  "form_map": [
-   {
-    "field": "Name",
-    "src": "name"
-   },
-   {
-    "field": "Mailing address",
-    "src": "address"
-   },
-   {
-    "field": "Email",
-    "src": "email"
-   },
-   {
-    "field": "Phone",
-    "src": "phone"
-   },
-   {
-    "field": "Payment method",
-    "src": "payout"
-   },
-   {
-    "field": "Payment details",
-    "src": "payout_handle"
-   },
-   {
-    "field": "Attestation and signature",
-    "src": "signature"
-   }
-  ],
-  "va_notes": "Stoneham v. Interactive Memories (Mixbook), Multnomah County Circuit Court, Oregon. Flat $12 award. Filing is only needed to get cash; people who do nothing get a $12 Mixbook credit. Pick cash (electronic payment or check). Claimant attests under penalty of perjury to a qualifying purchase made while in CA, OR or WA. Deadline Dec 28, 2026.",
-  "member_note": "",
-  "confidence": "medium",
-  "about": "Mixbook is accused of advertising discounts that were not real. The settlement pays $12 to each person who bought from mixbook.com in California, Oregon or Washington. If you do nothing you get $12 in Mixbook credit; filing gets you $12 cash instead.",
-  "who": "People who bought a product advertised at a discount on mixbook.com while in California, Oregon or Washington, from June 1, 2022 to March 1, 2026.",
-  "qualify": [
-   {
-    "q": "Did you buy something on mixbook.com that was advertised at a discount between June 1, 2022 and March 1, 2026?",
-    "help": ""
-   },
-   {
-    "q": "Were you in California, Oregon or Washington when you bought it?",
-    "help": ""
-   }
-  ],
-  "start_note": "We fill in the official claim form with your saved info and pick the cash payment.",
-  "id": "mixbook"
- },
- {
-  "type": "self",
-  "filer": "member",
-  "form_url": "https://www.fiberglasshorizonsettlement.com/",
-  "admin": "Angeion Group (claims handled by CertainTeed)",
-  "deadline": "2030-03-02",
-  "minutes": 45,
-  "needs": [],
-  "why_self": "This claim needs a shingle sample, photos of your roof and proof of ownership and install date, all signed by every owner, so you send it yourself.",
-  "gather": [
-   "Proof you own the building",
-   "A shingle sample or other proof the shingles are CertainTeed Horizon fiberglass",
-   "Proof of the install date (receipt, invoice, permit or certificate of occupancy)",
-   "Proof of how many squares were installed",
-   "Photos of the house and at least 2 photos of each damaged roof plane",
-   "Signatures of all owners"
-  ],
-  "steps": [
-   {
-    "t": "Check you qualify",
-    "d": "You qualify if your US building has CertainTeed Horizon fiberglass shingles (made until 2009, installed 1995 to 2010) that are cracking, fishmouthing, curling or losing granules because of a manufacturing defect. Organic Horizon shingles are not part of this settlement."
-   },
-   {
-    "t": "Get the claim form",
-    "d": "Download the claim form from https://www.fiberglasshorizonsettlement.com/."
-   },
-   {
-    "t": "Gather your proof",
-    "d": "Collect proof of ownership, a shingle sample, proof of install date and quantity, and photos of the house plus at least 2 photos of each damaged roof plane."
-   },
-   {
-    "t": "Fill in and sign",
-    "d": "Fill in the claim form and have every owner sign it."
-   },
-   {
-    "t": "Send it",
-    "d": "Email it to FiberHZ@saint-gobain.com or mail it to CertainTeed Roofing, Horizon Settlement Administrator, 805 W. 5th St, Suite 7, Lansdale, PA 19446, by March 2, 2030."
-   }
-  ],
-  "form_map": [],
-  "va_notes": "Segebarth v. CertainTeed LLC, No. 2:19-cv-05500-PD, E.D. Pa. $40 per square of replacement area, prorated by months since install. Member gets the greater of this or any earlier written warranty offer.",
-  "member_note": "",
-  "confidence": "medium",
-  "about": "CertainTeed is accused of selling Horizon fiberglass roof shingles that crack, curl and fall apart early. The settlement pays $40 per roofing square of damaged roof, reduced by how old the roof is.",
-  "who": "Owners of a US building with CertainTeed Horizon fiberglass shingles installed from 1995 to 2010 that show damage from a defect.",
-  "qualify": [
-   {
-    "q": "Does a building you own have CertainTeed Horizon fiberglass shingles installed between 1995 and 2010?",
-    "help": ""
-   },
-   {
-    "q": "Are the shingles cracking, curling, fishmouthing or losing granules?",
-    "help": ""
-   }
-  ],
-  "start_note": "This one you file yourself by email or mail. We walk you through it step by step.",
-  "id": "certainteed"
  }
 ]

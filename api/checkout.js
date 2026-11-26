@@ -27,7 +27,7 @@ const PLANS = {
   c3: { amount: 4497, months: 3, noIntro: true, name: 'Claimclub membership (3 months)', env: 'STRIPE_PRICE_C3' },
   c6: { amount: 5994, months: 6, noIntro: true, name: 'Claimclub membership (6 months)', env: 'STRIPE_PRICE_C6' },
 };
-const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h', 'j', 'l'], '1w': ['d'], '1mt': ['f', 'k'], fast: ['g'], pri: ['g'], c1: ['i'], c3: ['i'], c6: ['i'] };
+const TRIAL_FLOWS = { '1y': ['b', 'c', 'e', 'h', 'j', 'l'], '1w': ['d'], '1mt': ['f', 'k', 'm'], fast: ['g'], pri: ['g'], c1: ['i'], c3: ['i'], c6: ['i'] };
 
 // One-time coupon that takes the first invoice down to the intro price. Created on first use.
 async function introCoupon(stripe, plan) {

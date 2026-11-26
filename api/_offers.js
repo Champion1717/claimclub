@@ -12,6 +12,7 @@
 //   j: Flow C A, free 3-day trial, then $49.99 a year (plan 1y)
 //   k: Flow C B, free 3-day trial, then $19.99 a month (plan 1mt)
 //   l: Flow C C (Nov 25 2026), $2 today for a 3-day trial, then $49 a year (plan 1y). Replaces i in the test.
+//   m: Flow C D (Nov 26 2026), $2 today for a 3-day trial, then $19.99 a month (plan 1mt).
 //   i: Flow C C (old), plans $19.99 a month (c1), $44.97 every 3 months (c3), $59.94 every 6 months (c6), charged today
 const OFFERS = {
   a: { name: 'Choice page ($7.99 first month or $49.99 fee)' },
@@ -27,8 +28,9 @@ const OFFERS = {
   j: { name: 'Flow C · A: free 3 days, then $49.99 a year', plan: '1y', trialDays: 3, first: 0, amount: 4999, interval: 'year', flowC: 'A' },
   k: { name: 'Flow C · B: free 3 days, then $19.99 a month', plan: '1mt', trialDays: 3, first: 0, amount: 1999, interval: 'month', flowC: 'B' },
   l: { name: 'Flow C · C: $2 for 3 days, then $49 a year', plan: '1y', trialDays: 3, first: 200, amount: 4900, interval: 'year', flowC: 'C' },
+  m: { name: 'Flow C · D: $2 for 3 days, then $19.99 a month', plan: '1mt', trialDays: 3, first: 200, amount: 1999, interval: 'month', flowC: 'D' },
 };
-const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false, i: false, j: false, k: false, l: false };
+const DEFAULT_ON = { a: false, b: false, c: false, d: false, e: false, f: true, g: false, h: false, i: false, j: false, k: false, l: false, m: false };
 const FLOWS = Object.keys(OFFERS);
 const isFlow = (f) => FLOWS.includes(f);
 // Trial plans: 1y (offers b and c) and 1w (offer d).
