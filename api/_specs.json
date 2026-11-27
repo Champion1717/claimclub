@@ -1885,8 +1885,8 @@
  },
  {
   "id": "benkeith",
-  "type": "we",
-  "filer": "va",
+  "type": "closed",
+  "filer": "none",
   "form_url": "https://www.bekdataincidentsettlement.com",
   "admin": "Angeion Group",
   "deadline": "2026-11-26",
@@ -6970,8 +6970,8 @@
  },
  {
   "id": "cpap",
-  "type": "we",
-  "filer": "va",
+  "type": "closed",
+  "filer": "none",
   "form_url": "https://cpapdataincidentsettlement.com/form/claim",
   "admin": "Simpluris, Inc.",
   "deadline": "2026-11-26",
@@ -7074,8 +7074,8 @@
  },
  {
   "id": "nyc_strip",
-  "type": "we",
-  "filer": "va",
+  "type": "closed",
+  "filer": "none",
   "form_url": "https://www.nystripsearchsettlement.com/",
   "admin": "Verita Global",
   "deadline": "2026-11-26",
@@ -26479,5 +26479,140 @@
   ],
   "start_note": "This one you file yourself by email or mail. We walk you through it step by step.",
   "id": "certainteed"
+ },
+ {
+  "id": "cornwell",
+  "type": "we",
+  "filer": "va",
+  "form_url": "https://cqtcybersettlement.com/form/claim/",
+  "admin": "Simpluris",
+  "deadline": "2027-01-25",
+  "minutes": 0,
+  "needs": [
+   {
+    "k": "benefit",
+    "kind": "choice",
+    "label": "Which payment do you want?",
+    "help": "Most people pick the flat cash payment. Only pick a loss option if you have receipts for money you lost because of the breach and never got back.",
+    "ph": "",
+    "opts": [
+     "$50 cash payment (no proof needed)",
+     "Pay for time I spent dealing with it, $20 an hour up to 3 hours",
+     "Pay back money I lost, up to $5,000 (receipts needed)"
+    ],
+    "optional": false,
+    "unsure": ""
+   },
+   {
+    "k": "credit_monitoring",
+    "kind": "choice",
+    "label": "Do you also want 2 years of free credit monitoring?",
+    "help": "It watches your credit for signs of fraud. It is free and does not lower your cash payment.",
+    "ph": "",
+    "opts": [
+     "Yes",
+     "No"
+    ],
+    "optional": false,
+    "unsure": ""
+   },
+   {
+    "k": "loss_docs",
+    "kind": "upload",
+    "label": "Upload receipts for your losses",
+    "help": "Only if you picked a loss option. Receipts, bank or card statements that show money you lost because of the breach.",
+    "ph": "receipts.pdf",
+    "opts": [],
+    "optional": true,
+    "unsure": ""
+   }
+  ],
+  "why_self": "",
+  "gather": [],
+  "steps": [],
+  "form_map": [
+   {
+    "field": "Login ID",
+    "src": "need:login_id"
+   },
+   {
+    "field": "PIN",
+    "src": "need:claim_pin"
+   },
+   {
+    "field": "Name",
+    "src": "name"
+   },
+   {
+    "field": "Mailing address",
+    "src": "address"
+   },
+   {
+    "field": "Email",
+    "src": "email"
+   },
+   {
+    "field": "Phone",
+    "src": "phone"
+   },
+   {
+    "field": "Benefit selection",
+    "src": "need:benefit"
+   },
+   {
+    "field": "Lost time description and hours",
+    "src": "fixed:only if member chose lost time; ask for hours and what they did"
+   },
+   {
+    "field": "Credit monitoring",
+    "src": "need:credit_monitoring"
+   },
+   {
+    "field": "Loss documentation upload",
+    "src": "need:loss_docs"
+   },
+   {
+    "field": "Payment method",
+    "src": "payout"
+   },
+   {
+    "field": "Payment details",
+    "src": "payout_handle"
+   },
+   {
+    "field": "Attestation and signature",
+    "src": "signature"
+   }
+  ],
+  "va_notes": "Default to the $50 alternate cash with PayPal, Venmo or Zelle unless the member has documented losses. Cash or reimbursement, not both. Lost time is $20 an hour for up to 3 hours. The online form needs the LoginID and PIN from the notice; people without one can mail the paper form or contact the administrator at (833) 296-0950 or info@CQTDataIncidentSettlement.com. Simpluris sites may have a CAPTCHA.",
+  "member_note": "We need the Login ID and PIN printed on your Cornwell Quality Tools notice to file this claim.",
+  "confidence": "medium",
+  "about": "Cornwell Quality Tools had a data incident in December 2024 that may have exposed personal information. The settlement pays $50 cash, or up to $5,000 for documented losses and lost time, plus 2 years of free credit monitoring.",
+  "who": "People in the US whose information may have been affected by the December 2024 Cornwell Quality Tools data incident.",
+  "qualify": [
+   {
+    "q": "Did you get a letter or email saying your information may have been part of the December 2024 Cornwell Quality Tools data incident?",
+    "help": "The online form needs the Login ID and PIN from that notice."
+   }
+  ],
+  "notice": {
+   "mode": "required",
+   "from": "the Cornwell Quality Tools settlement administrator (Simpluris)",
+   "looks": "A letter, postcard or email about the Cornwell Quality Tools (CQT) data incident settlement with a Login ID and PIN.",
+   "fields": [
+    {
+     "k": "login_id",
+     "label": "Login ID",
+     "ph": "ABC1234567"
+    },
+    {
+     "k": "claim_pin",
+     "label": "PIN",
+     "ph": "A1B2C3"
+    }
+   ],
+   "if_none": "The online form needs the Login ID and PIN, so we can only file it for people who got a notice. If you think you should have one, we can ask the administrator to resend it."
+  },
+  "start_note": "We fill in the official claim form with the codes from your notice and send you the claim ID."
  }
 ]
