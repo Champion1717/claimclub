@@ -115,7 +115,8 @@ module.exports = async (req, res) => {
       try {
         // Flow C (/demo/flow-c) hides Cash App, Klarna, Amazon Pay and Link in Stripe's form. If Stripe refuses that, retry without it
         // (Nov 22: payment_method_types made the in-page session fail and the page fell back to Stripe's hosted page).
-        const tries = b.back === 'flow-c' ? [{ excluded_payment_method_types: ['cashapp', 'klarna', 'amazon_pay', 'link', 'affirm', 'afterpay_clearpay'] }, {}] : [{}];
+        // Nov 28 2026: Cash App Pay is left out of every flow (its renewals almost always failed on an empty balance).
+        const tries = b.back === 'flow-c' ? [{ excluded_payment_method_types: ['cashapp', 'klarna', 'amazon_pay', 'link', 'affirm', 'afterpay_clearpay'] }, { excluded_payment_method_types: ['cashapp'] }, {}] : [{ excluded_payment_method_types: ['cashapp'] }, {}];
         for (const extra of tries) {
           try {
             const s = await stripe.checkout.sessions.create({ ...base, ...extra, ui_mode: 'elements', return_url: done }, { apiVersion: ELEMENTS_API });
@@ -124,13 +125,16 @@ module.exports = async (req, res) => {
         }
       } catch (e) { console.error('[checkout] in-page session failed, using the hosted page', e.message); }
     }
-    const session = await stripe.checkout.sessions.create({
+    const hosted = {
       ...base,
       ...(kind === 'fee' ? { allow_promotion_codes: true } : {}),
       locale: b.lang === 'es' ? 'es' : 'auto',
       success_url: done,
       cancel_url: origin + back + '?canceled=1',
-    });
+    };
+    let session;
+    try { session = await stripe.checkout.sessions.create({ ...hosted, excluded_payment_method_types: ['cashapp'] }); }
+    catch (e) { console.error('[checkout] hosted page without Cash App failed, retrying with it', e.message); session = await stripe.checkout.sessions.create(hosted); }
     res.end(JSON.stringify({ url: session.url }));
   } catch (e) {
     res.statusCode = 400;
